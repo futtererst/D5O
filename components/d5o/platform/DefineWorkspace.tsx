@@ -43,7 +43,7 @@ export function DefineWorkspace({ workspaceKey, configurationInventory, work, fo
   configurationInventory: ConfigurationInventory;
   work: WorkRecord[];
   focusRecordId?: string;
-  reviewFocus?: "commercial" | "delivery" | null;
+  reviewFocus?: "commercial" | "delivery" | "define-prep" | "develop-handoff-prep" | "develop-handoff-receive" | null;
   actorLabel: string;
   onReviewQueued: () => void;
   onCommand: (command: Omit<DefineCommand, "expectedRevision" | "commandId">) => Promise<boolean>;
@@ -208,7 +208,19 @@ export function DefineWorkspace({ workspaceKey, configurationInventory, work, fo
   };
   const editableFields: Partial<Record<keyof DefinitionRecord, string>> = { outcome: "Promised outcome", excludedScope: "Exclusions and customer responsibilities", deliveryApproach: "Delivery approach" };
 
-  if (reviewFocus && selected && definition) return <main className="d5o-page d5o-define-phase">
+  if ((reviewFocus === "develop-handoff-prep" || reviewFocus === "develop-handoff-receive") && selected && definition) return <main className="d5o-page d5o-define-phase">
+    <FocusedTaskFrame title={reviewFocus === "develop-handoff-prep" ? "Submit approved Define basis" : "Receive approved Define basis"}
+      work={selected.title} customer={selected.customer} site={selected.site} workspace={workspaceKey}
+      scope={`Approved outcome: ${definition.outcome}. Included: ${definition.includedScope || "See structured scope"}. Acceptance: ${definition.acceptance || "See structured criteria"}.`}
+      revision={definition.revision} outcome={reviewFocus === "develop-handoff-prep" ? "Submit this exact approved baseline to an independent Develop receiver." : "Accept the exact approved revision into Develop, or return it with a correction reason."}
+      blocker={sourceChanged ? "The reviewed source changed; prepare a new revision." : !investigationReady ? "Investigation is incomplete." : null}
+      nextOwner={reviewFocus === "develop-handoff-prep" ? "Independent Develop receiver" : "Project manager for solution preparation"}
+      onFullRecord={() => onOpen(selected)} context={<><p>Exclusions: {definition.excludedScope}</p><p>Delivery: {definition.deliveryApproach}</p><p>Requirements: {definition.scopeControl?.requirements.map((item) => item.need).join("; ") || "See full baseline"}</p><p>Acceptance criteria: {(definition.registers?.acceptance_criteria ?? []).map((item) => item.result).join("; ") || "See full baseline"}</p></>}>
+      {reviewFocus === "develop-handoff-prep" ? <button type="button" className="d5o-primary" disabled={sourceChanged || !investigationReady} onClick={submitDevelopHandoff}>Send approved revision to Develop</button> : <><p>Submitted by a separate actor. Receiving does not approve pricing or delivery.</p><label className={styles.field}>Receiving decision basis<textarea rows={3} value={reviewNote} onChange={(event) => setReviewNote(event.target.value)} /></label><div className={styles.handoffActions}><button type="button" className="d5o-outline" disabled={!reviewNote.trim() || sourceChanged} onClick={() => respondDevelopHandoff("returned")}>Return for correction</button><button type="button" className="d5o-primary" disabled={!reviewNote.trim() || sourceChanged} onClick={() => respondDevelopHandoff("accepted")}>Accept into Develop</button></div></>}
+    </FocusedTaskFrame>
+  </main>;
+
+  if ((reviewFocus === "commercial" || reviewFocus === "delivery") && selected && definition) return <main className="d5o-page d5o-define-phase">
     <FocusedTaskFrame title={`${reviewFocus === "commercial" ? "Commercial" : "Delivery"} definition review`}
       work={selected.title} customer={selected.customer} site={selected.site} workspace={workspaceKey}
       scope={`Definition baseline · ${definition.outcome || "Outcome not recorded"}`}
@@ -238,24 +250,30 @@ export function DefineWorkspace({ workspaceKey, configurationInventory, work, fo
   </main>;
 
   return <main className="d5o-page d5o-record-full d5o-early-phase d5o-define-phase">
-    <WorkPhaseJourney active="Define" record={selected} backLabel="Discover" onBack={onBack} onChoose={(phase) => { if (selected) onPhase(selected, phase); }} onControl={(control) => { if (selected) onControl(selected, control); }} />
-    <div className={`${styles.layout} d5o-early-phase-layout`}>
-      <details className={`${styles.queue} d5o-early-phase-rail`} aria-label="Work ready for definition">
+    {reviewFocus === "define-prep" && selected && definition ? <FocusedTaskFrame title="Prepare definition" work={selected.title} customer={selected.customer} site={selected.site} workspace={workspaceKey}
+      scope={`Discover handoff revision ${selected.discovery?.pursuitControl?.handoff?.revision ?? "unavailable"}: ${selected.discovery?.pursuitControl?.handoff?.brief ?? "No accepted brief"}`}
+      revision={definition.revision} outcome="Complete the investigation, structured scope, acceptance and delivery basis; submit this revision for independent review."
+      blocker={verdict?.next?.detail ?? null} nextOwner="Independent Commercial and Delivery reviewers"
+      onFullRecord={() => onOpen(selected)} context={<p>Customer need: {selected.discovery?.need}. Configuration: {config?.version ?? "Unavailable"}.</p>}>
+      <p>Use the definition sections below. Save each source before requesting review.</p>
+    </FocusedTaskFrame> : <WorkPhaseJourney active="Define" record={selected} backLabel="Discover" onBack={onBack} onChoose={(phase) => { if (selected) onPhase(selected, phase); }} onControl={(control) => { if (selected) onControl(selected, control); }} />}
+    <div className={`${styles.layout} d5o-early-phase-layout`} style={reviewFocus === "define-prep" ? { gridTemplateColumns: "minmax(0, 1fr)" } : undefined}>
+      {reviewFocus !== "define-prep" ? <details className={`${styles.queue} d5o-early-phase-rail`} aria-label="Work ready for definition">
         <summary className={styles.queueSummary}><span><b>SWITCH WORK RECORD</b><strong>{selected?.title ?? "No work ready for Define"}</strong></span><small>{candidates.length} available · {inReview} in review · {ready} approved</small></summary>
         {candidates.length ? candidates.map((item) => <button key={item.id} className={`${styles.queueItem} ${selected?.id === item.id ? styles.selected : ""}`} onClick={() => { setEditingField(null); onSelect(item.id); setSection("brief"); }}><strong>{item.title}</strong><span>{item.customer} · {item.site}</span><small>{item.discovery?.outcome === "Won" ? "Awarded pursuit" : item.discovery?.fit ?? "Qualified"} · {item.definition?.status ?? "Definition not started"}</small></button>) : <div className={styles.empty}><strong>No work is ready for definition</strong><p>Qualify work in Discover to establish the scope and delivery basis here.</p></div>}
-      </details>
+      </details> : null}
       {selected && definition ? <section className={`${styles.detail} d5o-early-phase-main`} aria-label="Selected Work Record definition">
-        <header className={styles.detailHeader}><div><p className={styles.kicker}>DEFINE · {selected.customer} · REVISION {definition.revision}</p><h2>Shape the project before committing to delivery.</h2><p>{selected.title} · {selected.site}</p></div><button className="d5o-outline" onClick={() => onOpen(selected)}>Open Work Record →</button></header>
-        <div className={styles.summary}><div><small>STATUS</small><strong>{definition.status}</strong></div><div><small>OWNER</small><strong>{definition.owner}</strong></div><div><small>COMPLETENESS</small><strong>{config ? `${complete} / ${configuredRules.length} configured rules` : "Configuration unavailable"}</strong></div><div><small>DISCOVER BASIS</small><strong>{selected.discovery?.pursuitControl?.handoff?.status === "accepted" ? "Accepted pursuit handoff" : selected.discovery?.fit === "Qualified" ? "Legacy qualified record" : "Handoff not accepted"}</strong></div></div>
-        <div className={styles.baselineFocus}>
+        {reviewFocus !== "define-prep" ? <><header className={styles.detailHeader}><div><p className={styles.kicker}>DEFINE · {selected.customer} · REVISION {definition.revision}</p><h2>Shape the project before committing to delivery.</h2><p>{selected.title} · {selected.site}</p></div><button className="d5o-outline" onClick={() => onOpen(selected)}>Open Work Record →</button></header>
+        <div className={styles.summary}><div><small>STATUS</small><strong>{definition.status}</strong></div><div><small>OWNER</small><strong>{definition.owner}</strong></div><div><small>COMPLETENESS</small><strong>{config ? `${complete} / ${configuredRules.length} configured rules` : "Configuration unavailable"}</strong></div><div><small>DISCOVER BASIS</small><strong>{selected.discovery?.pursuitControl?.handoff?.status === "accepted" ? "Accepted pursuit handoff" : selected.discovery?.fit === "Qualified" ? "Legacy qualified record" : "Handoff not accepted"}</strong></div></div></> : null}
+        {reviewFocus !== "define-prep" ? <div className={styles.baselineFocus}>
           <div className={styles.baselineHeading}><div><p className={styles.kicker}>THE DEFINITION AT A GLANCE</p><h3>{definition.outcome || "Set the customer outcome"}</h3><p>{definition.outcome ? "The result this revision promises to deliver." : "Start with the customer result before detailing the scope."}</p></div><button type="button" className="d5o-primary" onClick={() => { if (definition.developHandoff?.status === "returned") startReturnedRevision(); else if (sourceChanged) refreshSource(); else if (definition.status === "Approved" && !investigationReady) startInvestigationRevision(); else if (definition.status === "Approved") openSection("risks"); else openSection(definition.status === "Changes requested" ? "scope" : nextSection); }}>{definition.developHandoff?.status === "returned" ? "Revise returned baseline" : definition.status === "Approved" && !investigationReady ? "Start investigation revision" : definition.status === "Approved" ? "Review Develop handoff" : nextStep} →</button></div>
           <div className={styles.baselineFacts}><span><b>INCLUDED SCOPE</b>{scopeItems} {scopeItems === 1 ? "structured item" : "structured items"}</span><span><b>ACCEPTANCE</b>{acceptanceItems} {acceptanceItems === 1 ? "measurable criterion" : "measurable criteria"}</span><span><b>DEFINE VERDICT</b>{earlierApproval ? "Earlier approved basis · clarity v1 not applied" : `${verdict?.status ?? "Unavailable"} · ${verdict?.checks.filter((item) => !item.met).length ?? 0} open checks`}</span></div>
           {verdict?.next && !earlierApproval ? <p className={styles.baselineBlocker}>Next to resolve: {verdict.next.detail}</p> : null}
-        </div>
+        </div> : null}
         <nav className={styles.tabs} aria-label="Definition sections">{visibleSections.map((item) => <button key={item.key} className={section === item.key ? styles.active : ""} onClick={() => setSection(item.key)}>{item.label}</button>)}</nav>
         <details className="d5o-phase-disclosure"><summary>Configured Define requirements and source</summary>{config && definePhase ? <ConfiguredPhasePanel config={config} phase={definePhase} work={selected} compact /> : <p>No reference configuration matches this Work Type in the selected workspace. Definition review is unavailable.</p>}</details>
         {sourceChanged ? <div className={styles.sourceAlert} role="alert"><strong>Review source changed</strong><span>The reviewed estimate, proposal, or configuration no longer matches this Work Record. The previous decision remains in history; start a new revision before treating the definition as current.</span><button type="button" className="d5o-outline" onClick={refreshSource}>Start new revision</button></div> : null}
-        {reviewFocus && definition.status === "In review" ? <div className={styles.sourceAlert}><strong>{reviewFocus === "commercial" ? "Commercial" : "Delivery"} review · revision {definition.revision}</strong><span>Review this exact definition revision and record the decision basis in Risks &amp; handoff. Current role state: {definition.reviews?.[reviewFocus] ?? "Unavailable"}.</span></div> : null}
+        {(reviewFocus === "commercial" || reviewFocus === "delivery") && definition.status === "In review" ? <div className={styles.sourceAlert}><strong>{reviewFocus === "commercial" ? "Commercial" : "Delivery"} review · revision {definition.revision}</strong><span>Review this exact definition revision and record the decision basis in Risks &amp; handoff. Current role state: {definition.reviews?.[reviewFocus] ?? "Unavailable"}.</span></div> : null}
         {definition.status === "In review" && !reviewFocus ? <button type="button" className="d5o-outline" onClick={onReviewQueued}>Open Commercial and Delivery queues in My work →</button> : null}
         <div className={styles.content} ref={editorRef}>
           {section === "brief" ? <div className={styles.brief}>

@@ -8,6 +8,7 @@ import { assessDiscover, assessmentBasis, activeForecast, resolveDiscoverPolicy,
 import { groupIndicativeOrders, type ForecastPeriod } from "./discover-forecast";
 import { blankPursuit, type PursuitCommand } from "./pursuit-control";
 import { PursuitControl } from "./PursuitControl";
+import { FocusedTaskFrame } from "./FocusedTaskFrame";
 import type { DiscoverCRM, DiscoveryRecord, WorkRecord, WorkspaceKey } from "./work-types";
 import { WorkPhaseJourney, type WorkControl, type WorkPhase } from "./WorkPhaseJourney";
 import styles from "./DiscoverCRMWorkspace.module.css";
@@ -26,8 +27,8 @@ const blankCRM = (): DiscoverCRM => ({ customerResolved: false, siteResolved: fa
 const blankDiscovery = (): DiscoveryRecord => ({ source: "Direct customer", need: "", procurement: "Direct award", phase: "Qualification", fit: "Unassessed", closeDate: "", pursuitControl: blankPursuit(), crm: blankCRM(), estimate: { revision: 0, labor: 0, materials: 0, subcontract: 0, travel: 0, contingency: 0, targetMargin: 25, sellPrice: 0, status: "Not started", assumption: "" }, proposal: { status: "Not started", dueDate: "", method: "Customer portal", recipient: "", response: "" } });
 const num = (value: string) => value === "" ? null : Number(value);
 
-export function DiscoverCRMWorkspace({ workspaceKey, workspaceName, configurationInventory, work, actor, actorRole, canEdit, focusRecordId, onOpen, onDefine, onPhase, onControl, onBack, onSelect, onPursuitCommand, onUpdate, onCreate, onNotice }: {
-  workspaceKey: WorkspaceKey; workspaceName: string; configurationInventory: ConfigurationInventory; work: WorkRecord[]; actor: string; actorRole?: string; canEdit: boolean; focusRecordId?: string;
+export function DiscoverCRMWorkspace({ workspaceKey, workspaceName, configurationInventory, work, actor, actorRole, canEdit, focusRecordId, taskFocus, onOpen, onDefine, onPhase, onControl, onBack, onSelect, onPursuitCommand, onUpdate, onCreate, onNotice }: {
+  workspaceKey: WorkspaceKey; workspaceName: string; configurationInventory: ConfigurationInventory; work: WorkRecord[]; actor: string; actorRole?: string; canEdit: boolean; focusRecordId?: string; taskFocus?: "pursuit-prep" | "define-handoff-prep" | "define-handoff-receive" | null;
   onOpen: (record: WorkRecord) => void; onDefine: (record: WorkRecord) => void; onPhase: (record: WorkRecord, phase: WorkPhase) => void; onControl: (record: WorkRecord, control: WorkControl) => void; onBack: () => void; onSelect: (id: string) => void;
   onPursuitCommand?: (workId: string, command: PursuitCommand) => Promise<boolean>;
   onUpdate: (id: string, transform: (current: WorkRecord) => WorkRecord) => void; onCreate: (record: WorkRecord) => Promise<string> | string; onNotice: (message: string) => void;
@@ -56,7 +57,7 @@ export function DiscoverCRMWorkspace({ workspaceKey, workspaceName, configuratio
   const configuredTypes = phaseContractFromManifest(
     configurationInventory.versions.find((item) => item.id === configurationInventory.activeVersionId)?.config_manifest_json,
     workspaceKey)?.workTypes.map((item) => item.workTypeLabel) ?? [];
-  const selected = opportunities.find((item) => item.id === focusRecordId) ?? opportunities[0];
+  const selected = opportunities.find((item) => item.id === focusRecordId) ?? (taskFocus ? undefined : opportunities[0]);
   const crmEditable = canEdit && (!selected || selected.discovery?.phase === "Qualification" && !selected.definition);
   const crm = selected?.discovery?.crm ?? blankCRM();
   const assessment = crm.assessmentHistory.at(-1);
@@ -136,6 +137,23 @@ export function DiscoverCRMWorkspace({ workspaceKey, workspaceName, configuratio
   function saveForecast(event: FormEvent<HTMLFormElement>) { event.preventDefault(); const f = new FormData(event.currentTarget); const at = new Date().toISOString();
     update((c) => { const forecast = { value: num(field(f, "value")), currency: field(f, "currency").toUpperCase(), basis: field(f, "basis"), probability: num(field(f, "probability")), awardDate: field(f, "awardDate"), category: field(f, "category") as DiscoverCRM["forecast"]["category"], rationale: field(f, "rationale"), reviewedAt: at };
       const weighted = weightedPotential({ ...c, forecast }); return { ...c, forecast, forecastSnapshots: [...(c.forecastSnapshots ?? []), { at, period: forecast.awardDate.slice(0, 7), currency: forecast.currency, workRevision: selected?.discovery?.pursuitControl?.revision ?? 0, value: forecast.value, probability: forecast.probability, weighted, category: forecast.category, awardDate: forecast.awardDate, workId: selected?.id }] }; }, "Indicative forecast snapshot recorded");
+  }
+  if (taskFocus && !selected) return <main className="d5o-page"><section role="alert"><h2>This task is unavailable</h2><p>The exact Discover record is no longer available. No other opportunity was selected.</p><button type="button" onClick={onBack}>Back to tasks</button></section></main>;
+  if (taskFocus && selected && selected.id === focusRecordId) {
+    const pursuit = selected.discovery?.pursuitControl;
+    const receive = taskFocus === "define-handoff-receive";
+    return <main className="d5o-page d5o-early-phase"><FocusedTaskFrame
+      title={receive ? "Receive Define handoff" : taskFocus === "define-handoff-prep" ? "Prepare Define handoff" : "Prepare Discover intake"}
+      work={selected.title} customer={selected.customer} site={selected.site} workspace={workspaceKey}
+      scope={receive ? `Exact brief for ${pursuit?.handoff?.receiver}: ${pursuit?.handoff?.brief || "Unavailable"}` : selected.discovery?.need || "Customer need not recorded"}
+      revision={pursuit?.revision ?? 0}
+      outcome={receive ? "Accept this exact qualified pursuit brief into Define, or return it with corrections." : taskFocus === "define-handoff-prep" ? "Name an independent receiver and submit the qualified pursuit brief." : "Save the customer need and submit the current intake for an independent pursuit decision."}
+      nextOwner={receive ? "Project manager to prepare Define" : taskFocus === "define-handoff-prep" ? "Named Define receiver" : "Pursuit decision authority"}
+      onFullRecord={() => onOpen(selected)} context={<p>Customer need: {selected.discovery?.need || "Not recorded"}. Risk: {pursuit?.knownRisk || "Not recorded"}.</p>}>
+      <PursuitControl work={selected} actor={actor} canEdit={canEdit}
+        connected={Boolean(selected.canonicalWorkId && onPursuitCommand)} taskMode={receive ? "handoff-receive" : taskFocus === "define-handoff-prep" ? "handoff-prep" : "intake"}
+        onCommand={onPursuitCommand} onUpdate={onUpdate} onNotice={onNotice} onDefine={onDefine} />
+    </FocusedTaskFrame></main>;
   }
   return <main className={`d5o-page d5o-record-full d5o-early-phase ${styles.page}`}>
     <WorkPhaseJourney active="Discover" record={selected} backLabel="Work hub" onBack={onBack} onChoose={(phase) => { if (selected) onPhase(selected, phase); }} onControl={(control) => { if (selected) onControl(selected, control); }} />

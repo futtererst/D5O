@@ -161,11 +161,52 @@ export async function GET(request: NextRequest) {
     if (view === "actions") {
       const phaseReviews = all.flatMap((record) => {
         const actions: Record<string, unknown>[] = [];
+        if (!record.canonicalWorkId) return actions;
+        const mine = actorRole === "project_manager" && ownedIds?.has(record.id);
+        const pursuit = (record.discovery as WorkRecord["discovery"] | undefined)?.pursuitControl;
+        const handoff = pursuit?.handoff;
+        const define = record.definition as WorkRecord["definition"] | undefined;
+        const solution = record.develop as WorkRecord["develop"] | undefined;
         const estimate = (record.discovery as { estimate?: { revision?: number } } | undefined)?.estimate;
         const offer = (record.discovery as { proposal?: { package?: { revision?: number } } } | undefined)?.proposal?.package;
         const baseline = record.definition as { revision?: number; reviews?: { commercial?: string; delivery?: string } } | undefined;
         const common = { workId: record.id, workTitle: record.title, customer: record.customer, site: record.site,
           dueDate: null, ownership: "Available to your role" };
+        const prep = (kind: string, phase: string, focus: string, revision: number, blocker?: string) =>
+          actions.push({ ...common, kind, phase, focus, revision, status: "Preparation", position: "preparation",
+            ownership: "Created by you · project manager", blocker: blocker ?? null });
+        if (mine && pursuit && ["draft", "returned", "held"].includes(pursuit.status))
+          prep("Prepare Discover intake", "Discover", "pursuit-prep", pursuit.revision);
+        if (mine && pursuit?.status === "qualified" && handoff?.status !== "submitted" && handoff?.status !== "accepted")
+          prep("Prepare Define handoff", "Discover", "define-handoff-prep", pursuit.revision);
+        if (pursuit?.status === "qualified" && handoff?.status === "submitted" &&
+          ["admin", "operations_leader", "project_manager"].includes(actorRole) &&
+          handoff.receiverActorId === ctx.actor.id && handoff.actorId !== ctx.actor.id)
+          actions.push({ ...common, kind: "Receive Define handoff", phase: "Discover", focus: "define-handoff-receive",
+            revision: pursuit.revision, status: "Submitted", ownership: "Named receiving account" });
+        if (mine && handoff?.status === "accepted" && (!define || ["Draft", "Changes requested"].includes(define.status)))
+          prep("Prepare definition", "Define", "define-prep", define?.revision ?? 1);
+        if (mine && define?.status === "Approved" && define.developHandoff?.status !== "submitted" && define.developHandoff?.status !== "accepted")
+          prep("Submit approved Define basis to Develop", "Define", "develop-handoff-prep", define.revision);
+        if (define?.status === "Approved" && define.developHandoff?.status === "submitted" &&
+          ["admin", "operations_leader", "project_manager"].includes(actorRole) &&
+          define.developHandoff.submittedByActorId !== ctx.actor.id)
+          actions.push({ ...common, kind: "Receive approved Define basis", phase: "Define", focus: "develop-handoff-receive",
+            revision: define.revision, status: "Submitted", ownership: "Eligible independent Develop receiver" });
+        const received = define?.status === "Approved" && define.developHandoff?.status === "accepted" && define.developHandoff.revision === define.revision;
+        if (mine && received && (!solution?.review || solution.review.status === "Returned" || solution.review.revision !== solution.revision))
+          prep("Prepare solution", "Develop", "solution-prep", solution?.revision ?? 0);
+        if (solution?.review?.status === "Submitted" && solution.review.revision === solution.revision &&
+          solution.review.approverRole === actorRole && solution.review.submittedByActorId !== ctx.actor.id)
+          actions.push({ ...common, kind: "Solution review", phase: "Develop", focus: "solution-review",
+            revision: solution.revision, status: "Submitted", dueDate: solution.review.dueDate,
+            ownership: "Eligible independent solution reviewer" });
+        if (mine && received && solution?.review?.status === "Approved" && solution.review.revision === solution.revision &&
+          !["Pricing review", "Approved"].includes((record.discovery as WorkRecord["discovery"])?.estimate.status ?? ""))
+          prep("Prepare detailed estimate", "Develop", "pricing-prep", estimate?.revision ?? 0);
+        if (mine && (record.discovery as WorkRecord["discovery"])?.estimate.status === "Approved" &&
+          !["Internal review", "Approved", "Submitted"].includes((record.discovery as WorkRecord["discovery"])?.proposal.status ?? ""))
+          prep("Prepare customer proposal", "Develop", "proposal-prep", offer?.revision ?? 0);
         if (canReviewPricing(record) && estimate?.revision) actions.push({ ...common, kind: "Pricing review", phase: "Develop", focus: "pricing", revision: estimate.revision, status: "Submitted", title: record.title });
         if (canReviewProposal(record) && offer?.revision) actions.push({ ...common, kind: "Proposal approval", phase: "Develop", focus: "proposal", revision: offer.revision, status: "Submitted", title: record.title });
         if (canReviewDefinition(record) && baseline?.revision) {

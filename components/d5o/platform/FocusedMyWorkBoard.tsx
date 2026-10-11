@@ -4,7 +4,7 @@ import type { DeliveryAction } from "@/lib/d5o/hosted/delivery-role-actions";
 import type { SupportAction } from "@/lib/d5o/hosted/support-role-actions";
 import { serviceActionHref, serviceRoleLabel, type ServiceAction } from "./service-actions";
 
-type RoleAction = { kind: string; workId: string; packageId?: string | null; packageName?: string; decisionId?: string | null; revision: number; status: string; title: string; workTitle?: string; customer?: string; site?: string; dueDate?: string | null; phase: string; focus?: string; ownership: string };
+type RoleAction = { kind: string; workId: string; packageId?: string | null; packageName?: string; decisionId?: string | null; revision: number; status: string; title: string; workTitle?: string; customer?: string; site?: string; dueDate?: string | null; phase: string; focus?: string; ownership: string; position?: "preparation" | "waiting" | "action"; blocker?: string | null };
 type RecordSummary = { id: string; title: string; customer: string; site: string; stage: string };
 export type FocusedQueuePage<T extends RecordSummary> = { roleActions?: RoleAction[]; serviceActions?: ServiceAction[]; deliveryActions?: DeliveryAction[]; supportActions?: SupportAction[]; records: T[]; total: number; nextCursor: string | null };
 type Task = { key: string; canonical: string; title: string; work: string; customer: string; site?: string | null; detail: string; owner: string; blocker?: string | null; due?: string | null; impact?: "Critical" | "High" | "Standard" | null; href: string; position: "action" | "preparation" | "waiting" | "information" };
@@ -23,7 +23,7 @@ function supportLink(workspace: string, action: SupportAction) {
   return `/work?${params}`;
 }
 function roleLink(workspace: string, action: RoleAction) {
-  const phaseView = action.phase === "Define" ? "define" : action.phase === "Develop" ? "develop" : "record";
+  const phaseView = action.phase === "Discover" ? "discover" : action.phase === "Define" ? "define" : action.phase === "Develop" ? "develop" : "record";
   const params = new URLSearchParams({ workspace, view: phaseView, record: action.workId, sourceRevision: String(action.revision) });
   if (phaseView === "record") params.set("section", action.phase);
   if (action.packageId) params.set("package", action.packageId);
@@ -52,7 +52,7 @@ function tasksFor<T extends RecordSummary>(workspace: string, page: FocusedQueue
     position: action.ownership === "Information only" ? "information" : action.actionable ? "action" : "waiting" }));
   const role = (page.roleActions ?? []).map((action): Task => ({ key: `role:${action.workId}:${action.kind}:${action.packageId ?? ""}:${action.revision}`, canonical: `role:${action.workId}:${action.packageId ?? "work"}:${action.kind}:${action.decisionId ?? action.revision}`, title: action.kind,
     work: action.workTitle ?? action.title, customer: action.customer ?? action.phase, site: action.site, detail: `${action.packageId ? `${action.packageName ?? "Package"} · ` : ""}revision ${action.revision}`,
-    owner: action.ownership, due: action.dueDate, href: roleLink(workspace, action), position: "action" }));
+    owner: action.ownership, blocker: action.blocker, due: action.dueDate, href: roleLink(workspace, action), position: action.position ?? "action" }));
   const seen = new Set<string>();
   return [...delivery, ...support, ...service, ...role].filter((task) => {
     if (seen.has(task.canonical)) return false;
