@@ -71,6 +71,29 @@ try {
         throw new Error(`task_record_lost_after_reload:${key}`);
       if (key === "finance" && await page.getByRole("heading", { name: "Project financial closeout" }).count())
         throw new Error("unrelated_project_finance_shown_in_service_task");
+      if (key === "finance" && target.searchParams.get("taskKind") === "bill-review") {
+        await page.getByRole("heading", { name: "Review billing record" }).waitFor({ timeout: 30_000 });
+        if (await page.getByRole("navigation", { name: "Operate views" }).count())
+          throw new Error("broad_operate_tabs_shown_in_finance_task");
+        if (await page.getByRole("heading", { name: "Keep accepted work working" }).count())
+          throw new Error("broad_operate_header_shown_in_finance_task");
+        if (await page.getByRole("button", { name: "Record sourced cost" }).count())
+          throw new Error("unrelated_cost_action_shown_in_bill_review");
+        await page.goto(`${base}/work?workspace=rybex&view=portfolio`);
+        await page.goto(target.href);
+        await page.getByRole("heading", { name: "Review billing record" }).waitFor({ timeout: 30_000 });
+        await page.getByRole("link", { name: "Back to tasks" }).first().focus();
+        await page.keyboard.press("Enter");
+        await page.getByRole("heading", { name: "What needs your attention" }).waitFor({ timeout: 30_000 });
+        if (new URL(page.url()).searchParams.get("view") !== "my-work")
+          throw new Error("back_to_tasks_returned_to_portfolio");
+        const staleBill = new URL(target.href);
+        staleBill.searchParams.set("sourceRevision", "999999");
+        await page.goto(staleBill.href);
+        await page.getByRole("heading", { name: "This Finance task changed or was decided" }).waitFor({ timeout: 30_000 });
+        if (new URL(page.url()).searchParams.get("record") !== target.searchParams.get("record"))
+          throw new Error("stale_finance_link_selected_other_work");
+      }
     }
     if (key === "pm") {
       const staleCandidate = page.locator('a.d5o-focused-task[href*="focus=supply-document"]');
