@@ -91,6 +91,17 @@ export async function GET(request: NextRequest) {
         const costQueued = await call("d5o_hosted_service_cost_actions_v1", { p_workspace_key: workspace });
         if (costQueued.error || !Array.isArray(costQueued.data)) return reply({ error: "service_cost_queue_unavailable" }, 503);
         serviceActions = [...serviceQueued.data, ...costQueued.data];
+        const contextByWork = new Map(connectedRead.state.records.map((item) => [item.id, item]));
+        const withWorkContext = (items: unknown[]) => items.map((value) => {
+          if (!value || typeof value !== "object") return value;
+          const item = value as Record<string, unknown>;
+          const source = contextByWork.get(String(item.workId ?? ""));
+          return source ? { ...item, workTitle: source.title, customer: item.customer || source.customer, site: source.site } : item;
+        });
+        roleActions = withWorkContext(roleActions);
+        serviceActions = withWorkContext(serviceActions);
+        deliveryActions = withWorkContext(deliveryActions);
+        supportActions = withWorkContext(supportActions);
       }
     }
     const isMine = (r: Work) => ownedIds ? ownedIds.has(r.id) : r.owner === owner;

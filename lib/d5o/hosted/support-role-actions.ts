@@ -4,7 +4,7 @@ import { supportDocumentationPositions } from "@/components/d5o/platform/support
 
 export type SupportAction = {
   kind: "receive-handoff" | "add-asset" | "accept-support" | "activate" | "supply-document" | "review-document";
-  workId: string; title: string; customer: string; decisionId: string; turnoverId?: string; documentKind?: "as-built" | "inspection";
+  workId: string; title: string; customer: string; site?: string; decisionId: string; turnoverId?: string; documentKind?: "as-built" | "inspection";
   decisionRevision: number; sourceRevision: number; deployRevision: number;
   position: "available" | "preparation" | "waiting";
   responsibleRole: string; blocker: string | null;

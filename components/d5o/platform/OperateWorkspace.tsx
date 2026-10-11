@@ -56,7 +56,8 @@ export function OperateWorkspace({ work, allWork, policy, hosted, actorRole, ini
       setTab(kind === "add-asset" ? "Assets" : "Handoff & activation");
     });
   }, [work.id]);
-  const [requestFocus, setRequestFocus] = useState<{ id: string; panel: string } | null>(null);
+  const [requestFocus, setRequestFocus] = useState<{ id: string; panel: string; kind: string | null; revision: number | null; cycle: string | null } | null>(null);
+  const [linkedServiceStatus, setLinkedServiceStatus] = useState<"checking" | "current" | "changed" | "unavailable">("checking");
   const [serviceActions, setServiceActions] = useState<ServiceAction[]>([]);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -64,11 +65,25 @@ export function OperateWorkspace({ work, allWork, policy, hosted, actorRole, ini
     const requestId = params.get("request");
     queueMicrotask(() => {
       if (requestId && (focus === "finance" || focus === "pricing"))
-        setRequestFocus({ id: requestId, panel: focus });
+        setRequestFocus({ id: requestId, panel: focus, kind: params.get("taskKind"),
+          revision: params.has("taskRevision") ? Number(params.get("taskRevision")) : null, cycle: params.get("requestCycle") });
       if (focus === "finance") setTab("Finance & lessons");
       if (focus === "pricing") setTab("Requests & jobs");
     });
   }, [work.id]);
+  useEffect(() => {
+    if (!hosted || !requestFocus?.kind || requestFocus.revision === null || !requestFocus.cycle) { queueMicrotask(() => setLinkedServiceStatus("current")); return; }
+    const controller = new AbortController();
+    void fetch(`/api/d5o-hosted/prototype-search?workspace=${encodeURIComponent(work.workspace)}&view=actions&filter=all`,
+      { cache: "no-store", signal: controller.signal })
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error("queue_unavailable")))
+      .then((body: { serviceActions?: ServiceAction[] }) => {
+        if (!controller.signal.aborted) setLinkedServiceStatus(body.serviceActions?.some((item) => item.workId === work.id &&
+          item.requestId === requestFocus.id && item.kind === requestFocus.kind && item.revision === requestFocus.revision &&
+          item.requestCycleAt === requestFocus.cycle) ? "current" : "changed");
+      }).catch(() => { if (!controller.signal.aborted) setLinkedServiceStatus("unavailable"); });
+    return () => controller.abort();
+  }, [hosted, requestFocus, work.id, work.workspace, work.operate]);
   useEffect(() => {
     if (!hosted || !work.canonicalWorkId || tab !== "Overview") return;
     const controller = new AbortController();
@@ -126,16 +141,17 @@ export function OperateWorkspace({ work, allWork, policy, hosted, actorRole, ini
   });
   const tenantQueue = buildSupportQueue(allWork, work.workspace, now, activePolicy.timezone, !hosted);
 
-  if (staleSupportLink) return <section className={style.workspace} aria-label="Operate workspace"><article className={style.card} role="alert"><h2>This support action changed or was decided</h2><p>The saved link no longer matches the current acceptance, support or activation revision. No obsolete decision is available from this link.</p><a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work →</a></article></section>;
+  if (staleSupportLink) return <section className={style.workspace} aria-label="Operate workspace" data-task-focus={requestFocus?.panel ?? linkedSupportAction?.kind ?? undefined}><article className={style.card} role="alert"><h2>This support action changed or was decided</h2><p>The saved link no longer matches the current acceptance, support or activation revision. No obsolete decision is available from this link.</p><a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work →</a></article></section>;
+  if (requestFocus?.kind && linkedServiceStatus !== "current") return <section className={style.workspace} aria-label="Operate workspace" data-task-focus={requestFocus?.panel ?? linkedSupportAction?.kind ?? undefined}><article className={style.card} role="status"><h2>{linkedServiceStatus === "changed" ? "This service action changed or was decided" : linkedServiceStatus === "checking" ? "Checking the current service action" : "Service actions are temporarily unavailable"}</h2><p>{linkedServiceStatus === "changed" ? "The saved request, cycle or decision revision is no longer current. No other request was selected." : "The exact task must be checked against the current authenticated queue before its decision form opens."}</p><a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work →</a></article></section>;
 
-  return <section className={style.workspace} aria-label="Operate workspace">
+  return <section className={style.workspace} aria-label="Operate workspace" data-task-focus={requestFocus?.panel ?? linkedSupportAction?.kind ?? undefined}>
 
     <header className={style.hero}><div><small>OPERATE · SUPPORTED ASSETS AND SERVICE</small><h2>Keep accepted work working</h2><p>{work.customer} · {work.site}</p></div><div className={style.position}><span>SUPPORT POSITION</span><strong>{state.activation?.status ?? "Not activated"}</strong><small>{state.support ? `${state.support.owner} · actor ${state.support.ownerActorId}` : "Receiving owner not accepted"}</small></div></header>
     {!acceptedScopeCurrent ? <p className={style.authority} role="alert">The recorded customer acceptance, Operations receipt and Finance decision remain in history for their original scope. They do not authorize closeout of the expanded package set. Govern additional scope on a separate Work Record.</p> : null}
 
-    <div className={style.metrics}><div><span>Supported assets</span><strong>{state.assets.length}</strong></div><div><span>Open requests</span><strong>{pending.length}</strong></div><div><span>Maintenance plans</span><strong>{state.maintenance.filter((item) => item.status === "Active").length}</strong></div><div><span>Financial closeout</span><strong>{acceptedScopeCurrent && state.finance.status === "Closed" ? "Closed" : state.finance.status === "Closed" ? "Closed · prior scope" : state.finance.status}</strong></div></div>
+    <div className={style.metrics} data-task-secondary><div><span>Supported assets</span><strong>{state.assets.length}</strong></div><div><span>Open requests</span><strong>{pending.length}</strong></div><div><span>Maintenance plans</span><strong>{state.maintenance.filter((item) => item.status === "Active").length}</strong></div><div><span>Financial closeout</span><strong>{acceptedScopeCurrent && state.finance.status === "Closed" ? "Closed" : state.finance.status === "Closed" ? "Closed · prior scope" : state.finance.status}</strong></div></div>
 
-    <nav className={style.tabs} aria-label="Operate views">{tabs.map((item) => <button type="button" key={item} className={tab === item ? style.active : ""} onClick={() => setTab(item)}>{item}</button>)}</nav>
+    <nav className={style.tabs} aria-label="Operate views" data-task-secondary>{tabs.map((item) => <button type="button" key={item} className={tab === item ? style.active : ""} onClick={() => setTab(item)}>{item}</button>)}</nav>
     {tab === "Handoff & activation" && !canReceive ? <p className={style.authority} role="status">An Operations leader or System Administrator must receive the support basis, accept ownership and activate support. Your current role can review the recorded position.</p> : null}
 
     {requestFocus && !state.requests.some((item) => item.id === requestFocus.id) ? <p className={style.authority} role="alert">This request is not on this Work Record. Refresh My Work and open the current action.</p> : null}
@@ -166,7 +182,7 @@ export function OperateWorkspace({ work, allWork, policy, hosted, actorRole, ini
 
     {tab === "Customer & growth" ? <div className={style.grid}><Card title="Customer reviews and continuing value">{state.customerReviews.map((item) => <article className={style.row} key={item.id}><b>{item.contact} · {item.at.slice(0, 10)}</b><span>{item.summary}</span><small>{item.actions} · {item.owner}</small></article>)}<form className={style.form} onSubmit={submit("add-review", (data) => ({ contact: value(data, "contact"), description: value(data, "description"), owner: value(data, "owner"), note: value(data, "note") }))}>{field("contact", "Customer contact")}{field("description", "Service performance and outcome")}{field("owner", "Action owner", false)}{field("note", "Agreed next actions", false)}<button disabled={busy}>Record customer review</button></form></Card><Card title="Lifecycle opportunities" lead="Sales follow-through is never required to activate support.">{state.lifecycleLinks.map((item) => <article className={style.row} key={item.id}><b>{item.rationale}</b><span>{item.owner} · {item.opportunityWorkId}</span><button onClick={() => onOpenWork(item.opportunityWorkId)}>Open Discover Work Record →</button></article>)}<form className={style.form} onSubmit={submit("open-lifecycle", (data) => ({ assetId: value(data, "assetId") || undefined, title: value(data, "title"), rationale: value(data, "rationale"), owner: value(data, "owner") }))}><label>Origin asset<select name="assetId"><option value="">Customer relationship</option>{state.assets.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}</select></label>{field("title", "Potential customer need")}{field("rationale", "Supported commercial rationale")}{field("owner", "Pursuit owner")}<button disabled={busy}>Open linked Discover opportunity</button></form></Card></div> : null}
 
-    {tab === "Finance & lessons" ? <><div className={style.grid}><Card title="Project financial closeout" lead="Finance status does not turn support on or off."><p><b>{state.finance.status}</b> · {state.finance.owner}</p><p>{state.finance.note || "No Finance review recorded."}</p>{canFinance ? <form className={style.form} onSubmit={submit("update-finance", (data) => ({ status: value(data, "status"), note: value(data, "note") }))}><label>Status<select name="status"><option>Pending</option><option>In review</option><option>Closed</option></select></label>{field("note", "Finance decision and open exposure")}<button disabled={busy}>Save Finance position</button></form> : <p>Finance authority is required to record project closeout.</p>}</Card><Card title="Lessons and owned follow-through">{state.lessons.map((item) => <article className={style.row} key={item.id}><b>{item.finding}</b><span>{item.action} · {item.owner} · {item.status}</span></article>)}<form className={style.form} onSubmit={submit("add-lesson", (data) => ({ description: value(data, "description"), actionOwner: value(data, "actionOwner"), resolution: value(data, "resolution") }))}>{field("description", "Lesson")}{field("resolution", "Follow-through action")}{field("actionOwner", "Accountable owner")}<button disabled={busy}>Record lesson</button></form></Card></div>{hosted && work.canonicalWorkId && !work.serviceSource ? <JobFinancePanel work={work} actorRole={actorRole ?? ""} /> : null}</> : null}
+    {tab === "Finance & lessons" && !requestFocus ? <><div className={style.grid}><Card title="Project financial closeout" lead="Finance status does not turn support on or off."><p><b>{state.finance.status}</b> · {state.finance.owner}</p><p>{state.finance.note || "No Finance review recorded."}</p>{canFinance ? <form className={style.form} onSubmit={submit("update-finance", (data) => ({ status: value(data, "status"), note: value(data, "note") }))}><label>Status<select name="status"><option>Pending</option><option>In review</option><option>Closed</option></select></label>{field("note", "Finance decision and open exposure")}<button disabled={busy}>Save Finance position</button></form> : <p>Finance authority is required to record project closeout.</p>}</Card><Card title="Lessons and owned follow-through">{state.lessons.map((item) => <article className={style.row} key={item.id}><b>{item.finding}</b><span>{item.action} · {item.owner} · {item.status}</span></article>)}<form className={style.form} onSubmit={submit("add-lesson", (data) => ({ description: value(data, "description"), actionOwner: value(data, "actionOwner"), resolution: value(data, "resolution") }))}>{field("description", "Lesson")}{field("resolution", "Follow-through action")}{field("actionOwner", "Accountable owner")}<button disabled={busy}>Record lesson</button></form></Card></div>{hosted && work.canonicalWorkId && !work.serviceSource ? <JobFinancePanel work={work} actorRole={actorRole ?? ""} /> : null}</> : null}
 
     {tab === "Finance & lessons" && hosted && work.canonicalWorkId ?
       state.requests.filter((request) => request.coverage === "Partially covered" && (!requestFocus || requestFocus.panel !== "finance" || request.id === requestFocus.id))

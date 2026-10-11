@@ -8,6 +8,7 @@ import type { ServiceAction } from "./service-actions";
 import { ServiceActionQueue } from "./ServiceActionQueue";
 import { DeliveryActionQueue } from "./DeliveryActionQueue";
 import { SupportActionQueue } from "./SupportActionQueue";
+import { FocusedMyWorkBoard } from "./FocusedMyWorkBoard";
 import type { DeliveryAction } from "@/lib/d5o/hosted/delivery-role-actions";
 import type { SupportAction } from "@/lib/d5o/hosted/support-role-actions";
 
@@ -103,6 +104,8 @@ export function MyWorkBoard<T extends WorkLike>({ actions: localActions, current
   const focusContext = focused ? getDecisionContext(focused) : null;
 
   if (!page) return <section className="d5o-ops-mywork"><header className="d5o-ops-heading"><div><p>MY WORK</p><h1>Actions requiring attention</h1></div></header><div className="d5o-ops-panel d5o-queue-loading" role={error ? "alert" : "status"}>{error || "Loading workspace actions…"}{error ? <button onClick={() => window.location.reload()}>Retry</button> : null}</div></section>;
+
+  if (hostedWorkspace) return <FocusedMyWorkBoard workspace={hostedWorkspace} page={page} onOpen={onOpen} onLoadMore={() => { void loadMore(); }} loading={loading} />;
 
   if (filter === "pricing") return <section className="d5o-ops-mywork">
     <header className="d5o-ops-heading"><div><p>MY WORK · ROLE-BASED QUEUE</p><h1>Pricing authority reviews</h1><span>Review the submitted revision, assumptions, margin, and decision deadline.</span></div><div className="d5o-ops-count"><strong>{counts?.pricing ?? pricing.length}</strong><span>Awaiting decision</span></div></header>

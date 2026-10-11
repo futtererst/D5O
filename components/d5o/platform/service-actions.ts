@@ -5,6 +5,7 @@ export type ServiceAction = {
   requestId: string;
   requestTitle: string;
   customer: string | null;
+  site?: string | null;
   childWorkId: string | null;
   requestCycleAt: string;
   coverage: "Chargeable" | "Partially covered";
@@ -20,9 +21,10 @@ export type ServiceAction = {
   panel: "pricing" | "finance";
 };
 
-export function serviceActionHref(workspace: string, action: Pick<ServiceAction, "workId" | "requestId" | "panel">): string {
+export function serviceActionHref(workspace: string, action: Pick<ServiceAction, "workId" | "requestId" | "panel" | "kind" | "revision" | "requestCycleAt">): string {
   const params = new URLSearchParams({ workspace, view: "record", record: action.workId,
-    section: "Operate", request: action.requestId, focus: action.panel });
+    section: "Operate", request: action.requestId, focus: action.panel, taskKind: action.kind,
+    taskRevision: String(action.revision), requestCycle: action.requestCycleAt });
   return `/work?${params}`;
 }
 

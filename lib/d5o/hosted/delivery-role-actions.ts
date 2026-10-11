@@ -3,7 +3,7 @@ import { assessPackageCompletion, currentAcceptedRelease, currentReviewedComplet
 
 export type DeliveryAction = {
   kind: string; workId: string; packageId: string | null; decisionId: string; releaseId: string | null;
-  revision: number; sourceRevision: number; title: string; customer: string; phase: "Deploy";
+  revision: number; sourceRevision: number; title: string; customer: string; site?: string; phase: "Deploy";
   focus: string; position: "available" | "preparation" | "waiting"; responsibleRole: string;
   blocker: string | null; dueDate: null;
 };
