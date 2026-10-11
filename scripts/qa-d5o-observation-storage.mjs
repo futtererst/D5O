@@ -43,7 +43,7 @@ try {
 
   const supportBase = "http://127.0.0.1:61645";
   const reviewer = await login(supportBase, "quality", "/work?workspace=rybex&view=my-work");
-  await reviewer.page.locator('section[aria-label="Support handoff actions"]').waitFor({ timeout: 30000 });
+  await reviewer.page.getByRole("heading", { name: "What needs your attention" }).waitFor({ timeout: 30000 });
   const exact = reviewer.page.locator(`a[href*="record=${workId}"][href*="focus=review-document"][href*="turnover=${turnover}"]`);
   await exact.click();
   const row = reviewer.page.locator('section[aria-label="Accepted turnover documentation"] article')

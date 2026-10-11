@@ -69,6 +69,8 @@ try {
       await page.reload();
       if (new URL(page.url()).searchParams.get("record") !== target.searchParams.get("record"))
         throw new Error(`task_record_lost_after_reload:${key}`);
+      if (key === "finance" && await page.getByRole("heading", { name: "Project financial closeout" }).count())
+        throw new Error("unrelated_project_finance_shown_in_service_task");
     }
     if (key === "pm") {
       const staleCandidate = page.locator('a.d5o-focused-task[href*="focus=supply-document"]');
@@ -83,6 +85,16 @@ try {
         if (new URL(page.url()).searchParams.get("record") !== changed.searchParams.get("record"))
           throw new Error("stale_link_selected_other_work");
       }
+      await page.goto(`${base}/work?workspace=rybex&view=configuration`);
+      await page.getByRole("heading", { name: "What needs your attention" }).waitFor({ timeout: 30_000 });
+      if (!await page.getByText("This view is outside your role workspace").count())
+        throw new Error("pm_admin_view_not_restricted");
+    }
+    if (key === "admin") {
+      await page.goto(`${base}/work?workspace=rybex&view=configuration`);
+      await page.locator("details.d5o-studio-section").first().waitFor({ timeout: 30_000 });
+      if (await page.locator("details.d5o-studio-section").count() < 4)
+        throw new Error("administration_sections_not_disclosed");
     }
     results.push({ role: key, build, actionCount, exactCount, landing: "/work?workspace=rybex", adminNavigation: key === "admin" });
     await context.close();

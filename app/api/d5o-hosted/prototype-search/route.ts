@@ -141,10 +141,29 @@ export async function GET(request: NextRequest) {
     if (view === "portfolio") return reply({ records, total: matched.length, nextCursor,
       overview: { total: all.length, attention: all.filter((r) => r.status === "attention").length,
         stages: Object.fromEntries(lifecycle.map((_, i) => [i, all.filter((r) => pos(r) === i).length])) } });
-    if (view === "actions") return reply({ records, total: matched.length, nextCursor, ownedIds: [...(ownedIds ?? [])], actorRole, roleActions, serviceActions, deliveryActions, supportActions,
+    if (view === "actions") {
+      const phaseReviews = all.flatMap((record) => {
+        const actions: Record<string, unknown>[] = [];
+        const estimate = (record.discovery as { estimate?: { revision?: number } } | undefined)?.estimate;
+        const offer = (record.discovery as { proposal?: { package?: { revision?: number } } } | undefined)?.proposal?.package;
+        const baseline = record.definition as { revision?: number; reviews?: { commercial?: string; delivery?: string } } | undefined;
+        const common = { workId: record.id, workTitle: record.title, customer: record.customer, site: record.site,
+          dueDate: null, ownership: "Available to your role" };
+        if (canReviewPricing(record) && estimate?.revision) actions.push({ ...common, kind: "Pricing review", phase: "Develop", focus: "pricing", revision: estimate.revision, status: "Submitted", title: record.title });
+        if (canReviewProposal(record) && offer?.revision) actions.push({ ...common, kind: "Proposal approval", phase: "Develop", focus: "proposal", revision: offer.revision, status: "Submitted", title: record.title });
+        if (canReviewDefinition(record) && baseline?.revision) {
+          for (const role of ["commercial", "delivery"] as const) if (baseline.reviews?.[role] === "Pending" &&
+            (role === "commercial" ? ["admin", "billing_commercial_lead"].includes(actorRole) : ["admin", "operations_leader", "project_manager"].includes(actorRole)))
+            actions.push({ ...common, kind: `Define ${role} review`, phase: "Define", focus: role, revision: baseline.revision, status: "Submitted", title: record.title });
+        }
+        return actions;
+      });
+      roleActions = [...phaseReviews, ...roleActions];
+      return reply({ records, total: matched.length, nextCursor, ownedIds: [...(ownedIds ?? [])], actorRole, roleActions, serviceActions, deliveryActions, supportActions,
       roles: [...new Set(all.filter((r) => ownedIds ? canReviewProposal(r) : proposal(r)).map((r) => (r.discovery as { proposal?: { review?: { authorityRole?: string } } } | undefined)?.proposal?.review?.authorityRole).filter(Boolean))],
       overview: { total: all.length, mine: all.filter(isMine).length, waiting: all.filter((r) => r.status === "attention").length,
         pricing: all.filter((r) => ownedIds ? canReviewPricing(r) : pricing(r)).length, proposal: all.filter((r) => ownedIds ? canReviewProposal(r) : proposal(r)).length, definition: all.filter(canReviewDefinition).length } });
+    }
     if (view === "decisions") return reply({ records, total: matched.length, nextCursor,
       overview: { total: all.length, blocked: all.filter((r) => r.blockers.length > 0).length,
         actionable: all.filter((r) => r.blockers.length === 0 && r.status !== "complete").length, completed: all.filter((r) => r.status === "complete").length } });

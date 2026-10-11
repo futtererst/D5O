@@ -11,8 +11,9 @@ const fileUrl = (work: WorkRecord, id: string) =>
   "/api/d5o-hosted/customer-decision-evidence?workspace=" + encodeURIComponent(work.workspace) +
   "&workId=" + encodeURIComponent(work.id) + "&evidenceId=" + encodeURIComponent(id);
 
-export function SupportDocumentationPanel({ work, hosted, actorRole, onCommand }: {
+export function SupportDocumentationPanel({ work, hosted, actorRole, onCommand, focus }: {
   work: WorkRecord; hosted: boolean; actorRole?: string; onCommand: (action: Action) => Promise<boolean>;
+  focus?: { turnoverId: string; documentKind: string } | null;
 }) {
   const [busy, setBusy] = useState(false), [message, setMessage] = useState("");
   const state = operateState(work), accepted = work.deploy?.workAcceptance;
@@ -60,8 +61,8 @@ export function SupportDocumentationPanel({ work, hosted, actorRole, onCommand }
     <div className={style.cardHead}><h3>Assigned documentation obligations</h3>
       <p>Private PDFs retain their exact package, release and checksum. Support activation does not complete these obligations.</p></div>
     {message ? <p role="status">{message}</p> : null}
-    {turnovers.flatMap((turnover) => (["as-built", "inspection"] as Kind[])
-      .filter((kind) => turnover.obligations.toLowerCase().includes(kind))
+    {turnovers.filter((turnover) => !focus || turnover.id === focus.turnoverId).flatMap((turnover) => (["as-built", "inspection"] as Kind[])
+      .filter((kind) => turnover.obligations.toLowerCase().includes(kind) && (!focus || focus.documentKind === kind))
       .map((kind) => {
         const release = work.design?.releases.find((item) => turnover.releaseIds.includes(item.id));
         const history = docs.filter((item) => item.turnoverId === turnover.id && item.kind === kind);

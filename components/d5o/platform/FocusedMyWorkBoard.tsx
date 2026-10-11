@@ -4,7 +4,7 @@ import type { DeliveryAction } from "@/lib/d5o/hosted/delivery-role-actions";
 import type { SupportAction } from "@/lib/d5o/hosted/support-role-actions";
 import { serviceActionHref, serviceRoleLabel, type ServiceAction } from "./service-actions";
 
-type RoleAction = { kind: string; workId: string; packageId?: string | null; revision: number; status: string; title: string; workTitle?: string; customer?: string; site?: string; dueDate?: string | null; phase: string; ownership: string };
+type RoleAction = { kind: string; workId: string; packageId?: string | null; revision: number; status: string; title: string; workTitle?: string; customer?: string; site?: string; dueDate?: string | null; phase: string; focus?: string; ownership: string };
 type RecordSummary = { id: string; title: string; customer: string; site: string; stage: string };
 export type FocusedQueuePage<T extends RecordSummary> = { roleActions?: RoleAction[]; serviceActions?: ServiceAction[]; deliveryActions?: DeliveryAction[]; supportActions?: SupportAction[]; records: T[]; total: number; nextCursor: string | null };
 type Task = { key: string; title: string; work: string; customer: string; site?: string | null; detail: string; owner: string; blocker?: string | null; due?: string | null; href: string; position: "action" | "preparation" | "waiting" | "information" };
@@ -23,8 +23,11 @@ function supportLink(workspace: string, action: SupportAction) {
   return `/work?${params}`;
 }
 function roleLink(workspace: string, action: RoleAction) {
-  const params = new URLSearchParams({ workspace, view: "record", record: action.workId, section: action.phase });
+  const phaseView = action.phase === "Define" ? "define" : action.phase === "Develop" ? "develop" : "record";
+  const params = new URLSearchParams({ workspace, view: phaseView, record: action.workId, sourceRevision: String(action.revision) });
+  if (phaseView === "record") params.set("section", action.phase);
   if (action.packageId) params.set("package", action.packageId);
+  if (action.focus) params.set("focus", action.focus);
   if (action.kind === "Billing review") params.set("focus", "finance");
   if (action.kind === "Design review") params.set("focus", "reviews");
   if (action.kind === "Field report review") params.set("focus", "reports");
