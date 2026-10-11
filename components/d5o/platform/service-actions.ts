@@ -17,6 +17,7 @@ export type ServiceAction = {
   actionable: boolean;
   ownership: "Available to your role" | "Waiting on another role" | "Information only";
   dueDate: string | null;
+  impact?: "Critical" | "High" | "Standard" | null;
   serviceResolutionDueAt: string | null;
   panel: "pricing" | "finance";
 };

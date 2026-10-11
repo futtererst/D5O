@@ -105,7 +105,10 @@ export function JobFinancePanel({ work, actorRole }: { work: WorkRecord; actorRo
   if (taskKind !== "full") {
     const balance = exactBill ? invoiceBalance(state, exactBill.id) : null;
     const requiresBill = ["bill-review", "job-invoice", "job-payment"].includes(taskKind);
-    const stale = requiresBill && (!exactBill || (params?.has("sourceRevision") && exactBill.revision !== Number(params.get("sourceRevision"))));
+    const stale = requiresBill && (!exactBill || (params?.has("sourceRevision") && exactBill.revision !== Number(params.get("sourceRevision"))) ||
+      (taskKind === "bill-review" && exactBill.status !== "In review") ||
+      (taskKind === "job-invoice" && (exactBill.status !== "Reviewed" || (balance?.billed ?? 0) > 0)) ||
+      (taskKind === "job-payment" && (exactBill.status !== "Reviewed" || (balance?.outstanding ?? 0) <= 0)));
     if (stale) return <section className={style.card} role="status"><h2>This Finance task changed or was decided</h2>
       <p>The exact bill revision is unavailable. No other bill was selected.</p><a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work</a></section>;
     return <FocusedTaskFrame title={({ "bill-review": "Review billing record", "job-cost": "Record sourced cost", "job-forecast": "Forecast remaining cost", "job-draft-bill": "Prepare billing draft", "job-invoice": "Record invoice", "job-payment": "Record payment", "job-closeout": "Review Finance closeout" } as Record<string,string>)[taskKind] ?? "Finance task"}
