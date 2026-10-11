@@ -36,7 +36,7 @@ function roleLink(workspace: string, action: RoleAction) {
 }
 function tasksFor<T extends RecordSummary>(workspace: string, page: FocusedQueuePage<T>): Task[] {
   const delivery = (page.deliveryActions ?? []).map((action): Task => ({ key: `delivery:${action.workId}:${action.decisionId}:${action.kind}`, canonical: `delivery:${action.workId}:${action.packageId ?? "work"}:${action.kind}:${action.decisionId}`, title: action.kind,
-    work: action.title, customer: action.customer, site: action.site, detail: action.packageId ? `Package scope · revision ${action.revision}` : `Whole work · revision ${action.revision}`,
+    work: action.title, customer: action.customer, site: action.site, detail: action.packageId ? `${action.packageName ?? "Package name unavailable"} · revision ${action.revision}` : `Whole work · revision ${action.revision}`,
     owner: action.responsibleRole, blocker: action.blocker, href: deliveryLink(workspace, action),
     position: action.position === "available" ? "action" : action.position === "preparation" ? "preparation" : "waiting" }));
   const support = (page.supportActions ?? []).map((action): Task => ({ key: `support:${action.workId}:${action.decisionId}:${action.kind}:${action.documentKind ?? ""}`, canonical: `support:${action.workId}:${action.decisionId}:${action.kind}:${action.documentKind ?? ""}`, title: ({

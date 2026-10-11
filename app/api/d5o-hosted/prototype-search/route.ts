@@ -96,7 +96,7 @@ export async function GET(request: NextRequest) {
           if (!value || typeof value !== "object") return value;
           const item = value as Record<string, unknown>;
           const source = contextByWork.get(String(item.workId ?? ""));
-          return source ? { ...item, workTitle: source.title, customer: item.customer || source.customer, site: source.site, impact: item.requestId ? source.operate?.requests?.find((request) => request.id === item.requestId)?.impact : undefined, packageName: item.packageId ? source.packages?.find((pkg) => pkg.id === item.packageId)?.name : undefined } : item;
+          return source ? { ...item, workTitle: source.title, customer: item.customer || source.customer, site: source.site, impact: item.requestId ? source.operate?.requests?.find((request) => request.id === item.requestId)?.impact : undefined, packageName: item.packageId ? source.packages?.find((pkg) => pkg.id === item.packageId)?.name ?? item.packageName : undefined } : item;
         });
         roleActions = withWorkContext(roleActions).map((value) => {
           if (!value || typeof value !== "object") return value;
