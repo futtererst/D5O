@@ -2,6 +2,10 @@
 
 No user session has occurred. Participant names, dates, results and comments remain pending. Automated pilot browser runs belong in the technical qualification record. The two resettable checkpoint definitions and source hashes are in the [facilitator notes](d5o-rybex-observation-facilitator-20261010.md). No participant result has been entered.
 
+## Direct product-owner feedback, 2026-10-11
+
+Shawn reported: “every page exposes too much information, making the application confusing and difficult to use.” He requested a role-, assignment- and task-focused experience across the application. This is direct feedback supplied in the D5O task, not an observed participant walkthrough. The screenshots illustrate density but do not limit the reported problem to those pages. No participant task outcome, assistance, or session observation is inferred from it. The table below remains pending until actual sessions occur.
+
 Session date/time: Pending
 Facilitator and observer: Pending
 Participant / role / account binding: Pending
