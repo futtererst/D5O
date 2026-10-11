@@ -6,8 +6,8 @@ Status: **prepared, not observed**. No Rybex participant has been contacted, inv
 
 | Checkpoint | Normal landing URL | Displayed application build |
 | --- | --- | --- |
-| Delivery review, `d5o-observe-delivery-20261010` | [Local delivery Work](http://127.0.0.1:61644/work?workspace=rybex) | `504d337b9b0f` |
-| Support follow-through, `d5o-observe-support-20261010` | [Local support Work](http://127.0.0.1:61645/work?workspace=rybex) | `504d337b9b0f` |
+| Delivery review, `d5o-observe-delivery-20261010` | [Local delivery Work](http://127.0.0.1:61644/work?workspace=rybex) | `7a4fcb58bad5` |
+| Support follow-through, `d5o-observe-support-20261010` | [Local support Work](http://127.0.0.1:61645/work?workspace=rybex) | `7a4fcb58bad5` |
 
 Use only the role account assigned by the facilitator. Begin at the normal Work landing page. These localhost URLs work on the host computer; remote participation requires an access method that Shawn explicitly arranges. Do not publish a tunnel, deploy a preview or invite participants as part of this preparation.
 

@@ -29,7 +29,7 @@ try {
     if (isWorker) await page.getByText("Loading your schedule…").waitFor({ state: "hidden", timeout: 30000 });
     const body = await page.locator("body").innerText();
     const build = body.match(/Build\s+([0-9a-f]{7,12})/)?.[1] ?? "missing";
-    if (!isWorker && !build.startsWith("504d337"))
+    if (!isWorker && !build.startsWith("7a4fcb5"))
       throw new Error(`build_identity_mismatch:${key}:${build}`);
     if (isWorker) {
       if (queue.some((item) => item.workId === workId))
