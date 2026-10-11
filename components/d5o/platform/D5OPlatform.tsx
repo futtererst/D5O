@@ -457,14 +457,24 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       if (recordId && work.some((item) => item.id === recordId && item.workspace === activeWorkspace)) { setSelectedId(recordId); setUnavailableRecordId(null); }
       else if (recordId && ["record", "define", "develop"].includes(view ?? "")) setUnavailableRecordId(recordId);
       if (view && durableScreens.has(view as Screen)) {
-        if (canPresentSurface(presentation, view as Screen)) setScreen(view as Screen);
+        const linkedReview = work.find((item) => item.id === recordId && item.workspace === activeWorkspace);
+        const focus = params.get("focus");
+        const review = (focus === "pricing" ? linkedReview?.discovery?.estimate.review
+          : focus === "proposal" ? linkedReview?.discovery?.proposal.review : undefined) as
+          { authorityRole?: string; submittedByActorId?: string } | undefined;
+        // A reviewer may open the exact focused task even when the broader phase is absent
+        // from their navigation. The typed command still enforces current authority and source.
+        const eligibleFocusedReview = view === "develop" && (focus === "pricing" || focus === "proposal") &&
+          Boolean(review?.authorityRole && review.authorityRole === actorRole &&
+            review.submittedByActorId !== actorId);
+        if (canPresentSurface(presentation, view as Screen) || eligibleFocusedReview) setScreen(view as Screen);
         else { setScreen("my-work"); setNotice("This view is outside your role workspace. Choose an available task below."); }
       }
       if (section && durableRecordTabs.has(section as RecordTab)) setTab(section as RecordTab);
       setUrlRestored(true);
     });
     return () => cancelAnimationFrame(frame);
-  }, [activeWorkspace, work, workLoaded, urlRestored, presentation]);
+  }, [activeWorkspace, work, workLoaded, urlRestored, presentation, actorId, actorRole]);
   useEffect(() => {
     if (!urlRestored) return;
     const url = new URL(window.location.href);
@@ -822,13 +832,13 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       lastSharedWork.current = JSON.stringify(baseline);
       sharedWorkRevisionRef.current = result.workState.revision;
       setSharedWorkRevision(result.workState.revision);
-      setWork(baseline.map((item) => item.id === created.id
-        ? hydrate({ ...next, ...createdProjection,
-            discovery: next.discovery
-              ? { ...next.discovery, ...createdProjection.discovery }
-              : createdProjection.discovery }) : item));
+      // Canonical creation already committed the Discover intake and catalog in
+      // one transaction. Do not issue a second whole-work draft save for the
+      // same capture: if that save fails, repeating Capture creates new work.
+      setWork(baseline);
+      setOwnedWorkIds((current) => current ? [...new Set([...current, created.id])] : current);
     } else setWork((all) => [next, ...all.filter((item) => item.id !== created.id)]);
-    pendingDiscoverSave.current = created.id;
+    if (!authoritativeCommands) pendingDiscoverSave.current = created.id;
     setSelectedId(created.id);
     return created.id;
   }

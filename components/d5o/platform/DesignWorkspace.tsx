@@ -139,10 +139,18 @@ export function DesignWorkspace({ work, packages, packageDemands, allWork, confi
       outcome="Approve this exact engineering package revision or return it for correction."
       blocker={serviceIssue} nextOwner="Engineering Lead for corrections or Delivery Leader for release assessment"
       onFullRecord={() => { const url = new URL(window.location.href); for (const key of ["focus", "decision", "sourceRevision"]) url.searchParams.delete(key); window.location.assign(url.toString()); }}
-      context={<><p>Documents: {packageBasis.documentRefs.join(", ") || "None recorded"}</p>
-        <p>Requirements: {packageBasis.requirementIds.join(", ") || "None recorded"}</p>
+      context={<><h3>Governing documents</h3>{packageBasis.documentRefs.length ? <ul>{packageBasis.documentRefs.map((ref) => {
+        const document = state.documents.find((item) => documentRef(item) === ref);
+        return <li key={ref}>{document ? `${document.title} · revision ${document.revision} · ${document.status} · source ${document.source}` : `Unavailable document revision ${ref}`}</li>;
+      })}</ul> : <p>None recorded</p>}
+        <h3>Affected requirements</h3>{packageBasis.requirementIds.length ? <ul>{packageBasis.requirementIds.map((id) => {
+          const requirement = requirementRefs.find((item) => item.id === id);
+          return <li key={id}>{requirement ? `${requirement.label} · source ${requirement.source}` : `Unavailable requirement ${id}`}</li>;
+        })}</ul> : <p>None recorded</p>}
+        <p>Approved Define acceptance: {work.definition?.acceptance || "Not recorded"}</p>
         <p>Safety: {packageBasis.safetyControls || "Not recorded"}</p>
-        <p>Verification: {packageBasis.verification || "Not recorded"}</p></>}>
+        <p>Verification: {packageBasis.verification || "Not recorded"}</p>
+        <p>Required proof: {packageBasis.proof || "Not recorded"}</p></>}>
       <section className={styles.card}><h2>Review the governing package</h2><p><strong>Scope:</strong> {packageBasis.scope}</p>
         <p><strong>Location:</strong> {packageBasis.location}</p><p><strong>Completion basis:</strong> {packageBasis.completionBasis?.kind ?? "Not recorded"}</p>
         <p><strong>Assigned queue:</strong> {review.assignee} · due {review.dueDate || "not recorded"}</p>
