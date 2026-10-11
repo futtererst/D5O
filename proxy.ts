@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isProductionRouteAvailable } from "./lib/d5o/security/production-module-availability";
+import { d5oSupabaseCookieOptions } from "./lib/d5o/auth/supabase-cookie-options";
 
 type CookieToSet = {
   name: string;
@@ -60,6 +61,7 @@ export async function proxy(request: NextRequest) {
 
   let response = NextResponse.next({ request });
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookieOptions: d5oSupabaseCookieOptions(supabaseUrl),
     cookies: {
       getAll() {
         return request.cookies.getAll();

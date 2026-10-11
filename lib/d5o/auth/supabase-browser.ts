@@ -1,6 +1,7 @@
 "use client";
 
 import { createBrowserClient } from "@supabase/ssr";
+import { d5oSupabaseCookieOptions } from "./supabase-cookie-options";
 
 type Database = Record<string, unknown>;
 
@@ -12,5 +13,7 @@ export function createRybexSupabaseBrowserClient() {
     throw new Error("Supabase browser client requires NEXT_PUBLIC_SUPABASE_URL and a public publishable/anon key.");
   }
 
-  return createBrowserClient<Database>(supabaseUrl, supabaseKey);
+  return createBrowserClient<Database>(supabaseUrl, supabaseKey, {
+    cookieOptions: d5oSupabaseCookieOptions(supabaseUrl)
+  });
 }

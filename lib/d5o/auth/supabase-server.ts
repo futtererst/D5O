@@ -3,6 +3,7 @@ import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { d5oSupabaseCookieOptions } from "./supabase-cookie-options";
 
 type Database = Record<string, unknown>;
 
@@ -35,6 +36,7 @@ export async function createRybexSupabaseServerClient(): Promise<SupabaseServerC
   const cookieStore = await cookies();
 
   return createServerClient<Database>(supabaseUrl, supabaseKey, {
+    cookieOptions: d5oSupabaseCookieOptions(supabaseUrl),
     cookies: {
       getAll() {
         return cookieStore.getAll();
