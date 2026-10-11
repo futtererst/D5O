@@ -27,8 +27,8 @@ const blankCRM = (): DiscoverCRM => ({ customerResolved: false, siteResolved: fa
 const blankDiscovery = (): DiscoveryRecord => ({ source: "Direct customer", need: "", procurement: "Direct award", phase: "Qualification", fit: "Unassessed", closeDate: "", pursuitControl: blankPursuit(), crm: blankCRM(), estimate: { revision: 0, labor: 0, materials: 0, subcontract: 0, travel: 0, contingency: 0, targetMargin: 25, sellPrice: 0, status: "Not started", assumption: "" }, proposal: { status: "Not started", dueDate: "", method: "Customer portal", recipient: "", response: "" } });
 const num = (value: string) => value === "" ? null : Number(value);
 
-export function DiscoverCRMWorkspace({ workspaceKey, workspaceName, configurationInventory, work, actor, actorRole, canEdit, focusRecordId, taskFocus, onOpen, onDefine, onPhase, onControl, onBack, onSelect, onPursuitCommand, onUpdate, onCreate, onNotice }: {
-  workspaceKey: WorkspaceKey; workspaceName: string; configurationInventory: ConfigurationInventory; work: WorkRecord[]; actor: string; actorRole?: string; canEdit: boolean; focusRecordId?: string; taskFocus?: "pursuit-prep" | "define-handoff-prep" | "define-handoff-receive" | null;
+export function DiscoverCRMWorkspace({ workspaceKey, workspaceName, configurationInventory, work, actor, actorId, actorRole, canEdit, focusRecordId, taskFocus, onOpen, onDefine, onPhase, onControl, onBack, onSelect, onPursuitCommand, onUpdate, onCreate, onNotice }: {
+  workspaceKey: WorkspaceKey; workspaceName: string; configurationInventory: ConfigurationInventory; work: WorkRecord[]; actor: string; actorId?: string; actorRole?: string; canEdit: boolean; focusRecordId?: string; taskFocus?: "pursuit-prep" | "pursuit-review" | "define-handoff-prep" | "define-handoff-receive" | null;
   onOpen: (record: WorkRecord) => void; onDefine: (record: WorkRecord) => void; onPhase: (record: WorkRecord, phase: WorkPhase) => void; onControl: (record: WorkRecord, control: WorkControl) => void; onBack: () => void; onSelect: (id: string) => void;
   onPursuitCommand?: (workId: string, command: PursuitCommand) => Promise<boolean>;
   onUpdate: (id: string, transform: (current: WorkRecord) => WorkRecord) => void; onCreate: (record: WorkRecord) => Promise<string> | string; onNotice: (message: string) => void;
@@ -143,15 +143,15 @@ export function DiscoverCRMWorkspace({ workspaceKey, workspaceName, configuratio
     const pursuit = selected.discovery?.pursuitControl;
     const receive = taskFocus === "define-handoff-receive";
     return <main className="d5o-page d5o-early-phase"><FocusedTaskFrame
-      title={receive ? "Receive Define handoff" : taskFocus === "define-handoff-prep" ? "Prepare Define handoff" : "Prepare Discover intake"}
+      title={taskFocus === "pursuit-review" ? "Review Discover intake" : receive ? "Receive Define handoff" : taskFocus === "define-handoff-prep" ? "Prepare Define handoff" : "Prepare Discover intake"}
       work={selected.title} customer={selected.customer} site={selected.site} workspace={workspaceKey}
       scope={receive ? `Exact brief for ${pursuit?.handoff?.receiver}: ${pursuit?.handoff?.brief || "Unavailable"}` : selected.discovery?.need || "Customer need not recorded"}
       revision={pursuit?.revision ?? 0}
-      outcome={receive ? "Accept this exact qualified pursuit brief into Define, or return it with corrections." : taskFocus === "define-handoff-prep" ? "Name an independent receiver and submit the qualified pursuit brief." : "Save the customer need and submit the current intake for an independent pursuit decision."}
-      nextOwner={receive ? "Project manager to prepare Define" : taskFocus === "define-handoff-prep" ? "Named Define receiver" : "Pursuit decision authority"}
+      outcome={taskFocus === "pursuit-review" ? "Decide the exact submitted intake independently, with a retained reason." : receive ? "Accept this exact qualified pursuit brief into Define, or return it with corrections." : taskFocus === "define-handoff-prep" ? "Name an independent receiver and submit the qualified pursuit brief." : "Save the customer need and submit the current intake for an independent pursuit decision."}
+      nextOwner={taskFocus === "pursuit-review" ? "Project manager to prepare Define handoff or correct the intake" : receive ? "Project manager to prepare Define" : taskFocus === "define-handoff-prep" ? "Named Define receiver" : "Pursuit decision authority"}
       onFullRecord={() => onOpen(selected)} context={<p>Customer need: {selected.discovery?.need || "Not recorded"}. Risk: {pursuit?.knownRisk || "Not recorded"}.</p>}>
-      <PursuitControl work={selected} actor={actor} canEdit={canEdit}
-        connected={Boolean(selected.canonicalWorkId && onPursuitCommand)} taskMode={receive ? "handoff-receive" : taskFocus === "define-handoff-prep" ? "handoff-prep" : "intake"}
+      <PursuitControl work={selected} actor={actor} canEdit={canEdit || (taskFocus === "pursuit-review" && Boolean(actorId && pursuit?.submission?.actorId !== actorId) && ["admin", "billing_commercial_lead", "business_development_lead"].includes(actorRole ?? ""))}
+        connected={Boolean(selected.canonicalWorkId && onPursuitCommand)} taskMode={taskFocus === "pursuit-review" ? "intake-review" : receive ? "handoff-receive" : taskFocus === "define-handoff-prep" ? "handoff-prep" : "intake"}
         onCommand={onPursuitCommand} onUpdate={onUpdate} onNotice={onNotice} onDefine={onDefine} />
     </FocusedTaskFrame></main>;
   }

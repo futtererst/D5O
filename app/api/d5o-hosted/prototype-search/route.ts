@@ -177,6 +177,11 @@ export async function GET(request: NextRequest) {
             ownership: "Created by you · project manager", blocker: blocker ?? null });
         if (mine && pursuit && ["draft", "returned", "held"].includes(pursuit.status))
           prep("Prepare Discover intake", "Discover", "pursuit-prep", pursuit.revision);
+        if (pursuit?.status === "submitted" && pursuit.submission?.revision === pursuit.revision &&
+          ["admin", "billing_commercial_lead", "business_development_lead"].includes(actorRole) &&
+          pursuit.submission.actorId !== ctx.actor.id)
+          actions.push({ ...common, kind: "Review Discover intake", phase: "Discover", focus: "pursuit-review",
+            revision: pursuit.revision, status: "Submitted", ownership: "Eligible independent pursuit reviewer" });
         if (mine && pursuit?.status === "qualified" && handoff?.status !== "submitted" && handoff?.status !== "accepted")
           prep("Prepare Define handoff", "Discover", "define-handoff-prep", pursuit.revision);
         if (pursuit?.status === "qualified" && handoff?.status === "submitted" &&

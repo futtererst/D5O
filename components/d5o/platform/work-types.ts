@@ -21,7 +21,7 @@ export type DiscoveryRecord = {
     revision: number;
     status: "draft" | "submitted" | "returned" | "qualified" | "held" | "declined";
     requester: string; intendedOutcome: string; roughValue: string; currency: string; requiredDate: string; knownRisk: string;
-    submission?: { revision: number; at: string; actor: string };
+    submission?: { revision: number; at: string; actor: string; actorId?: string };
     decision?: { revision: number; outcome: "qualified" | "held" | "declined" | "returned"; reason: string; at: string; actor: string; assessmentRevision?: number; recommendation?: string; policyVersion?: string };
     spend?: { status: "not_requested" | "requested" | "authorized" | "returned"; cap: number; purpose: string; reason?: string; actor?: string; at?: string };
     handoff?: { status: "not_started" | "submitted" | "returned" | "accepted"; receiver: string; brief: string; reason?: string; revision: number; actor?: string; actorId?: string; receiverActorId?: string; at?: string };

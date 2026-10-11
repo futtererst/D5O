@@ -48,17 +48,17 @@ const newDiscovery = (): DiscoveryRecord => ({
   proposal: { status: "Not started", dueDate: "", method: "Customer portal", recipient: "", response: "" },
 });
 
-export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceName, configurationInventory, work, commercialProfiles, actor, actorRole, canEdit, hosted = false, focusRecordId, reviewFocus, onOpen, onDefine, onOpenDevelopControls, onPhase, onControl, onBack, onSelect, onPricingQueued, onProposalQueued, onCommercialCommand, onPursuitCommand, onUpdate, onCreate, onNotice, onPolicyUpdated, onPeople }: {
+export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceName, configurationInventory, work, commercialProfiles, actor, actorId, actorRole, canEdit, hosted = false, focusRecordId, reviewFocus, onOpen, onDefine, onOpenDevelopControls, onPhase, onControl, onBack, onSelect, onPricingQueued, onProposalQueued, onCommercialCommand, onPursuitCommand, onUpdate, onCreate, onNotice, onPolicyUpdated, onPeople }: {
   mode?: "discover" | "develop";
   workspaceKey: WorkspaceKey;
   workspaceName: string;
   configurationInventory: ConfigurationInventory;
   work: WorkRecord[];
   commercialProfiles: CommercialAuthorityProfile[];
-  actor: string; actorRole?: string; canEdit: boolean;
+  actor: string; actorId?: string; actorRole?: string; canEdit: boolean;
   hosted?: boolean;
   focusRecordId?: string;
-  reviewFocus?: "pricing" | "proposal" | "solution-prep" | "solution-review" | "pricing-prep" | "proposal-prep" | "pursuit-prep" | "define-handoff-prep" | "define-handoff-receive" | null;
+  reviewFocus?: "pricing" | "proposal" | "solution-prep" | "solution-review" | "pricing-prep" | "proposal-prep" | "pursuit-prep" | "pursuit-review" | "define-handoff-prep" | "define-handoff-receive" | null;
   onOpen: (record: WorkRecord) => void;
   onDefine: (record: WorkRecord) => void;
   onOpenDevelopControls?: (record: WorkRecord) => void;
@@ -437,7 +437,7 @@ export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceNa
     {discovery?.designHandoffHistory?.length ? <details><summary>Handoff history · {discovery.designHandoffHistory.length} events</summary><ol>{discovery.designHandoffHistory.map((event, index) => <li key={`${event.revision}-${index}`}>Revision {event.revision} · {event.state} · {event.note} · {event.at}</li>)}</ol></details> : null}
   </div>;
 
-  if (!isDevelop) return <DiscoverCRMWorkspace workspaceKey={workspaceKey} workspaceName={workspaceName} configurationInventory={configurationInventory} work={work} actor={actor} actorRole={actorRole} canEdit={canEdit} focusRecordId={focusRecordId} taskFocus={reviewFocus === "pursuit-prep" || reviewFocus === "define-handoff-prep" || reviewFocus === "define-handoff-receive" ? reviewFocus : null} onOpen={onOpen} onDefine={onDefine} onPhase={onPhase} onControl={onControl} onBack={onBack} onSelect={onSelect} onPursuitCommand={onPursuitCommand} onUpdate={onUpdate} onCreate={onCreate} onNotice={onNotice} />;
+  if (!isDevelop) return <DiscoverCRMWorkspace workspaceKey={workspaceKey} workspaceName={workspaceName} configurationInventory={configurationInventory} work={work} actor={actor} actorId={actorId} actorRole={actorRole} canEdit={canEdit} focusRecordId={focusRecordId} taskFocus={reviewFocus === "pursuit-prep" || reviewFocus === "pursuit-review" || reviewFocus === "define-handoff-prep" || reviewFocus === "define-handoff-receive" ? reviewFocus : null} onOpen={onOpen} onDefine={onDefine} onPhase={onPhase} onControl={onControl} onBack={onBack} onSelect={onSelect} onPursuitCommand={onPursuitCommand} onUpdate={onUpdate} onCreate={onCreate} onNotice={onNotice} />;
   return <main className="d5o-page d5o-record-full d5o-early-phase d5o-discover-phase">
     {!reviewFocus ? <WorkPhaseJourney active={isDevelop ? "Develop" : "Discover"} record={selected} backLabel={isDevelop ? "Define" : "Work hub"} onBack={onBack} onChoose={(phase) => { if (selected) onPhase(selected, phase); }} onControl={(control) => { if (selected) onControl(selected, control); }} /> : null}
     {reviewFocus && selected && estimate && proposal ? <FocusedTaskFrame title={({ pricing: "Pricing review", proposal: "Proposal approval", "solution-prep": "Prepare solution", "solution-review": "Independent solution review", "pricing-prep": "Prepare detailed estimate", "proposal-prep": "Prepare customer proposal" } as Record<string, string>)[reviewFocus] ?? "Develop task"}
