@@ -58,7 +58,7 @@ export function DefineWorkspace({ workspaceKey, configurationInventory, work, fo
   const candidates = work.filter((item) => item.discovery?.pursuitControl
     ? item.discovery.pursuitControl.handoff?.status === "accepted"
     : item.definition || item.discovery?.fit === "Qualified" || item.discovery?.fit === "Conditional" || item.discovery?.outcome === "Won");
-  const [section, setSection] = useState<Section>(reviewFocus ? "risks" : "brief");
+  const [section, setSection] = useState<Section>(reviewFocus === "define-prep" ? "brief" : reviewFocus ? "risks" : "brief");
   const [editingField, setEditingField] = useState<keyof DefinitionRecord | null>(null);
   const [fieldDraft, setFieldDraft] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);

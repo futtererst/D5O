@@ -24,7 +24,9 @@ const published = source("components/d5o/platform/published-phase-configuration.
 const authority = source("components/d5o/platform/commercial-authority.ts");
 const pricing = source("components/d5o/platform/develop-pricing.ts");
 const errors = source("lib/d5o/prototype-work/store-error.ts");
+const semanticJson = source("lib/d5o/prototype-work/semantic-json.ts");
 const { applyCommercialCommand, assertSnapshotCommercialIntegrity } = source("lib/d5o/prototype-work/commercial-command.ts", {
+  "./semantic-json": semanticJson,
   "@/components/d5o/platform/published-phase-configuration": published,
   "@/components/d5o/platform/commercial-authority": authority,
   "@/components/d5o/platform/develop-pricing": pricing,
