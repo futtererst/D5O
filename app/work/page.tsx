@@ -52,7 +52,7 @@ export default async function WorkHomePage({ searchParams }: {
       </Link>)}</div>
       {!entries.length ? <p role="status">No D5O workspace membership is assigned to this account.</p> : null}
       <p className={styles.notice}>{isolatedPilot ? "Isolated pilot database. Decision authority remains under qualification." : "Authenticated commands govern canonical Work Records. Historical prototype records retain their recorded provenance."} Build {sourceVersion.slice(0, 12)}.</p>
-      <Link className={styles.signout} href="/auth/sign-out">Switch account</Link>
+      <Link className={styles.signout} href="/auth/sign-out" prefetch={false}>Switch account</Link>
     </main>;
     const permitted = entries.find((entry) => entry.workspaceKey === selected);
     if (!permitted || selected !== "rybex" && selected !== "rotork")
