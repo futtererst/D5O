@@ -46,7 +46,9 @@ export function deliveryRoleActions(records: WorkRecord[], actorId: string, role
         add("Package completion review", pkg.id, release.id, release.id, release.packageRevision, "completion-review",
           "Operations leader (independent of field reports)", role === "operations_leader", blocker);
       }
-      const turnover = state.turnovers.find((t) => t.releaseIds.includes(release.id) && t.status !== "Conditionally accepted");
+      // A conditional customer decision still occupies this release's turnover.
+      // The typed command will reject a second assembly for the same release.
+      const turnover = state.turnovers.find((t) => t.releaseIds.includes(release.id));
       if (completion && !turnover)
         add("Prepare package turnover", pkg.id, release.id, release.id, release.packageRevision, "turnover",
           "Project manager or field supervisor", ["project_manager", "field_supervisor"].includes(role));

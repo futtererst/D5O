@@ -1,0 +1,221 @@
+{
+  "schema": "d5o.synthetic-walkthrough.v1",
+  "runDate": "2026-10-11",
+  "sourceSha": "ddcf9d867d72598b7f5f37041184f2006266a0e9",
+  "builds": {
+    "preparation": {
+      "url": "http://127.0.0.1:61643/work?workspace=rybex",
+      "displayedSha": "62825725851b",
+      "database": "disposable preparation pilot at 127.0.0.1:56621"
+    },
+    "delivery": {
+      "url": "http://127.0.0.1:61644/work?workspace=rybex",
+      "displayedSha": "25440792b5c8"
+    },
+    "support": {
+      "url": "http://127.0.0.1:61645/work?workspace=rybex",
+      "displayedSha": "25440792b5c8"
+    },
+    "candidate": {
+      "url": "http://127.0.0.1:61652/work?workspace=rybex",
+      "displayedSha": "62825725851b",
+      "database": "disposable delivery checkpoint at 127.0.0.1:56921"
+    }
+  },
+  "note": "Statuses describe only this execution. Earlier pilot evidence is fixture context. Final candidate corrected package labels and workspace sign-out prefetch. Current browser actions reached independent pricing and proposal approvals; downstream award, Design, Deploy, Operate and Finance were not replayed.",
+  "results": [
+    {
+      "id": "A01",
+      "status": "Passed",
+      "mode": "browser",
+      "evidence": "Nine fictional role sign-ins on both preserved checkpoints; screenshots/delivery and screenshots/support; role-task-presentation output."
+    },
+    {
+      "id": "A02",
+      "status": "Passed",
+      "mode": "browser",
+      "evidence": "On fixed candidate, PM used Account > Switch account, Finance signed in, selected Rybex workspace, and saw only the Finance identity and four Finance actions. Old build prefetched GET /auth/sign-out and returned to sign-in; fixed build made no sign-out prefetch."
+    },
+    {
+      "id": "A03",
+      "status": "Passed",
+      "mode": "browser and authenticated API",
+      "evidence": "Finance opened /work?workspace=rotork&view=my-work in the final candidate: Workspace unavailable and zero Rybex tasks. Authenticated other-tenant action-queue API was also denied."
+    },
+    {
+      "id": "A04",
+      "status": "Blocked",
+      "mode": "browser and API",
+      "reason": "Saved stale Finance/support task URLs failed closed in browser and Finance administration was denied, but a wrong-role consequential command with unchanged state was not exercised in this run."
+    },
+    {
+      "id": "B01",
+      "status": "Passed",
+      "mode": "browser",
+      "evidence": "PM saved fictional relay Discover intake in 211 ms, submitted revision 2, and reloaded My Work; screenshots/preparation-pm-task.png."
+    },
+    {
+      "id": "B02",
+      "status": "Passed",
+      "mode": "browser",
+      "evidence": "Separate commercial pilot qualified Discover revision 2; review card removed and PM handoff task appeared; screenshots/discover-independent-review.png."
+    },
+    {
+      "id": "B03",
+      "status": "Passed",
+      "mode": "browser",
+      "evidence": "PM submitted Define handoff; independent Operations pilot accepted it and PM Define preparation appeared; screenshots/define-receiving.png."
+    },
+    {
+      "id": "B04",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Define draft showed eight configured requirements open; structured baseline, independent review and approval were not completed in this run."
+    },
+    {
+      "id": "B05",
+      "status": "Passed",
+      "mode": "browser",
+      "evidence": "On separate existing approved-Define fixture, Operations returned solution revision 5, PM corrected the option and selected revision 8, submitted; Operations approved revision 8. Earlier decision remained in task history. Browser command responses were 200."
+    },
+    {
+      "id": "B06",
+      "status": "Passed",
+      "mode": "browser",
+      "evidence": "On fictional controls upgrade, PM saved a sourced detailed estimate revision 1 (USD 1,656 cost, USD 2,208 offer, 25% target margin), submitted it, and Operations independently approved it from My Work. PM saved and submitted proposal revision 1; Operations independently approved that exact offer revision. Each decision returned 200; reviewer cards disappeared on fresh sign-in. This is internal offer approval, not customer award. Screenshots pricing-review-before.png and proposal-review-before.png."
+    },
+    {
+      "id": "C01",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "No current-run Design release or receipt decision; existing accepted-Define fixture still requires customer commercial outcome."
+    },
+    {
+      "id": "C02",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "No current-run Design stale/wrong-role probe."
+    },
+    {
+      "id": "D01",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Workforce create/bind not exercised in this run."
+    },
+    {
+      "id": "D02",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Crew scheduling not exercised in this run."
+    },
+    {
+      "id": "D03",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Worker assignment-scoped mobile landing passed; booking response itself not exercised."
+    },
+    {
+      "id": "D04",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Field-start and partial-report decisions not exercised in this run."
+    },
+    {
+      "id": "D05",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Failed-inspection correction/retest decisions not exercised in this run."
+    },
+    {
+      "id": "D06",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Two-package turnover cards now show distinct South/North package names in the candidate; no current-run customer acceptance/receipt decisions were committed."
+    },
+    {
+      "id": "D07",
+      "status": "Blocked",
+      "mode": "browser/API",
+      "reason": "Stale Finance/support links passed; delivery replay and cross-tenant mutation probes not rerun."
+    },
+    {
+      "id": "E01",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Support queue displayed pending actions; ownership/activation decisions not repeated in this run."
+    },
+    {
+      "id": "E02",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Pending document obligations visible; byte retrieval and independent review not repeated in this run."
+    },
+    {
+      "id": "E03",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Asset, agreement, request and maintenance details were not inspected together in this run."
+    },
+    {
+      "id": "F01",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Existing covered-service history preserved, not replayed in this run."
+    },
+    {
+      "id": "F02",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Existing Partially covered service history preserved, not replayed in this run."
+    },
+    {
+      "id": "F03",
+      "status": "Blocked",
+      "mode": "API/database",
+      "reason": "Current-cycle stale/duplicate asset return probes not rerun."
+    },
+    {
+      "id": "G01",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Job financial source drilldown not completed in this run."
+    },
+    {
+      "id": "G02",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "No current-run job bill/payment/closeout decisions."
+    },
+    {
+      "id": "G03",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Existing service invoice/payment balances are historical fixture context only."
+    },
+    {
+      "id": "G04",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "No current-run service cost or correction decisions."
+    },
+    {
+      "id": "H01",
+      "status": "Blocked",
+      "mode": "browser",
+      "reason": "Admin browsed 13 routed surfaces on the candidate with actual headings and no application error. Current-scope/next-action consistency across all rows and records was not checked; quick pre-hydration samples were discarded."
+    },
+    {
+      "id": "H02",
+      "status": "Passed",
+      "mode": "browser/API",
+      "evidence": "Administrator saw configuration sections; PM was redirected from restricted configuration, Finance admin API denied; no policy edit attempted."
+    },
+    {
+      "id": "H03",
+      "status": "Passed",
+      "mode": "browser",
+      "evidence": "PM and worker 390px layouts had no horizontal overflow on both checkpoints; Finance Back to tasks keyboard Enter returned to My Work."
+    }
+  ],
+  "testedApplicationSha": "62825725851b849c427f4451d4714cd808e440b7"
+}
