@@ -1,4 +1,5 @@
 "use client";
+import { FocusedTaskFrame } from "./FocusedTaskFrame";
 
 import { useRef, useState } from "react";
 import type { DefinitionRecord, WorkRecord } from "./work-types";
@@ -206,6 +207,35 @@ export function DefineWorkspace({ workspaceKey, configurationInventory, work, fo
     return <div className={styles.fieldSummary} key={key}><div><strong>{configured?.label ?? label}</strong><small>{configured?.help ?? hint}</small><p>{String(definition?.[key] ?? "") || "Not recorded"}</p></div><button type="button" className="d5o-outline" onClick={() => { setEditingField(key); setFieldDraft(String(definition?.[key] ?? "")); }}>{locked ? "View" : "Edit"}</button></div>;
   };
   const editableFields: Partial<Record<keyof DefinitionRecord, string>> = { outcome: "Promised outcome", excludedScope: "Exclusions and customer responsibilities", deliveryApproach: "Delivery approach" };
+
+  if (reviewFocus && selected && definition) return <main className="d5o-page d5o-define-phase">
+    <FocusedTaskFrame title={`${reviewFocus === "commercial" ? "Commercial" : "Delivery"} definition review`}
+      work={selected.title} customer={selected.customer} site={selected.site} workspace={workspaceKey}
+      scope={`Definition baseline · ${definition.outcome || "Outcome not recorded"}`}
+      revision={definition.revision} outcome="Approve this exact scope and delivery basis, or return it with required corrections."
+      blocker={sourceChanged ? "The upstream source changed; a new revision is required." : missing.length ? `${missing.length} configured requirements remain open.` : null}
+      nextOwner={reviewFocus === "commercial" ? "Delivery reviewer after Commercial approval" : "Develop receiver after both reviews"}
+      onFullRecord={() => onOpen(selected)}
+      context={<><p><strong>Included scope:</strong> {definition.includedScope || "See structured scope register"}</p>
+        <p><strong>Exclusions:</strong> {definition.excludedScope || "Not recorded"}</p>
+        <p><strong>Delivery approach:</strong> {definition.deliveryApproach || "Not recorded"}</p>
+        <p><strong>Acceptance:</strong> {definition.acceptance || "See structured acceptance register"}</p>
+        <p><strong>Configuration:</strong> {verdict?.policy ?? "Unavailable"}</p></>}>
+      <section className={styles.review}><h2>Review the current baseline</h2>
+        <p>Current position: {definition.reviews?.[reviewFocus] ?? "Unavailable"}. Approval does not approve an offer, award or field release.</p>
+        <p><strong>Customer outcome:</strong> {definition.outcome || "Not recorded"}</p>
+        <p><strong>Scope:</strong> {definition.includedScope || "Review the structured scope in supporting context"}</p>
+        <p><strong>Acceptance basis:</strong> {definition.acceptance || "Review structured acceptance criteria in the full record"}</p>
+        {verdict?.checks.filter((item) => !item.met).map((item) => <p key={item.key} role="status"><strong>{item.label}:</strong> {item.detail}</p>)}
+        {definition.reviews?.[reviewFocus] === "Pending" ? <><label className={styles.field}><span>Decision basis</span>
+          <textarea rows={3} value={reviewNote} onChange={(event) => setReviewNote(event.target.value)} placeholder="Reason or required correction" /></label>
+          <div className={styles.roleActions}><button className="d5o-outline" disabled={!reviewNote.trim() || sourceChanged || missing.length > 0 || !config}
+            onClick={() => decide(reviewFocus, "Changes requested")}>Request changes</button>
+          <button className="d5o-primary" disabled={!reviewNote.trim() || sourceChanged || verdict?.status !== "Ready for review" || !config}
+            onClick={() => decide(reviewFocus, "Approved")}>Approve revision {definition.revision}</button></div></> : <p>This review has changed or was decided. Return to My Work for current actions.</p>}
+      </section>
+    </FocusedTaskFrame>
+  </main>;
 
   return <main className="d5o-page d5o-record-full d5o-early-phase d5o-define-phase">
     <WorkPhaseJourney active="Define" record={selected} backLabel="Discover" onBack={onBack} onChoose={(phase) => { if (selected) onPhase(selected, phase); }} onControl={(control) => { if (selected) onControl(selected, control); }} />

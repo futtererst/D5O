@@ -1070,15 +1070,6 @@
 .d5o-full-app .d5o-focused-record-header p { margin:0; color:#496473; }
 .d5o-full-app .d5o-focused-record-header>div:last-child { display:flex; gap:8px; flex-wrap:wrap; }
 .d5o-full-app [data-task-focus] [data-task-secondary] { display:none; }
-.d5o-full-app [data-task-focus="report-review"] [data-task-panel]:not([data-task-panel="report-review"]),
-.d5o-full-app [data-task-focus="evidence-review"] [data-task-panel]:not([data-task-panel="evidence-review"]),
-.d5o-full-app [data-task-focus="inspection-review"] [data-task-panel]:not([data-task-panel="inspection-review"]) { display:none; }
-.d5o-full-app [data-task-focus="completion-review"] [data-task-panel]:not([data-task-panel="completion-review"]),
-.d5o-full-app [data-task-focus="package-turnover"] [data-task-panel]:not([data-task-panel="package-turnover"]),
-.d5o-full-app [data-task-focus="package-acceptance"] [data-task-panel]:not([data-task-panel="package-turnover"]),
-.d5o-full-app [data-task-focus="package-receipt"] [data-task-panel]:not([data-task-panel="package-turnover"]),
-.d5o-full-app [data-task-focus="work-acceptance"] [data-task-panel]:not([data-task-panel="work-acceptance"]),
-.d5o-full-app [data-task-focus="work-receipt"] [data-task-panel]:not([data-task-panel="work-acceptance"]) { display:none; }
 @media (max-width:700px) { .d5o-full-app .d5o-focused-work { padding:16px; gap:14px; } .d5o-full-app .d5o-focused-work>section,.d5o-full-app .d5o-focused-work>details { padding:14px; } .d5o-full-app .d5o-app-topbar>div:first-child { display:none; } .d5o-full-app .d5o-app-topbar .d5o-top-actions { width:100%; justify-content:space-between; flex-wrap:wrap; } }
 .d5o-full-app .d5o-task-disclosure summary { color:#345767; cursor:pointer; font-size:12px; font-weight:800; }
 .d5o-full-app .d5o-task-disclosure[open] summary { border-bottom:1px solid #e5ecef; margin-bottom:14px; padding-bottom:12px; }
@@ -1144,3 +1135,18 @@
 .d5o-full-app .d5o-phase-disclosure>summary{color:#3b6171;cursor:pointer;font-size:.72rem;font-weight:800;padding:12px 2px}
 .d5o-full-app .d5o-phase-disclosure>section{margin-bottom:15px}
 .d5o-source-id { display: block; margin: 1rem 0.75rem; color: #aebdcc; font-size: 0.7rem; overflow-wrap: anywhere; }
+
+
+/* Exact tasks use one quiet decision column; registers remain opt-in context. */
+.d5o-full-app .d5o-task-frame { width:min(100% - 32px, 850px); margin:18px auto; padding:22px; background:#fff; border:1px solid #d8e3e8; border-radius:10px; color:#173c50; }
+.d5o-full-app .d5o-task-frame-header { display:flex; justify-content:space-between; align-items:start; gap:18px; flex-wrap:wrap; border-bottom:1px solid #d8e3e8; padding-bottom:14px; margin-bottom:18px; }
+.d5o-full-app .d5o-task-frame-header h1 { font-size:clamp(23px,3vw,32px); line-height:1.2; margin:4px 0 9px; }
+.d5o-full-app .d5o-task-frame-header p { margin:3px 0; line-height:1.45; overflow-wrap:anywhere; }
+.d5o-full-app .d5o-task-frame-header small { color:#8b650e; font-weight:800; letter-spacing:.07em; }
+.d5o-full-app .d5o-task-frame a,.d5o-full-app .d5o-focused-record-header a { display:inline-block; padding:10px 13px; border:1px solid #bacbd4; border-radius:5px; color:#143e55; font-weight:700; text-decoration:none; background:#fff; }
+.d5o-full-app .d5o-task-frame a:focus-visible,.d5o-full-app .d5o-focused-record-header a:focus-visible { outline:3px solid #bd8c12; outline-offset:2px; }
+.d5o-full-app .d5o-task-frame details { border-top:1px solid #d8e3e8; margin-top:22px; padding-top:14px; }
+.d5o-full-app .d5o-task-frame summary { cursor:pointer; font-weight:700; }
+.d5o-full-app .d5o-task-frame form { max-width:680px; }
+.d5o-full-app .d5o-task-frame input,.d5o-full-app .d5o-task-frame select,.d5o-full-app .d5o-task-frame textarea { max-width:100%; }
+@media (max-width:640px) { .d5o-full-app .d5o-task-frame { width:calc(100% - 16px); padding:16px; margin:8px auto; } .d5o-full-app .d5o-task-frame-header { display:block; } .d5o-full-app .d5o-task-frame-header a { margin-top:12px; } }

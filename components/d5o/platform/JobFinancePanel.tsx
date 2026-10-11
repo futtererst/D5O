@@ -6,6 +6,7 @@ import type { WorkRecord } from "./work-types";
 
 import { assessJobFinance, dollarsToMinor, invoiceBalance, moneyMinor, type JobFinanceRead } from "./job-finance-model";
 import { deployState } from "./deploy-model";
+import { FocusedTaskFrame } from "./FocusedTaskFrame";
 
 import style from "./OperateWorkspace.module.css";
 
@@ -78,6 +79,62 @@ export function JobFinancePanel({ work, actorRole }: { work: WorkRecord; actorRo
   const financeClosed = state.financeStatus === "Closed";
 
   const currency = view.currency ?? "USD";
+  const params = typeof window === "undefined" ? null : new URLSearchParams(window.location.search);
+  const taskKind = params?.get("focus") === "finance" ? params.get("taskKind") : null;
+  const exactBillId = params?.get("decision");
+  const exactBill = state.bills.find((item) => item.id === exactBillId);
+  const financeHref = (kind: string, billId?: string, revision?: number) => {
+    const link = new URLSearchParams({ workspace: work.workspace, view: "record", record: work.id,
+      section: "Operate", focus: "finance", taskKind: kind });
+    if (billId) link.set("decision", billId);
+    if (revision !== undefined) link.set("sourceRevision", String(revision));
+    return `/work?${link}`;
+  };
+  if (!taskKind) return <section className={style.card} aria-label="Job Finance actions">
+    <h3>Job Finance</h3><p>{work.title} · {work.customer} · {work.site}</p>
+    <p><strong>{financeClosed ? "Finance Closed" : `Finance ${state.financeStatus ?? "pending"}`}</strong> · revised contract {moneyMinor(view.revised,currency)} · billed {moneyMinor(view.billed,currency)} · paid {moneyMinor(view.paid,currency)} · outstanding {moneyMinor(view.receivable,currency)}</p>
+    {view.blocked.length ? <p role="status">{view.blocked.join(" ")}</p> : null}
+    <nav aria-label="Choose a Finance task" className={style.actions}>
+      {canFinance && !financeClosed ? <><a href={financeHref("job-cost")}>Record sourced cost</a><a href={financeHref("job-forecast")}>Record remaining-cost forecast</a></> : null}
+      {canDraft && !financeClosed && view.eligible.length ? <a href={financeHref("job-draft-bill")}>Prepare billing draft</a> : null}
+      {state.bills.map((bill) => <a key={bill.id} href={financeHref(bill.status === "In review" ? "bill-review" : bill.status === "Reviewed" && (invoiceBalance(state,bill.id).outstanding ?? 0) > 0 ? "job-payment" : "job-invoice", bill.id,bill.revision)}>
+        {bill.status} billing record · {bill.id.slice(0,8)} · {moneyMinor(invoiceBalance(state,bill.id).outstanding,currency)} unpaid</a>)}
+      <a href={financeHref("full")}>Supporting ledger, source events and history</a>
+    </nav>
+  </section>;
+  if (taskKind !== "full") {
+    const balance = exactBill ? invoiceBalance(state, exactBill.id) : null;
+    const requiresBill = ["bill-review", "job-invoice", "job-payment"].includes(taskKind);
+    const stale = requiresBill && (!exactBill || (params?.has("sourceRevision") && exactBill.revision !== Number(params.get("sourceRevision"))));
+    if (stale) return <section className={style.card} role="status"><h2>This Finance task changed or was decided</h2>
+      <p>The exact bill revision is unavailable. No other bill was selected.</p><a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work</a></section>;
+    return <FocusedTaskFrame title={({ "bill-review": "Review billing record", "job-cost": "Record sourced cost", "job-forecast": "Forecast remaining cost", "job-draft-bill": "Prepare billing draft", "job-invoice": "Record invoice", "job-payment": "Record payment", "job-closeout": "Review Finance closeout" } as Record<string,string>)[taskKind] ?? "Finance task"}
+      work={work.title} customer={work.customer} site={work.site} workspace={work.workspace}
+      scope={exactBill ? `Billing record ${exactBill.id} · ${exactBill.lines.map((line) => `${work.packages?.find((pkg) => pkg.id === line.packageId)?.name ?? "Package"}: ${line.description}`).join("; ")}` : `Authorized contract ${moneyMinor(view.revised,currency)}`}
+      revision={exactBill?.revision ?? state.revision} outcome={taskKind === "job-payment" ? "Record a sourced receivable payment against this retained invoice." : "Record only the decision or financial fact shown below."}
+      blocker={view.blocked[0] ?? null} nextOwner={taskKind === "bill-review" ? "Project manager for correction, or Finance for invoice recording" : "Next eligible Finance or project role"}
+      onFullRecord={() => window.location.assign(financeHref("full"))}
+      context={<><p>Original contract {moneyMinor(view.original,currency)} · revised {moneyMinor(view.revised,currency)}</p>
+        <p>Incurred {moneyMinor(view.incurred,currency)} · commitments {moneyMinor(view.outstanding,currency)} · remaining forecast {moneyMinor(view.remaining,currency)}</p>
+        {exactBill?.basis ? <p>Design revision {exactBill.basis.designRevision} · Deploy revision {exactBill.basis.deployRevision} · {exactBill.basis.lines.length} accepted lines</p> : null}</>}>
+      {error ? <p role="alert">{error}</p> : null}
+      {exactBill && balance ? <p><strong>{exactBill.status}</strong> · billed {moneyMinor(balance.billed,currency)} · paid {moneyMinor(balance.paid,currency)} · unpaid {moneyMinor(balance.outstanding,currency)}</p> : null}
+      {taskKind === "bill-review" && exactBill?.status === "In review" && canFinance && !financeClosed ? <form className={style.form} onSubmit={submit("review-bill",(data)=>({billId:exactBill.id,billRevision:exactBill.revision,decision:field(data,"decision"),reason:field(data,"reason")}))}>
+        <p>{exactBill.lines.map((line)=>`${line.description} · ${moneyMinor(line.amountMinor,currency)} · proof ${line.evidenceId}`).join("; ")}</p>
+        <label>Decision<select name="decision"><option>Reviewed</option><option>Returned</option></select></label><label>Reason<input name="reason" minLength={10} required /></label><button disabled={busy}>Save Finance review</button></form> : null}
+      {taskKind === "job-payment" && exactBill?.status === "Reviewed" && canFinance && balance && (balance.outstanding ?? 0) > 0 ? <form className={style.form} onSubmit={submit("record-paid",(data)=>({billId:exactBill.id,billRevision:exactBill.revision,amountMinor:dollarsToMinor(field(data,"amount")),eventDate:field(data,"date"),source:field(data,"source")}))}>
+        <label>Payment amount ({currency})<input name="amount" type="number" min="0.01" max={((balance.outstanding ?? 0)/100).toFixed(2)} step="0.01" required /></label><label>Date<input name="date" type="date" required /></label><label>Retained source reference<input name="source" minLength={8} required /></label><button disabled={busy}>Record payment fact</button></form> : null}
+      {taskKind === "job-invoice" && exactBill?.status === "Reviewed" && canFinance && !financeClosed ? <form className={style.form} onSubmit={submit("record-billed",(data)=>({billId:exactBill.id,billRevision:exactBill.revision,amountMinor:dollarsToMinor(field(data,"amount")),eventDate:field(data,"date"),source:field(data,"source")}))}>
+        <label>Recorded billed amount ({currency})<input name="amount" type="number" min="0.01" step="0.01" required /></label><label>Date<input name="date" type="date" required /></label><label>External billing reference<input name="source" minLength={8} required /></label><button disabled={busy}>Record invoice fact</button></form> : null}
+      {taskKind === "job-cost" && canFinance && !financeClosed ? <form className={style.form} onSubmit={submit("add-cost",(data)=>({category:field(data,"category"),kind:field(data,"kind"),amountMinor:dollarsToMinor(field(data,"amount")),costDate:field(data,"date"),source:field(data,"source"),packageId:field(data,"packageId")||undefined}))}>
+        <label>Kind<select name="kind"><option>Incurred</option><option>Committed</option></select></label><label>Category<select name="category"><option>Labor</option><option>Material</option><option>Equipment</option><option>Subcontract</option></select></label><label>Amount ({currency})<input name="amount" type="number" min="0.01" step="0.01" required /></label><label>Date<input name="date" type="date" required /></label><label>Package<select name="packageId"><option value="">Whole job</option>{work.packages?.map((item)=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label>Source<input name="source" minLength={8} required /></label><button disabled={busy}>Record sourced cost</button></form> : null}
+      {taskKind === "job-forecast" && canFinance && !financeClosed ? <form className={style.form} onSubmit={submit("set-remaining",(data)=>({amountMinor:dollarsToMinor(field(data,"amount")),forecastAt:field(data,"date"),source:field(data,"source")}))}>
+        <label>Remaining cost ({currency})<input name="amount" type="number" min="0" step="0.01" required /></label><label>Assessment date<input name="date" type="date" required /></label><label>Basis and source<input name="source" minLength={8} required /></label><button disabled={busy}>Save forecast</button></form> : null}
+      {taskKind === "job-draft-bill" && canDraft && !financeClosed && view.eligible.length ? <form className={style.form} onSubmit={submit("draft-bill",(data)=>({lines:[{packageId:field(data,"packageId"),description:field(data,"description"),amountMinor:dollarsToMinor(field(data,"amount")),quantity:field(data,"quantity"),unit:field(data,"unit"),evidenceId:field(data,"evidenceId") }]}))}>
+        <label>Accepted package<select name="packageId" required value={billingPackageId || view.eligible[0]?.packageId || ""} onChange={(event)=>setBillingPackageId(event.target.value)}>{view.eligible.map((item)=><option key={item.packageId} value={item.packageId}>{item.packageName}</option>)}</select></label><label>Line scope<input name="description" minLength={5} required /></label><label>Quantity<input name="quantity" type="number" min="0.001" step="0.001" required /></label><label>Unit<input name="unit" required /></label><label>Amount ({currency})<input name="amount" type="number" min="0.01" step="0.01" required /></label><label>Reviewed evidence<select name="evidenceId" required><option value="">Choose proof</option>{view.eligible.filter((item)=>item.packageId === (billingPackageId || view.eligible[0]?.packageId)).flatMap((item)=>item.evidence.map((proof)=><option key={proof.id} value={proof.id}>{proof.filename}</option>))}</select></label><button disabled={busy}>Save billing draft</button></form> : null}
+      {taskKind === "job-closeout" ? <p>Finance closeout is a separate decision in the Work Record. Billing and receivable collection remain distinct.</p> : null}
+    </FocusedTaskFrame>;
+  }
 
   return <section className={style.card}>
 
@@ -168,7 +225,7 @@ export function JobFinancePanel({ work, actorRole }: { work: WorkRecord; actorRo
 
       {bill.status==="Reviewed" && canFinance && !financeClosed ? <form className={style.form} onSubmit={submit("record-billed",(data)=>({billId:bill.id,billRevision:bill.revision,amountMinor:dollarsToMinor(field(data,"amount")),eventDate:field(data,"date"),source:field(data,"source")}))}><label>Recorded billed amount<input name="amount" type="number" min="0.01" step="0.01" required /></label><label>Date<input name="date" type="date" required /></label><label>External billing reference<input name="source" minLength={8} required /></label><button disabled={busy}>Record billed event</button></form> : null}
 
-      {bill.status==="Reviewed" && canFinance && balance.outstanding !== null && balance.outstanding > 0 ? <form className={style.form} onSubmit={submit("record-paid",(data)=>({billId:bill.id,billRevision:bill.revision,amountMinor:dollarsToMinor(field(data,"amount")),eventDate:field(data,"date"),source:field(data,"source")}))}><label>Recorded payment<input name="amount" type="number" min="0.01" max={balance.outstanding === null ? undefined : (balance.outstanding / 100).toFixed(2)} step="0.01" required /></label><label>Date<input name="date" type="date" required /></label><label>External payment reference<input name="source" minLength={8} required /></label><button disabled={busy}>Record paid event</button></form> : null}
+      {bill.status==="Reviewed" && canFinance && balance.outstanding !== null && (balance.outstanding ?? 0) > 0 ? <form className={style.form} onSubmit={submit("record-paid",(data)=>({billId:bill.id,billRevision:bill.revision,amountMinor:dollarsToMinor(field(data,"amount")),eventDate:field(data,"date"),source:field(data,"source")}))}><label>Recorded payment<input name="amount" type="number" min="0.01" max={balance.outstanding === null ? undefined : (balance.outstanding / 100).toFixed(2)} step="0.01" required /></label><label>Date<input name="date" type="date" required /></label><label>External payment reference<input name="source" minLength={8} required /></label><button disabled={busy}>Record paid event</button></form> : null}
 
     </article>; })}
 

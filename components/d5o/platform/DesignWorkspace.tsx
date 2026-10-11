@@ -8,6 +8,7 @@ import type { DesignCommand } from "@/lib/d5o/prototype-work/design-command";
 import { legacyDesignControlPolicy, type DesignControlPolicy } from "./design-policy";
 import type { ConfigurationInventory } from "@/lib/d5o/configuration/version-inventory";
 import { DesignPipeline } from "./DesignPipeline";
+import { FocusedTaskFrame } from "./FocusedTaskFrame";
 import { FieldChangeDesignSummary } from "./FieldChangeDesignSummary";
 import styles from "./DesignWorkspace.module.css";
 import { serviceExecutionBasisIssue } from "@/lib/d5o/prototype-work/service-execution-basis";
@@ -121,6 +122,35 @@ export function DesignWorkspace({ work, packages, packageDemands, allWork, confi
     event.preventDefault(); if (!selected) return;
     const form = new FormData(event.currentTarget);
     void send({ action: "record-change", packageId: selected.id, source: field(form, "source"), reason: field(form, "reason"), affectedRequirementIds: form.getAll("requirementIds").map(String), affectedDocumentRefs: form.getAll("documentRefs").map(String), technicalImpact: field(form, "technicalImpact"), commercialImpact: field(form, "commercialImpact"), scheduleImpact: field(form, "scheduleImpact"), note: "Design change recorded against exact package revision" });
+  }
+  const linkedParams = typeof window === "undefined" ? null : new URLSearchParams(window.location.search);
+  if (linkedParams?.get("focus") === "reviews") {
+    const reviewId = linkedParams.get("decision");
+    const sourceRevision = Number(linkedParams.get("sourceRevision"));
+    const review = state.reviews.find((item) => item.id === reviewId);
+    const packageRef = packages.find((item) => item.id === review?.packageId);
+    const packageBasis = state.packages.find((item) => item.packageId === review?.packageId);
+    if (!review || !packageRef || review.status !== "Requested" || review.revision !== sourceRevision || packageBasis?.revision !== review.revision)
+      return <section className={styles.workspace} role="status"><h2>This Design review changed or was decided</h2>
+        <p>The exact review, package and source revision no longer match. No other review was selected.</p>
+        <a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work</a></section>;
+    return <FocusedTaskFrame title={`${review.discipline} package review`} work={work.title} customer={work.customer} site={work.site}
+      workspace={work.workspace} scope={`${packageRef.name} · ${packageBasis.scope}`} revision={review.revision}
+      outcome="Approve this exact engineering package revision or return it for correction."
+      blocker={serviceIssue} nextOwner="Engineering Lead for corrections or Delivery Leader for release assessment"
+      onFullRecord={() => { const url = new URL(window.location.href); for (const key of ["focus", "decision", "sourceRevision"]) url.searchParams.delete(key); window.location.assign(url.toString()); }}
+      context={<><p>Documents: {packageBasis.documentRefs.join(", ") || "None recorded"}</p>
+        <p>Requirements: {packageBasis.requirementIds.join(", ") || "None recorded"}</p>
+        <p>Safety: {packageBasis.safetyControls || "Not recorded"}</p>
+        <p>Verification: {packageBasis.verification || "Not recorded"}</p></>}>
+      <section className={styles.card}><h2>Review the governing package</h2><p><strong>Scope:</strong> {packageBasis.scope}</p>
+        <p><strong>Location:</strong> {packageBasis.location}</p><p><strong>Completion basis:</strong> {packageBasis.completionBasis?.kind ?? "Not recorded"}</p>
+        <p><strong>Assigned queue:</strong> {review.assignee} · due {review.dueDate || "not recorded"}</p>
+        <label>Decision rationale<input aria-label="Review rationale" value={decisionNote} onChange={(event) => setDecisionNote(event.target.value)} /></label>
+        <div className={styles.actions}><button disabled={busy || !decisionNote.trim()} onClick={() => void send({ action: "decide-review", reviewId: review.id, decision: "Approved", note: decisionNote })}>Approve exact revision</button>
+          <button disabled={busy || !decisionNote.trim()} onClick={() => void send({ action: "decide-review", reviewId: review.id, decision: "Returned", note: decisionNote })}>Return for correction</button></div>
+      </section>
+    </FocusedTaskFrame>;
   }
   return <section className={styles.workspace} aria-label="Design workspace">
     <header className={styles.header}><div><p>DESIGN · CONTROLLED ENGINEERING</p><h2>Prepare executable work for release</h2><span>{work.customer} · {work.site} · {work.type}</span></div><strong>{state.releases.filter((item) => item.status === "Accepted").length} received / {packages.length} packages</strong></header>

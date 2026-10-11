@@ -96,9 +96,26 @@ export async function GET(request: NextRequest) {
           if (!value || typeof value !== "object") return value;
           const item = value as Record<string, unknown>;
           const source = contextByWork.get(String(item.workId ?? ""));
-          return source ? { ...item, workTitle: source.title, customer: item.customer || source.customer, site: source.site } : item;
+          return source ? { ...item, workTitle: source.title, customer: item.customer || source.customer, site: source.site, impact: item.requestId ? source.operate?.requests?.find((request) => request.id === item.requestId)?.impact : undefined, packageName: item.packageId ? source.packages?.find((pkg) => pkg.id === item.packageId)?.name : undefined } : item;
         });
-        roleActions = withWorkContext(roleActions);
+        roleActions = withWorkContext(roleActions).map((value) => {
+          if (!value || typeof value !== "object") return value;
+          const item = value as Record<string, unknown>;
+          if (item.kind === "Billing review") {
+            const exactId = /^Review billing record ([0-9a-f-]{36})$/i.exec(String(item.title ?? ""))?.[1];
+            return { ...item, decisionId: exactId ?? null };
+          }
+          if (item.kind === "Design review") {
+            const source = contextByWork.get(String(item.workId ?? ""));
+            const discipline = String(item.title ?? "").replace(/ package review$/, "");
+            const matches = source?.design?.reviews?.filter((review) =>
+              review.packageId === item.packageId && review.revision === item.revision &&
+              review.discipline === discipline && review.status === "Requested") ?? [];
+            // Ambiguous old projections fail closed; never substitute another review.
+            return { ...item, decisionId: matches.length === 1 ? matches[0].id : null };
+          }
+          return item;
+        });
         serviceActions = withWorkContext(serviceActions);
         deliveryActions = withWorkContext(deliveryActions);
         supportActions = withWorkContext(supportActions);

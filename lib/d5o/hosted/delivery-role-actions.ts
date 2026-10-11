@@ -3,7 +3,7 @@ import { assessPackageCompletion, currentAcceptedRelease, currentReviewedComplet
 
 export type DeliveryAction = {
   kind: string; workId: string; packageId: string | null; decisionId: string; releaseId: string | null;
-  revision: number; sourceRevision: number; title: string; customer: string; site?: string; phase: "Deploy";
+  revision: number; sourceRevision: number; title: string; customer: string; site?: string; packageName?: string; phase: "Deploy";
   focus: string; position: "available" | "preparation" | "waiting"; responsibleRole: string;
   blocker: string | null; dueDate: null;
 };
@@ -21,7 +21,7 @@ export function deliveryRoleActions(records: WorkRecord[], actorId: string, role
     const add = (kind: string, packageId: string | null, decisionId: string, releaseId: string | null,
       revision: number, focus: string, responsibleRole: string, allowed: boolean, blocker: string | null = null) => {
       actions.push({ kind, workId: work.id, packageId, decisionId, releaseId, revision, sourceRevision,
-        title: work.title, customer: work.customer, phase: "Deploy", focus, responsibleRole,
+        title: work.title, customer: work.customer, site: work.site, packageName: packageId ? work.packages?.find((item) => item.id === packageId)?.name : undefined, phase: "Deploy", focus, responsibleRole,
         position: blocker ? allowed ? "preparation" : "waiting" : allowed ? "available" : "waiting", blocker,
         dueDate: null });
     };

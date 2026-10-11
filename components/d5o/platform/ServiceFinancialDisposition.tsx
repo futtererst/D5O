@@ -47,8 +47,8 @@ const money = (minor: string | undefined, currency: string | undefined) => {
 };
 
 export function ServiceFinancialDisposition({
-  work, requestId, requestTitle, actorRole
-}: { work: WorkRecord; requestId: string; requestTitle?: string; actorRole?: string }) {
+  work, requestId, requestTitle, actorRole, focusKind
+}: { work: WorkRecord; requestId: string; requestTitle?: string; actorRole?: string; focusKind?: string | null }) {
   const [position, setPosition] = useState<Read | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -150,7 +150,7 @@ export function ServiceFinancialDisposition({
         {decision.reviewed_by ? <small>Finance reviewer {decision.reviewed_by} · {decision.reviewed_at}
           · {decision.review_reason}</small> : null}</div> : <p>No Finance disposition has been recorded.</p>}
       {!basis.eligibleForFinanceReview ? <p role="alert">Current completed service source is incomplete or changed. Reconcile its request, approved price, release and acceptance before review.</p> : null}
-      {actorRole === "project_manager" && basis.eligibleForFinanceReview ? <form className={style.form}
+      {actorRole === "project_manager" && basis.eligibleForFinanceReview && (!focusKind || ["Service terms follow-up", "Service Finance source"].includes(focusKind)) ? <form className={style.form}
         onSubmit={(event) => void submit(event, "record-terms")}>
         <b>Record customer billing-terms supplement for the uncovered {money(basis.uncoveredAmountMinor, basis.currency)}</b>
         <p>This supplements the original authorization. It does not change covered scope or reopen the closed request.</p>
@@ -176,7 +176,7 @@ export function ServiceFinancialDisposition({
         <label>Recorder note confirming the document states these exact terms<input name="note" required minLength={15} /></label>
         <button disabled={busy || !selectedEvidence}>Record retained supplement</button>
       </form> : null}
-      {actorRole === "project_manager" && basis.eligibleForFinanceReview ?
+      {actorRole === "project_manager" && basis.eligibleForFinanceReview && (!focusKind || ["Service Finance preparation", "Service invoice preparation"].includes(focusKind)) ?
         <form className={style.form} onSubmit={(event) => void submit(event, "prepare")}>
           <b>Prepare exact service basis for independent Finance review</b>
           {basis.billingTermsKnown
@@ -186,7 +186,7 @@ export function ServiceFinancialDisposition({
           <button disabled={busy}>Prepare Finance review</button>
         </form> : null}
       {actorRole === "billing_commercial_lead" && decision?.status === "Prepared" &&
-        position?.decisionCurrent && basis.eligibleForFinanceReview ? <>
+        position?.decisionCurrent && basis.eligibleForFinanceReview && (!focusKind || focusKind === "Service Finance review") ? <>
           <form className={style.form} onSubmit={(event) => void submit(event, "review-ready")}>
             <label>Why the retained terms make this exact amount billable<input name="note" required minLength={20} /></label>
             <button disabled={busy || !decision.billing_terms_evidence_id || !decision.billing_terms_statement}>
@@ -198,8 +198,8 @@ export function ServiceFinancialDisposition({
           </form>
         </> : null}
       <small>{position?.history.length ?? 0} retained Finance event(s). Ready for billing does not itself issue an invoice or record payment.</small>
-      <ServiceInvoicePanel work={work} requestId={requestId} actorRole={actorRole} />
-      <ServiceActualCostPanel work={work} requestId={requestId} actorRole={actorRole} />
+      {(!focusKind || focusKind.startsWith("Service invoice") || focusKind === "Service payment recording") ? <ServiceInvoicePanel work={work} requestId={requestId} actorRole={actorRole} focusKind={focusKind} /> : null}
+      {(!focusKind || focusKind.startsWith("Service cost")) ? <ServiceActualCostPanel work={work} requestId={requestId} actorRole={actorRole} /> : null}
     </>}
   </section>;
 }

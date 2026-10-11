@@ -4,10 +4,10 @@ import type { DeliveryAction } from "@/lib/d5o/hosted/delivery-role-actions";
 import type { SupportAction } from "@/lib/d5o/hosted/support-role-actions";
 import { serviceActionHref, serviceRoleLabel, type ServiceAction } from "./service-actions";
 
-type RoleAction = { kind: string; workId: string; packageId?: string | null; revision: number; status: string; title: string; workTitle?: string; customer?: string; site?: string; dueDate?: string | null; phase: string; focus?: string; ownership: string };
+type RoleAction = { kind: string; workId: string; packageId?: string | null; packageName?: string; decisionId?: string | null; revision: number; status: string; title: string; workTitle?: string; customer?: string; site?: string; dueDate?: string | null; phase: string; focus?: string; ownership: string };
 type RecordSummary = { id: string; title: string; customer: string; site: string; stage: string };
 export type FocusedQueuePage<T extends RecordSummary> = { roleActions?: RoleAction[]; serviceActions?: ServiceAction[]; deliveryActions?: DeliveryAction[]; supportActions?: SupportAction[]; records: T[]; total: number; nextCursor: string | null };
-type Task = { key: string; title: string; work: string; customer: string; site?: string | null; detail: string; owner: string; blocker?: string | null; due?: string | null; href: string; position: "action" | "preparation" | "waiting" | "information" };
+type Task = { key: string; canonical: string; title: string; work: string; customer: string; site?: string | null; detail: string; owner: string; blocker?: string | null; due?: string | null; impact?: "Critical" | "High" | "Standard" | null; href: string; position: "action" | "preparation" | "waiting" | "information" };
 
 function deliveryLink(workspace: string, action: DeliveryAction) {
   const params = new URLSearchParams({ workspace, view: "record", record: action.workId, section: "Deploy", focus: action.focus,
@@ -28,36 +28,39 @@ function roleLink(workspace: string, action: RoleAction) {
   if (phaseView === "record") params.set("section", action.phase);
   if (action.packageId) params.set("package", action.packageId);
   if (action.focus) params.set("focus", action.focus);
-  if (action.kind === "Billing review") params.set("focus", "finance");
+  if (action.decisionId) params.set("decision", action.decisionId);
+  if (action.kind === "Billing review") { params.set("focus", "finance"); params.set("taskKind", "bill-review"); }
   if (action.kind === "Design review") params.set("focus", "reviews");
   if (action.kind === "Field report review") params.set("focus", "reports");
   return `/work?${params}`;
 }
 function tasksFor<T extends RecordSummary>(workspace: string, page: FocusedQueuePage<T>): Task[] {
-  const delivery = (page.deliveryActions ?? []).map((action): Task => ({ key: `delivery:${action.workId}:${action.decisionId}:${action.kind}`, title: action.kind,
+  const delivery = (page.deliveryActions ?? []).map((action): Task => ({ key: `delivery:${action.workId}:${action.decisionId}:${action.kind}`, canonical: `delivery:${action.workId}:${action.packageId ?? "work"}:${action.kind}:${action.decisionId}`, title: action.kind,
     work: action.title, customer: action.customer, site: action.site, detail: action.packageId ? `Package scope · revision ${action.revision}` : `Whole work · revision ${action.revision}`,
     owner: action.responsibleRole, blocker: action.blocker, href: deliveryLink(workspace, action),
     position: action.position === "available" ? "action" : action.position === "preparation" ? "preparation" : "waiting" }));
-  const support = (page.supportActions ?? []).map((action): Task => ({ key: `support:${action.workId}:${action.decisionId}:${action.kind}:${action.documentKind ?? ""}`, title: ({
+  const support = (page.supportActions ?? []).map((action): Task => ({ key: `support:${action.workId}:${action.decisionId}:${action.kind}:${action.documentKind ?? ""}`, canonical: `support:${action.workId}:${action.decisionId}:${action.kind}:${action.documentKind ?? ""}`, title: ({
     "receive-handoff": "Link accepted delivery handoff", "add-asset": "Identify supported asset", "accept-support": "Accept support responsibility",
     activate: "Assess support activation", "supply-document": "Supply turnover document", "review-document": "Review turnover document"
   } as Record<SupportAction["kind"], string>)[action.kind], work: action.title, customer: action.customer, site: action.site,
     detail: `${action.documentKind ? `${action.documentKind} · ` : ""}source revision ${action.decisionRevision}`, owner: action.responsibleRole,
     blocker: action.blocker, href: supportLink(workspace, action),
     position: action.position === "available" ? "action" : action.position === "preparation" ? "preparation" : "waiting" }));
-  const service = (page.serviceActions ?? []).map((action): Task => ({ key: `service:${action.requestId}:${action.kind}:${action.revision}`, title: action.kind,
+  const service = (page.serviceActions ?? []).map((action): Task => ({ key: `service:${action.requestId}:${action.kind}:${action.revision}`, canonical: `service:${action.requestId}:${action.requestCycleAt}:${action.kind}`, title: action.kind,
     work: action.requestTitle, customer: action.customer ?? "Customer not recorded", site: action.site, detail: `${action.coverage} · ${action.childWorkId ? "Service visit linked" : "Service visit pending"} · revision ${action.revision}`,
-    owner: serviceRoleLabel(action.responsibleRole), blocker: action.blocker, due: action.dueDate, href: serviceActionHref(workspace, action),
+    owner: serviceRoleLabel(action.responsibleRole), blocker: action.blocker, due: action.dueDate, impact: action.impact, href: serviceActionHref(workspace, action),
     position: action.ownership === "Information only" ? "information" : action.actionable ? "action" : "waiting" }));
-  const role = (page.roleActions ?? []).map((action): Task => ({ key: `role:${action.workId}:${action.kind}:${action.packageId ?? ""}:${action.revision}`, title: action.kind,
+  const role = (page.roleActions ?? []).map((action): Task => ({ key: `role:${action.workId}:${action.kind}:${action.packageId ?? ""}:${action.revision}`, canonical: `role:${action.workId}:${action.packageId ?? "work"}:${action.kind}:${action.decisionId ?? action.revision}`, title: action.kind,
     work: action.workTitle ?? action.title, customer: action.customer ?? action.phase, site: action.site, detail: `${action.packageId ? "Package scope · " : ""}revision ${action.revision}`,
     owner: action.ownership, due: action.dueDate, href: roleLink(workspace, action), position: "action" }));
   const seen = new Set<string>();
   return [...delivery, ...support, ...service, ...role].filter((task) => {
-    // The dedicated delivery projection carries the exact source contract for these reviews.
-    if (task.key.startsWith("role:") && delivery.some((item) => item.work === task.work && item.title === task.title && item.detail === task.detail)) return false;
-    if (seen.has(task.key)) return false;
-    seen.add(task.key); return true;
+    if (seen.has(task.canonical)) return false;
+    seen.add(task.canonical); return true;
+  }).sort((left, right) => {
+    const first = left.due && !Number.isNaN(Date.parse(left.due)) ? Date.parse(left.due) : Number.POSITIVE_INFINITY;
+    const second = right.due && !Number.isNaN(Date.parse(right.due)) ? Date.parse(right.due) : Number.POSITIVE_INFINITY;
+    return first - second || ({ Critical: 0, High: 1, Standard: 2 }[left.impact ?? "Standard"] - { Critical: 0, High: 1, Standard: 2 }[right.impact ?? "Standard"]) || left.title.localeCompare(right.title) || left.canonical.localeCompare(right.canonical);
   });
 }
 

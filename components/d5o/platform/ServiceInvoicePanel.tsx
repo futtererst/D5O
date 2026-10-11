@@ -21,8 +21,8 @@ const usdMinor = (value: string) => {
   return match ? (BigInt(match[1]) * BigInt(100) + BigInt((match[2] ?? "").padEnd(2, "0"))).toString() : "";
 };
 
-export function ServiceInvoicePanel({ work, requestId, actorRole }: {
-  work: WorkRecord; requestId: string; actorRole?: string;
+export function ServiceInvoicePanel({ work, requestId, actorRole, focusKind }: {
+  work: WorkRecord; requestId: string; actorRole?: string; focusKind?: string | null;
 }) {
   const [position, setPosition] = useState<Position | null>(null);
   const [finance, setFinance] = useState<Finance | null>(null);
@@ -102,23 +102,23 @@ export function ServiceInvoicePanel({ work, requestId, actorRole }: {
       </div>
       {invoice && !position.sourceCurrent ? <p role="alert">Current service source changed. The issued invoice and payments remain intact; new billing decisions require reassessment.</p> : null}
       {invoice?.status === "Issued" ? <p>Issued scope and amount are frozen. Cancellation, credits, tax and adjustments are unsupported.</p> : null}
-      {actorRole === "project_manager" && !invoice && ready && finance.basis.billingTermsKnown ?
+      {actorRole === "project_manager" && (!focusKind || focusKind === "Service invoice drafting") && !invoice && ready && finance.basis.billingTermsKnown ?
         <form className={style.form} onSubmit={(event) => void submit(event, "draft")}>
           <b>Draft exact approved uncovered amount</b>
           <label>Preparation reason<input name="note" required minLength={12} /></label>
           <button disabled={busy}>Draft service invoice</button>
         </form> : null}
-      {actorRole === "project_manager" && invoice?.status === "Draft" && position.sourceCurrent ?
+      {actorRole === "project_manager" && (!focusKind || focusKind === "Service invoice preparation") && invoice?.status === "Draft" && position.sourceCurrent ?
         <form className={style.form} onSubmit={(event) => void submit(event, "submit")}>
           <label>Submission basis<input name="note" required minLength={12} /></label>
           <button disabled={busy}>Submit invoice for Finance review</button>
         </form> : null}
-      {actorRole === "project_manager" && (invoice?.status === "Returned" || (invoice?.status === "Draft" && !position.sourceCurrent)) ?
+      {actorRole === "project_manager" && (!focusKind || focusKind === "Service invoice preparation") && (invoice?.status === "Returned" || (invoice?.status === "Draft" && !position.sourceCurrent)) ?
         <form className={style.form} onSubmit={(event) => void submit(event, "revise")}>
           <label>Correction and current source<input name="note" required minLength={12} /></label>
           <button disabled={busy}>Revise returned draft</button>
         </form> : null}
-      {actorRole === "billing_commercial_lead" && (invoice?.status === "In review" || invoice?.status === "Reviewed" && !position.sourceCurrent) ? <>
+      {actorRole === "billing_commercial_lead" && (!focusKind || focusKind === "Service invoice review") && (invoice?.status === "In review" || invoice?.status === "Reviewed" && !position.sourceCurrent) ? <>
         <form className={style.form} onSubmit={(event) => void submit(event, "review")}>
           <label>Independent source and amount review<input name="note" required minLength={12} /></label>
           <button disabled={busy || !position.sourceCurrent}>Approve exact invoice draft</button>
@@ -128,14 +128,14 @@ export function ServiceInvoicePanel({ work, requestId, actorRole }: {
           <button disabled={busy}>Return unissued draft</button>
         </form>
       </> : null}
-      {actorRole === "billing_commercial_lead" && invoice?.status === "Reviewed" ?
+      {actorRole === "billing_commercial_lead" && (!focusKind || focusKind === "Service invoice issuance") && invoice?.status === "Reviewed" ?
         <form className={style.form} onSubmit={(event) => void submit(event, "issue")}>
           <b>Record fictional issuance</b>
           <label>Invoice date<input name="invoiceDate" type="date" required defaultValue={new Date().toISOString().slice(0,10)} /></label>
           <label>Retained internal issuance source<input name="source" required minLength={12} /></label>
           <button disabled={busy || !position.sourceCurrent}>Record issued invoice</button>
         </form> : null}
-      {actorRole === "billing_commercial_lead" && invoice?.status === "Issued" &&
+      {actorRole === "billing_commercial_lead" && (!focusKind || focusKind === "Service payment recording") && invoice?.status === "Issued" &&
         position.outstandingMinor > 0 ?
         <form className={style.form} onSubmit={(event) => void submit(event, "record-payment")}>
           <b>Record fictional payment against {invoice.invoice_number}</b>
