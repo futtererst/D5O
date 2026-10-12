@@ -211,7 +211,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
   const [unavailableRecordId, setUnavailableRecordId] = useState<string | null>(null);
   const [recordReturn, setRecordReturn] = useState<Exclude<Screen, "record">>("portfolio");
   const [myWorkEntry, setMyWorkEntry] = useState<"all" | "mine" | "pricing" | "proposal" | "definition">("all");
-  const [discoverEntry, setDiscoverEntry] = useState<"pricing" | "proposal" | "solution-prep" | "solution-review" | "pricing-prep" | "proposal-prep" | "customer-submission-prep" | "design-handoff-receive" | "pursuit-prep" | "pursuit-review" | "define-handoff-prep" | "define-handoff-receive" | null>(null);
+  const [discoverEntry, setDiscoverEntry] = useState<"pricing" | "proposal" | "solution-prep" | "solution-review" | "pricing-prep" | "proposal-prep" | "customer-submission-prep" | "design-handoff-receive" | "design-handoff-correction" | "pursuit-prep" | "pursuit-review" | "define-handoff-prep" | "define-handoff-receive" | null>(null);
   const [defineReviewEntry, setDefineReviewEntry] = useState<"commercial" | "delivery" | "define-prep" | "develop-handoff-prep" | "develop-handoff-receive" | null>(null);
   const [crewEntry, setCrewEntry] = useState<"coverage" | "attendance" | null>(null);
   const [crewFocusWorkId, setCrewFocusWorkId] = useState<string | null>(null);
@@ -454,7 +454,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       setTaskPackageId(view === "record" ? params.get("package") : null);
       setTaskRequestId(view === "record" ? params.get("request") : null);
       setTaskRevision(params.has("sourceRevision") ? Number(params.get("sourceRevision")) : null);
-      if ((view === "develop" || view === "discover") && ["pricing", "proposal", "solution-prep", "solution-review", "pricing-prep", "proposal-prep", "customer-submission-prep", "design-handoff-receive", "pursuit-prep", "pursuit-review", "define-handoff-prep", "define-handoff-receive"].includes(params.get("focus") ?? "")) setDiscoverEntry(params.get("focus") as typeof discoverEntry);
+      if ((view === "develop" || view === "discover") && ["pricing", "proposal", "solution-prep", "solution-review", "pricing-prep", "proposal-prep", "customer-submission-prep", "design-handoff-receive", "design-handoff-correction", "pursuit-prep", "pursuit-review", "define-handoff-prep", "define-handoff-receive"].includes(params.get("focus") ?? "")) setDiscoverEntry(params.get("focus") as typeof discoverEntry);
       if (view === "define" && ["commercial", "delivery", "define-prep", "develop-handoff-prep", "develop-handoff-receive"].includes(params.get("focus") ?? "")) setDefineReviewEntry(params.get("focus") as typeof defineReviewEntry);
       if (recordId && work.some((item) => item.id === recordId && item.workspace === activeWorkspace)) { setSelectedId(recordId); setUnavailableRecordId(null); }
       else if (recordId && ["record", "discover", "define", "develop"].includes(view ?? "")) setUnavailableRecordId(recordId);
@@ -485,7 +485,8 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
           : focus === "define-prep" || focus === "develop-handoff-prep" ? linkedReview?.definition?.revision ?? (focus === "define-prep" ? 1 : undefined)
           : focus === "solution-prep" ? linkedReview?.develop?.revision ?? 0
           : focus === "pricing-prep" ? linkedReview?.discovery?.estimate.revision
-          : focus === "proposal-prep" || focus === "customer-submission-prep" ? linkedReview?.discovery?.proposal.package?.revision ?? 0 : undefined;
+          : focus === "proposal-prep" || focus === "customer-submission-prep" ? linkedReview?.discovery?.proposal.package?.revision ?? 0
+          : focus === "design-handoff-correction" ? linkedReview?.discovery?.designHandoff?.revision : undefined;
         const pursuit = linkedReview?.discovery?.pursuitControl;
         const define = linkedReview?.definition;
         const solution = linkedReview?.develop;
@@ -497,8 +498,9 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
           : focus === "pricing-prep" ? Boolean(solution?.review?.status === "Approved" && !["Pricing review", "Approved"].includes(linkedReview?.discovery?.estimate.status ?? ""))
           : focus === "proposal-prep" ? Boolean(linkedReview?.discovery?.estimate.status === "Approved" && !["Internal review", "Approved", "Submitted"].includes(linkedReview?.discovery?.proposal.status ?? ""))
           : focus === "customer-submission-prep" ? Boolean(linkedReview?.discovery?.proposal.status === "Approved" && linkedReview.discovery.proposal.review?.revision === linkedReview.discovery.proposal.package?.revision)
+          : focus === "design-handoff-correction" ? Boolean(linkedReview?.discovery?.outcome === "Won" && linkedReview.discovery.designHandoff?.status === "returned" && actorRole === "project_manager")
           : true;
-        setStalePreparationLink(["pursuit-prep", "define-handoff-prep", "define-prep", "develop-handoff-prep", "solution-prep", "pricing-prep", "proposal-prep", "customer-submission-prep"].includes(focus ?? "") && (prepRevision === undefined || Number(params.get("sourceRevision")) !== prepRevision || !linkedReview || !prepCurrent));
+        setStalePreparationLink(["pursuit-prep", "define-handoff-prep", "define-prep", "develop-handoff-prep", "solution-prep", "pricing-prep", "proposal-prep", "customer-submission-prep", "design-handoff-correction"].includes(focus ?? "") && (prepRevision === undefined || Number(params.get("sourceRevision")) !== prepRevision || !linkedReview || !prepCurrent));
         if (canPresentSurface(presentation, view as Screen) || eligibleFocusedReview || eligiblePursuitReviewer || eligibleDiscoverReceiver || eligibleDevelopReceiver || eligibleDesignReceiver) setScreen(view as Screen);
         else { setScreen("my-work"); setNotice("This view is outside your role workspace. Choose an available task below."); }
       }

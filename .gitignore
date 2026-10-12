@@ -29,3 +29,7 @@ package-output/
 visual-qa-output/**
 
 .vercel/
+
+.next-review-61648/
+.tmp/
+.next-review-61649/

@@ -229,6 +229,9 @@ export async function GET(request: NextRequest) {
         if (mine && commercial?.proposal.status === "Approved" && offer?.revision &&
           commercial.proposal.review?.revision === offer.revision)
           prep("Record customer submission", "Develop", "customer-submission-prep", offer.revision);
+        if (mine && commercial?.outcome === "Won" && commercial.designHandoff?.status === "returned")
+          prep("Correct Design handoff", "Develop", "design-handoff-correction", commercial.designHandoff.revision,
+            commercial.designHandoff.decisionNote || "Respond to the receiving decision before resubmission.");
         if (commercial?.designHandoff?.status === "submitted" &&
           actorRole === "operations_leader" && commercial.designHandoff.submittedByActorId !== ctx.actor.id)
           actions.push({ ...common, kind: "Receive Design handoff", phase: "Develop", focus: "design-handoff-receive",
