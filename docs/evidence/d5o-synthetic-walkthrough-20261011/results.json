@@ -1475,6 +1475,20 @@
       "status": "Not run",
       "mode": "fixture availability",
       "evidence": "Authenticated read found no canonical Work with proposal Approved awaiting customer submission or Design handoff Submitted awaiting receipt in mutable loopback 56621. Queue projection and focused controls were connected in source; no positive queue-led submission or receiving business decision was performed on this build. Original I08 failure remains only partially addressed."
+    },
+    {
+      "caseId": "I07 canonical header and switcher",
+      "applicationSha": "03cfc97ad2fc92df8a97d77d70d9ad04f2cef1e8",
+      "status": "Passed",
+      "mode": "authenticated fictional Finance browser",
+      "evidence": "Normal My Work → Portfolio → changed job → Operate → Finance & lessons navigation showed CURRENT COMMITTED POSITION Deploy · Operations receipt accepted in header and Work switcher. The obsolete Plan badge and Prepare executable Work Packages in Design side rail were absent. Screenshot current-post-closeout-receivable.png."
+    },
+    {
+      "caseId": "H09 receivable read and payment entry",
+      "applicationSha": "03cfc97ad2fc92df8a97d77d70d9ad04f2cef1e8",
+      "status": "Passed",
+      "mode": "authenticated fictional Finance browser; read-only",
+      "evidence": "Normal navigation opened the closed changed job with revised contract/billed USD 109,977.15, paid USD 25,000.00 and outstanding USD 84,977.15. Two exact reviewed bill links showed unpaid USD 29,988.57 and USD 54,988.58. Opening bill 0065579b-7cd8-4f5a-8008-35f499c48e3a showed Record payment, source revision 3, billed USD 54,988.57, paid USD 25,000.00 and unpaid USD 29,988.57. No payment command was sent; the full H09 decrease-and-reload case remains Not run to preserve the established USD 25,000 pilot amount."
     }
   ],
   "supplementalProbes": [
