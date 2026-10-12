@@ -1,8 +1,8 @@
 # D5O atomic synthetic scenario matrix — 2026-10-11
 
-Application source: `62825725851b849c427f4451d4714cd808e440b7`. This matrix replaces compound rows. All cases start **Not run**; earlier mixed-build observations are retained separately in `prior-run-results.json`. No fictional fixture fact alone counts as a browser pass.
+Application source: fccecd4dc99f68b66c42e50d9aaf9c8299ca609b. Earlier mixed-build observations remain in prior-run-results.json; current outcomes and evidence are in results.json. A fixture fact or old-build result is never a current pass.
 
-| ID | Track | Role | Initial state | Browser action | Expected outcome |
+| ID | Track | Role | Initial state | Browser action or probe | Expected outcome |
 | --- | --- | --- | --- | --- | --- |
 | A01 | Access | PM | Existing pilot account | Sign in from normal landing | PM identity and assigned or eligible tasks shown |
 | A02 | Access | Worker | Bound worker account | Sign in from normal landing | Only assigned worker surface and work shown |
@@ -24,6 +24,7 @@ Application source: `62825725851b849c427f4451d4714cd808e440b7`. This matrix repl
 | B11 | Define | Commercial reviewer | Resubmitted baseline | Approve commercial review | Independent decision on current revision |
 | B12 | Define | Develop receiver | Approved baseline | Accept into Develop | Exact pinned source received |
 | C01 | Develop | PM | Accepted Define | Prepare and submit solution | Selected option alternatives coverage and rationale visible |
+| C01B | Develop | PM | Multiple valid solution options | Compare documented alternatives | Selection tradeoff and requirement coverage of alternatives visible |
 | C02 | Develop | Independent reviewer | Submitted solution | Return with reason | Correction task and retained history |
 | C03 | Develop | PM | Returned solution | Correct and resubmit | New exact revision in review |
 | C04 | Develop | Independent reviewer | Resubmitted solution | Approve | Pricing preparation task appears |
@@ -33,9 +34,11 @@ Application source: `62825725851b849c427f4451d4714cd808e440b7`. This matrix repl
 | C08 | Develop | PM | Approved pricing | Prepare and submit proposal | Offer snapshot and exact estimate link |
 | C09 | Develop | Proposal reviewer | Submitted proposal | Approve or return | Exact independent internal decision |
 | C10 | Develop | PM | Internally approved proposal | Record fictional customer outcome with retained source | Award distinct from internal approval |
+| C10B | Develop | PM | Fictional award | Inspect retained external customer award file | Customer award document custody and independent authority source verified |
 | C11 | Develop | Design receiver | Awarded source | Accept or return commercial handoff | Exact source pin and owner |
 | D01 | Design | PM or Engineering | Accepted source | Create and enrich first shared package | Stable package ID and source requirements |
 | D02 | Design | PM or Engineering | First package draft | Create second package and dependencies | Two distinct scoped packages |
+| D02B | Design | PM or Engineering | Two draft packages | Link predecessor dependency | Dependency retained and used by release/readiness |
 | D03 | Design | Engineering | Draft package and document | Submit exact revision for review | Independent review task |
 | D04 | Design | Reviewer | Submitted package revision | Approve or return | Exact decision and history |
 | D05 | Design | Delivery authority | Reviewed package | Issue Design release | Exact source package and document revisions |
@@ -47,6 +50,7 @@ Application source: `62825725851b849c427f4451d4714cd808e440b7`. This matrix repl
 | E01 | Workforce | Admin | Existing fictional roster | Create active person with qualifications and capacity | Stable tenant identity survives reload |
 | E02 | Workforce | Admin | Existing pilot Auth user and person | Bind account | Account and roster link retained |
 | E03 | Workforce | Scheduler | Demand and roster | Inspect eligible and ineligible people | Qualification availability and binding agree with booking guard |
+| E03B | Workforce | Scheduler | Unbound or ineligible roster person | Attempt selection | Ineligible person not represented as bookable |
 | E04 | Scheduling | Scheduler | Qualified demand | Publish booking | Named shift and immutable publication |
 | E05 | Scheduling | Scheduler | Overlapping or ineligible demand | Attempt conflicting booking | Domain rejection and unchanged schedule |
 | E06 | Scheduling | Worker | Published own booking | Acknowledge or cannot attend | Worker response retained; no start authorization |
@@ -65,6 +69,7 @@ Application source: `62825725851b849c427f4451d4714cd808e440b7`. This matrix repl
 | E19 | Delivery | PM and recorder | Both packages accepted | Record exact whole-work acceptance | Scope bound PDF and signatures retained |
 | E20 | Delivery | Operations | Whole-work accepted | Independently receive work | Receipt actor and exact scope retained |
 | E21 | Delivery boundary | Stale or duplicate actor | Decided turnover | Replay or open stale link | No duplicate decision or substitute package |
+| E21B | Delivery boundary | Stale or duplicate actor | Decided turnover | Replay duplicate command | Identical replay stable; conflicting replay rejected |
 | F01 | Operate | PM | Accepted delivery | Link exact handoff | Exact turnover source and residual obligations |
 | F02 | Operate | Operations | Submitted handoff | Accept support ownership independently | Owner authority distinct from delivery receipt |
 | F03 | Operate | PM and Operations | Accepted support | Record contacts intake warranty and coverage disposition | Explicit facts not inferred coverage |
@@ -94,5 +99,17 @@ Application source: `62825725851b849c427f4451d4714cd808e440b7`. This matrix repl
 | I03 | Administration | Non-admin | Published policy | Attempt restricted administration | No admin decision authority |
 | I04 | Interaction | PM worker Quality Finance | Pending tasks | Use desktop mobile keyboard back and reload | Exact task and result without overflow |
 | I05 | Interaction | Any reviewer | Saved queue link | Decide or supersede elsewhere then open saved link | Changed source explained without substitute |
+| E16C | Delivery boundary | PM and independent Operations | South turnover Draft on current release | Upload exact fictional PDF and record conditional package acceptance; refresh PM queue | Conditional outcome retained and no false executable second-turnover action |
+| I06 | Cross-surface | Finance | Historical three-package expanded-scope bill | Open Billing review from My Work; attempt review | Queue distinguishes unavailable historical bill basis from executable Finance decision |
+| I07 | Cross-surface | PM | Approved solution/pricing/released job | Open Work hub and exact Work Record | Summary reflects current authoritative phase decisions and blocker |
+| I08 | Role routing | PM/Operations | Approved proposal and submitted Design handoff | Inspect My Work for next handoffs | Customer submission preparation and Design receipt tasks discoverable |
+| I09 | Interaction | PM/Operations | Four support document obligations | Read My Work cards | Readable package names distinguish North and South documents |
+| D11 | Design boundary | PM | Whole-work accepted customer job | Attempt adding another package | Accepted package set frozen; historical acceptance retained |
+| D12 | Design boundary | PM | Whole-work accepted service visit | Attempt adding another package | Accepted service package set frozen; historical acceptance retained |
+| G09 | Service boundary | PM/Operations | Pre-closure request cycle | Attempt premature closure before completion/resolution | Specific domain rejection with unchanged state |
+| G10 | Service boundary | PM/Operations | Changed request cycle | Attempt old execution/closure decision | Old cycle cannot satisfy current request |
+| H09 | Job Finance | Finance | Finance Closed with outstanding invoice | Record later receivable payment | Finance remains Closed; receivable decreases without rewriting history |
+| E22 | Field change | Worker/PM/Engineering | Unexpected condition on released package | Issue, price/authorize change, revise and release | Original history retained; additional scope held until revised release |
+| H10 | Service Finance | Finance | Ready service basis and issued invoice | Pay part of invoice after source change | Retained issued invoice remains collectible; no new billing authority inferred |
 
-Status vocabulary: **Passed**, **Failed**, **Blocked**, **Not run**, **Not implemented**, **Not applicable**. `Blocked` requires an actual attempt and named blocker. Browser decisions, API probes and database probes are recorded separately. The delivery and support observation checkpoints and private files are preserved; the mutable preparation pilot is separate.
+Status vocabulary: Passed, Failed, Blocked, Not run, Not implemented, Not applicable. Blocked requires an actual attempt and named blocker. Browser decisions, API probes and database probes are recorded separately. The delivery and support observation checkpoints and private files are preserved; the mutable pilot is separate.

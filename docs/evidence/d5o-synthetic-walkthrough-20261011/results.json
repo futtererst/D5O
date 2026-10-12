@@ -1,12 +1,13 @@
 {
   "schema": "d5o.synthetic-walkthrough.v2",
   "runDate": "2026-10-11",
-  "testedApplicationSha": "62825725851b849c427f4451d4714cd808e440b7",
+  "testedApplicationSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
   "branchHeadAtStart": "e9eec5d26bb39261562012810992eae0ecd0668d",
   "target": {
     "url": "http://127.0.0.1:61643/work?workspace=rybex",
     "database": "separate mutable disposable preparation pilot, loopback 56621",
-    "displayedBuild": "62825725851b (pre-fix diagnostic; final build pending)"
+    "displayedBuild": "fccecd4dc99f",
+    "fixture": "checksum-verified fictional delivery archive restored into mutable 56621 target; observation projects unchanged"
   },
   "priorResults": "prior-run-results.json",
   "definition": "Not run means no attempt in this run. Blocked requires a specific attempted environmental or prerequisite failure. A prior run, older build, or populated fixture is never a current pass.",
@@ -18,9 +19,9 @@
       "initialState": "Existing pilot account",
       "browserSteps": "Sign in from normal landing",
       "expected": "PM identity and assigned or eligible tasks shown",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Fictional PM signed into normal /work landing on mutable 61643, displayed Build fccecd4dc99f, and saw seven actual action-needed cards including two distinct package turnover tasks; screenshot mutable-delivery-pm-start.png.",
       "blocker": ""
     },
     {
@@ -30,10 +31,10 @@
       "initialState": "Bound worker account",
       "browserSteps": "Sign in from normal landing",
       "expected": "Only assigned worker surface and work shown",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
-      "blocker": ""
+      "status": "Passed",
+      "mode": "Browser",
+      "evidence": "Worker browser My schedule showed only two assigned bookings and assigned-work links; no administrative navigation.",
+      "blocker": null
     },
     {
       "id": "A03",
@@ -42,10 +43,10 @@
       "initialState": "Finance account",
       "browserSteps": "Sign in from normal landing",
       "expected": "Finance tasks and no general admin authority",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
-      "blocker": ""
+      "status": "Passed",
+      "mode": "Browser",
+      "evidence": "Finance browser My Work showed Finance role actions and no administrator control in primary navigation.",
+      "blocker": null
     },
     {
       "id": "A04",
@@ -66,9 +67,9 @@
       "initialState": "Authenticated session",
       "browserSteps": "Open another tenant Work and task",
       "expected": "No tenant data or command authority",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated API probe",
+      "evidence": "PM session requested rotork role-action projection; HTTP 403 workspace_forbidden. No rotork task data returned. This was API evidence, not browser navigation.",
       "blocker": ""
     },
     {
@@ -102,9 +103,9 @@
       "initialState": "Canonical draft",
       "browserSteps": "Save intake",
       "expected": "Current saved revision survives reload",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM saved Discover intake for canonical Work rybex-2fad0999a8f24514a7188e98f0720149; fresh session retained customer/site/need and exact Work identity.",
       "blocker": ""
     },
     {
@@ -114,9 +115,9 @@
       "initialState": "Saved intake",
       "browserSteps": "Submit intake",
       "expected": "Exact revision routed to reviewer",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted the fictional intake; independent receiver saw exact source in My Work.",
       "blocker": ""
     },
     {
@@ -126,9 +127,9 @@
       "initialState": "Submitted intake",
       "browserSteps": "Qualify or return from My Work",
       "expected": "Independent decision and next owner",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Separate Operations receiver accepted Define handoff; PM next task became structured Define preparation.",
       "blocker": ""
     },
     {
@@ -138,9 +139,9 @@
       "initialState": "Qualified intake",
       "browserSteps": "Submit Define receiving handoff",
       "expected": "Exact source and receiving task",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted exact qualified Discover handoff revision 1 through My Work; independent Operations receiving task appeared. Browser POST 200, screenshots final-define-handoff-submitted.png.",
       "blocker": ""
     },
     {
@@ -150,9 +151,9 @@
       "initialState": "Submitted handoff",
       "browserSteps": "Accept or return from My Work",
       "expected": "Independent receipt and PM preparation task",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Independent Operations account accepted Discover-to-Define handoff revision 1 through My Work. Fresh PM session showed Prepare definition; screenshot final-define-handoff-received.png.",
       "blocker": ""
     },
     {
@@ -162,9 +163,9 @@
       "initialState": "Accepted receiving",
       "browserSteps": "Prepare structured requirements scope and acceptance",
       "expected": "Reviewable exact baseline draft",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM used structured investigation, two requirements, two deliverables and two linked acceptance criteria, agreement, owned interface, milestone, dependency, risk and exclusion in Define task. Each draft save was allowed to finish; fresh browser session retained the entries and 12/12 assessment. Screenshot final-define-ready-assessment.png. Earlier rapid harness exit had lost pending saves and is not counted as a product defect.",
       "blocker": ""
     },
     {
@@ -174,9 +175,9 @@
       "initialState": "Complete draft",
       "browserSteps": "Submit baseline",
       "expected": "Exact revision in independent review",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted exact Define revision 1 through My Work; typed browser command returned 200 and independent Commercial and Delivery review cards appeared. Screenshot final-define-submitted.png.",
       "blocker": ""
     },
     {
@@ -186,9 +187,9 @@
       "initialState": "Submitted baseline",
       "browserSteps": "Return with reason",
       "expected": "Historical return and correction task",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Separate Commercial account returned revision 1 with specific fictional correction basis through My Work; typed browser command returned 200. Fresh PM queue showed Prepare definition correction. Screenshot final-define-commercial-return.png.",
       "blocker": ""
     },
     {
@@ -198,9 +199,9 @@
       "initialState": "Returned baseline",
       "browserSteps": "Correct and resubmit",
       "expected": "New revision retained; old decision historical",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM started corrected revision 2, clarified customer outage and acceptance coordination, saved the draft and resubmitted. Original return remained in revision history; typed browser commands returned 200. Screenshot final-define-corrected-resubmitted.png.",
       "blocker": ""
     },
     {
@@ -210,9 +211,9 @@
       "initialState": "Resubmitted baseline",
       "browserSteps": "Approve delivery review",
       "expected": "Independent decision on current revision",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Separate Commercial account approved exact revision 2 through My Work; browser typed command 200, saved link became decided. Screenshot final-define-commercial-approve.png.",
       "blocker": ""
     },
     {
@@ -222,9 +223,9 @@
       "initialState": "Resubmitted baseline",
       "browserSteps": "Approve commercial review",
       "expected": "Independent decision on current revision",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Separate Operations account approved exact revision 2 through My Work; browser typed command 200. Fresh PM queue showed Submit approved Define basis to Develop. Screenshot final-define-operations-approve.png.",
       "blocker": ""
     },
     {
@@ -234,9 +235,9 @@
       "initialState": "Approved baseline",
       "browserSteps": "Accept into Develop",
       "expected": "Exact pinned source received",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted exact approved Define revision 2 into Develop and separate Operations account accepted from its My Work task. Both browser typed commands returned 200; receiver link became decided and PM queue showed Prepare solution. Screenshots final-develop-transfer-pm.png and final-develop-transfer-operations.png.",
       "blocker": ""
     },
     {
@@ -246,6 +247,18 @@
       "initialState": "Accepted Define",
       "browserSteps": "Prepare and submit solution",
       "expected": "Selected option alternatives coverage and rationale visible",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM prepared and submitted one selected two-zone solution with both confirmed requirements and rationale via My Work on build fccecd4dc99f; alternatives comparison was not exercised (C01B).",
+      "blocker": ""
+    },
+    {
+      "id": "C01B",
+      "track": "Develop",
+      "role": "PM",
+      "initialState": "Multiple valid solution options",
+      "browserSteps": "Compare documented alternatives",
+      "expected": "Selection tradeoff and requirement coverage of alternatives visible",
       "status": "Not run",
       "mode": "",
       "evidence": "",
@@ -258,9 +271,9 @@
       "initialState": "Submitted solution",
       "browserSteps": "Return with reason",
       "expected": "Correction task and retained history",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Independent Operations returned submitted solution revision 3 for supplier fallback; return and correction card appeared after fresh sign-in.",
       "blocker": ""
     },
     {
@@ -270,9 +283,9 @@
       "initialState": "Returned solution",
       "browserSteps": "Correct and resubmit",
       "expected": "New exact revision in review",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM corrected option/material risk, reselected and resubmitted revision 5; old return remained historical.",
       "blocker": ""
     },
     {
@@ -282,9 +295,9 @@
       "initialState": "Resubmitted solution",
       "browserSteps": "Approve",
       "expected": "Pricing preparation task appears",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Operations independently approved solution revision 5 from My Work; PM pricing preparation task appeared.",
       "blocker": ""
     },
     {
@@ -294,9 +307,9 @@
       "initialState": "Approved solution",
       "browserSteps": "Save sourced detailed estimate",
       "expected": "Policy and calculation retained",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM saved fictional USD detailed estimate revision 1: 64 labor hours and two sourced manual-quote kits; policy showed included cost USD 18,565.60, sell USD 26,522.29, 30% margin.",
       "blocker": ""
     },
     {
@@ -306,9 +319,9 @@
       "initialState": "Saved estimate",
       "browserSteps": "Submit pricing",
       "expected": "Independent pricing task appears",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted estimate revision 1; separate Operations pricing task appeared.",
       "blocker": ""
     },
     {
@@ -318,9 +331,9 @@
       "initialState": "Submitted estimate",
       "browserSteps": "Approve or return",
       "expected": "Exact revision decision and next owner",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Operations approved exact pricing revision 1 from My Work; PM proposal preparation appeared.",
       "blocker": ""
     },
     {
@@ -330,9 +343,9 @@
       "initialState": "Approved pricing",
       "browserSteps": "Prepare and submit proposal",
       "expected": "Offer snapshot and exact estimate link",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM saved and submitted proposal revision 1 linked to approved estimate and Define basis; scope, assumptions, exclusions and fictional terms visible.",
       "blocker": ""
     },
     {
@@ -342,9 +355,9 @@
       "initialState": "Submitted proposal",
       "browserSteps": "Approve or return",
       "expected": "Exact independent internal decision",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Operations independently approved exact proposal revision 1 from My Work (typed command 200).",
       "blocker": ""
     },
     {
@@ -354,6 +367,18 @@
       "initialState": "Internally approved proposal",
       "browserSteps": "Record fictional customer outcome with retained source",
       "expected": "Award distinct from internal approval",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM recorded fictional proposal submission and Awarded outcome with source FICTIONAL-AWARD-DHB-2026-01 through full Develop UI. No external communication or retained customer award PDF. PM queue lacked this action; see finding F-04.",
+      "blocker": ""
+    },
+    {
+      "id": "C10B",
+      "track": "Develop",
+      "role": "PM",
+      "initialState": "Fictional award",
+      "browserSteps": "Inspect retained external customer award file",
+      "expected": "Customer award document custody and independent authority source verified",
       "status": "Not run",
       "mode": "",
       "evidence": "",
@@ -366,9 +391,9 @@
       "initialState": "Awarded source",
       "browserSteps": "Accept or return commercial handoff",
       "expected": "Exact source pin and owner",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted exact Develop-to-Design handoff revision 1 and Operations accepted it via Design full-record UI (typed command 200); My Work receiving card was absent; see F-05.",
       "blocker": ""
     },
     {
@@ -378,9 +403,9 @@
       "initialState": "Accepted source",
       "browserSteps": "Create and enrich first shared package",
       "expected": "Stable package ID and source requirements",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM created canonical North zone package wp-9cca1c2e5faa4135b65a85eb79857159 from accepted Design source and enriched draft rev2 with 10 control points, material, requirements, MOP, safety/access and verification.",
       "blocker": ""
     },
     {
@@ -390,6 +415,18 @@
       "initialState": "First package draft",
       "browserSteps": "Create second package and dependencies",
       "expected": "Two distinct scoped packages",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM created distinct South package wp-5bf213e536d84e188427fcd0126acaf0, also rev2 and 10 control points. Package dependency behavior was not exercised separately.",
+      "blocker": ""
+    },
+    {
+      "id": "D02B",
+      "track": "Design",
+      "role": "PM or Engineering",
+      "initialState": "Two draft packages",
+      "browserSteps": "Link predecessor dependency",
+      "expected": "Dependency retained and used by release/readiness",
       "status": "Not run",
       "mode": "",
       "evidence": "",
@@ -402,9 +439,9 @@
       "initialState": "Draft package and document",
       "browserSteps": "Submit exact revision for review",
       "expected": "Independent review task",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM created and submitted exact fictional MOP/document and package revision for independent discipline review for both packages.",
       "blocker": ""
     },
     {
@@ -414,9 +451,9 @@
       "initialState": "Submitted package revision",
       "browserSteps": "Approve or return",
       "expected": "Exact decision and history",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Separate Operations account approved each document and configured Engineering, Delivery, Safety, Quality and Procurement reviews for both package revisions.",
       "blocker": ""
     },
     {
@@ -426,9 +463,9 @@
       "initialState": "Reviewed package",
       "browserSteps": "Issue Design release",
       "expected": "Exact source package and document revisions",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM issued documents and authorized exact Design releases c8684d60-c91b-4720-afb1-bb0d610bdabc (North) and c9bdcffa-7149-43c6-896a-85e2ef854542 (South) after Ready for release assessment.",
       "blocker": ""
     },
     {
@@ -438,9 +475,9 @@
       "initialState": "Issued release",
       "browserSteps": "Accept or return",
       "expected": "Receipt distinct from release",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Operations independently accepted each exact release in Deploy; fresh signed-in reload showed accepted receipts.",
       "blocker": ""
     },
     {
@@ -522,6 +559,18 @@
       "initialState": "Demand and roster",
       "browserSteps": "Inspect eligible and ineligible people",
       "expected": "Qualification availability and binding agree with booking guard",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Scheduling demand listed Controls service and minimum one qualified person; Operations selected qualified account-bound Jordan Lee and Samira Khan for the exact two packages. Negative ineligibility case is E03B, not exercised.",
+      "blocker": ""
+    },
+    {
+      "id": "E03B",
+      "track": "Workforce",
+      "role": "Scheduler",
+      "initialState": "Unbound or ineligible roster person",
+      "browserSteps": "Attempt selection",
+      "expected": "Ineligible person not represented as bookable",
       "status": "Not run",
       "mode": "",
       "evidence": "",
@@ -534,9 +583,9 @@
       "initialState": "Qualified demand",
       "browserSteps": "Publish booking",
       "expected": "Named shift and immutable publication",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Operations published unique North/South bookings on Wed 2026-10-14 07:00-15:30; read-only state tied crew-rybex-9/10 to exact package IDs and publication 4d225a9b-c7b3-4983-bc00-e78bc8cecbbb.",
       "blocker": ""
     },
     {
@@ -558,10 +607,10 @@
       "initialState": "Published own booking",
       "browserSteps": "Acknowledge or cannot attend",
       "expected": "Worker response retained; no start authorization",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
-      "blocker": ""
+      "status": "Passed",
+      "mode": "Browser",
+      "evidence": "Worker accepted booking through confirmation dialog; reload showed 0 awaiting and accepted response. UI states booking does not authorize start.",
+      "blocker": null
     },
     {
       "id": "E07",
@@ -570,9 +619,9 @@
       "initialState": "Accepted release and booking",
       "browserSteps": "Assess and authorize start",
       "expected": "Prerequisites and exact release checked",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "After separate worker acknowledgments, Operations assessed and authorized field start for both current accepted release revisions via browser; read-only reload retained Authorized permits. Booking itself did not grant start.",
       "blocker": ""
     },
     {
@@ -582,9 +631,9 @@
       "initialState": "Authorized assignment",
       "browserSteps": "Submit partial report with labor quantity and evidence",
       "expected": "Actuals retained but completion blocked",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Assigned Jordan reported North 5/10 control points and 4h with fictional PNG. Browser showed Local only, synchronized Draft, Submitted; supervisor review did not establish full completion.",
       "blocker": ""
     },
     {
@@ -594,9 +643,9 @@
       "initialState": "Submitted report",
       "browserSteps": "Independently review",
       "expected": "Reviewed actuals distinct from submission",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Supervisor reviewed current North corrective 5/10 and South 10/10 reports from My Work; fresh role queues removed the exact report cards and completion showed reviewed 10/10 after North correction.",
       "blocker": ""
     },
     {
@@ -606,9 +655,9 @@
       "initialState": "Unexpected condition",
       "browserSteps": "Raise evidence-linked issue and technical query",
       "expected": "Package release and report linkage retained",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser + read-only state",
+      "evidence": "Jordan and Samira assigned-work reports referenced the current Design release/package revision; report/release linkage survived fresh browser session.",
       "blocker": ""
     },
     {
@@ -642,9 +691,9 @@
       "initialState": "Failed inspection",
       "browserSteps": "Record independent failure",
       "expected": "Completion blocked with defect visible",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Quality independently verified failed North initial alarm test; exact completion card remained blocked and failure stayed historical after later retest.",
       "blocker": ""
     },
     {
@@ -654,9 +703,9 @@
       "initialState": "Corrected work",
       "browserSteps": "Submit retest and independently pass",
       "expected": "Current verification supersedes failure without erasure",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Jordan submitted corrective remaining 5/10 report plus linked passing North retest; Quality independently verified retest and second North/South requirements. Fresh queues removed inspection cards.",
       "blocker": ""
     },
     {
@@ -666,9 +715,9 @@
       "initialState": "Reviewed actuals and passing tests",
       "browserSteps": "Approve first package completion",
       "expected": "Exact reviewed quantity and verification bound",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Operations independently recorded current North and South completion at released 10/10 control points each after report and passing inspections; prior failure remained in history.",
       "blocker": ""
     },
     {
@@ -678,9 +727,9 @@
       "initialState": "First completed package",
       "browserSteps": "Prepare turnover and PDF-backed acceptance",
       "expected": "One package accepted; whole work incomplete",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM assembled exact package turnovers; independent Operations-role reviewer retained fictional North/South PDFs, downloaded matching SHA-256 bytes and accepted exact package scopes. South-only acceptance did not produce whole-work acceptance.",
       "blocker": ""
     },
     {
@@ -690,9 +739,9 @@
       "initialState": "Accepted first package",
       "browserSteps": "Independently receive package",
       "expected": "Package receipt retained; second package pending",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Different Operations account independently received South and North package acceptances through My Work (each typed command 200).",
       "blocker": ""
     },
     {
@@ -702,9 +751,9 @@
       "initialState": "Second package incomplete",
       "browserSteps": "Report verify and complete second package",
       "expected": "Two current package completions",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Second package and North corrective work reached independently reviewed 10/10 with passing verification; acceptance and whole-work receipt followed only after both packages qualified.",
       "blocker": ""
     },
     {
@@ -714,9 +763,9 @@
       "initialState": "Both packages accepted",
       "browserSteps": "Record exact whole-work acceptance",
       "expected": "Scope bound PDF and signatures retained",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Independent Operations-role reviewer recorded whole-work acceptance against exact two-package scope using fictional retained PDF; downloaded SHA-256 a2a16343673cecd9759a4054363164070ed05829872a214c8d5abcaf96804cd0 matched source.",
       "blocker": ""
     },
     {
@@ -726,9 +775,9 @@
       "initialState": "Whole-work accepted",
       "browserSteps": "Independently receive work",
       "expected": "Receipt actor and exact scope retained",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Separate Operations account independently accepted exact whole-work receipt via My Work (typed command 200).",
       "blocker": ""
     },
     {
@@ -738,6 +787,18 @@
       "initialState": "Decided turnover",
       "browserSteps": "Replay or open stale link",
       "expected": "No duplicate decision or substitute package",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "After each committed turnover/acceptance/receipt, the saved task displayed ACTION CHANGED and did not select another package; duplicate command replay is separate E21B and not exercised.",
+      "blocker": ""
+    },
+    {
+      "id": "E21B",
+      "track": "Delivery boundary",
+      "role": "Stale or duplicate actor",
+      "initialState": "Decided turnover",
+      "browserSteps": "Replay duplicate command",
+      "expected": "Identical replay stable; conflicting replay rejected",
       "status": "Not run",
       "mode": "",
       "evidence": "",
@@ -750,10 +811,10 @@
       "initialState": "Accepted delivery",
       "browserSteps": "Link exact handoff",
       "expected": "Exact turnover source and residual obligations",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
-      "blocker": ""
+      "status": "Passed",
+      "mode": "Browser",
+      "evidence": "Operations linked exact whole-work acceptance a29449fd and two turnovers to Operate; residual as-built/inspection obligations retained.",
+      "blocker": null
     },
     {
       "id": "F02",
@@ -762,10 +823,10 @@
       "initialState": "Submitted handoff",
       "browserSteps": "Accept support ownership independently",
       "expected": "Owner authority distinct from delivery receipt",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
-      "blocker": ""
+      "status": "Passed",
+      "mode": "Browser",
+      "evidence": "Separate operations_leader account accepted support ownership after first Operations actor linked handoff; actors differ.",
+      "blocker": null
     },
     {
       "id": "F03",
@@ -774,10 +835,10 @@
       "initialState": "Accepted support",
       "browserSteps": "Record contacts intake warranty and coverage disposition",
       "expected": "Explicit facts not inferred coverage",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
-      "blocker": ""
+      "status": "Passed",
+      "mode": "Browser",
+      "evidence": "Support profile recorded explicit fictional contact, escalation, intake, no warranty/no paid agreement, and residual document owner.",
+      "blocker": null
     },
     {
       "id": "F04",
@@ -786,10 +847,10 @@
       "initialState": "Complete profile",
       "browserSteps": "Assess and activate support",
       "expected": "Activation independent of Finance",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
-      "blocker": ""
+      "status": "Passed",
+      "mode": "Browser + authenticated API read",
+      "evidence": "Operations activated support from Ready assessment. Authenticated read after reload: activation Active, Operate Finance Pending.",
+      "blocker": null
     },
     {
       "id": "F05",
@@ -798,10 +859,10 @@
       "initialState": "Open documentation obligation",
       "browserSteps": "Upload fictional replacement document",
       "expected": "Private bytes checksum and exact obligation link",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
-      "blocker": ""
+      "status": "Passed",
+      "mode": "Browser",
+      "evidence": "PM supplied four exact turnover-linked private PDFs; each authorized Operations retrieval matched local SHA-256 bytes.",
+      "blocker": null
     },
     {
       "id": "F06",
@@ -810,10 +871,10 @@
       "initialState": "Submitted document",
       "browserSteps": "Approve or return exact version",
       "expected": "History and obligation state retained",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
-      "blocker": ""
+      "status": "Passed",
+      "mode": "Browser",
+      "evidence": "Separate Operations reviewer recorded four document reviews; authenticated reload showed four Reviewed obligations with original source identities retained.",
+      "blocker": null
     },
     {
       "id": "F07",
@@ -822,9 +883,9 @@
       "initialState": "Supported asset",
       "browserSteps": "Browse asset agreement request and maintenance",
       "expected": "Correct current cycle and next action",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Current-cycle covered request e5f55b03-bb35-4bad-acb8-f25daa720969 was resolved by PM only after linked accepted service job, then independently closed by Operations; reload retained Closed.",
       "blocker": ""
     },
     {
@@ -846,9 +907,9 @@
       "initialState": "Supported asset and covered request",
       "browserSteps": "Prepare scoped service basis",
       "expected": "Coverage matches exact authorized scope",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Operations approved fictional service agreement, triaged exact asset/category as Covered, PM drafted and submitted bounded service execution basis; independent Operations accepted current request cycle and coverage. Agreement had one duplicate unapproved Draft from harness rerun; it did not provide authority.",
       "blocker": ""
     },
     {
@@ -858,9 +919,9 @@
       "initialState": "Submitted service basis",
       "browserSteps": "Accept then Design receive and release",
       "expected": "Distinct decisions on exact cycle",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM created child Work rybex-f464cbc1c4aa4200bca6d99c7142135c and package wp-fa72a92decbb4c4aabecea249a5b9a8e from accepted basis; independent Design reviews, PM exact release and Operations Deploy receipt all returned 200 and persisted.",
       "blocker": ""
     },
     {
@@ -870,9 +931,9 @@
       "initialState": "Accepted service release",
       "browserSteps": "Book authorize report inspect and complete",
       "expected": "Actual visit and independent review",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Qualified Jordan Lee accepted published service shift; separate supervisor authorized field start. Jordan submitted 1 service visit, 4 hours and retained fictional PNG. Supervisor reviewed report, Quality reviewed evidence and verified passing requirement inspection; independent completion reviewed 1/1.",
       "blocker": ""
     },
     {
@@ -882,9 +943,9 @@
       "initialState": "Completed child",
       "browserSteps": "Return evidence to asset and resolve request",
       "expected": "Job completion separate from current-cycle closure",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "PM turnover, independent fictional PDF-backed scoped and whole acceptance (SHA-256 exact retrieved bytes), Operations receipts, Quality linked execution, Operations completed job, PM reviewed resolution and independent Operations closed current-cycle request; four Operate commands returned 200. Job completion and request closure remained distinct.",
       "blocker": ""
     },
     {
@@ -1050,9 +1111,9 @@
       "initialState": "Published policy and roster",
       "browserSteps": "Open configuration operating model and workforce",
       "expected": "Scoped controls and readable identity",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser read-only sweep",
+      "evidence": "Admin opened 13 routed browsing surfaces without application error; Finance had no general admin controls. This is a render/navigation sample, not qualification of every administrative action.",
       "blocker": ""
     },
     {
@@ -1074,9 +1135,9 @@
       "initialState": "Pending tasks",
       "browserSteps": "Use desktop mobile keyboard back and reload",
       "expected": "Exact task and result without overflow",
-      "status": "Not run",
-      "mode": "",
-      "evidence": "",
+      "status": "Passed",
+      "mode": "authenticated browser responsive sweep",
+      "evidence": "PM and worker 390px layouts had no horizontal overflow; keyboard Back to tasks from Finance task returned to My Work after Portfolio. Sampled task content, not exhaustive accessibility.",
       "blocker": ""
     },
     {
@@ -1086,6 +1147,150 @@
       "initialState": "Saved queue link",
       "browserSteps": "Decide or supersede elsewhere then open saved link",
       "expected": "Changed source explained without substitute",
+      "status": "Passed",
+      "mode": "authenticated browser",
+      "evidence": "Post-decision exact links for turnover, package acceptance, package receipt, whole-work acceptance and receipt showed ACTION CHANGED and a return to refreshed My Work, with no substitute package.",
+      "blocker": ""
+    },
+    {
+      "id": "E16C",
+      "track": "Delivery boundary",
+      "role": "PM and independent Operations",
+      "initialState": "South turnover Draft on current release",
+      "browserSteps": "Upload exact fictional PDF and record conditional package acceptance; refresh PM queue",
+      "expected": "Conditional outcome retained and no false executable second-turnover action",
+      "status": "Passed",
+      "mode": "authenticated browser plus authorized document retrieval",
+      "evidence": "On build fccecd4, PM assembled turnover ca42e506-8be4-4b0b-b8eb-0c03384e76ba; Operations uploaded evidence 6ea310ab-7007-4d08-9c63-c2a721e142b4 and recorded a conditional outcome. Retrieved 2,128 PDF bytes matched SHA-256 84388D52FC813D1941FC10F77FF102B75CC9E4973C52D2D08766CE34D0DF70E4. Fresh PM queue had zero false South turnover cards and one valid North card; screenshot final-conditional-queue-fixed.png.",
+      "blocker": ""
+    },
+    {
+      "id": "I06",
+      "track": "Cross-surface",
+      "role": "Finance",
+      "initialState": "Historical three-package expanded-scope bill",
+      "browserSteps": "Open Billing review from My Work; attempt review",
+      "expected": "Queue distinguishes unavailable historical bill basis from executable Finance decision",
+      "status": "Failed",
+      "mode": "authenticated browser + typed-command rejection",
+      "evidence": "Finance My Work labeled review Decision available; focused panel warned current three-package scope not covered by old two-package acceptance; Review returned 409 billing_basis_missing_revise_required with no decision. Guard passed; queue projection failed.",
+      "blocker": ""
+    },
+    {
+      "id": "I07",
+      "track": "Cross-surface",
+      "role": "PM",
+      "initialState": "Approved solution/pricing/released job",
+      "browserSteps": "Open Work hub and exact Work Record",
+      "expected": "Summary reflects current authoritative phase decisions and blocker",
+      "status": "Failed",
+      "mode": "authenticated browser",
+      "evidence": "On new canonical job after approved solution/pricing/proposal and released packages, Work hub still showed Record a feasible solution option and Unpriced.",
+      "blocker": ""
+    },
+    {
+      "id": "I08",
+      "track": "Role routing",
+      "role": "PM/Operations",
+      "initialState": "Approved proposal and submitted Design handoff",
+      "browserSteps": "Inspect My Work for next handoffs",
+      "expected": "Customer submission preparation and Design receipt tasks discoverable",
+      "status": "Failed",
+      "mode": "authenticated browser",
+      "evidence": "Actions were possible from full-record UI and committed, but PM queue omitted customer-submission preparation and Operations queue omitted Design receiving task.",
+      "blocker": ""
+    },
+    {
+      "id": "I09",
+      "track": "Interaction",
+      "role": "PM/Operations",
+      "initialState": "Four support document obligations",
+      "browserSteps": "Read My Work cards",
+      "expected": "Readable package names distinguish North and South documents",
+      "status": "Failed",
+      "mode": "authenticated browser",
+      "evidence": "Four as-built/inspection cards repeated generic label and Work title; North/South only visible after opening task.",
+      "blocker": ""
+    },
+    {
+      "id": "D11",
+      "track": "Design boundary",
+      "role": "PM",
+      "initialState": "Whole-work accepted customer job",
+      "browserSteps": "Attempt adding another package",
+      "expected": "Accepted package set frozen; historical acceptance retained",
+      "status": "Not run",
+      "mode": "",
+      "evidence": "",
+      "blocker": ""
+    },
+    {
+      "id": "D12",
+      "track": "Design boundary",
+      "role": "PM",
+      "initialState": "Whole-work accepted service visit",
+      "browserSteps": "Attempt adding another package",
+      "expected": "Accepted service package set frozen; historical acceptance retained",
+      "status": "Not run",
+      "mode": "",
+      "evidence": "",
+      "blocker": ""
+    },
+    {
+      "id": "G09",
+      "track": "Service boundary",
+      "role": "PM/Operations",
+      "initialState": "Pre-closure request cycle",
+      "browserSteps": "Attempt premature closure before completion/resolution",
+      "expected": "Specific domain rejection with unchanged state",
+      "status": "Not run",
+      "mode": "",
+      "evidence": "",
+      "blocker": ""
+    },
+    {
+      "id": "G10",
+      "track": "Service boundary",
+      "role": "PM/Operations",
+      "initialState": "Changed request cycle",
+      "browserSteps": "Attempt old execution/closure decision",
+      "expected": "Old cycle cannot satisfy current request",
+      "status": "Not run",
+      "mode": "",
+      "evidence": "",
+      "blocker": ""
+    },
+    {
+      "id": "H09",
+      "track": "Job Finance",
+      "role": "Finance",
+      "initialState": "Finance Closed with outstanding invoice",
+      "browserSteps": "Record later receivable payment",
+      "expected": "Finance remains Closed; receivable decreases without rewriting history",
+      "status": "Not run",
+      "mode": "",
+      "evidence": "",
+      "blocker": ""
+    },
+    {
+      "id": "E22",
+      "track": "Field change",
+      "role": "Worker/PM/Engineering",
+      "initialState": "Unexpected condition on released package",
+      "browserSteps": "Issue, price/authorize change, revise and release",
+      "expected": "Original history retained; additional scope held until revised release",
+      "status": "Not run",
+      "mode": "",
+      "evidence": "",
+      "blocker": ""
+    },
+    {
+      "id": "H10",
+      "track": "Service Finance",
+      "role": "Finance",
+      "initialState": "Ready service basis and issued invoice",
+      "browserSteps": "Pay part of invoice after source change",
+      "expected": "Retained issued invoice remains collectible; no new billing authority inferred",
       "status": "Not run",
       "mode": "",
       "evidence": "",

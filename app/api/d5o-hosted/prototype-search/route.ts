@@ -98,12 +98,21 @@ export async function GET(request: NextRequest) {
           const source = contextByWork.get(String(item.workId ?? ""));
           return source ? { ...item, workTitle: source.title, customer: item.customer || source.customer, site: source.site, impact: item.requestId ? source.operate?.requests?.find((request) => request.id === item.requestId)?.impact : undefined, packageName: item.packageId ? source.packages?.find((pkg) => pkg.id === item.packageId)?.name ?? item.packageName : undefined } : item;
         });
-        roleActions = withWorkContext(roleActions).map((value) => {
+        roleActions = await Promise.all(withWorkContext(roleActions).map(async (value) => {
           if (!value || typeof value !== "object") return value;
           const item = value as Record<string, unknown>;
           if (item.kind === "Billing review") {
             const exactId = /^Review billing record ([0-9a-f-]{36})$/i.exec(String(item.title ?? ""))?.[1];
-            return { ...item, decisionId: exactId ?? null };
+            if (!exactId) return { ...item, decisionId: null, position: "waiting", blocker: "The exact billing record cannot be identified for review." };
+            const ledger = await call("d5o_hosted_job_finance_read_v1", {
+              p_workspace_key: workspace, p_presentation_id: String(item.workId ?? "")
+            });
+            const bills = (ledger.data as { bills?: Array<{ id?: string; basis?: unknown }> } | null)?.bills;
+            const bill = Array.isArray(bills) ? bills.find((entry) => entry.id === exactId) : null;
+            if (ledger.error || !bill?.basis) return { ...item, decisionId: exactId, position: "waiting",
+              ownership: "Project manager to correct or replace the historical bill",
+              blocker: ledger.error ? "The current billing basis could not be checked." : "This bill has no retained current-scope basis; Finance review is held until it is corrected or replaced." };
+            return { ...item, decisionId: exactId };
           }
           if (item.kind === "Design review") {
             const source = contextByWork.get(String(item.workId ?? ""));
@@ -115,7 +124,7 @@ export async function GET(request: NextRequest) {
             return { ...item, decisionId: matches.length === 1 ? matches[0].id : null };
           }
           return item;
-        });
+        }));
         serviceActions = withWorkContext(serviceActions);
         deliveryActions = withWorkContext(deliveryActions);
         supportActions = withWorkContext(supportActions);
