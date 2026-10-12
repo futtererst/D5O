@@ -245,10 +245,13 @@ export async function GET(request: NextRequest) {
           const design = designState(record as WorkRecord);
           for (const item of currentPackages) {
             const detail = design.packages.find((candidate) => candidate.packageId === item.id);
-            if (!detail)
-              actions.push({ ...common, kind: "Engineer Work Package", phase: "Design", focus: "package-engineering",
-                packageId: item.id, packageName: item.name, revision: 0, status: "Preparation", position: "preparation",
-                ownership: "Created by you · project manager" });
+            const rawDetail = (record as WorkRecord).design?.packages?.find((candidate) => candidate.packageId === item.id);
+            const malformed = !!rawDetail && (![rawDetail.requirementIds, rawDetail.predecessorIds, rawDetail.documentRefs].every(Array.isArray)
+              || !rawDetail.materialStatus || !rawDetail.commercialDisposition);
+            if (!detail || malformed)
+              actions.push({ ...common, kind: malformed ? "Correct package draft" : "Engineer Work Package", phase: "Design", focus: "package-engineering",
+                packageId: item.id, packageName: item.name, revision: detail?.revision ?? 0, status: "Preparation", position: "preparation",
+                ownership: "Created by you · project manager", blocker: malformed ? "Retained draft has missing source references; save a corrected revision before review." : null });
             else if (detail.status === "Draft" || detail.status === "Returned")
               actions.push({ ...common, kind: "Request package review", phase: "Design", focus: "package-review-request",
                 packageId: item.id, packageName: item.name, revision: detail.revision, status: detail.status,

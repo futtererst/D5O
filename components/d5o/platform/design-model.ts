@@ -59,7 +59,22 @@ export type DesignFinding = { key: string; area: string; severity: "blocker" | "
 export type DesignReadiness = { evaluatedAt: string; packageId: string; packageRevision: number; policyVersion: string; recommendation: "Ready for release" | "Hold for information" | "Hold for resolution" | "Return for redesign/change"; findings: DesignFinding[] };
 
 export const emptyDesign = (): DesignState => ({ documents: [], packages: [], reviews: [], releases: [], history: [] });
-export const designState = (work: WorkRecord): DesignState => work.design ?? emptyDesign();
+export const designState = (work: WorkRecord): DesignState => {
+  const state = work.design ?? emptyDesign();
+  // Older drafts may contain JSON null references. Treat these as missing facts,
+  // never as issued documents or release evidence, and allow a governed correction.
+  return { ...state,
+    documents: Array.isArray(state.documents) ? state.documents : [],
+    reviews: Array.isArray(state.reviews) ? state.reviews : [],
+    releases: Array.isArray(state.releases) ? state.releases : [],
+    history: Array.isArray(state.history) ? state.history : [],
+    packages: Array.isArray(state.packages) ? state.packages.map((item) => ({ ...item,
+      requirementIds: Array.isArray(item.requirementIds) ? item.requirementIds : [],
+      predecessorIds: Array.isArray(item.predecessorIds) ? item.predecessorIds : [],
+      documentRefs: Array.isArray(item.documentRefs) ? item.documentRefs : [],
+      materialLines: Array.isArray(item.materialLines) ? item.materialLines : []
+    })) : [] };
+};
 export const documentRef = (document: DesignDocument) => `${document.id}@${document.revision}`;
 const addCalendarDays = (value: string, days: number) => {
   const parsed = new Date(`${value}T00:00:00Z`);
