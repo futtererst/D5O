@@ -1489,6 +1489,13 @@
       "status": "Passed",
       "mode": "authenticated fictional Finance browser; read-only",
       "evidence": "Normal navigation opened the closed changed job with revised contract/billed USD 109,977.15, paid USD 25,000.00 and outstanding USD 84,977.15. Two exact reviewed bill links showed unpaid USD 29,988.57 and USD 54,988.58. Opening bill 0065579b-7cd8-4f5a-8008-35f499c48e3a showed Record payment, source revision 3, billed USD 54,988.57, paid USD 25,000.00 and unpaid USD 29,988.57. No payment command was sent; the full H09 decrease-and-reload case remains Not run to preserve the established USD 25,000 pilot amount."
+    },
+    {
+      "caseId": "I07 owned-record count clarity",
+      "applicationSha": "14221918b941425c628b72cecce591107dae89d4",
+      "status": "Passed",
+      "mode": "authenticated fictional PM browser",
+      "evidence": "Normal My Work landing → Work hub on Build 14221918b941 showed Work records you own and Current work position; obsolete Assigned to you task-count wording was absent. This verifies truthful labeling, not that Work hub now counts exact actionable tasks."
     }
   ],
   "supplementalProbes": [
