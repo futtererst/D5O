@@ -113,3 +113,9 @@ Application source: fccecd4dc99f68b66c42e50d9aaf9c8299ca609b. Earlier mixed-buil
 | H10 | Service Finance | Finance | Ready service basis and issued invoice | Pay part of invoice after source change | Retained issued invoice remains collectible; no new billing authority inferred |
 
 Status vocabulary: Passed, Failed, Blocked, Not run, Not implemented, Not applicable. Blocked requires an actual attempt and named blocker. Browser decisions, API probes and database probes are recorded separately. The delivery and support observation checkpoints and private files are preserved; the mutable pilot is separate.
+| H11 | Job Finance | PM | Two accepted current packages | Draft and submit exact accepted-scope billing lines | Each draft retains package, quantity, release and reviewed proof |
+| H12 | Job Finance | Finance | Two submitted scoped bills | Independently review each current bill from My Work | Review is exact, independent and retained |
+| H13 | Job Finance | Finance | Two reviewed bills | Record sourced fictional invoice events | Billed amount and references are distinct from acceptance and payment |
+| H14 | Job Finance | Finance | Issued fictional invoice | Record partial payment | Invoice balance decreases without closing Finance |
+| H15 | Job Finance | Finance | Full billed contract with remaining costs | Assess closeout under policy | Close only when applicable cost and commercial prerequisites are satisfied |
+| H16 | Job Finance | Finance | Incurred costs and remaining forecast | Inspect final margin completeness | Provisional forecast is not falsely presented as complete actual margin |

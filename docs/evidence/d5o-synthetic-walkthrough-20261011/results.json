@@ -1295,6 +1295,78 @@
       "mode": "",
       "evidence": "",
       "blocker": ""
+    },
+    {
+      "id": "H11",
+      "track": "Job Finance",
+      "role": "PM",
+      "initialState": "Two accepted current packages",
+      "browserSteps": "Draft and submit exact accepted-scope billing lines",
+      "expected": "Each draft retains package, quantity, release and reviewed proof",
+      "status": "Not run",
+      "mode": "",
+      "evidence": "",
+      "blocker": ""
+    },
+    {
+      "id": "H12",
+      "track": "Job Finance",
+      "role": "Finance",
+      "initialState": "Two submitted scoped bills",
+      "browserSteps": "Independently review each current bill from My Work",
+      "expected": "Review is exact, independent and retained",
+      "status": "Not run",
+      "mode": "",
+      "evidence": "",
+      "blocker": ""
+    },
+    {
+      "id": "H13",
+      "track": "Job Finance",
+      "role": "Finance",
+      "initialState": "Two reviewed bills",
+      "browserSteps": "Record sourced fictional invoice events",
+      "expected": "Billed amount and references are distinct from acceptance and payment",
+      "status": "Not run",
+      "mode": "",
+      "evidence": "",
+      "blocker": ""
+    },
+    {
+      "id": "H14",
+      "track": "Job Finance",
+      "role": "Finance",
+      "initialState": "Issued fictional invoice",
+      "browserSteps": "Record partial payment",
+      "expected": "Invoice balance decreases without closing Finance",
+      "status": "Not run",
+      "mode": "",
+      "evidence": "",
+      "blocker": ""
+    },
+    {
+      "id": "H15",
+      "track": "Job Finance",
+      "role": "Finance",
+      "initialState": "Full billed contract with remaining costs",
+      "browserSteps": "Assess closeout under policy",
+      "expected": "Close only when applicable cost and commercial prerequisites are satisfied",
+      "status": "Not run",
+      "mode": "",
+      "evidence": "",
+      "blocker": ""
+    },
+    {
+      "id": "H16",
+      "track": "Job Finance",
+      "role": "Finance",
+      "initialState": "Incurred costs and remaining forecast",
+      "browserSteps": "Inspect final margin completeness",
+      "expected": "Provisional forecast is not falsely presented as complete actual margin",
+      "status": "Not run",
+      "mode": "",
+      "evidence": "",
+      "blocker": ""
     }
   ],
   "followUp": {
@@ -1326,6 +1398,48 @@
       "status": "Passed",
       "mode": "same-browser authenticated account switch",
       "evidence": "PM signed out through account menu, Finance signed in, selected Rybex workspace, and fresh My Work showed Finance identity, no PM identity and four role-scoped task cards."
+    },
+    {
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "caseId": "H01",
+      "status": "Passed",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "Finance full ledger showed USD 26,522.29 awarded/revised contract, USD 500 incurred Equipment source, USD 1,500 remaining-cost forecast, accepted North/South quantity and retained bill histories."
+    },
+    {
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "caseId": "H02",
+      "status": "Passed",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "After fictional invoices totaling USD 26,522.29 and USD 1,000 paid, full ledger showed USD 25,522.29 outstanding while Finance stayed Pending."
+    },
+    {
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "caseId": "H11",
+      "status": "Passed",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "PM browser drafted North 10 control points USD 12,000 and South 10 control points USD 14,522.29 with exact accepted release and reviewed evidence links; submitted both via typed commands."
+    },
+    {
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "caseId": "H12",
+      "status": "Passed",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "Separate Finance browser opened each bill from My Work, reviewed exact revisions independently, and cards disappeared after each decision."
+    },
+    {
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "caseId": "H13",
+      "status": "Passed",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "Finance browser recorded fictional North and South invoice events FICTIONAL-INVOICE-DHB-001/002, totaling USD 26,522.29; no invoice was sent."
+    },
+    {
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "caseId": "H14",
+      "status": "Passed",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "Finance browser recorded fictional USD 1,000 payment FICTIONAL-PAYMENT-DHB-001 on North invoice; reload showed USD 11,000 North and USD 14,522.29 South outstanding, Finance Pending."
     }
   ]
 }
