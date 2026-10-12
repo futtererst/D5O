@@ -1267,6 +1267,20 @@
       "mode": "authenticated PM and worker API probes plus local DB read",
       "result": "Passed",
       "evidence": "Exact original create-package command ID returned HTTP 201 with the same wp-671ae5c6b3f4437f88705c386560c2db; conflicting reuse 409 command_reuse_conflict; stale source 409 stale_package_basis; worker and other-tenant 403 workspace_forbidden. Catalog read was identical before/after; connected_package_states and receipts each remained one."
+    },
+    {
+      "caseId": "H15 expanded-scope closeout denial",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated fictional Finance browser plus read-only DB comparison on 57221 clone",
+      "result": "Passed",
+      "evidence": "Two-package job rybex-9e4f1e5f9e6b4e429142d3b01e1825e5 showed Accepted prior scope/current scope changed. Finance attempted Closed; typed API returned 409 work_acceptance_scope_changed. Reload remained Pending with scope warning; decision revision 7 and zero matching new events/receipts. Positive eligible closeout remains Not run."
+    },
+    {
+      "caseId": "D07/E22 fixture triage",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "read-only disposable DB and archived checkpoint status inspection",
+      "result": "Not run",
+      "evidence": "Current changed-job clone and preserved pre-turnover archive each hold the same field change as Resolved, including authorized revised release. No pre-decision field-change browser fixture was available; no new field-change command was sent."
     }
   ],
   "runtimeStatus": "Three separate production-mode loopback previews on disposable APIs 57121, 57221 and 57421 are running with displayed Build 9973b08df8f2. No production/shared target was used.",
