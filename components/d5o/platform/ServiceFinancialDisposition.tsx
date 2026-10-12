@@ -176,7 +176,7 @@ export function ServiceFinancialDisposition({
         <label>Recorder note confirming the document states these exact terms<input name="note" required minLength={15} /></label>
         <button disabled={busy || !selectedEvidence}>Record retained supplement</button>
       </form> : null}
-      {actorRole === "project_manager" && basis.eligibleForFinanceReview && (!focusKind || ["Service Finance preparation", "Service invoice preparation"].includes(focusKind)) ?
+      {actorRole === "project_manager" && basis.eligibleForFinanceReview && (!focusKind || ["Service Finance preparation", "Service Finance reassessment", "Service invoice preparation"].includes(focusKind)) ?
         <form className={style.form} onSubmit={(event) => void submit(event, "prepare")}>
           <b>Prepare exact service basis for independent Finance review</b>
           {basis.billingTermsKnown
