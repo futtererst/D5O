@@ -480,8 +480,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
           linkedReview.definition.developHandoff.submittedByActorId !== actorId &&
           ["admin", "operations_leader", "project_manager"].includes(actorRole ?? "");
         const eligibleDesignReceiver = view === "develop" && focus === "design-handoff-receive" &&
-          linkedReview?.discovery?.designHandoff?.status === "submitted" &&
-          linkedReview.discovery.designHandoff.submittedByActorId !== actorId && actorRole === "operations_leader";
+          Boolean(linkedReview?.canonicalWorkId) && actorRole === "operations_leader";
         const prepRevision = focus === "pursuit-prep" || focus === "define-handoff-prep" ? linkedReview?.discovery?.pursuitControl?.revision
           : focus === "define-prep" || focus === "develop-handoff-prep" ? linkedReview?.definition?.revision ?? (focus === "define-prep" ? 1 : undefined)
           : focus === "solution-prep" ? linkedReview?.develop?.revision ?? 0
