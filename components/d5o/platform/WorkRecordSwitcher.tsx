@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { createPortal } from "react-dom";
+import { connectedWorkPosition } from "./connected-work-position";
+import type { WorkRecord } from "./work-types";
 
 type SwitchableRecord = {
   id: string;
@@ -13,6 +15,8 @@ type SwitchableRecord = {
   owner: string;
   status: "attention" | "moving" | "complete";
 };
+
+const displayedStage = (record: SwitchableRecord) => connectedWorkPosition(record as unknown as WorkRecord)?.label ?? record.stage;
 
 type Filter = "all" | "mine" | "attention" | "recent";
 const limit = 25;
@@ -129,7 +133,7 @@ export function WorkRecordSwitcher<T extends SwitchableRecord>({ records, select
   return <>
     <div className="d5o-sidebar-record-context">
       <span className="d5o-sidebar-record-label">CURRENT WORK RECORD</span>
-      {selected ? <><strong className="d5o-sidebar-record-title" title={selected.title}>{selected.title}</strong><small className="d5o-sidebar-record-meta" title={`${selected.customer} · ${selected.stage}`}>{selected.customer} · {selected.stage}</small></> : <span className="d5o-sidebar-record-empty">No Work Record selected</span>}
+      {selected ? <><strong className="d5o-sidebar-record-title" title={selected.title}>{selected.title}</strong><small className="d5o-sidebar-record-meta" title={`${selected.customer} · ${displayedStage(selected)}`}>{selected.customer} · {displayedStage(selected)}</small></> : <span className="d5o-sidebar-record-empty">No Work Record selected</span>}
       <button ref={triggerRef} type="button" className="d5o-sidebar-record-switch" onClick={() => { setQuery(""); setFilter("all"); setPage(null); setError(""); setLoading(true); setOpen(true); }}>Find or switch work <span aria-hidden="true">⌕</span></button>
       {selected ? <button type="button" className="d5o-sidebar-record-overview" onClick={onOverview}>Open record overview <span aria-hidden="true">→</span></button> : null}
     </div>
@@ -137,7 +141,7 @@ export function WorkRecordSwitcher<T extends SwitchableRecord>({ records, select
       <section ref={dialogRef} className="d5o-work-switch-dialog" role="dialog" aria-modal="true" aria-labelledby="d5o-work-switch-title" onKeyDown={handleKeyDown}>
         <header><div><small>{workspaceName.toUpperCase()} · WORK RECORDS</small><h2 id="d5o-work-switch-title">Find work</h2><p>Search by title, customer, site, type, stage, or record ID.</p></div><button type="button" className="d5o-work-switch-close" aria-label="Close Work Record switcher" onClick={close}>×</button></header>
         <div className="d5o-work-switch-controls"><label htmlFor="d5o-work-switch-search">Search Work Records</label><input ref={searchRef} id="d5o-work-switch-search" type="search" value={query} onChange={(event) => { setQuery(event.target.value); setPage(null); setError(""); setLoading(filter !== "recent"); }} placeholder="Search work, customer, site, or ID" /><nav aria-label="Work Record filters">{([ ["all", "All"], ["mine", "My work"], ["attention", "Needs attention"], ["recent", "Recent"] ] as const).map(([key, label]) => <button key={key} type="button" aria-pressed={filter === key} onClick={() => { setFilter(key); setPage(null); setError(""); setLoading(key !== "recent"); }}>{label}</button>)}</nav></div>
-        <div className="d5o-work-switch-results" aria-live="polite"><p>{loading && !page && filter !== "recent" ? "Searching this workspace…" : error || (total ? `Showing ${shown.length} of ${total} matching Work Records` : "No matching Work Records")}</p>{shown.length ? shown.map((record) => <button key={record.id} type="button" disabled={Boolean(openingId)} className={record.id === selected?.id ? "is-current" : ""} onClick={() => void chooseResult(record)}><span><strong>{record.title}</strong><small>{record.customer} · {record.site}</small><small>{record.type} · {record.stage}</small></span><span className={`d5o-work-switch-status is-${record.status}`}>{openingId === record.id ? "Opening…" : record.id === selected?.id ? "Current" : record.status === "attention" ? "Needs attention" : record.status === "complete" ? "Complete" : "Moving"}</span></button>) : !loading && !error ? <div className="d5o-work-switch-empty">Try another search or filter. Only Work Records in this workspace are available.</div> : null}{filter !== "recent" && page?.nextCursor ? <button type="button" className="d5o-work-switch-more" disabled={loading} onClick={() => void loadMore()}>{loading ? "Loading…" : "Load more Work Records"}</button> : null}</div>
+        <div className="d5o-work-switch-results" aria-live="polite"><p>{loading && !page && filter !== "recent" ? "Searching this workspace…" : error || (total ? `Showing ${shown.length} of ${total} matching Work Records` : "No matching Work Records")}</p>{shown.length ? shown.map((record) => <button key={record.id} type="button" disabled={Boolean(openingId)} className={record.id === selected?.id ? "is-current" : ""} onClick={() => void chooseResult(record)}><span><strong>{record.title}</strong><small>{record.customer} · {record.site}</small><small>{record.type} · {displayedStage(record)}</small></span><span className={`d5o-work-switch-status is-${record.status}`}>{openingId === record.id ? "Opening…" : record.id === selected?.id ? "Current" : record.status === "attention" ? "Needs attention" : record.status === "complete" ? "Complete" : "Moving"}</span></button>) : !loading && !error ? <div className="d5o-work-switch-empty">Try another search or filter. Only Work Records in this workspace are available.</div> : null}{filter !== "recent" && page?.nextCursor ? <button type="button" className="d5o-work-switch-more" disabled={loading} onClick={() => void loadMore()}>{loading ? "Loading…" : "Load more Work Records"}</button> : null}</div>
       </section>
     </div>, document.body)}
   </>;
