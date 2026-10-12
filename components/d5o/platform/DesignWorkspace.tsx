@@ -15,6 +15,7 @@ import { serviceExecutionBasisIssue } from "@/lib/d5o/prototype-work/service-exe
 
 type PackageRef = { id: string; name: string; owner: string; status: string };
 type Props = {
+  taskFocus?: string | null; onFullRecord?: () => void;
   work: WorkRecord; packages: PackageRef[]; packageDemands: PackageCrewDemand[];
   actorRole?: string;
   allWork: WorkRecord[]; configurationInventory: ConfigurationInventory; onSelectWork: (id: string) => void;
@@ -53,7 +54,7 @@ function MaterialLinesField({ initial }: { initial: DesignMaterial[] }) {
   </div>)}<button type="button" onClick={() => setRows((current) => [...current, { id: crypto.randomUUID(), item: "", quantity: 0, unit: "", source: "", status: "Unknown", requiredDate: "", forecastDate: "", alternative: "" }])}>+ Add material item</button></fieldset>;
 }
 
-export function DesignWorkspace({ work, packages, packageDemands, allWork, configurationInventory, onSelectWork, actorRole, policy = legacyDesignControlPolicy, onCommand, onHandoff, onCreatePackage, demand, resources }: Props) {
+export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packageDemands, allWork, configurationInventory, onSelectWork, actorRole, policy = legacyDesignControlPolicy, onCommand, onHandoff, onCreatePackage, demand, resources }: Props) {
   const [tab, setTab] = useState<Tab>("Basis");
   const [selectedId, setSelectedId] = useState(packages[0]?.id ?? "");
   useEffect(() => {
@@ -158,6 +159,33 @@ export function DesignWorkspace({ work, packages, packageDemands, allWork, confi
         <div className={styles.actions}><button disabled={busy || !decisionNote.trim()} onClick={() => void send({ action: "decide-review", reviewId: review.id, decision: "Approved", note: decisionNote })}>Approve exact revision</button>
           <button disabled={busy || !decisionNote.trim()} onClick={() => void send({ action: "decide-review", reviewId: review.id, decision: "Returned", note: decisionNote })}>Return for correction</button></div>
       </section>
+    </FocusedTaskFrame>;
+  }
+  if (["package-prep", "package-engineering", "package-review-request"].includes(taskFocus ?? "")) {
+    const linkedPackageId = linkedParams?.get("package");
+    const linkedRevision = Number(linkedParams?.get("sourceRevision"));
+    const exactPackage = packages.find((item) => item.id === linkedPackageId);
+    const exactDetail = state.packages.find((item) => item.packageId === linkedPackageId);
+    const preparation = taskFocus === "package-prep";
+    const engineering = taskFocus === "package-engineering";
+    const current = actorRole === "project_manager" && received &&
+      (preparation ? !linkedPackageId && !packages.length && handoff?.revision === linkedRevision
+        : !!exactPackage && (engineering ? !exactDetail && linkedRevision === 0
+          : exactDetail?.revision === linkedRevision && ["Draft", "Returned"].includes(exactDetail.status)));
+    if (!current) return <section className={styles.workspace} role="status"><h2>This package task changed or was completed</h2>
+      <p>The accepted source, exact package, revision or your current role no longer matches. No other package was selected.</p>
+      <a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work</a></section>;
+    return <FocusedTaskFrame title={preparation ? "Prepare Work Package" : engineering ? `Engineer ${exactPackage!.name}` : `Request review · ${exactPackage!.name}`}
+      work={work.title} customer={work.customer} site={work.site} workspace={work.workspace}
+      scope={preparation ? `Accepted Develop handoff revision ${handoff!.revision} · ${readable(handoff?.brief.offerScope)}` : `${exactPackage!.name} · ${engineering ? "engineering draft needed" : `engineering revision ${exactDetail!.revision}`}`}
+      revision={linkedRevision} outcome={preparation ? "Create the first shared package against this exact accepted award and Define basis." : engineering ? "Save a measured or qualitative engineering draft for this exact package." : "Assign independent discipline review of this exact package revision."}
+      nextOwner={preparation ? "Project manager for package engineering" : engineering ? "Project manager for review request" : "Independent engineering, delivery, safety or quality reviewer"}
+      blocker={serviceIssue} onFullRecord={onFullRecord}
+      context={<><p><strong>Approved Define:</strong> revision {work.definition?.revision ?? "unknown"} · {readable(work.definition?.acceptance)}</p><p><strong>Award:</strong> {readable(handoff?.brief.awardBasis)}</p><p><strong>Exclusions:</strong> {readable(handoff?.brief.excludedScope)}</p><p><strong>Configuration:</strong> {work.phaseConfigurationVersionId}</p></>}>
+      {preparation ? <form className={styles.form} onSubmit={onCreatePackage}><label>Work Package name<input name="package" required minLength={3} placeholder="e.g. North zone controls installation" /></label><label>Package owner<input name="owner" defaultValue={work.owner} required /></label><button type="submit">Create shared package</button></form> : null}
+      {engineering ? <form className={styles.form} onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); void send({ action: "save-package", package: { packageId: exactPackage!.id, scope: field(form, "scope"), location: field(form, "location"), method: field(form, "method"), verification: field(form, "verification"), proof: field(form, "proof"), acceptingAuthority: field(form, "acceptingAuthority"), requirementIds: form.getAll("requirements").map(String), completionBasis: { kind: "Measured", plannedQuantity: Number(form.get("quantity")), unit: field(form, "unit") }, crewDemandRequired: true }, note: "Package engineering basis saved" }); }}>
+        <label>Exact scope<textarea name="scope" required /></label><label>Location<input name="location" required /></label><label>Approved requirements<select name="requirements" multiple>{requirementRefs.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label><label>Planned quantity<input name="quantity" type="number" min="0.001" step="any" required /></label><label>Unit<input name="unit" required /></label><label>Method<textarea name="method" /></label><label>Verification<textarea name="verification" /></label><label>Required proof<textarea name="proof" /></label><label>Accepting authority<input name="acceptingAuthority" /></label><button type="submit" disabled={busy}>Save engineering draft</button></form> : null}
+      {!preparation && !engineering ? <section className={styles.card}><p><strong>Scope:</strong> {exactDetail!.scope}</p><p><strong>Verification:</strong> {exactDetail!.verification || "Not recorded; review may return incomplete design"}</p><form className={styles.form} onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); void send({ action: "request-review", packageId: exactPackage!.id, discipline: field(form, "discipline") as DesignReview["discipline"], assignee: `${field(form, "discipline")} review queue`, dueDate: field(form, "dueDate") }); }}><label>Review discipline<select name="discipline">{disciplines.map((item) => <option key={item}>{item}</option>)}</select></label><label>Due date<input name="dueDate" type="date" required /></label><button type="submit" disabled={busy}>Request exact-revision review</button></form></section> : null}
     </FocusedTaskFrame>;
   }
   return <section className={styles.workspace} aria-label="Design workspace">

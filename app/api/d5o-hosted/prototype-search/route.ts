@@ -5,6 +5,7 @@ import { deliveryRoleActions } from "@/lib/d5o/hosted/delivery-role-actions";
 import { supportRoleActions } from "@/lib/d5o/hosted/support-role-actions";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import { connectedLifecyclePosition } from "@/components/d5o/platform/connected-work-position";
+import { designState } from "@/components/d5o/platform/design-model";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
 import { initialHostedCatalog } from "@/lib/d5o/work-catalog/store";
 import { lifecycleProfiles, stateFor } from "@/components/d5o/platform/lifecycle-profiles";
@@ -233,6 +234,27 @@ export async function GET(request: NextRequest) {
           actions.push({ ...common, kind: "Receive Design handoff", phase: "Develop", focus: "design-handoff-receive",
             revision: commercial.designHandoff.revision, status: "Submitted", dueDate: commercial.designHandoff.responseDueDate,
             ownership: "Eligible independent Design receiver" });
+        const acceptedDesignSource = commercial?.outcome === "Won" && commercial.designHandoff?.status === "accepted" &&
+          commercial.designHandoff.brief.definitionRevision === define?.revision &&
+          commercial.designHandoff.brief.configurationVersionId === record.phaseConfigurationVersionId;
+        const currentPackages = (record as WorkRecord).packages ?? [];
+        if (mine && acceptedDesignSource && !record.serviceSource &&
+          (record as WorkRecord).deploy?.workAcceptance?.receipt !== "Accepted") {
+          if (!currentPackages.length)
+            prep("Prepare Work Package", "Design", "package-prep", commercial.designHandoff!.revision);
+          const design = designState(record as WorkRecord);
+          for (const item of currentPackages) {
+            const detail = design.packages.find((candidate) => candidate.packageId === item.id);
+            if (!detail)
+              actions.push({ ...common, kind: "Engineer Work Package", phase: "Design", focus: "package-engineering",
+                packageId: item.id, packageName: item.name, revision: 0, status: "Preparation", position: "preparation",
+                ownership: "Created by you · project manager" });
+            else if (detail.status === "Draft" || detail.status === "Returned")
+              actions.push({ ...common, kind: "Request package review", phase: "Design", focus: "package-review-request",
+                packageId: item.id, packageName: item.name, revision: detail.revision, status: detail.status,
+                position: "preparation", ownership: "Created by you · project manager" });
+          }
+        }
         if (canReviewDefinition(record) && baseline?.revision) {
           for (const role of ["commercial", "delivery"] as const) if (baseline.reviews?.[role] === "Pending" &&
             (role === "commercial" ? ["admin", "billing_commercial_lead"].includes(actorRole) : ["admin", "operations_leader", "project_manager"].includes(actorRole)))
