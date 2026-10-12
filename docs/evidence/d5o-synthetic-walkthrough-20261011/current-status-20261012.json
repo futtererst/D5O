@@ -1204,7 +1204,7 @@
       "evidence": "At 390px, keyboard Tab and Enter opened exact review-request task, with no document-width overflow. Old revision-1 engineering link reported changed."
     }
   ],
-  "runtimeStatus": "At final check, 61647 responded with an auth redirect but isolated Auth 57021 timed out after 8 seconds. Docker returned 500 on a stop attempt limited to the failed new fixture. Existing populated preview data is preserved, but browser login is not currently qualified as runnable until the local engine recovers.",
+  "runtimeStatus": "Recovery follow-up at PR head 94c3138: 61647 still returned a 307 auth redirect while Auth 57021 timed out. Docker Desktop was Starting and its service was Stopped. Supported Docker restart, stop/start, targeted docker-desktop WSL termination and WSL shutdown did not restore the engine; logs reported a previously attached VHD and socket-forwarder/unmount errors. Only Docker WSL was running; Ubuntu was stopped. No fixture command or browser decision was attempted. Existing populated preview data remains on disk, but fresh authenticated login is not runnable until the local engine recovers.",
   "fixtureStatus": {
     "returnProject": "d5o-handoff-return-20261012",
     "migrationReplay": "76 ordered local candidate files applied in a separate project startup log",
