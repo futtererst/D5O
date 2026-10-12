@@ -1470,6 +1470,20 @@
       "scope": "PM attempting add-cost on accepted customer job",
       "status": "Inconclusive for role",
       "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a"
+    },
+    {
+      "evidence": "With current Work revision 207, catalog revision 11, handoff revision 1 and package count 2, create-package returned HTTP 409 post_acceptance_package_set_frozen; Work/catalog revisions, both package counts and Accepted receipt were unchanged.",
+      "scope": "D11 accepted customer-job package-set freeze",
+      "status": "Passed",
+      "mode": "authenticated PM API negative probe",
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a"
+    },
+    {
+      "evidence": "With current Work/catalog revisions and one accepted package, create-package returned HTTP 409 current_covered_service_cycle_required and no state mutation. The closed request cycle rejected before the post-acceptance freeze, so D12 specific freeze remains Not run.",
+      "scope": "D12 completed covered-service child package addition",
+      "status": "Narrower prerequisite only",
+      "mode": "authenticated PM API negative probe",
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a"
     }
   ]
 }
