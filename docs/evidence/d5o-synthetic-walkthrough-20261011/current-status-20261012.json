@@ -9,17 +9,21 @@
     "Not run": 45,
     "Blocked": 0
   },
-  "currentApplicationSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
+  "currentApplicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
   "fixtures": {
     "handoff": "http://127.0.0.1:61647/work?workspace=rybex; isolated database 57021",
     "delivery": "http://127.0.0.1:61643/work?workspace=rybex; isolated database 56621",
-    "support": "http://127.0.0.1:61645/work?workspace=rybex; isolated database 56821"
+    "support": "http://127.0.0.1:61645/work?workspace=rybex; isolated database 56821",
+    "return": "http://127.0.0.1:61648/work?workspace=rybex; d5o-handoff-return-20261012; disposable API 57121",
+    "jobFinanceClone": "http://127.0.0.1:61649/work?workspace=rybex; d5o-service-mutable-20261012; disposable API 57221",
+    "partialServiceClone": "http://127.0.0.1:61650/work?workspace=rybex; d5o-partial-service-mutable-20261012; disposable API 57421"
   },
   "notes": [
     "I06-I09 current-build follow-ups do not rewrite the 113 original result rows.",
     "B03 evidence maps to Operations Define receipt, not the described Commercial intake qualification.",
     "B10 and B11 original role labels are reversed relative to their screenshots.",
-    "H09 and other compound cases require the full stated outcome; read-only subchecks do not count as payment mutation."
+    "H09 and other compound cases require the full stated outcome; read-only subchecks do not count as payment mutation.",
+    "Current-build checks below are separate from the latest historical case result. A read-only reload on 9973b08 does not redated an earlier browser mutation."
   ],
   "cases": [
     {
@@ -876,11 +880,11 @@
       "id": "H04",
       "originalResult": "Not run",
       "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
-      "latestResult": "Not run",
-      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
-      "mode": "original run",
-      "evidence": "",
-      "remainingGap": "No execution on current build"
+      "latestResult": "Passed",
+      "latestTestedSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "separate authenticated fictional PM and Finance browsers; retained private PDF retrieval",
+      "evidence": "PM prepared service Finance basis; Finance independently held operational-only terms; PM uploaded and retrieved 1,309-byte fictional PDF SHA-256 d61d079201ff2c247c1a7d846e998614a0f2591dc0eb43b2fb9b541c5d3dba26; PM recorded exact USD 524.65 fixed-fee/Net 30 supplement and reassessed; Finance independently marked Ready. The Hold remains historical. No invoice was inferred from readiness.",
+      "remainingGap": "Fictional terms and signer authority only; current-build invoice journey is a separate new check."
     },
     {
       "id": "H05",
@@ -1066,11 +1070,11 @@
       "id": "H09",
       "originalResult": "Not run",
       "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
-      "latestResult": "Not run",
-      "latestTestedSha": "03cfc97ad2fc92df8a97d77d70d9ad04f2cef1e8",
-      "mode": "authenticated fictional Finance browser; read-only",
-      "evidence": "Normal navigation opened the closed changed job with revised contract/billed USD 109,977.15, paid USD 25,000.00 and outstanding USD 84,977.15. Two exact reviewed bill links showed unpaid USD 29,988.57 and USD 54,988.58. Opening bill 0065579b-7cd8-4f5a-8008-35f499c48e3a showed Record payment, source revision 3, billed USD 54,988.57, paid USD 25,000.00 and unpaid USD 29,988.57. No payment command was sent; the full H09 decrease-and-reload case remains Not run to preserve the established USD 25,000 pilot amount.",
-      "remainingGap": "Read and exact payment-task entry passed; payment mutation, reduced balance and reload remain Not run. Preserved historical payment amount unchanged."
+      "latestResult": "Passed",
+      "latestTestedSha": "7b1220a3e9528cc619b1d19d737c0c9d77030921",
+      "mode": "separate authenticated fictional Finance browser on disposable changed-job clone; current-build read-only reload",
+      "evidence": "Finance recorded FICTIONAL-POST-CLOSEOUT-CLONE-20261012 USD 100 through focused payment task (HTTP 200). Whole job remained Finance Closed, billed USD 109,977.15, paid rose USD 25,000 to USD 25,100, outstanding fell USD 84,977.15 to USD 84,877.15. Same invoice unpaid USD 29,888.57 on Build 9973b08 after reload; screenshots/current-post-closeout-clone-997.png. Original source fixture retained USD 25,000 history.",
+      "remainingGap": "Positive mutation occurred on earlier 7b1220 application code; persistence and focused UI were read on 9973b08. No additional payment was recorded on current build."
     },
     {
       "id": "E22",
@@ -1167,11 +1171,30 @@
     {
       "id": "I11",
       "title": "Returned Design handoff correction and independent receipt",
-      "latestResult": "Not run",
-      "latestTestedSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
-      "mode": "separate disposable fixture preparation only",
-      "evidence": "76 ordered migrations applied to d5o-handoff-return-20261012; fixture restore failed and no business command was sent.",
-      "remainingGap": "Restore the recorded fictional fixture into a clean disposable target; then run Operations return, PM correction/resubmission and independent acceptance through separate browsers."
+      "latestResult": "Passed",
+      "latestTestedSha": "d38b02614ca93654c7c68d10418252ed153342c7",
+      "mode": "separate authenticated fictional Operations and PM browser actions; authenticated API/DB boundary probes; current-build reload",
+      "evidence": "In separate 57121 fixture, Operations returned Design handoff revision 1; PM My Work corrected/resubmitted revision 2 with retained clarification; Operations independently accepted revision 2. Four events and four receipts retained. PM My Work opened Prepare Work Package and created wp-671ae5c6b3f4437f88705c386560c2db through authoritative command; reload shows Engineer Work Package. Current Build 9973b08 screenshot i11-package-after-return-997.png. Saved PM/Operations links show changed task at 390px without substitute.",
+      "remainingGap": "The package is created but engineering review/release was not continued in this new return fixture."
+    },
+    {
+      "id": "I12",
+      "title": "Service Finance reassessment exact task omitted its preparation control",
+      "originalFindingSha": "e90193c460a105e9bdb6f631ed6a5a05db6e7b30",
+      "latestResult": "Passed",
+      "latestTestedSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "separate authenticated fictional PM and Finance browser actions",
+      "evidence": "My Work Service Finance reassessment link had focusKind Service Finance reassessment but the PM form filtered it out. The focused form now renders; PM prepared current terms-bound revision 3 (HTTP 200), Finance independently marked revision 4 Ready (HTTP 200), and review card disappeared after reload.",
+      "remainingGap": "No real customer authority; fictional retained terms only."
+    },
+    {
+      "id": "I13",
+      "title": "Partially covered service invoice, payment and sourced cost correction",
+      "latestResult": "Passed",
+      "latestTestedSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "separate authenticated fictional PM/Finance browsers; read-only local DB identity checks; authenticated API negative probes",
+      "evidence": "PM drafted and submitted; Finance reviewed and issued invoice bdc3a384-6155-437e-baa2-598d18ab29d4 / SVC-BDC3A384-615 for USD 524.65; Finance recorded fictional payment ede5d8d2-663f-4262-8433-a86baa8388f8 USD 100. Reload: USD 424.65 outstanding. Finance recorded cost fee16221-e5bd-48a3-97aa-0609f4d2ea78 USD 75, reversal 66539ef4-8da5-4be8-a444-f41dc17ac1cd and replacement 152e192d-6f3e-46f2-96c2-db36ab071ad9 USD 70. Provisional uncovered contribution USD 454.65; final margin unknown. Screenshot current-partial-service-finance-997.png.",
+      "remainingGap": "No invoice delivery, money collection, external cost custody, cost-completeness certification or covered agreement revenue allocation."
     }
   ],
   "currentBuildChecks": [
@@ -1202,13 +1225,55 @@
       "mode": "authenticated PM browser",
       "result": "Passed",
       "evidence": "At 390px, keyboard Tab and Enter opened exact review-request task, with no document-width overflow. Old revision-1 engineering link reported changed."
+    },
+    {
+      "caseId": "I11 accepted handoff/package task reload",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated PM browser on separate 57121 fixture",
+      "result": "Passed",
+      "evidence": "Build 9973b08 displays exact Engineer Work Package for wp-671ae5c6b3f4437f88705c386560c2db after independent accepted handoff revision 2; screenshot i11-package-after-return-997.png."
+    },
+    {
+      "caseId": "I11 stale links/mobile",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated PM and Operations browser at 390px",
+      "result": "Passed",
+      "evidence": "Both saved revision-specific links state This task changed or was decided, expose no obsolete decision or substitute Work/package, and show no horizontal overflow. Earlier harness boolean regex was case-sensitive and printed false despite the captured exact text."
+    },
+    {
+      "caseId": "I11 replay/role/tenant/stale",
+      "applicationSha": "d38b02614ca93654c7c68d10418252ed153342c7",
+      "mode": "authenticated API and read-only DB comparison",
+      "result": "Passed",
+      "evidence": "Identical receipt replay returned original result; conflicting reuse command_reuse_conflict; worker handoff_role_denied; PM other-tenant workspace_forbidden; stale source stale_state. Handoff/event/receipt counts unchanged after rejections."
+    },
+    {
+      "caseId": "I13 service invoice negative boundaries",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated PM and Finance API probes plus local DB lower-boundary probe",
+      "result": "Passed",
+      "evidence": "PM payment returned 403 service_invoice_role_required; stale ledger 409 stale_service_invoice_revision; overpayment 409 service_invoice_overpayment; conflicting payment command ID 409 command_reuse_conflict. Invoice read JSON unchanged at 42465 cents; direct authenticated other-tenant read raised service_invoice_scope_forbidden. API other-tenant wrapper returned unavailable, so exact DB denial is reported separately."
+    },
+    {
+      "caseId": "H09 job clone current-build reload",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated Finance browser read",
+      "result": "Passed",
+      "evidence": "Build 9973b08 focused North invoice shows billed USD 54,988.57, paid USD 25,100 and unpaid USD 29,888.57; whole Work remains Finance Closed; screenshot current-post-closeout-clone-997.png."
+    },
+    {
+      "caseId": "I11 package create replay/denial",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated PM and worker API probes plus local DB read",
+      "result": "Passed",
+      "evidence": "Exact original create-package command ID returned HTTP 201 with the same wp-671ae5c6b3f4437f88705c386560c2db; conflicting reuse 409 command_reuse_conflict; stale source 409 stale_package_basis; worker and other-tenant 403 workspace_forbidden. Catalog read was identical before/after; connected_package_states and receipts each remained one."
     }
   ],
-  "runtimeStatus": "Recovery follow-up at PR head 94c3138: 61647 still returned a 307 auth redirect while Auth 57021 timed out. Docker Desktop was Starting and its service was Stopped. Supported Docker restart, stop/start, targeted docker-desktop WSL termination and WSL shutdown did not restore the engine; logs reported a previously attached VHD and socket-forwarder/unmount errors. Only Docker WSL was running; Ubuntu was stopped. No fixture command or browser decision was attempted. Existing populated preview data remains on disk, but fresh authenticated login is not runnable until the local engine recovers.",
+  "runtimeStatus": "Three separate production-mode loopback previews on disposable APIs 57121, 57221 and 57421 are running with displayed Build 9973b08df8f2. No production/shared target was used.",
   "fixtureStatus": {
-    "returnProject": "d5o-handoff-return-20261012",
-    "migrationReplay": "76 ordered local candidate files applied in a separate project startup log",
-    "restore": "Unqualified: initial restore failed peer authentication; retry was interrupted by Docker API 500. Auth users were then confirmed 0. A data-only restore without the established fixture-reset options stopped at published_configuration_immutable after earlier tables may have loaded. A reset of this separate target failed on Docker API 500. A retry without a network ID reached Docker address-pool exhaustion; restarting on the existing network stalled during schema initialization and was cancelled. Its current schema and fixture state are indeterminate. No handoff-return command was sent.",
-    "preserved": "Original delivery/support observation targets and established payment histories unchanged."
+    "returnProject": "d5o-handoff-return-20261012; 77 ordered candidate migrations; separate returned-revision/accepted-revision browser decisions and one package persisted",
+    "jobFinanceClone": "d5o-service-mutable-20261012; cloned fictional changed-job Finance history; new USD 100 post-closeout payment only in clone",
+    "partialServiceClone": "d5o-partial-service-mutable-20261012; exact canonical partially covered request/child/asset; separate mutable Auth/Storage; fictional terms, invoice, payment and cost correction persisted",
+    "preserved": "Delivery/support observation checkpoints, original preclosure and original changed-job payment history unchanged."
   }
 }
