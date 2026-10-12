@@ -5,6 +5,7 @@ const nextConfig = {
   // A second loopback origin lets reviewers recover browser-local state saved
   // under the earlier 61430 URL without sharing Next's development build lock.
   ...(process.env.D5O_REVIEW_PORT === "61430" ? { distDir: ".next-review-61430" } : {}),
+  ...(process.env.D5O_REVIEW_PORT === "61648" ? { distDir: ".next-review-61648" } : {}),
   // The isolated local review app is opened through 127.0.0.1, while Next's
   // development server initializes with localhost. Keep the dev exception local.
   allowedDevOrigins: ["127.0.0.1"],
