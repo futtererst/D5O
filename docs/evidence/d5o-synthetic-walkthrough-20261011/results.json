@@ -1304,5 +1304,28 @@
     "status": "Passed",
     "mode": "authenticated Finance browser and authenticated queue API",
     "evidence": "Build 6f668f0ed45f moved the historical bill from Action needed 4 to Waiting on another role 1 with exact revision 2, missing retained basis and PM correction owner; screenshot fixed-finance-bill-waiting.png. Typed review guard unchanged."
-  }
+  },
+  "followUpChecks": [
+    {
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "caseId": "E01",
+      "status": "Passed",
+      "mode": "authenticated administrator browser",
+      "evidence": "Created fictional stable roster identity Fictional Alex Unbound 2026 with Controls service and 32 weekly hours from Workspace configuration; POST 200; reload retained profile."
+    },
+    {
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "caseId": "E03B",
+      "status": "Passed",
+      "mode": "authenticated scheduler browser",
+      "evidence": "On Mon 2026-10-12 demand, fictional Alex and existing Mara were labeled no confirmed binding and disabled for selection; overlapping qualified workers were separately labeled shift overlap."
+    },
+    {
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "caseId": "A04",
+      "status": "Passed",
+      "mode": "same-browser authenticated account switch",
+      "evidence": "PM signed out through account menu, Finance signed in, selected Rybex workspace, and fresh My Work showed Finance identity, no PM identity and four role-scoped task cards."
+    }
+  ]
 }
