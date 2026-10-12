@@ -1440,6 +1440,13 @@
       "status": "Passed",
       "mode": "authenticated fictional browser + read-only ledger reload",
       "evidence": "Finance browser recorded fictional USD 1,000 payment FICTIONAL-PAYMENT-DHB-001 on North invoice; reload showed USD 11,000 North and USD 14,522.29 South outstanding, Finance Pending."
+    },
+    {
+      "status": "Passed",
+      "mode": "authenticated PM preparation and separate Operations queue-led browser decision",
+      "applicationSha": "ace3554a72b77140a854f0a9cd62f40fceb57ebb",
+      "evidence": "The committed fictional North as-built reissue appeared in Operations My Work as North zone controls installation · as-built · source revision 1. Operations opened the exact task, downloaded 2299 private PDF bytes, matched SHA-256 5e6a6f0e961b51882646de16fcb01756af5c06667828b48ff8df1c486e76cafa, recorded independent Reviewed (HTTP 200), and the card disappeared after reload. Screenshot fixed-support-document-package-card.png. Earlier reviewed document remained in history.",
+      "caseId": "I09"
     }
   ],
   "supplementalProbes": [
@@ -1484,6 +1491,27 @@
       "status": "Narrower prerequisite only",
       "mode": "authenticated PM API negative probe",
       "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a"
+    },
+    {
+      "status": "Passed",
+      "scope": "Sampled role navigation, queue counts, exact-link reload and 390px worker layout",
+      "evidence": "PM/Commercial/Operations/Supervisor/Quality/Finance/Executive/Admin Action needed counts matched rendered rows: 4/3/4/1/2/3/0/3. Only Admin showed Administration. Worker landed on My schedule and assigned work without horizontal overflow. This is sampled presentation, not 45 unrun cases.",
+      "applicationSha": "ace3554a72b77140a854f0a9cd62f40fceb57ebb",
+      "mode": "authenticated read-only nine-role browser sweep"
+    },
+    {
+      "status": "Passed",
+      "scope": "D11 accepted two-package customer job",
+      "evidence": "Current Work revision 207, catalog 11, package count 2 and handoff revision 1; create-package returned HTTP 409 post_acceptance_package_set_frozen. Work/catalog revisions, both package counts and Accepted receipt unchanged.",
+      "applicationSha": "ace3554a72b77140a854f0a9cd62f40fceb57ebb",
+      "mode": "authenticated PM API negative probe"
+    },
+    {
+      "status": "Harness blocked",
+      "scope": "H09 current-build receivable read",
+      "evidence": "Old script could not locate Finance panel after focused-task navigation, with or without focus=finance. No payment was attempted or recorded. This is selector/routing drift, not proof of a product defect or H09 success.",
+      "applicationSha": "ace3554a72b77140a854f0a9cd62f40fceb57ebb",
+      "mode": "read-only historical Finance browser script"
     }
   ]
 }
