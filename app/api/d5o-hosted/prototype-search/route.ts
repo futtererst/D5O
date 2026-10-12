@@ -223,6 +223,15 @@ export async function GET(request: NextRequest) {
           prep("Prepare customer proposal", "Develop", "proposal-prep", offer?.revision ?? 0);
         if (canReviewPricing(record) && estimate?.revision) actions.push({ ...common, kind: "Pricing review", phase: "Develop", focus: "pricing", revision: estimate.revision, status: "Submitted", title: record.title });
         if (canReviewProposal(record) && offer?.revision) actions.push({ ...common, kind: "Proposal approval", phase: "Develop", focus: "proposal", revision: offer.revision, status: "Submitted", title: record.title });
+        const commercial = record.discovery as WorkRecord["discovery"] | undefined;
+        if (mine && commercial?.proposal.status === "Approved" && offer?.revision &&
+          commercial.proposal.review?.revision === offer.revision)
+          prep("Record customer submission", "Develop", "customer-submission-prep", offer.revision);
+        if (commercial?.designHandoff?.status === "submitted" &&
+          actorRole === "operations_leader" && commercial.designHandoff.submittedByActorId !== ctx.actor.id)
+          actions.push({ ...common, kind: "Receive Design handoff", phase: "Develop", focus: "design-handoff-receive",
+            revision: commercial.designHandoff.revision, status: "Submitted", dueDate: commercial.designHandoff.responseDueDate,
+            ownership: "Eligible independent Design receiver" });
         if (canReviewDefinition(record) && baseline?.revision) {
           for (const role of ["commercial", "delivery"] as const) if (baseline.reviews?.[role] === "Pending" &&
             (role === "commercial" ? ["admin", "billing_commercial_lead"].includes(actorRole) : ["admin", "operations_leader", "project_manager"].includes(actorRole)))
