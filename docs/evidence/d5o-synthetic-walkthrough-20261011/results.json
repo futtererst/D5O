@@ -1296,5 +1296,13 @@
       "evidence": "",
       "blocker": ""
     }
-  ]
+  ],
+  "followUp": {
+    "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+    "caseId": "I06",
+    "kind": "focused fix retest",
+    "status": "Passed",
+    "mode": "authenticated Finance browser and authenticated queue API",
+    "evidence": "Build 6f668f0ed45f moved the historical bill from Action needed 4 to Waiting on another role 1 with exact revision 2, missing retained basis and PM correction owner; screenshot fixed-finance-bill-waiting.png. Typed review guard unchanged."
+  }
 }
