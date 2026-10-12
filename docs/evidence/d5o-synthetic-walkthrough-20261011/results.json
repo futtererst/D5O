@@ -1441,5 +1441,35 @@
       "mode": "authenticated fictional browser + read-only ledger reload",
       "evidence": "Finance browser recorded fictional USD 1,000 payment FICTIONAL-PAYMENT-DHB-001 on North invoice; reload showed USD 11,000 North and USD 14,522.29 South outstanding, Finance Pending."
     }
+  ],
+  "supplementalProbes": [
+    {
+      "evidence": "Role-scoped landing and Action needed row/count agreement; only Admin had Administration navigation; Finance denied admin API and other-tenant queue; worker mobile schedule had no horizontal overflow; exact task Work survived reload. This does not qualify all pending business decisions.",
+      "mode": "authenticated read-only Playwright browser sweep",
+      "scope": "Nine pilot roles: PM, Commercial, Operations, Supervisor, Quality, Finance, Executive, Admin and 390px worker",
+      "status": "Passed",
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a"
+    },
+    {
+      "evidence": "Expected revision 10 against current 11 returned HTTP 409 stale_job_finance; ledger revision, cost and cash counts unchanged.",
+      "mode": "authenticated Finance API negative probe",
+      "scope": "Stale job-finance ledger revision",
+      "status": "Passed",
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a"
+    },
+    {
+      "evidence": "HTTP 403 workspace_forbidden; no cross-tenant actions returned.",
+      "mode": "authenticated cross-tenant API negative probe",
+      "scope": "Rybex Finance identity requesting Rotork role queue",
+      "status": "Passed",
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a"
+    },
+    {
+      "evidence": "HTTP 400 sourced_cost_required with unchanged ledger revision, cost and cash counts. Source combines role and input checks; response does not isolate role denial, so A06 remains Not run.",
+      "mode": "authenticated PM API negative probe",
+      "scope": "PM attempting add-cost on accepted customer job",
+      "status": "Inconclusive for role",
+      "applicationSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a"
+    }
   ]
 }
