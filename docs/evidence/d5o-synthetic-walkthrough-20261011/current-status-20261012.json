@@ -9,7 +9,7 @@
     "Not run": 45,
     "Blocked": 0
   },
-  "currentApplicationSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+  "currentApplicationSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
   "fixtures": {
     "handoff": "http://127.0.0.1:61647/work?workspace=rybex; isolated database 57021",
     "delivery": "http://127.0.0.1:61643/work?workspace=rybex; isolated database 56621",
@@ -1152,5 +1152,62 @@
       "evidence": "",
       "remainingGap": "No execution on current build"
     }
-  ]
+  ],
+  "newCases": [
+    {
+      "id": "I10",
+      "title": "Accepted Design receipt lacks PM package-planning task",
+      "originalFindingSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+      "latestResult": "Passed",
+      "latestTestedSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
+      "mode": "separate authenticated PM browser for package creation/correction; API and DB for adversarial probes",
+      "evidence": "screenshots/i10-package-review-next-26a.png; PM opened exact accepted handoff revision 1, created package wp-e34a99042b894dbbafd110b5f984ebd8, corrected a malformed first engineering draft through My Work, saved revision 2 and reached Request package review after reload. Saved engineering link became changed; Operations direct PM task showed no substitute.",
+      "remainingGap": "Package review request/independent decision not yet committed. Separate return/correction case I11 remains Not run."
+    },
+    {
+      "id": "I11",
+      "title": "Returned Design handoff correction and independent receipt",
+      "latestResult": "Not run",
+      "latestTestedSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
+      "mode": "separate disposable fixture preparation only",
+      "evidence": "76 ordered migrations applied to d5o-handoff-return-20261012; fixture restore failed and no business command was sent.",
+      "remainingGap": "Restore the recorded fictional fixture into a clean disposable target; then run Operations return, PM correction/resubmission and independent acceptance through separate browsers."
+    }
+  ],
+  "currentBuildChecks": [
+    {
+      "caseId": "I10 package creation replay",
+      "applicationSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
+      "mode": "authenticated PM API plus DB read",
+      "result": "Passed",
+      "evidence": "Identical command returned 201 with same package ID; conflicting command returned 409 command_reuse_conflict; stale source returned 409 stale_package_basis. One package state and one receipt remained."
+    },
+    {
+      "caseId": "I10 role/tenant",
+      "applicationSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
+      "mode": "separate authenticated browser and API",
+      "result": "Passed",
+      "evidence": "Worker create-package and PM Rotork create-package returned 403 workspace_forbidden. Operations direct PM review-request link showed changed/unavailable without substitute."
+    },
+    {
+      "caseId": "I10 draft guard",
+      "applicationSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
+      "mode": "authenticated PM API plus DB read",
+      "result": "Passed",
+      "evidence": "Omitted reference arrays returned 400 package_draft_invalid. Work revision 23 and Design decision/events/receipts 2/2/2 were unchanged."
+    },
+    {
+      "caseId": "I10 mobile/keyboard",
+      "applicationSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
+      "mode": "authenticated PM browser",
+      "result": "Passed",
+      "evidence": "At 390px, keyboard Tab and Enter opened exact review-request task, with no document-width overflow. Old revision-1 engineering link reported changed."
+    }
+  ],
+  "fixtureStatus": {
+    "returnProject": "d5o-handoff-return-20261012",
+    "migrationReplay": "76 ordered local candidate files applied in a separate project startup log",
+    "restore": "Unqualified: initial restore failed peer authentication; retry was interrupted by Docker API 500. Auth users were then confirmed 0. A data-only restore without the established fixture-reset options stopped at published_configuration_immutable after earlier tables may have loaded. A reset of this separate target failed on Docker API 500. A retry without a network ID reached Docker address-pool exhaustion; restarting on the existing network stalled during schema initialization and was cancelled. Its current schema and fixture state are indeterminate. No handoff-return command was sent.",
+    "preserved": "Original delivery/support observation targets and established payment histories unchanged."
+  }
 }

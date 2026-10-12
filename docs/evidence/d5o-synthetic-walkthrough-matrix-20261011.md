@@ -128,3 +128,12 @@ H09 was also split in final-build follow-up: closed receivable and exact payment
 ### 2026-10-12 current-status reconciliation
 
 The original 113-case result rows remain immutable. See `d5o-synthetic-walkthrough-20261011/current-status-20261012.json` for each case's original status, latest tested source, evidence and remaining gap. On Build `28aeee2bb403`, I06/I07/I09 were current-build browser reads and I08 completed both PM/Operations handoffs through authenticated UI commands. B03's cited capture is an Operations Define receipt rather than the described Commercial intake qualification; B10/B11 role labels are swapped relative to their captures. Prior-build passes are labeled with their own SHAs, not silently promoted to the current build. The partially covered service Finance and post-closeout payment mutation cases remain unrun on this build to preserve existing fictional histories.
+
+### New current-build cases (not part of the immutable 113-case run)
+
+| ID | Role | Starting fact | Browser action and expected outcome | Current result |
+| --- | --- | --- | --- | --- |
+| I10 | Assigned PM | Independent Design handoff accepted for a canonical awarded Work with no package | Open exact package preparation from My Work, create package, save current draft, follow the next review task; stale and wrong-role links must not substitute scope | Passed on `26a09fc3b192` for creation, correction, queue transition, replay, role/tenant and mobile/keyboard checks; independent package review remains separate |
+| I11 | PM and independent Operations | Submitted Design handoff in a separate disposable fixture | Operations returns the exact revision; PM corrects and resubmits; Operations independently accepts the new revision while prior decision remains | Not run: separate fixture restoration did not complete; no decision command was sent |
+
+The additional partially covered service Finance, post-closeout collection clone, and field-change cases retain their existing Not run positions on this build. The disposable database engine became unreliable during the I11 restore; its partial fixture state is not a qualification source. See the current-status ledger for exact evidence.
