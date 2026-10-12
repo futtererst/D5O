@@ -1447,6 +1447,34 @@
       "applicationSha": "ace3554a72b77140a854f0a9cd62f40fceb57ebb",
       "evidence": "The committed fictional North as-built reissue appeared in Operations My Work as North zone controls installation · as-built · source revision 1. Operations opened the exact task, downloaded 2299 private PDF bytes, matched SHA-256 5e6a6f0e961b51882646de16fcb01756af5c06667828b48ff8df1c486e76cafa, recorded independent Reviewed (HTTP 200), and the card disappeared after reload. Screenshot fixed-support-document-package-card.png. Earlier reviewed document remained in history.",
       "caseId": "I09"
+    },
+    {
+      "caseId": "I07",
+      "applicationSha": "689ab1a94b6b8f4faf7e025d45d421053527bedd",
+      "status": "Passed",
+      "mode": "authenticated PM browser and authenticated Portfolio API",
+      "evidence": "Final Build 689ab1a94b6b showed Operate · support active and USD 26522.29 approved estimate on Work hub, plus Operate · support active and USD 107377.15 approved estimate on the accepted fictional Work Record/Portfolio. The old feasible-solution prompt and Unpriced label were absent. Portfolio API placed Work rybex-d86cdd4cd0c04dea97da79c382cf790c in Handoff position 5 (total 1) and excluded it from Plan position 0 (total 0). Legacy 8% progress and zero legacy proof references were labeled historical. Screenshots current-connected-work-hub.png, current-connected-overview.png, current-connected-portfolio.png."
+    },
+    {
+      "caseId": "I08 customer-submission stale link",
+      "applicationSha": "689ab1a94b6b8f4faf7e025d45d421053527bedd",
+      "status": "Passed",
+      "mode": "authenticated PM browser",
+      "evidence": "Saved focus=customer-submission-prep sourceRevision=1 on already-submitted fictional Work displayed This task changed or was decided with Return to refreshed My Work; no alternate Work selected."
+    },
+    {
+      "caseId": "I08 Design-receipt stale link",
+      "applicationSha": "689ab1a94b6b8f4faf7e025d45d421053527bedd",
+      "status": "Passed",
+      "mode": "authenticated Operations browser",
+      "evidence": "Saved focus=design-handoff-receive sourceRevision=1 on already-accepted fictional Work displayed This task changed or was decided with Return to refreshed My Work; a generic role redirect found during qualification was corrected."
+    },
+    {
+      "caseId": "I08 positive queue decisions",
+      "applicationSha": "689ab1a94b6b8f4faf7e025d45d421053527bedd",
+      "status": "Not run",
+      "mode": "fixture availability",
+      "evidence": "Authenticated read found no canonical Work with proposal Approved awaiting customer submission or Design handoff Submitted awaiting receipt in mutable loopback 56621. Queue projection and focused controls were connected in source; no positive queue-led submission or receiving business decision was performed on this build. Original I08 failure remains only partially addressed."
     }
   ],
   "supplementalProbes": [

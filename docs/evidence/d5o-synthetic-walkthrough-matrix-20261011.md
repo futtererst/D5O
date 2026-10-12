@@ -119,3 +119,7 @@ Status vocabulary: Passed, Failed, Blocked, Not run, Not implemented, Not applic
 | H14 | Job Finance | Finance | Issued fictional invoice | Record partial payment | Invoice balance decreases without closing Finance |
 | H15 | Job Finance | Finance | Full billed contract with remaining costs | Assess closeout under policy | Close only when applicable cost and commercial prerequisites are satisfied |
 | H16 | Job Finance | Finance | Incurred costs and remaining forecast | Inspect final margin completeness | Provisional forecast is not falsely presented as complete actual margin |
+
+### Final-build follow-up (689ab1a94b6b)
+
+I07 was rechecked through an authenticated PM browser in Work hub, Work Record and Portfolio, plus the tenant-scoped Portfolio API; committed Operate position replaced stale Plan/Unpriced labels. I08 was split for follow-up: customer-submission stale link **Passed**, Design-receipt stale link **Passed**, customer-submission positive queue decision **Not run**, Design-receipt positive queue decision **Not run**. The mutable target has no pending Approved proposal or Submitted Design handoff; source wiring alone is not a browser decision. The original-build result rows remain unchanged.
