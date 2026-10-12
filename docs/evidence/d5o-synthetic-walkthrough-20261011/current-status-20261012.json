@@ -67,10 +67,10 @@
       "originalResult": "Passed",
       "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
       "latestResult": "Passed",
-      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
-      "mode": "authenticated API probe",
-      "evidence": "PM session requested rotork role-action projection; HTTP 403 workspace_forbidden. No rotork task data returned. This was API evidence, not browser navigation.",
-      "remainingGap": "Historical result; not retested on current build"
+      "latestTestedSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+      "mode": "authenticated PM browser; read-only API probe",
+      "evidence": "On isolated 61647, Rybex role actions GET returned 200; same signed-in PM requesting Rotork role actions returned 403 workspace_forbidden. No command sent.",
+      "remainingGap": "Current-build cross-tenant queue read verified; cross-tenant mutation not rerun."
     },
     {
       "id": "A06",
