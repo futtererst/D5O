@@ -43,7 +43,7 @@ function tasksFor<T extends RecordSummary>(workspace: string, page: FocusedQueue
     "receive-handoff": "Link accepted delivery handoff", "add-asset": "Identify supported asset", "accept-support": "Accept support responsibility",
     activate: "Assess support activation", "supply-document": "Supply turnover document", "review-document": "Review turnover document"
   } as Record<SupportAction["kind"], string>)[action.kind], work: action.title, customer: action.customer, site: action.site,
-    detail: `${action.documentKind ? `${action.documentKind} · ` : ""}source revision ${action.decisionRevision}`, owner: action.responsibleRole,
+    detail: `${action.packageName ? `${action.packageName} · ` : ""}${action.documentKind ? `${action.documentKind} · ` : ""}source revision ${action.decisionRevision}`, owner: action.responsibleRole,
     blocker: action.blocker, href: supportLink(workspace, action),
     position: action.position === "available" ? "action" : action.position === "preparation" ? "preparation" : "waiting" }));
   const service = (page.serviceActions ?? []).map((action): Task => ({ key: `service:${action.requestId}:${action.kind}:${action.revision}`, canonical: `service:${action.requestId}:${action.requestCycleAt}:${action.kind}`, title: action.kind,

@@ -26,7 +26,7 @@ export function SupportActionQueue({ workspace, actions }: { workspace: string; 
             sourceRevision: String(item.sourceRevision), deployRevision: String(item.deployRevision) });
           return <a key={`${item.kind}:${item.workId}:${item.decisionId}`} href={`/work?${params}`}>
             <strong>{labels[item.kind]}</strong>
-            <small>{item.title} · {item.customer} · acceptance {item.decisionId} rev {item.decisionRevision}</small>
+            <small>{item.title} · {item.customer}{item.packageName ? ` · ${item.packageName}` : ""} · acceptance {item.decisionId} rev {item.decisionRevision}</small>
             <small>Responsible: {item.responsibleRole}</small>
             {item.blocker ? <small>Next: {item.blocker}</small> : null}<span>Open exact action →</span>
           </a>;

@@ -68,7 +68,7 @@ export function SupportDocumentationPanel({ work, hosted, actorRole, onCommand, 
         const history = docs.filter((item) => item.turnoverId === turnover.id && item.kind === kind);
         const current = history.at(-1);
         return <article className={style.row} key={turnover.id + ":" + kind}>
-          <b>{kind === "as-built" ? "As-built controls record" : "Inspection retention"} / {release?.packageId ?? "Package unknown"}</b>
+          <b>{kind === "as-built" ? "As-built controls record" : "Inspection retention"} / {work.packages?.find((item) => item.id === release?.packageId)?.name ?? "Package unknown"}</b>
           <span>Turnover {turnover.id} rev {turnover.revision}; release {release?.id ?? "unavailable"}</span>
           <strong>{current?.status === "Reviewed" ? "Reviewed obligation complete" :
             current?.status === "Submitted" ? "Awaiting independent review" :

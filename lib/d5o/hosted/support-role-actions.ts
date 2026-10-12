@@ -4,7 +4,7 @@ import { supportDocumentationPositions } from "@/components/d5o/platform/support
 
 export type SupportAction = {
   kind: "receive-handoff" | "add-asset" | "accept-support" | "activate" | "supply-document" | "review-document";
-  workId: string; title: string; customer: string; site?: string; decisionId: string; turnoverId?: string; documentKind?: "as-built" | "inspection";
+  workId: string; title: string; customer: string; site?: string; decisionId: string; turnoverId?: string; documentKind?: "as-built" | "inspection"; packageId?: string; packageName?: string;
   decisionRevision: number; sourceRevision: number; deployRevision: number;
   position: "available" | "preparation" | "waiting";
   responsibleRole: string; blocker: string | null;
@@ -36,7 +36,8 @@ export function supportRoleActions(records: WorkRecord[], actorId: string, role:
       for (const doc of supportDocumentationPositions(work).filter((item) => item.status !== "Reviewed")) {
         const review = doc.status === "Submitted";
         actions.push({ ...base, kind: review ? "review-document" : "supply-document",
-          turnoverId: doc.turnoverId, documentKind: doc.kind,
+          turnoverId: doc.turnoverId, documentKind: doc.kind, packageId: doc.packageId,
+          packageName: work.packages?.find((item) => item.id === doc.packageId)?.name,
           decisionId: review ? doc.current!.id : doc.turnoverId,
           decisionRevision: doc.turnoverRevision,
           responsibleRole: review ? "Operations leader" : "Project manager",
