@@ -1,0 +1,1156 @@
+{
+  "schema": "d5o.synthetic-walkthrough.current-status.v1",
+  "generatedAt": "2026-10-12",
+  "originalRunImmutable": true,
+  "originalRunSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+  "originalRunCounts": {
+    "Passed": 64,
+    "Failed": 4,
+    "Not run": 45,
+    "Blocked": 0
+  },
+  "currentApplicationSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+  "fixtures": {
+    "handoff": "http://127.0.0.1:61647/work?workspace=rybex; isolated database 57021",
+    "delivery": "http://127.0.0.1:61643/work?workspace=rybex; isolated database 56621",
+    "support": "http://127.0.0.1:61645/work?workspace=rybex; isolated database 56821"
+  },
+  "notes": [
+    "I06-I09 current-build follow-ups do not rewrite the 113 original result rows.",
+    "B03 evidence maps to Operations Define receipt, not the described Commercial intake qualification.",
+    "B10 and B11 original role labels are reversed relative to their screenshots.",
+    "H09 and other compound cases require the full stated outcome; read-only subchecks do not count as payment mutation."
+  ],
+  "cases": [
+    {
+      "id": "A01",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Fictional PM signed into normal /work landing on mutable 61643, displayed Build fccecd4dc99f, and saw seven actual action-needed cards including two distinct package turnover tasks; screenshot mutable-delivery-pm-start.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "A02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Worker browser My schedule showed only two assigned bookings and assigned-work links; no administrative navigation.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "A03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Finance browser My Work showed Finance role actions and no administrator control in primary navigation.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "A04",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "same-browser authenticated account switch",
+      "evidence": "PM signed out through account menu, Finance signed in, selected Rybex workspace, and fresh My Work showed Finance identity, no PM identity and four role-scoped task cards.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "A05",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated API probe",
+      "evidence": "PM session requested rotork role-action projection; HTTP 403 workspace_forbidden. No rotork task data returned. This was API evidence, not browser navigation.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "A06",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "A07",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "B01",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM saved Discover intake for canonical Work rybex-2fad0999a8f24514a7188e98f0720149; fresh session retained customer/site/need and exact Work identity.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted the fictional intake; independent receiver saw exact source in My Work.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": null,
+      "mode": "evidence reconciliation",
+      "evidence": "Original B03 screenshot define-receiving.png shows Operations receiving Define handoff, not Commercial qualifying Discover intake.",
+      "remainingGap": "Described Commercial intake decision is not established by B03 capture; preserve original row as historical record."
+    },
+    {
+      "id": "B04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted exact qualified Discover handoff revision 1 through My Work; independent Operations receiving task appeared. Browser POST 200, screenshots final-define-handoff-submitted.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B05",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Independent Operations account accepted Discover-to-Define handoff revision 1 through My Work. Fresh PM session showed Prepare definition; screenshot final-define-handoff-received.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B06",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM used structured investigation, two requirements, two deliverables and two linked acceptance criteria, agreement, owned interface, milestone, dependency, risk and exclusion in Define task. Each draft save was allowed to finish; fresh browser session retained the entries and 12/12 assessment. Screenshot final-define-ready-assessment.png. Earlier rapid harness exit had lost pending saves and is not counted as a product defect.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B07",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted exact Define revision 1 through My Work; typed browser command returned 200 and independent Commercial and Delivery review cards appeared. Screenshot final-define-submitted.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B08",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Separate Commercial account returned revision 1 with specific fictional correction basis through My Work; typed browser command returned 200. Fresh PM queue showed Prepare definition correction. Screenshot final-define-commercial-return.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B09",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM started corrected revision 2, clarified customer outage and acceptance coordination, saved the draft and resubmitted. Original return remained in revision history; typed browser commands returned 200. Screenshot final-define-corrected-resubmitted.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B10",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "historical authenticated browser capture",
+      "evidence": "final-define-commercial-approve.png shows Commercial reviewer approving revision 2; original row incorrectly names Operations.",
+      "remainingGap": "Role label corrected in ledger; not retested on current build."
+    },
+    {
+      "id": "B11",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "historical authenticated browser capture",
+      "evidence": "final-define-operations-approve.png shows Operations reviewer approving revision 2; original row incorrectly names Commercial.",
+      "remainingGap": "Role label corrected in ledger; not retested on current build."
+    },
+    {
+      "id": "B12",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted exact approved Define revision 2 into Develop and separate Operations account accepted from its My Work task. Both browser typed commands returned 200; receiver link became decided and PM queue showed Prepare solution. Screenshots final-develop-transfer-pm.png and final-develop-transfer-operations.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C01",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM prepared and submitted one selected two-zone solution with both confirmed requirements and rationale via My Work on build fccecd4dc99f; alternatives comparison was not exercised (C01B).",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C01B",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "C02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Independent Operations returned submitted solution revision 3 for supplier fallback; return and correction card appeared after fresh sign-in.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM corrected option/material risk, reselected and resubmitted revision 5; old return remained historical.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations independently approved solution revision 5 from My Work; PM pricing preparation task appeared.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C05",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM saved fictional USD detailed estimate revision 1: 64 labor hours and two sourced manual-quote kits; policy showed included cost USD 18,565.60, sell USD 26,522.29, 30% margin.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C06",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted estimate revision 1; separate Operations pricing task appeared.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C07",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations approved exact pricing revision 1 from My Work; PM proposal preparation appeared.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C08",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM saved and submitted proposal revision 1 linked to approved estimate and Define basis; scope, assumptions, exclusions and fictional terms visible.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C09",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations independently approved exact proposal revision 1 from My Work (typed command 200).",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C10",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM recorded fictional proposal submission and Awarded outcome with source FICTIONAL-AWARD-DHB-2026-01 through full Develop UI. No external communication or retained customer award PDF. PM queue lacked this action; see finding F-04.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C10B",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "C11",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted exact Develop-to-Design handoff revision 1 and Operations accepted it via Design full-record UI (typed command 200); My Work receiving card was absent; see F-05.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D01",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM created canonical North zone package wp-9cca1c2e5faa4135b65a85eb79857159 from accepted Design source and enriched draft rev2 with 10 control points, material, requirements, MOP, safety/access and verification.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM created distinct South package wp-5bf213e536d84e188427fcd0126acaf0, also rev2 and 10 control points. Package dependency behavior was not exercised separately.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D02B",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "D03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM created and submitted exact fictional MOP/document and package revision for independent discipline review for both packages.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Separate Operations account approved each document and configured Engineering, Delivery, Safety, Quality and Procurement reviews for both package revisions.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D05",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM issued documents and authorized exact Design releases c8684d60-c91b-4720-afb1-bb0d610bdabc (North) and c9bdcffa-7149-43c6-896a-85e2ef854542 (South) after Ready for release assessment.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D06",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations independently accepted each exact release in Deploy; fresh signed-in reload showed accepted receipts.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D07",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "D08",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "D09",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "D10",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "E01",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated administrator browser",
+      "evidence": "Created fictional stable roster identity Fictional Alex Unbound 2026 with Controls service and 32 weekly hours from Workspace configuration; POST 200; reload retained profile.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "E02",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "E03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Scheduling demand listed Controls service and minimum one qualified person; Operations selected qualified account-bound Jordan Lee and Samira Khan for the exact two packages. Negative ineligibility case is E03B, not exercised.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E03B",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated scheduler browser",
+      "evidence": "On Mon 2026-10-12 demand, fictional Alex and existing Mara were labeled no confirmed binding and disabled for selection; overlapping qualified workers were separately labeled shift overlap.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "E04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations published unique North/South bookings on Wed 2026-10-14 07:00-15:30; read-only state tied crew-rybex-9/10 to exact package IDs and publication 4d225a9b-c7b3-4983-bc00-e78bc8cecbbb.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E05",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "E06",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Worker accepted booking through confirmation dialog; reload showed 0 awaiting and accepted response. UI states booking does not authorize start.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E07",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "After separate worker acknowledgments, Operations assessed and authorized field start for both current accepted release revisions via browser; read-only reload retained Authorized permits. Booking itself did not grant start.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E08",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Assigned Jordan reported North 5/10 control points and 4h with fictional PNG. Browser showed Local only, synchronized Draft, Submitted; supervisor review did not establish full completion.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E09",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Supervisor reviewed current North corrective 5/10 and South 10/10 reports from My Work; fresh role queues removed the exact report cards and completion showed reviewed 10/10 after North correction.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E10",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser + read-only state",
+      "evidence": "Jordan and Samira assigned-work reports referenced the current Design release/package revision; report/release linkage survived fresh browser session.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E11",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "E12",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "E13",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Quality independently verified failed North initial alarm test; exact completion card remained blocked and failure stayed historical after later retest.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E14",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Jordan submitted corrective remaining 5/10 report plus linked passing North retest; Quality independently verified retest and second North/South requirements. Fresh queues removed inspection cards.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E15",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations independently recorded current North and South completion at released 10/10 control points each after report and passing inspections; prior failure remained in history.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E16",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM assembled exact package turnovers; independent Operations-role reviewer retained fictional North/South PDFs, downloaded matching SHA-256 bytes and accepted exact package scopes. South-only acceptance did not produce whole-work acceptance.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E17",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Different Operations account independently received South and North package acceptances through My Work (each typed command 200).",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E18",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Second package and North corrective work reached independently reviewed 10/10 with passing verification; acceptance and whole-work receipt followed only after both packages qualified.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E19",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Independent Operations-role reviewer recorded whole-work acceptance against exact two-package scope using fictional retained PDF; downloaded SHA-256 a2a16343673cecd9759a4054363164070ed05829872a214c8d5abcaf96804cd0 matched source.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E20",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Separate Operations account independently accepted exact whole-work receipt via My Work (typed command 200).",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E21",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "After each committed turnover/acceptance/receipt, the saved task displayed ACTION CHANGED and did not select another package; duplicate command replay is separate E21B and not exercised.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E21B",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "F01",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Operations linked exact whole-work acceptance a29449fd and two turnovers to Operate; residual as-built/inspection obligations retained.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Separate operations_leader account accepted support ownership after first Operations actor linked handoff; actors differ.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Support profile recorded explicit fictional contact, escalation, intake, no warranty/no paid agreement, and residual document owner.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser + authenticated API read",
+      "evidence": "Operations activated support from Ready assessment. Authenticated read after reload: activation Active, Operate Finance Pending.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F05",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "PM supplied four exact turnover-linked private PDFs; each authorized Operations retrieval matched local SHA-256 bytes.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F06",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Separate Operations reviewer recorded four document reviews; authenticated reload showed four Reviewed obligations with original source identities retained.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F07",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Current-cycle covered request e5f55b03-bb35-4bad-acb8-f25daa720969 was resolved by PM only after linked accepted service job, then independently closed by Operations; reload retained Closed.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F08",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "G01",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations approved fictional service agreement, triaged exact asset/category as Covered, PM drafted and submitted bounded service execution basis; independent Operations accepted current request cycle and coverage. Agreement had one duplicate unapproved Draft from harness rerun; it did not provide authority.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "G02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM created child Work rybex-f464cbc1c4aa4200bca6d99c7142135c and package wp-fa72a92decbb4c4aabecea249a5b9a8e from accepted basis; independent Design reviews, PM exact release and Operations Deploy receipt all returned 200 and persisted.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "G03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Qualified Jordan Lee accepted published service shift; separate supervisor authorized field start. Jordan submitted 1 service visit, 4 hours and retained fictional PNG. Supervisor reviewed report, Quality reviewed evidence and verified passing requirement inspection; independent completion reviewed 1/1.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "G04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM turnover, independent fictional PDF-backed scoped and whole acceptance (SHA-256 exact retrieved bytes), Operations receipts, Quality linked execution, Operations completed job, PM reviewed resolution and independent Operations closed current-cycle request; four Operate commands returned 200. Job completion and request closure remained distinct.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "G05",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "G06",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "G07",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "G08",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H01",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "Finance full ledger showed USD 26,522.29 awarded/revised contract, USD 500 incurred Equipment source, USD 1,500 remaining-cost forecast, accepted North/South quantity and retained bill histories.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "H02",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "After fictional invoices totaling USD 26,522.29 and USD 1,000 paid, full ledger showed USD 25,522.29 outstanding while Finance stayed Pending.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "H03",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H04",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H05",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H06",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H07",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H08",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "I01",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "I02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser read-only sweep",
+      "evidence": "Admin opened 13 routed browsing surfaces without application error; Finance had no general admin controls. This is a render/navigation sample, not qualification of every administrative action.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "I03",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "I04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser responsive sweep",
+      "evidence": "PM and worker 390px layouts had no horizontal overflow; keyboard Back to tasks from Finance task returned to My Work after Portfolio. Sampled task content, not exhaustive accessibility.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "I05",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Post-decision exact links for turnover, package acceptance, package receipt, whole-work acceptance and receipt showed ACTION CHANGED and a return to refreshed My Work, with no substitute package.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E16C",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser plus authorized document retrieval",
+      "evidence": "On build fccecd4, PM assembled turnover ca42e506-8be4-4b0b-b8eb-0c03384e76ba; Operations uploaded evidence 6ea310ab-7007-4d08-9c63-c2a721e142b4 and recorded a conditional outcome. Retrieved 2,128 PDF bytes matched SHA-256 84388D52FC813D1941FC10F77FF102B75CC9E4973C52D2D08766CE34D0DF70E4. Fresh PM queue had zero false South turnover cards and one valid North card; screenshot final-conditional-queue-fixed.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "I06",
+      "originalResult": "Failed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+      "mode": "authenticated Finance browser; read-only",
+      "evidence": "screenshots/i06-billing-waiting-28a.png; historical bill revision 2 labeled Waiting with no retained current-scope basis and PM correction owner.",
+      "remainingGap": "No new bill review attempted; typed guard was previously observed."
+    },
+    {
+      "id": "I07",
+      "originalResult": "Failed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+      "mode": "authenticated PM browser; read-only",
+      "evidence": "screenshots/i07-committed-work-hub-28a.png; hydrated Work hub, Work Record and Portfolio showed committed Operate position and historical legacy observations.",
+      "remainingGap": "Sampled accepted job only."
+    },
+    {
+      "id": "I08",
+      "originalResult": "Failed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+      "mode": "separate authenticated PM and Operations browsers; business decisions",
+      "evidence": "screenshots/i08-customer-submission-decided-28a.png and screenshots/i08-design-receipt-decided-28a.png; proposal revision 1 submitted by PM, fictional award recorded separately, handoff revision 1 accepted by independent Operations; both saved links became decided after reload.",
+      "remainingGap": "Return/correction branch not exercised; package-planning next-owner queue card absent."
+    },
+    {
+      "id": "I09",
+      "originalResult": "Failed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+      "mode": "authenticated Operations browser; read-only",
+      "evidence": "screenshots/i09-package-card-28a.png; North zone controls installation as-built card names exact package and opens North document.",
+      "remainingGap": "One pending North card sampled; South card not retested on this build."
+    },
+    {
+      "id": "D11",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "D12",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "G09",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "G10",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H09",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "03cfc97ad2fc92df8a97d77d70d9ad04f2cef1e8",
+      "mode": "authenticated fictional Finance browser; read-only",
+      "evidence": "Normal navigation opened the closed changed job with revised contract/billed USD 109,977.15, paid USD 25,000.00 and outstanding USD 84,977.15. Two exact reviewed bill links showed unpaid USD 29,988.57 and USD 54,988.58. Opening bill 0065579b-7cd8-4f5a-8008-35f499c48e3a showed Record payment, source revision 3, billed USD 54,988.57, paid USD 25,000.00 and unpaid USD 29,988.57. No payment command was sent; the full H09 decrease-and-reload case remains Not run to preserve the established USD 25,000 pilot amount.",
+      "remainingGap": "Read and exact payment-task entry passed; payment mutation, reduced balance and reload remain Not run. Preserved historical payment amount unchanged."
+    },
+    {
+      "id": "E22",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H10",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H11",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "PM browser drafted North 10 control points USD 12,000 and South 10 control points USD 14,522.29 with exact accepted release and reviewed evidence links; submitted both via typed commands.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "H12",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "Separate Finance browser opened each bill from My Work, reviewed exact revisions independently, and cards disappeared after each decision.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "H13",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "Finance browser recorded fictional North and South invoice events FICTIONAL-INVOICE-DHB-001/002, totaling USD 26,522.29; no invoice was sent.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "H14",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "Finance browser recorded fictional USD 1,000 payment FICTIONAL-PAYMENT-DHB-001 on North invoice; reload showed USD 11,000 North and USD 14,522.29 South outstanding, Finance Pending.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "H15",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H16",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    }
+  ]
+}
