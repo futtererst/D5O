@@ -1496,6 +1496,13 @@
       "status": "Passed",
       "mode": "authenticated fictional PM browser",
       "evidence": "Normal My Work landing → Work hub on Build 14221918b941 showed Work records you own and Current work position; obsolete Assigned to you task-count wording was absent. This verifies truthful labeling, not that Work hub now counts exact actionable tasks."
+    },
+    {
+      "caseId": "A04 PM-to-Finance account switch",
+      "applicationSha": "14221918b941425c628b72cecce591107dae89d4",
+      "status": "Passed",
+      "mode": "authenticated fictional browser; one browser context",
+      "evidence": "PM signed in, used Account → Switch account, sign-in page showed no PM identity; Finance signed in, selected Rybex workspace, saw its own email and Billing Commercial Lead role with Finance-scoped navigation (Discover, Define, Develop, Operate), no PM email. Displayed Build 14221918b941. No business command sent."
     }
   ],
   "supplementalProbes": [
