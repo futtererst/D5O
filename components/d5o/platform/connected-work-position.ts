@@ -49,3 +49,15 @@ export function connectedWorkPosition(work: WorkRecord): ConnectedWorkPosition |
     return { label: "Discover · pursuit qualified", nextAction: "Receive the exact Define handoff", value };
   return { label: "Discover · controlled intake", nextAction: "Review the current task in My Work", value };
 }
+/** Existing Rybex reference lanes, grouped from the same committed position. */
+export function connectedLifecyclePosition(work: WorkRecord): number | null {
+  if (!work.canonicalWorkId || work.workspace !== "rybex") return null;
+  const position = connectedWorkPosition(work);
+  if (!position) return null;
+  if (position.warning) return 1; // Changed scope needs renewed readiness, not historical acceptance.
+  if (position.label.startsWith("Operate") || position.label.startsWith("Deploy · customer scope accepted") ||
+    position.label.startsWith("Deploy · Operations receipt accepted")) return 5;
+  if (position.label.startsWith("Deploy")) return 2;
+  if (position.label.startsWith("Design")) return 1;
+  return 0;
+}

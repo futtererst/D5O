@@ -4,6 +4,7 @@ import { createRybexSupabaseAdminClient, createRybexSupabaseServerClient } from 
 import { deliveryRoleActions } from "@/lib/d5o/hosted/delivery-role-actions";
 import { supportRoleActions } from "@/lib/d5o/hosted/support-role-actions";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
+import { connectedLifecyclePosition } from "@/components/d5o/platform/connected-work-position";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
 import { initialHostedCatalog } from "@/lib/d5o/work-catalog/store";
 import { lifecycleProfiles, stateFor } from "@/components/d5o/platform/lifecycle-profiles";
@@ -145,7 +146,7 @@ export async function GET(request: NextRequest) {
       (r.discovery as { proposal?: { review?: { submittedByActorId?: string } } } | undefined)?.proposal?.review?.submittedByActorId !== ctx.actor.id;
     const all = [...index.values()].sort((a, b) => a.title.localeCompare(b.title) || a.id.localeCompare(b.id));
     const lifecycle = lifecycleProfiles[workspace as WorkspaceKey].states;
-    const pos = (r: Work) => lifecycle.indexOf(stateFor(workspace as WorkspaceKey, r.stage, r.progress));
+    const pos = (r: Work) => connectedLifecyclePosition(r as unknown as WorkRecord) ?? lifecycle.indexOf(stateFor(workspace as WorkspaceKey, r.stage, r.progress));
     const matched = all.filter((r) => (!query || [r.id, r.title, r.customer, r.site, r.type, r.stage, r.owner]
       .some((v) => v.toLocaleLowerCase().includes(query))) && (view === "portfolio"
         ? (position === null || pos(r) === position) && (filter === "all" || filter === "blocked" && r.blockers.length > 0 || filter === r.status)

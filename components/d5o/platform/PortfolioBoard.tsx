@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { shiftHours, type Assignment, type WorkspaceKey } from "./schedule-model";
 import { lifecycleProfiles, stateFor } from "./lifecycle-profiles";
-import { connectedWorkPosition } from "./connected-work-position";
+import { connectedLifecyclePosition, connectedWorkPosition } from "./connected-work-position";
 import type { WorkRecord } from "./work-types";
 
 type Work = { id: string; workspace: WorkspaceKey; title: string; type: string; customer: string; site: string; stage: string; owner: string; nextAction: string; progress: number; value: string; status: "attention" | "moving" | "complete"; blockers: string[]; source?: Work };
@@ -60,7 +60,7 @@ export function PortfolioBoard({ workspaceKey, work, scheduleAssignments, search
   const records = (page?.records ?? []).map((item) => work.find((local) => local.id === item.id) ?? item);
   const scheduled = scheduleAssignments.filter((item) => (item.week ?? 0) === 0);
   const scheduleFor = (item: Work) => scheduled.filter((assignment) => assignment.workId === item.id);
-  const positionOf = (item: Work) => lifecycle.indexOf(stateFor(item.workspace, item.stage, item.progress));
+  const positionOf = (item: Work) => connectedLifecyclePosition(item as WorkRecord) ?? lifecycle.indexOf(stateFor(item.workspace, item.stage, item.progress));
 
   return <section className="d5o-portfolio-concept">
     <header><div><p>PORTFOLIO · WORK RECORDS</p><h1>Portfolio control</h1><span>Lifecycle position, next decision, owner, current condition, and crew commitment for each Work Record.</span></div><div className="d5o-portfolio-summary"><article><strong>{page?.overview.total ?? "—"}</strong><span>Work Records</span></article><article><strong>{page?.overview.attention ?? "—"}</strong><span>Need attention</span></article><article><strong>{scheduled.length}</strong><span>Crew slots this week</span></article></div></header>
