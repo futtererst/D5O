@@ -1,7 +1,7 @@
 /** Synthetic planning data for the local prototype. Scheduling never grants work authority. */
 export type WorkspaceKey = "rybex" | "rotork";
 export type Assignment = { id: string; crew: string; people: string[]; workId: string; packageId: string; week: number; day: number; date?: string; shift: string };
-export type ScheduleWork = { id: string; title: string; site: string; stage?: string; owner?: string; nextAction?: string; blockers: string[]; packages?: { id: string; name: string; status: "planned" | "in progress" | "ready" | "accepted" }[] };
+export type ScheduleWork = { id: string; title: string; site: string; stage?: string; owner?: string; nextAction?: string; blockers: string[]; packages?: { id: string; name: string; status: "planned" | "in progress" | "ready" | "accepted" }[]; design?: { packages: { packageId: string; revision: number }[]; releases: { packageId: string; packageRevision: number; status: string }[] } };
 export type PersonProfile = { name: string; qualifications: string[]; weeklyCapacityHours: number; active?: boolean; bound?: boolean; unavailable?: { week: number; day: number; reason: string }[] };
 export type AvailabilityBlock = { id: string; person: string; week: number; day: number; date?: string; reason: string };
 export type ScheduleActor = { id: string; name: string; role: string };
@@ -219,10 +219,21 @@ export function personUnavailable(person: PersonProfile, week: number, day: numb
 function packageRelease(record: ScheduleWork | undefined, workPackage: NonNullable<ScheduleWork["packages"]>[number] | undefined) {
   if (!record || !workPackage) return "Work/package unavailable";
   if (workPackage.status === "accepted") return "Package complete";
+  const currentRevision = record.design?.packages.find((entry) => entry.packageId === workPackage.id)?.revision;
+  if (currentRevision && record.design?.releases.some((entry) => entry.packageId === workPackage.id && entry.packageRevision === currentRevision && entry.status === "Accepted")) return "Design release received";
+  if (currentRevision) return "Release held";
   if (record.blockers.length) return "Release held";
   if (workPackage.status === "planned") return "Planning only";
   if (workPackage.status === "ready") return "Awaiting acceptance";
   return "In progress";
+}
+
+function packageReleaseDetail(record: ScheduleWork | undefined, workPackage: NonNullable<ScheduleWork["packages"]>[number] | undefined) {
+  const release = packageRelease(record, workPackage);
+  if (release === "Design release received") return "Deploy accepted the current package revision. Booking publication, worker response, and field-start authorization remain separate.";
+  if (release === "Release held" && record?.design?.packages.some((entry) => entry.packageId === workPackage?.id)) return "The current Design package revision has no accepted Deploy receipt.";
+  if (release === "Package complete") return "This package is already accepted; review whether further work is required.";
+  return record?.blockers[0] ?? (workPackage?.status === "planned" ? "Package planning is incomplete." : "Scheduling does not grant work release.");
 }
 
 export function scheduleDemand(work: ScheduleWork[], assignments: Assignment[], week: number, demands: PackageCrewDemand[] = [...initialPackageDemands("rybex", planningMonday()), ...initialPackageDemands("rotork", planningMonday())], anchor = ""): ScheduleDemand[] {
@@ -240,7 +251,7 @@ export function scheduleDemand(work: ScheduleWork[], assignments: Assignment[], 
       requiredSlots: requirement?.requiredSlots ?? [], date: slot.date, shift: slot.shift,
       configured: Boolean(requirement), workId: record.id, workTitle: record.title, packageName: entry.name, site: record.site,
       packageStatus: entry.status, scheduledPersonHours, remainingPersonHours: Math.max(0, (requirement?.estimatedPersonHours ?? 0) - scheduledPersonHours),
-      release: packageRelease(record, entry), releaseDetail: record.blockers[0] ?? (entry.status === "planned" ? "Package planning is incomplete." : "Scheduling does not grant work release.")
+      release: packageRelease(record, entry), releaseDetail: packageReleaseDetail(record, entry)
     } as ScheduleDemand;
     });
   })).sort((a, b) => {
@@ -345,8 +356,8 @@ export function assignmentAssessment(candidate: Assignment, assignments: Assignm
     ...(acceptedPackageChanged ? [{ kind: "work" as const, message: "This package is accepted; its recorded schedule is historical.", action: "Create independently governed follow-on work before planning more execution." }] : []),
     ...(!record || !workPackage ? [{ kind: "work" as const, message: "The linked Work Record or package is unavailable in this workspace.", action: "Open the Work Record and choose a valid package." }] : [])
   ];
-  const releaseDetail = workPackage?.status === "accepted" ? "This package is already accepted; review whether further work is required." : record?.blockers[0] ?? (workPackage?.status === "planned" ? "Package planning has not been completed." : "Scheduling is not work-release authority.");
-  return { requiredQualification, requirement, unbound, unqualified, unavailablePeople, overlappingPeople, overCapacity, release, releaseDetail, nextDecision: record?.nextAction ?? "Review Work Record", decisionOwner: record?.stage === "Customer acceptance" ? "Owner representative · customer acceptance" : record?.owner ?? "Work owner", errors, issues };
+  const releaseDetail = packageReleaseDetail(record, workPackage);
+  return { requiredQualification, requirement, unbound, unqualified, unavailablePeople, overlappingPeople, overCapacity, release, releaseDetail, nextDecision: release === "Design release received" ? "Publish the booking, obtain the worker response, then assess field-start readiness" : record?.nextAction ?? "Review Work Record", decisionOwner: release === "Design release received" ? "Crew coordinator and Delivery Leader" : record?.stage === "Customer acceptance" ? "Owner representative · customer acceptance" : record?.owner ?? "Work owner", errors, issues };
 }
 
 export function replacementCandidates(candidate: Assignment, replacedPerson: string, assignments: Assignment[], workspaceKey: WorkspaceKey, work: ScheduleWork[], profile = applyAvailability(peopleProfiles[workspaceKey], initialAvailabilityBlocks[workspaceKey]), demands: PackageCrewDemand[] = initialPackageDemands(workspaceKey, planningMonday())) {
