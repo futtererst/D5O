@@ -1,6 +1,6 @@
 {
   "schema": "d5o.synthetic-walkthrough.current-status.v1",
-  "generatedAt": "2026-10-13T02:33:59.993454Z",
+  "generatedAt": "2026-10-13T11:45:00Z",
   "originalRunImmutable": true,
   "originalRunSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
   "originalRunCounts": {
@@ -9,7 +9,7 @@
     "Not run": 45,
     "Blocked": 0
   },
-  "currentApplicationSha": "15f41eb40e72952f405bad571ff476ba8081fba2",
+  "currentApplicationSha": "76291ef5dfe7690d71b40ada153cb7e60dee4ed6",
   "fixtures": {
     "handoff": "http://127.0.0.1:61647/work?workspace=rybex; isolated database 57021",
     "delivery": "http://127.0.0.1:61643/work?workspace=rybex; isolated database 56621",
@@ -1155,6 +1155,20 @@
       "mode": "original run",
       "evidence": "",
       "remainingGap": "No execution on current build"
+    },
+    {
+      "caseId": "I19 exact Design document custody and correction",
+      "applicationSha": "76291ef5dfe7690d71b40ada153cb7e60dee4ed6",
+      "mode": "separate authenticated fictional Operations and PM browsers on disposable 61648; direct authorized PDF-byte retrieval and read-only committed database inspection",
+      "result": "Passed",
+      "evidence": "Operations returned source-only document 5c15e2a7-f007-4480-8f8d-da8d50861cc0@1 with retained reason (HTTP 200); old link became stale. PM created @2, uploaded fictional 729-byte PDF receipt a3e62833-7126-4a69-891a-968c1c050f83, submitted @2 (200). Operations retrieved exact bytes (200, SHA-256 4aedfd6ec44abe5164fd338be41433c5e7b8b92596bced55cdff34966d62af19) and approved @2 (200); PM issued @2 (200). Reload/read-only DB retains @1 Returned and @2 Issued for use. Worker document GET denied 403. No Design release exists."
+    },
+    {
+      "caseId": "I20 ordered candidate migration replay",
+      "applicationSha": "76291ef5dfe7690d71b40ada153cb7e60dee4ed6",
+      "mode": "fresh empty disposable Supabase database d5o-pr2-replay-20261013; ordered CLI migration reset and read-only grant/version probes, no business browser actions",
+      "result": "Passed",
+      "evidence": "79 candidate files replayed from empty local database, last version 20261013111633. Private design_document_evidence table exists; evidence registration EXECUTE false for authenticated and true for service_role. The populated 61648 pilot received only this final forward migration incrementally. No shared or production migration applied."
     }
   ],
   "newCases": [
@@ -1405,9 +1419,9 @@
       "evidence": "Publication rejected 409 release_changed_before_publication with No shared bookings unchanged. Worker schedule showed zero awaiting and no fictional draft crew. No worker response or field-start authority was created."
     }
   ],
-  "runtimeStatus": "61648 isolated production-mode preview displays Build 15f41eb40e72 and uses only disposable API 57121. 61649/61650 remain older isolated builds. The new draft-booking forward migration was applied only to the disposable 61648 database; shared/production unchanged. A fresh ordered 78-file replay is not yet qualified because Docker address pools are exhausted.",
+  "runtimeStatus": "61648 isolated production-mode preview displays Build 76291ef5dfe7 and uses disposable API 57121. 61649/61650 remain older isolated builds. The 79-file candidate sequence replayed on a separate fresh disposable target; shared/production unchanged.",
   "fixtureStatus": {
-    "returnProject": "d5o-handoff-return-20261012; 77 prior ordered candidate migrations plus forward draft-booking correction applied incrementally on this disposable target. Mutable package revision 3 and refreshed demand revision 3; one 2026-10-16 Nate Walker draft booking is retained, unpublished and release held. Document revision 1 awaits independent review; no release or execution.",
+    "returnProject": "d5o-handoff-return-20261012; mutable package revision 3 and demand revision 3; one unpublished release-held crew draft. Document @1 Returned for missing retained bytes; corrected @2 issued with private PDF receipt a3e62833-7126-4a69-891a-968c1c050f83. No Design release or execution.",
     "jobFinanceClone": "d5o-service-mutable-20261012; cloned fictional changed-job Finance history; new USD 100 post-closeout payment only in clone",
     "partialServiceClone": "d5o-partial-service-mutable-20261012; exact canonical partially covered request/child/asset; separate mutable Auth/Storage; fictional terms, invoice, payment and cost correction persisted",
     "preserved": "Delivery/support observation checkpoints, original preclosure and original changed-job payment history unchanged."
