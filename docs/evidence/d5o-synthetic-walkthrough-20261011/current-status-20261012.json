@@ -1281,6 +1281,27 @@
       "mode": "read-only disposable DB and archived checkpoint status inspection",
       "result": "Not run",
       "evidence": "Current changed-job clone and preserved pre-turnover archive each hold the same field change as Resolved, including authorized revised release. No pre-decision field-change browser fixture was available; no new field-change command was sent."
+    },
+    {
+      "caseId": "I13 competing service payments and identical replay",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated typed database commands in separately named disposable database clone; no browser action",
+      "result": "Passed",
+      "evidence": "Two concurrent final-balance USD 424.65 commands targeted invoice bdc3a384-6155-437e-baa2-598d18ab29d4 at revision 4/ledger 1. One committed payment b0100321-e879-4d27-b349-7ea70fceb4d2; the other rejected stale_service_invoice_revision. Identical replay returned that payment ID. Clone has two payments totaling USD 524.65; preserved source has one USD 100 payment. The first attempted restore lacked source ACLs and was rejected before any payment; exact public schema/function grants were restored in the clone before this probe."
+    },
+    {
+      "caseId": "G09/G10 current-cycle service closure guards",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated typed database commands in disposable 73-migration preclosure clone advanced with four candidate migrations; no browser action",
+      "result": "Passed",
+      "evidence": "Preclosure fixture was materialized at Operate revision 31 only in the clone. Rollback-only premature close rejected independent_request_close_required; changed-cycle close rejected current_service_cycle_required. Separate authenticated Operations completion, PM resolution and independent Operations close committed revisions 32-34. Request is Closed in clone; original preclosure source remains revision 34. These probes do not qualify a browser queue journey."
+    },
+    {
+      "caseId": "H15 eligible Finance closeout command",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated typed database command in disposable accepted-job clone; no browser action",
+      "result": "Passed",
+      "evidence": "Clone alone was restored to its retained event-1 Finance Pending snapshot. Billing Commercial Lead committed update-finance Closed against Work source 185, Deploy 33 and Operate 1. Clone now has Finance Closed revision 2, one update-finance event and one replay receipt; preserved source remained Finance Closed. Positive browser closeout remains unrun."
     }
   ],
   "runtimeStatus": "Three separate production-mode loopback previews on disposable APIs 57121, 57221 and 57421 are running with displayed Build 9973b08df8f2. No production/shared target was used.",
