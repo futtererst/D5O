@@ -1297,7 +1297,7 @@
       "latestResult": "Passed",
       "latestTestedSha": "fe8cf58c4f3552ed533b432c0b4ac066a6be3e28",
       "mode": "rollback-only authenticated database probe before fix; authenticated Operations browser and API after fix; fresh disposable migration replay",
-      "evidence": "Before fix, the Operations authenticated database command WOULD_AUTHORIZE the 2026-10-16 published booking on 2026-10-13 in a rolled-back transaction. After forward migration 20261013140000, the same exact current revisions rejected field_shift_not_current. Build fe8cf58c4f35 browser shows Hold for resolution, booked 2026-10-16 07:00-15:30 and pinned America/New_York, with no permit. Authenticated API probes returned future-shift 409 field_shift_not_current, wrong role 403 field_start_authority_required, stale source 409 stale_field_start_basis and other tenant 403 workspace_forbidden. Work 23, Design 31, schedule 4, Deploy 0, permits 0 and events 0 remained unchanged.",
+      "evidence": "Before fix, the Operations authenticated database command WOULD_AUTHORIZE the 2026-10-16 published booking on 2026-10-13 in a rolled-back transaction. After forward migration 20261013140000, the same exact current revisions rejected field_shift_not_current. Build fe8cf58c4f35 browser shows Hold for resolution, booked 2026-10-16 07:00-15:30 and pinned America/New_York, with no permit. Authenticated API probes returned future-shift 409 field_shift_not_current, wrong role 403 field_start_authority_required, stale source 409 stale_field_start_basis and other tenant 403 workspace_forbidden. Work 23, Design 31, schedule 4, Deploy 0, permits 0 and events 0 remained unchanged. At 390px the authenticated Operations browser showed the start button disabled, the correct hold, and no horizontal overflow; screenshot screenshots/i26-future-shift-held-mobile.png.",
       "remainingGap": "Positive start on the actual shift remains Not run; no field actuals or completion are claimed."
     }
   ],
@@ -1468,7 +1468,7 @@
       "applicationSha": "fe8cf58c4f3552ed533b432c0b4ac066a6be3e28",
       "mode": "authenticated fictional Operations browser read and authenticated API rejection probes on disposable 61648; database pre-fix rollback-only counterexample; fresh 80-file migration replay",
       "result": "Passed",
-      "evidence": "Published future shift is held in the browser; typed command returns 409 field_shift_not_current. Wrong-role, stale and tenant denials retain exact domain errors. Rejected commands leave source, Design, schedule, Deploy, permits and events unchanged. Full 80-file ordered replay completed on empty disposable d5o-pr2-replay-20261013."
+      "evidence": "Published future shift is held in the browser; typed command returns 409 field_shift_not_current. Wrong-role, stale and tenant denials retain exact domain errors. Rejected commands leave source, Design, schedule, Deploy, permits and events unchanged. Full 80-file ordered replay completed on empty disposable d5o-pr2-replay-20261013. A 390px browser check found the Authorize field start button disabled with no horizontal overflow."
     }
   ],
   "runtimeStatus": "61648 isolated production-mode preview displays Build fe8cf58c4f35 and uses disposable API 57121. The 80-file hosted candidate sequence replayed on separate empty disposable 57621; shared/production unchanged.",
