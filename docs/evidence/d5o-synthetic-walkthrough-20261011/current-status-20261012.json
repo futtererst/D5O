@@ -1204,6 +1204,33 @@
       "mode": "separate authenticated fictional PM and Operations browsers on disposable 61648; read-only release assessment",
       "evidence": "PM My Work saved engineering revision 1 for wp-671ae5c6b3f4437f88705c386560c2db and requested Engineering review 863a3373-d72a-4484-b9ce-c9810371097c. Independent Operations approved exact revision 1 through its My Work card. PM reload then showed no task for that package, while full Design readiness retained mandatory safety, permit, window, resource, material, document and four discipline-review blockers. Screenshots i14-pm-queue-gap-997.png and i14-release-blockers-997.png.",
       "remainingGap": "The original queue omission on Build 9973b08 remains documented. Build 1f3d516 adds exact PM release preparation and governed-control links; no release or field change was attempted, so D07/E22 remain Not run."
+    },
+    {
+      "id": "I15",
+      "title": "Independent governing-document review is missing from My Work",
+      "latestResult": "Passed",
+      "latestTestedSha": "7db8c25d7f910658fedd241d84467a58b4557b4c",
+      "mode": "fictional PM document draft/submission and separate Operations browser task discovery; stale/wrong-role links",
+      "evidence": "PM saved and submitted document 5c15e2a7-f007-4480-8f8d-da8d50861cc0 revision 1; Operations My Work originally showed zero actions. The new exact task appeared on Build 7db8210 and persisted on Build 7db8c25. Stale sourceRevision=0 showed a changed-task message, and PM could not open the Operations decision. Screenshot i15-document-review-7db8.png.",
+      "remainingGap": "The fictional source is only a drawing reference with no retained private bytes. No approval or issue was recorded; the source cannot be inspected from the task and the current document command has no return-for-correction outcome. Positive document review and release remain Not run."
+    },
+    {
+      "id": "I16",
+      "title": "Returned package incorrectly routes straight back to review request",
+      "latestResult": "Passed",
+      "latestTestedSha": "7db8c25d7f910658fedd241d84467a58b4557b4c",
+      "mode": "separate authenticated PM and Operations browsers on the disposable return fixture",
+      "evidence": "PM saved package revision 2 with one approved Define requirement, safety/access/MOP/rollback, material lines and dated demand. Operations returned Engineering review of exact revision 2 for missing issued document and a material-buffer miss. Before the fix My Work offered Request package review again. Build 7db8c25 showed Correct returned package, the retained reason, exact revision 2 and exact package controls. PM corrected the forecast to 2026-10-13 in revision 3; reload cleared only the material-buffer blocker and retained document/review holds.",
+      "remainingGap": "Revision 3 remains a draft awaiting governing document and fresh discipline reviews; no release or execution was claimed."
+    },
+    {
+      "id": "I17",
+      "title": "Draft crew booking is rejected until Design release despite planning UI",
+      "latestResult": "Failed",
+      "latestTestedSha": "7db8c25d7f910658fedd241d84467a58b4557b4c",
+      "mode": "fictional administrator workforce UI and Operations Crew Schedule browser; authenticated schedule command response",
+      "evidence": "Admin created the bound Nate Walker profile with Controls service and 40h capacity against the existing legacy roster identity. Crew Schedule showed Nate eligible and an unbound fictional profile disabled. PM saved one 2026-10-16 shift demand. Operations selected Nate for a planning booking, but save returned 409 released_demand_coverage_required and no booking persisted. The database save-booking branch requires an Accepted release; publish-week separately rechecks the accepted release.",
+      "remainingGap": "Planning before release is not functional despite UI copy; worker publication/acknowledgment and field start remain Not run. No booking or worker response was fabricated."
     }
   ],
   "currentBuildChecks": [
@@ -1332,11 +1359,32 @@
       "mode": "authenticated fictional PM and worker browsers on disposable 61648; exact-link, stale-link and 390px mobile checks",
       "result": "Passed",
       "evidence": "PM My Work now shows Complete package release preparation for exact package wp-671ae5c6b3f4437f88705c386560c2db revision 1. The focused task shows mandatory holds and next owner; Open exact package controls reaches the same package on the Packages tab. A saved sourceRevision=0 link explains that the task changed and exposes no controls. The worker account is redirected to My crew schedule with no PM controls. Mobile shows no horizontal overflow; screenshot i14-release-task-1f3-mobile.png. Release remains held and unissued."
+    },
+    {
+      "caseId": "I15 document task routing",
+      "applicationSha": "7db8c25d7f910658fedd241d84467a58b4557b4c",
+      "mode": "separate authenticated fictional PM/Operations browsers; no document decision committed",
+      "result": "Passed",
+      "evidence": "Operations discovered document revision 1 from My Work and opened the exact source and package. An obsolete revision link explained that the task changed; PM could not open the Operations decision. Source reference FIC-PSB-WIRE-A has no retained bytes, so independent approval and subsequent issue were intentionally left unexecuted."
+    },
+    {
+      "caseId": "I16 returned package correction and source reassessment",
+      "applicationSha": "7db8c25d7f910658fedd241d84467a58b4557b4c",
+      "mode": "separate authenticated fictional PM/Operations browsers with committed revision reloads",
+      "result": "Passed",
+      "evidence": "PM submitted revision 2, Operations returned the exact Engineering review with retained reason, PM followed Correct returned package from My Work to the exact package and saved revision 3. The two-day material-buffer finding cleared; document and revision-3 discipline-review findings remained."
+    },
+    {
+      "caseId": "I17 pre-release booking rejection",
+      "applicationSha": "7db8c25d7f910658fedd241d84467a58b4557b4c",
+      "mode": "authenticated fictional Operations browser and typed schedule response; read-only reload",
+      "result": "Failed",
+      "evidence": "Crew Schedule showed one eligible bound worker, one disabled unbound profile and one dated demand. Saving a draft planning booking returned 409 released_demand_coverage_required; reload showed zero crew bookings. Publication was not attempted, and field authorization remained unavailable."
     }
   ],
-  "runtimeStatus": "Disposable return preview 61648/API 57121 displays Build 1f3d51625024; separate job-Finance preview 61649/API 57221 and partial-service preview 61650/API 57421 remain on Build 9973b08df8f2. No production/shared target was used.",
+  "runtimeStatus": "Disposable return preview 61648/API 57121 displays Build 7db8c25d7f91; separate job-Finance preview 61649/API 57221 and partial-service preview 61650/API 57421 remain on Build 9973b08df8f2. No production/shared target was used.",
   "fixtureStatus": {
-    "returnProject": "d5o-handoff-return-20261012; 77 ordered candidate migrations; separate returned-revision/accepted-revision browser decisions and one package persisted",
+    "returnProject": "d5o-handoff-return-20261012; 77 ordered candidate migrations; accepted handoff and one package persisted. Mutable package is revision 3 after independent revision-2 return; document revision 1 awaits independent review; qualified workforce identity and dated demand exist, but zero crew bookings after 409 planning rejection.",
     "jobFinanceClone": "d5o-service-mutable-20261012; cloned fictional changed-job Finance history; new USD 100 post-closeout payment only in clone",
     "partialServiceClone": "d5o-partial-service-mutable-20261012; exact canonical partially covered request/child/asset; separate mutable Auth/Storage; fictional terms, invoice, payment and cost correction persisted",
     "preserved": "Delivery/support observation checkpoints, original preclosure and original changed-job payment history unchanged."
