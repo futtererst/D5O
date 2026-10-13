@@ -5,6 +5,7 @@ const nextConfig = {
   // A second loopback origin lets reviewers recover browser-local state saved
   // under the earlier 61430 URL without sharing Next's development build lock.
   ...(process.env.D5O_REVIEW_PORT === "61430" ? { distDir: ".next-review-61430" } : {}),
+  ...(process.env.D5O_REVIEW_PORT === "61643" ? { distDir: ".next-review-61643" } : {}),
   ...(process.env.D5O_REVIEW_PORT === "61648" ? { distDir: ".next-review-61648" } : {}),
   ...(process.env.D5O_REVIEW_PORT === "61649" ? { distDir: ".next-review-61649" } : {}),
   ...(process.env.D5O_REVIEW_PORT === "61650" ? { distDir: ".next-review-61650" } : {}),
