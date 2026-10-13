@@ -268,7 +268,14 @@ export async function GET(request: NextRequest) {
               actions.push({ ...common, kind: malformed ? "Correct package draft" : "Engineer Work Package", phase: "Design", focus: "package-engineering",
                 packageId: item.id, packageName: item.name, revision: detail?.revision ?? 0, status: "Preparation", position: "preparation",
                 ownership: "Created by you · project manager", blocker: malformed ? "Retained draft has missing source references; save a corrected revision before review." : null });
-            else if (detail.status === "Draft" || detail.status === "Returned")
+            else if (detail.status === "Returned") {
+              const returned = [...design.reviews].reverse().find((review) => review.packageId === item.id &&
+                review.revision === detail.revision && review.status === "Returned");
+              actions.push({ ...common, kind: "Correct returned package", phase: "Design", focus: "package-correction",
+                packageId: item.id, packageName: item.name, revision: detail.revision, status: detail.status,
+                position: "preparation", ownership: "Created by you · project manager",
+                blocker: returned?.note || "Review returned this exact revision; inspect the decision before resubmission." });
+            } else if (detail.status === "Draft")
               actions.push({ ...common, kind: "Request package review", phase: "Design", focus: "package-review-request",
                 packageId: item.id, packageName: item.name, revision: detail.revision, status: detail.status,
                 position: "preparation", ownership: "Created by you · project manager" });

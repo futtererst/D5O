@@ -227,12 +227,13 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
       {!preparation && !engineering ? <section className={styles.card}><p><strong>Scope:</strong> {exactDetail!.scope}</p><p><strong>Verification:</strong> {exactDetail!.verification || "Not recorded; review may return incomplete design"}</p><form className={styles.form} onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); void send({ action: "request-review", packageId: exactPackage!.id, discipline: field(form, "discipline") as DesignReview["discipline"], assignee: `${field(form, "discipline")} review queue`, dueDate: field(form, "dueDate") }); }}><label>Review discipline<select name="discipline">{disciplines.map((item) => <option key={item}>{item}</option>)}</select></label><label>Due date<input name="dueDate" type="date" required /></label><button type="submit" disabled={busy}>Request exact-revision review</button></form></section> : null}
     </FocusedTaskFrame>;
   }
-  if (taskFocus === "package-release-prep") {
+  if (taskFocus === "package-release-prep" || taskFocus === "package-correction") {
+    const correcting = taskFocus === "package-correction";
     const linkedPackage = packages.find((item) => item.id === linkedParams?.get("package"));
     const linkedDetail = state.packages.find((item) => item.packageId === linkedPackage?.id);
     const linkedRevision = Number(linkedParams?.get("sourceRevision"));
     const current = actorRole === "project_manager" && received && linkedPackage &&
-      linkedDetail?.revision === linkedRevision && linkedDetail.status === "In review" &&
+      linkedDetail?.revision === linkedRevision && linkedDetail.status === (correcting ? "Returned" : "In review") &&
       !state.releases.some((release) => release.packageId === linkedPackage.id &&
         release.packageRevision === linkedRevision && ["Awaiting receipt", "Accepted"].includes(release.status));
     if (!current || !linkedPackage || !linkedDetail) return <section className={styles.workspace} role="status"><h2>This package task changed or was completed</h2>
@@ -240,6 +241,8 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
       <a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work</a></section>;
     const readiness = assessDesignPackage(work, linkedPackage.id, undefined,
       packageDemands.find((item) => item.workId === work.id && item.packageId === linkedPackage.id) ?? null, policy);
+    const returned = correcting ? [...state.reviews].reverse().find((review) => review.packageId === linkedPackage.id &&
+      review.revision === linkedRevision && review.status === "Returned") : null;
     const mandatoryHolds = readiness.findings.filter((finding) => finding.severity === "blocker");
     const preparationGaps = readiness.findings.filter((finding) => finding.severity !== "blocker");
     const openControls = (nextTab: Tab) => {
@@ -251,14 +254,15 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
       url.searchParams.set("designTab", nextTab);
       window.location.assign(url);
     };
-    return <FocusedTaskFrame title={`Complete release preparation · ${linkedPackage.name}`} work={work.title}
+    return <FocusedTaskFrame title={`${correcting ? "Correct returned package" : "Complete release preparation"} · ${linkedPackage.name}`} work={work.title}
       customer={work.customer} site={work.site} workspace={work.workspace} revision={linkedRevision}
       scope={`${linkedPackage.name} · ${linkedDetail.scope}`}
-      outcome="Resolve the current package findings. Delivery release and independent Deploy receipt are separate decisions."
-      blocker={readiness.recommendation === "Ready for release" ? null : readiness.recommendation}
-      nextOwner="Project manager for preparation; Delivery Leader for release authorization"
+      outcome={correcting ? "Revise the exact returned engineering basis before requesting fresh independent review." : "Resolve the current package findings. Delivery release and independent Deploy receipt are separate decisions."}
+      blocker={correcting ? returned?.note || "The package review was returned for correction." : readiness.recommendation === "Ready for release" ? null : readiness.recommendation}
+      nextOwner={correcting ? "Project manager to revise; independent discipline reviewer after resubmission" : "Project manager for preparation; Delivery Leader for release authorization"}
       onFullRecord={onFullRecord}>
       <section className={styles.card}><h2>Current release position</h2>
+        {returned ? <p><strong>Returned review:</strong> {returned.discipline} · {returned.note || "Reason not recorded"}</p> : null}
         <p>{readiness.recommendation} · package revision {linkedRevision} · {readiness.findings.length} finding{readiness.findings.length === 1 ? "" : "s"}</p>
         <h3>Mandatory holds</h3>
         {mandatoryHolds.length ? <ul>{mandatoryHolds.map((finding) => <li key={finding.key}>
