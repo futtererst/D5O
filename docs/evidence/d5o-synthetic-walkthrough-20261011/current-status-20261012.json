@@ -1195,6 +1195,15 @@
       "mode": "separate authenticated fictional PM/Finance browsers; read-only local DB identity checks; authenticated API negative probes",
       "evidence": "PM drafted and submitted; Finance reviewed and issued invoice bdc3a384-6155-437e-baa2-598d18ab29d4 / SVC-BDC3A384-615 for USD 524.65; Finance recorded fictional payment ede5d8d2-663f-4262-8433-a86baa8388f8 USD 100. Reload: USD 424.65 outstanding. Finance recorded cost fee16221-e5bd-48a3-97aa-0609f4d2ea78 USD 75, reversal 66539ef4-8da5-4be8-a444-f41dc17ac1cd and replacement 152e192d-6f3e-46f2-96c2-db36ab071ad9 USD 70. Provisional uncovered contribution USD 454.65; final margin unknown. Screenshot current-partial-service-finance-997.png.",
       "remainingGap": "No invoice delivery, money collection, external cost custody, cost-completeness certification or covered agreement revenue allocation."
+    },
+    {
+      "id": "I14",
+      "title": "PM release-preparation task disappears after independent Engineering review",
+      "latestResult": "Passed",
+      "latestTestedSha": "1f3d5162502452521a904ec965b205abcb860fd0",
+      "mode": "separate authenticated fictional PM and Operations browsers on disposable 61648; read-only release assessment",
+      "evidence": "PM My Work saved engineering revision 1 for wp-671ae5c6b3f4437f88705c386560c2db and requested Engineering review 863a3373-d72a-4484-b9ce-c9810371097c. Independent Operations approved exact revision 1 through its My Work card. PM reload then showed no task for that package, while full Design readiness retained mandatory safety, permit, window, resource, material, document and four discipline-review blockers. Screenshots i14-pm-queue-gap-997.png and i14-release-blockers-997.png.",
+      "remainingGap": "The original queue omission on Build 9973b08 remains documented. Build 1f3d516 adds exact PM release preparation and governed-control links; no release or field change was attempted, so D07/E22 remain Not run."
     }
   ],
   "currentBuildChecks": [
@@ -1302,9 +1311,30 @@
       "mode": "authenticated typed database command in disposable accepted-job clone; no browser action",
       "result": "Passed",
       "evidence": "Clone alone was restored to its retained event-1 Finance Pending snapshot. Billing Commercial Lead committed update-finance Closed against Work source 185, Deploy 33 and Operate 1. Clone now has Finance Closed revision 2, one update-finance event and one replay receipt; preserved source remained Finance Closed. Positive browser closeout remains unrun."
+    },
+    {
+      "caseId": "I14 package engineering/review browser sequence",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "separate authenticated fictional PM and Operations browsers on disposable 61648",
+      "result": "Failed",
+      "evidence": "PM saved measured ten-termination engineering revision 1 and requested Engineering review; independent Operations approved it. Each typed Design POST returned 200, and saved task links became stale rather than selecting another package. PM reload then omitted this Work entirely from Action needed despite current mandatory release blockers. Current package remains unreleased; screenshots i14-pm-queue-gap-997.png and i14-release-blockers-997.png."
+    },
+    {
+      "caseId": "Finance browser fixture startup",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "local disposable infrastructure setup, no business command",
+      "result": "Blocked",
+      "evidence": "A new loopback Supabase target for positive Finance browser closeout failed before database startup with Docker 'all predefined address pools have been fully subnetted'. Stopping the unused preclosure stack preserved its volume but did not free an address pool; second start failed identically. The existing three previews, Auth records and private files were not redirected. Positive Finance browser action remains Not run."
+    },
+    {
+      "caseId": "I14 release-preparation focused-task retest",
+      "applicationSha": "1f3d5162502452521a904ec965b205abcb860fd0",
+      "mode": "authenticated fictional PM and worker browsers on disposable 61648; exact-link, stale-link and 390px mobile checks",
+      "result": "Passed",
+      "evidence": "PM My Work now shows Complete package release preparation for exact package wp-671ae5c6b3f4437f88705c386560c2db revision 1. The focused task shows mandatory holds and next owner; Open exact package controls reaches the same package on the Packages tab. A saved sourceRevision=0 link explains that the task changed and exposes no controls. The worker account is redirected to My crew schedule with no PM controls. Mobile shows no horizontal overflow; screenshot i14-release-task-1f3-mobile.png. Release remains held and unissued."
     }
   ],
-  "runtimeStatus": "Three separate production-mode loopback previews on disposable APIs 57121, 57221 and 57421 are running with displayed Build 9973b08df8f2. No production/shared target was used.",
+  "runtimeStatus": "Disposable return preview 61648/API 57121 displays Build 1f3d51625024; separate job-Finance preview 61649/API 57221 and partial-service preview 61650/API 57421 remain on Build 9973b08df8f2. No production/shared target was used.",
   "fixtureStatus": {
     "returnProject": "d5o-handoff-return-20261012; 77 ordered candidate migrations; separate returned-revision/accepted-revision browser decisions and one package persisted",
     "jobFinanceClone": "d5o-service-mutable-20261012; cloned fictional changed-job Finance history; new USD 100 post-closeout payment only in clone",
