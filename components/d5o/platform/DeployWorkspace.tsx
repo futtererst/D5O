@@ -19,7 +19,7 @@ type Action = Omit<DeployCommand, "workId" | "expectedRevision" | "commandId">;
 type Tab = "Overview" | "Crew & readiness" | "Field work" | "Inspections & issues" | "Acceptance & turnover";
 const text = (data: FormData, key: string) => String(data.get(key) ?? "").trim();
 
-export function DeployWorkspace({ work, schedule, policy, actorId, actorRole, onCommand, onUpload, onDesignCommand, onCrew, hosted = false }: { work: WorkRecord; schedule: SharedSchedule | null; policy?: DeployControlPolicy; actorId: string; actorRole: string; onCommand: (command: Action) => Promise<boolean>; onUpload: (packageId: string, data: FormData) => Promise<boolean>; onDesignCommand: (command: Omit<DesignCommand, "workId" | "expectedRevision" | "commandId">) => Promise<boolean>; onCrew: () => void; hosted?: boolean }) {
+export function DeployWorkspace({ work, schedule, policy, timezone, actorId, actorRole, onCommand, onUpload, onDesignCommand, onCrew, hosted = false }: { work: WorkRecord; schedule: SharedSchedule | null; policy?: DeployControlPolicy; timezone?: string; actorId: string; actorRole: string; onCommand: (command: Action) => Promise<boolean>; onUpload: (packageId: string, data: FormData) => Promise<boolean>; onDesignCommand: (command: Omit<DesignCommand, "workId" | "expectedRevision" | "commandId">) => Promise<boolean>; onCrew: () => void; hosted?: boolean }) {
   const evidenceApi = hosted ? `/api/d5o-hosted/prototype-deploy-command?workspace=${encodeURIComponent(work.workspace)}` : "/api/work/deploy-command";
   const [tab, setTab] = useState<Tab>("Overview");
   const [packageId, setPackageId] = useState("");
@@ -69,7 +69,7 @@ export function DeployWorkspace({ work, schedule, policy, actorId, actorRole, on
       || !!linkedAction.packageId && linkedRelease?.id !== linkedAction.releaseId || !linkedDecision);
   const selected = packageId && packages.some((item) => item.id === packageId) ? packageId : packages[0]?.id ?? "";
   const release = currentAcceptedRelease(work, selected);
-  const readiness = assessDeployReadiness(work, selected, schedule, policy);
+  const readiness = assessDeployReadiness(work, selected, schedule, policy, timezone);
   const latestPublication = schedule?.publications.filter((item) => item.assignments.some((assignment) => assignment.workId === work.id && assignment.packageId === selected)).at(-1);
   const bookings = latestPublication?.assignments.filter((item) => item.workId === work.id && item.packageId === selected) ?? [];
   const reports = state.reports.filter((item) => item.packageId === selected);
