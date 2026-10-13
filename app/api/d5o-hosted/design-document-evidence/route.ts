@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import { createRybexSupabaseAdminClient } from "@/lib/d5o/auth/supabase-server";
 import { hostedPrototypeContext } from "@/lib/d5o/hosted/prototype-context";
+import { hostedWorkerContext } from "@/lib/d5o/hosted/worker-context";
+import type { SharedSchedule } from "@/components/d5o/platform/schedule-model";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +30,32 @@ async function target(request: NextRequest) {
     item.id === documentId && item.revision === revision);
   if (!work || !document) return null;
   return { workspace, context, workId, documentId, revision, document };
+}
+
+async function assignedWorkerTarget(request: NextRequest) {
+  const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
+  if (workspace !== "rybex") return null;
+  const worker = await hostedWorkerContext(workspace);
+  const workId = request.nextUrl.searchParams.get("workId") ?? "";
+  const documentId = request.nextUrl.searchParams.get("documentId") ?? "";
+  const revision = Number(request.nextUrl.searchParams.get("revision"));
+  if (!workId || !documentId || !Number.isInteger(revision) || revision < 1) return null;
+  const [workResult, scheduleResult] = await Promise.all([worker.read("work"), worker.read("schedule")]);
+  const work = (workResult.state?.records as WorkRecord[] | undefined)?.find((item) =>
+    item.id === workId && item.workspace === workspace && !!item.canonicalWorkId);
+  const schedule = scheduleResult.state as SharedSchedule | null;
+  if (!work || !schedule) return null;
+  const reference = `${documentId}@${revision}`;
+  const release = work.design?.releases.findLast((item) => item.status === "Accepted" &&
+    item.documentRefs.includes(reference) &&
+    item.packageRevision === work.design?.packages.find((detail) => detail.packageId === item.packageId)?.revision);
+  if (!release || !release.documentSnapshots.some((item) => item.id === documentId &&
+    item.revision === revision && item.status === "Issued for use")) return null;
+  const assigned = schedule.publications.some((publication) =>
+    schedule.publications.filter((item) => item.week === publication.week).at(-1)?.id === publication.id &&
+    publication.assignments.some((booking) => booking.workId === workId &&
+      booking.packageId === release.packageId && booking.people.includes(worker.person)));
+  return assigned ? { workspace, workId, documentId, revision } : null;
 }
 
 export async function POST(request: NextRequest) {
@@ -77,7 +105,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const scoped = await target(request);
+    const scoped = await target(request) ?? await assignedWorkerTarget(request);
     if (!scoped) return reply({ error: "design_document_scope_denied" }, 403);
     const admin = createRybexSupabaseAdminClient();
     const call = admin.rpc.bind(admin) as unknown as (name: string, args: Record<string, unknown>) => Promise<{
