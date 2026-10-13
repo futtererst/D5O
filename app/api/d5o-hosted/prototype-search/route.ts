@@ -5,7 +5,8 @@ import { deliveryRoleActions } from "@/lib/d5o/hosted/delivery-role-actions";
 import { supportRoleActions } from "@/lib/d5o/hosted/support-role-actions";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import { connectedLifecyclePosition } from "@/components/d5o/platform/connected-work-position";
-import { designState } from "@/components/d5o/platform/design-model";
+import { assessDesignPackage, designState } from "@/components/d5o/platform/design-model";
+import type { PackageCrewDemand } from "@/components/d5o/platform/schedule-model";
 import { resolvePublishedPhaseConfiguration } from "@/components/d5o/platform/published-phase-configuration";
 import { hostedConfigurationInventory } from "@/lib/d5o/hosted/configuration-inventory";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
@@ -173,6 +174,9 @@ export async function GET(request: NextRequest) {
         stages: Object.fromEntries(lifecycle.map((_, i) => [i, all.filter((r) => pos(r) === i).length])) } });
     if (view === "actions") {
       const configurationInventory = await hostedConfigurationInventory(workspace as WorkspaceKey);
+      const scheduleRead = await ctx.read("schedule");
+      const packageDemands = Array.isArray(scheduleRead.state?.packageDemands)
+        ? scheduleRead.state.packageDemands as PackageCrewDemand[] : [];
       const phaseReviews = all.flatMap((record) => {
         const actions: Record<string, unknown>[] = [];
         if (!record.canonicalWorkId) return actions;
@@ -262,6 +266,10 @@ export async function GET(request: NextRequest) {
           const engineeringReview = designPosition.reviews.find((review) => review.packageId === item.id &&
             review.revision === detail.revision && review.discipline === "Engineering" && review.status === "Approved");
           if (!engineeringReview || engineeringReview.decidedByActorId === ctx.actor.id) continue;
+          const readiness = assessDesignPackage(record as WorkRecord, item.id, undefined,
+            packageDemands.find((demand) => demand.workId === record.id && demand.packageId === item.id) ?? null,
+            designPolicy);
+          if (readiness.recommendation !== "Ready for release") continue;
           actions.push({ ...common, kind: "Authorize package release", phase: "Design", focus: "package-release-decision",
             packageId: item.id, packageName: item.name, revision: detail.revision, status: "Reviewed",
             ownership: "Eligible independent Delivery Leader", blocker: "Confirm current readiness and exact issued scope before release." });
@@ -336,9 +344,9 @@ export async function GET(request: NextRequest) {
             else if (detail.status === "In review" && !design.releases.some((release) =>
               release.packageId === item.id && release.packageRevision === detail.revision &&
               ["Awaiting receipt", "Accepted"].includes(release.status)) &&
-              !(designPolicy?.requiredReviews?.length && designPolicy.requiredReviews.every((discipline) =>
-                design.reviews.some((review) => review.packageId === item.id && review.revision === detail.revision &&
-                  review.discipline === discipline && review.status === "Approved"))))
+              (!designPolicy || assessDesignPackage(record as WorkRecord, item.id, undefined,
+                packageDemands.find((demand) => demand.workId === record.id && demand.packageId === item.id) ?? null,
+                designPolicy).recommendation !== "Ready for release"))
               actions.push({ ...common, kind: "Complete package release preparation", phase: "Design", focus: "package-release-prep",
                 packageId: item.id, packageName: item.name, revision: detail.revision, status: detail.status,
                 position: "preparation", ownership: "Created by you · project manager",
