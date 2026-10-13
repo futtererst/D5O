@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
         p_input: { bookingId: command.bookingId, reportId: command.reportId,
           quantity: command.quantity, unit: command.unit, laborHours: command.laborHours,
           material: command.material, summary: command.summary, capturedAt: command.capturedAt,
+          evidenceIds: command.evidenceIds,
           requirementId: command.requirementId, requirement: command.requirement,
           method: command.method, result: command.result, supersedesId: command.supersedesId,
           note: command.note },p_command_id: command.commandId,

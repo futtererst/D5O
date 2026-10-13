@@ -73,6 +73,7 @@ export async function POST(request: NextRequest) {
           bookingId: command.bookingId, reportId: command.reportId, inspectionId: command.inspectionId,
           quantity: command.quantity, unit: command.unit, laborHours: command.laborHours,
           material: command.material, summary: command.summary, capturedAt: command.capturedAt,
+          evidenceIds: command.evidenceIds,
           requirementId: command.requirementId, requirement: command.requirement,
           method: command.method, result: command.result, supersedesId: command.supersedesId,
           decision: command.decision, note: command.note
