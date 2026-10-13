@@ -259,6 +259,13 @@ export async function GET(request: NextRequest) {
               actions.push({ ...common, kind: "Request package review", phase: "Design", focus: "package-review-request",
                 packageId: item.id, packageName: item.name, revision: detail.revision, status: detail.status,
                 position: "preparation", ownership: "Created by you · project manager" });
+            else if (detail.status === "In review" && !design.releases.some((release) =>
+              release.packageId === item.id && release.packageRevision === detail.revision &&
+              ["Awaiting receipt", "Accepted"].includes(release.status)))
+              actions.push({ ...common, kind: "Complete package release preparation", phase: "Design", focus: "package-release-prep",
+                packageId: item.id, packageName: item.name, revision: detail.revision, status: detail.status,
+                position: "preparation", ownership: "Created by you · project manager",
+                blocker: "Resolve the current package readiness findings before Delivery can authorize release." });
           }
         }
         if (canReviewDefinition(record) && baseline?.revision) {

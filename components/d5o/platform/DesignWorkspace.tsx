@@ -60,8 +60,9 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const target = params.get("package");
-    if (params.get("focus") === "reviews" && target && packages.some((item) => item.id === target)) {
-      queueMicrotask(() => { setSelectedId(target); setTab("Reviews"); });
+    const destination = params.get("focus") === "reviews" ? "Reviews" : params.get("designTab");
+    if (target && packages.some((item) => item.id === target) && tabs.includes(destination as Tab)) {
+      queueMicrotask(() => { setSelectedId(target); setTab(destination as Tab); });
     }
   }, [work.id, packages]);
   const [handoffNote, setHandoffNote] = useState("");
@@ -189,6 +190,56 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
       {engineering ? <>{malformed ? <p role="status">The retained revision has missing structured references. Save a corrected revision before requesting review.</p> : null}<form className={styles.form} onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); void send({ action: "save-package", package: { packageId: exactPackage!.id, scope: field(form, "scope"), location: field(form, "location"), method: field(form, "method"), verification: field(form, "verification"), proof: field(form, "proof"), acceptingAuthority: field(form, "acceptingAuthority"), requirementIds: form.getAll("requirements").map(String), predecessorIds: [], documentRefs: [], materialLines: [], materialStatus: "Unknown", commercialDisposition: "None", completionBasis: { kind: "Measured", plannedQuantity: Number(form.get("quantity")), unit: field(form, "unit") }, crewDemandRequired: true }, note: "Package engineering basis saved" }); }}>
         <label>Exact scope<textarea name="scope" defaultValue={exactDetail?.scope} required /></label><label>Location<input name="location" defaultValue={exactDetail?.location} required /></label><label>Approved requirements<select name="requirements" multiple>{requirementRefs.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label><label>Planned quantity<input name="quantity" type="number" min="0.001" step="any" defaultValue={exactDetail?.completionBasis?.kind === "Measured" ? exactDetail.completionBasis.plannedQuantity : undefined} required /></label><label>Unit<input name="unit" defaultValue={exactDetail?.completionBasis?.kind === "Measured" ? exactDetail.completionBasis.unit : undefined} required /></label><label>Method<textarea name="method" defaultValue={exactDetail?.method} /></label><label>Verification<textarea name="verification" defaultValue={exactDetail?.verification} /></label><label>Required proof<textarea name="proof" defaultValue={exactDetail?.proof} /></label><label>Accepting authority<input name="acceptingAuthority" defaultValue={exactDetail?.acceptingAuthority} /></label><button type="submit" disabled={busy}>Save engineering draft</button></form></> : null}
       {!preparation && !engineering ? <section className={styles.card}><p><strong>Scope:</strong> {exactDetail!.scope}</p><p><strong>Verification:</strong> {exactDetail!.verification || "Not recorded; review may return incomplete design"}</p><form className={styles.form} onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); void send({ action: "request-review", packageId: exactPackage!.id, discipline: field(form, "discipline") as DesignReview["discipline"], assignee: `${field(form, "discipline")} review queue`, dueDate: field(form, "dueDate") }); }}><label>Review discipline<select name="discipline">{disciplines.map((item) => <option key={item}>{item}</option>)}</select></label><label>Due date<input name="dueDate" type="date" required /></label><button type="submit" disabled={busy}>Request exact-revision review</button></form></section> : null}
+    </FocusedTaskFrame>;
+  }
+  if (taskFocus === "package-release-prep") {
+    const linkedPackage = packages.find((item) => item.id === linkedParams?.get("package"));
+    const linkedDetail = state.packages.find((item) => item.packageId === linkedPackage?.id);
+    const linkedRevision = Number(linkedParams?.get("sourceRevision"));
+    const current = actorRole === "project_manager" && received && linkedPackage &&
+      linkedDetail?.revision === linkedRevision && linkedDetail.status === "In review" &&
+      !state.releases.some((release) => release.packageId === linkedPackage.id &&
+        release.packageRevision === linkedRevision && ["Awaiting receipt", "Accepted"].includes(release.status));
+    if (!current || !linkedPackage || !linkedDetail) return <section className={styles.workspace} role="status"><h2>This package task changed or was completed</h2>
+      <p>The accepted source, exact package, revision or your current role no longer matches. No other package was selected.</p>
+      <a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work</a></section>;
+    const readiness = assessDesignPackage(work, linkedPackage.id, undefined,
+      packageDemands.find((item) => item.workId === work.id && item.packageId === linkedPackage.id) ?? null, policy);
+    const mandatoryHolds = readiness.findings.filter((finding) => finding.severity === "blocker");
+    const preparationGaps = readiness.findings.filter((finding) => finding.severity !== "blocker");
+    const openControls = (nextTab: Tab) => {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("focus");
+      url.searchParams.delete("sourceRevision");
+      url.searchParams.set("section", "Design");
+      url.searchParams.set("package", linkedPackage.id);
+      url.searchParams.set("designTab", nextTab);
+      window.location.assign(url);
+    };
+    return <FocusedTaskFrame title={`Complete release preparation · ${linkedPackage.name}`} work={work.title}
+      customer={work.customer} site={work.site} workspace={work.workspace} revision={linkedRevision}
+      scope={`${linkedPackage.name} · ${linkedDetail.scope}`}
+      outcome="Resolve the current package findings. Delivery release and independent Deploy receipt are separate decisions."
+      blocker={readiness.recommendation === "Ready for release" ? null : readiness.recommendation}
+      nextOwner="Project manager for preparation; Delivery Leader for release authorization"
+      onFullRecord={onFullRecord}>
+      <section className={styles.card}><h2>Current release position</h2>
+        <p>{readiness.recommendation} · package revision {linkedRevision} · {readiness.findings.length} finding{readiness.findings.length === 1 ? "" : "s"}</p>
+        <h3>Mandatory holds</h3>
+        {mandatoryHolds.length ? <ul>{mandatoryHolds.map((finding) => <li key={finding.key}>
+          <strong>{finding.area} · {finding.severity}:</strong> {finding.message} Next: {finding.nextAction}
+        </li>)}</ul> : <p>No mandatory hold recorded.</p>}
+        <div className={styles.actions}>
+          <button type="button" onClick={() => openControls("Packages")}>Open exact package controls</button>
+          <button type="button" onClick={() => openControls("Documents")}>Open governing documents</button>
+          <button type="button" onClick={() => openControls("Reviews")}>Open discipline reviews</button>
+          <button type="button" onClick={() => openControls("Readiness & release")}>Recheck release readiness</button>
+        </div>
+        {preparationGaps.length ? <details><summary>Other preparation gaps ({preparationGaps.length})</summary>
+          <ul>{preparationGaps.map((finding) => <li key={finding.key}>
+            <strong>{finding.area} · {finding.severity}:</strong> {finding.message} Next: {finding.nextAction}
+          </li>)}</ul></details> : null}
+      </section>
     </FocusedTaskFrame>;
   }
   return <section className={styles.workspace} aria-label="Design workspace">
