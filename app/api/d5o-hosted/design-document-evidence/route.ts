@@ -2,7 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import { createRybexSupabaseAdminClient } from "@/lib/d5o/auth/supabase-server";
-import { hostedPrototypeContext } from "@/lib/d5o/hosted/prototype-context";
+import { HostedStateError, hostedPrototypeContext } from "@/lib/d5o/hosted/prototype-context";
 import { hostedWorkerContext } from "@/lib/d5o/hosted/worker-context";
 import type { SharedSchedule } from "@/components/d5o/platform/schedule-model";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
@@ -135,6 +135,7 @@ export async function GET(request: NextRequest) {
       "X-Content-Type-Options": "nosniff"
     } });
   } catch (error) {
+    if (error instanceof HostedStateError && error.status === 403) return reply({ error: "design_document_scope_denied" }, 403);
     if (error instanceof Error && error.message === "unauthenticated") return reply({ error: "unauthenticated" }, 401);
     return reply({ error: "design_document_unavailable" }, 503);
   }
