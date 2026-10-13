@@ -6,6 +6,8 @@ import { supportRoleActions } from "@/lib/d5o/hosted/support-role-actions";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import { connectedLifecyclePosition } from "@/components/d5o/platform/connected-work-position";
 import { designState } from "@/components/d5o/platform/design-model";
+import { resolvePublishedPhaseConfiguration } from "@/components/d5o/platform/published-phase-configuration";
+import { hostedConfigurationInventory } from "@/lib/d5o/hosted/configuration-inventory";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
 import { initialHostedCatalog } from "@/lib/d5o/work-catalog/store";
 import { lifecycleProfiles, stateFor } from "@/components/d5o/platform/lifecycle-profiles";
@@ -170,6 +172,7 @@ export async function GET(request: NextRequest) {
       overview: { total: all.length, attention: all.filter((r) => r.status === "attention").length,
         stages: Object.fromEntries(lifecycle.map((_, i) => [i, all.filter((r) => pos(r) === i).length])) } });
     if (view === "actions") {
+      const configurationInventory = await hostedConfigurationInventory(workspace as WorkspaceKey);
       const phaseReviews = all.flatMap((record) => {
         const actions: Record<string, unknown>[] = [];
         if (!record.canonicalWorkId) return actions;
@@ -242,6 +245,27 @@ export async function GET(request: NextRequest) {
           commercial.designHandoff.brief.configurationVersionId === record.phaseConfigurationVersionId;
         const currentPackages = (record as WorkRecord).packages ?? [];
         const designPosition = designState(record as WorkRecord);
+        const designPolicy = resolvePublishedPhaseConfiguration(configurationInventory, workspace as WorkspaceKey,
+          record.type, record as WorkRecord)?.designControls;
+        const acceptedServiceSource = !!record.serviceSource && (record as WorkRecord).serviceExecutionBasis?.status === "accepted";
+        const acceptedPackageSource = acceptedDesignSource || acceptedServiceSource;
+        if (acceptedPackageSource && actorRole === "operations_leader" &&
+          (record as WorkRecord).deploy?.workAcceptance?.receipt !== "Accepted") for (const item of currentPackages) {
+          const detail = designPosition.packages.find((candidate) => candidate.packageId === item.id);
+          if (!detail || detail.status !== "In review" || designPosition.releases.some((release) =>
+            release.packageId === item.id && release.packageRevision === detail.revision &&
+            ["Awaiting receipt", "Accepted"].includes(release.status))) continue;
+          const required = designPolicy?.requiredReviews ?? [];
+          if (!required.length || !required.every((discipline) => designPosition.reviews.some((review) =>
+            review.packageId === item.id && review.revision === detail.revision &&
+            review.discipline === discipline && review.status === "Approved"))) continue;
+          const engineeringReview = designPosition.reviews.find((review) => review.packageId === item.id &&
+            review.revision === detail.revision && review.discipline === "Engineering" && review.status === "Approved");
+          if (!engineeringReview || engineeringReview.decidedByActorId === ctx.actor.id) continue;
+          actions.push({ ...common, kind: "Authorize package release", phase: "Design", focus: "package-release-decision",
+            packageId: item.id, packageName: item.name, revision: detail.revision, status: "Reviewed",
+            ownership: "Eligible independent Delivery Leader", blocker: "Confirm current readiness and exact issued scope before release." });
+        }
         const designDocuments = designPosition.documents;
         if (actorRole === "operations_leader") for (const release of designPosition.releases) {
           const packageItem = currentPackages.find((item) => item.id === release.packageId);
@@ -311,7 +335,10 @@ export async function GET(request: NextRequest) {
                 position: "preparation", ownership: "Created by you · project manager" });
             else if (detail.status === "In review" && !design.releases.some((release) =>
               release.packageId === item.id && release.packageRevision === detail.revision &&
-              ["Awaiting receipt", "Accepted"].includes(release.status)))
+              ["Awaiting receipt", "Accepted"].includes(release.status)) &&
+              !(designPolicy?.requiredReviews?.length && designPolicy.requiredReviews.every((discipline) =>
+                design.reviews.some((review) => review.packageId === item.id && review.revision === detail.revision &&
+                  review.discipline === discipline && review.status === "Approved"))))
               actions.push({ ...common, kind: "Complete package release preparation", phase: "Design", focus: "package-release-prep",
                 packageId: item.id, packageName: item.name, revision: detail.revision, status: detail.status,
                 position: "preparation", ownership: "Created by you · project manager",

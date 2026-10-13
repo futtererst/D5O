@@ -248,6 +248,47 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
       </section>
     </FocusedTaskFrame>;
   }
+  if (taskFocus === "package-release-decision") {
+    const packageId = linkedParams?.get("package");
+    const revision = Number(linkedParams?.get("sourceRevision"));
+    const exactPackage = packages.find((item) => item.id === packageId);
+    const exactDetail = state.packages.find((item) => item.packageId === packageId);
+    const reviewed = policy.requiredReviews.every((discipline) => state.reviews.some((review) =>
+      review.packageId === packageId && review.revision === revision && review.discipline === discipline && review.status === "Approved"));
+    const engineeringReviewer = state.reviews.find((review) => review.packageId === packageId &&
+      review.revision === revision && review.discipline === "Engineering" && review.status === "Approved")?.decidedByActorId;
+    const current = actorRole === "operations_leader" && received && !!exactPackage &&
+      exactDetail?.revision === revision && exactDetail.status === "In review" && reviewed &&
+      !!engineeringReviewer && engineeringReviewer !== actorId &&
+      !state.releases.some((release) => release.packageId === packageId && release.packageRevision === revision &&
+        ["Awaiting receipt", "Accepted"].includes(release.status));
+    if (!current || !exactPackage || !exactDetail) return <section className={styles.workspace} role="status">
+      <h2>This release decision changed or was completed</h2><p>The exact package, revision, approved reviews or your independent authority no longer match. No substitute package was selected.</p>
+      <a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work</a></section>;
+    const readiness = assessDesignPackage(work, exactPackage.id, undefined,
+      packageDemands.find((item) => item.workId === work.id && item.packageId === exactPackage.id) ?? null, policy,
+      policy.allowPartialRelease ? new Set() : new Set(releaseSetIds));
+    const canRelease = !serviceIssue && (policy.allowPartialRelease ? readiness.recommendation === "Ready for release" : releaseSetReady);
+    return <FocusedTaskFrame title={`Authorize release · ${exactPackage.name}`} work={work.title} customer={work.customer}
+      site={work.site} workspace={work.workspace} scope={`${exactPackage.name} · ${exactDetail.scope}`} revision={revision}
+      outcome={policy.allowPartialRelease ? "Authorize this exact reviewed package for independent Deploy receipt." : "Authorize the complete reviewed release set for independent Deploy receipt."}
+      blocker={serviceIssue ?? (canRelease ? null : readiness.recommendation)} nextOwner="Independent Deploy receiver"
+      onFullRecord={onFullRecord} context={<><p>Accepted source: {work.serviceSource ? `service basis revision ${serviceBasis?.revision ?? "unknown"}` : `Develop handoff revision ${handoff?.revision ?? "unknown"}`}.</p>
+        <p>Policy/configuration: {readiness.policyVersion}. Engineering approval was recorded by a different actor.</p>
+        <h3>Issued governing documents</h3><ul>{exactDetail.documentRefs.map((ref) => <li key={ref}>{ref}</li>)}</ul></>}>
+      <section className={styles.card}><h2>Current readiness</h2><p>{readiness.recommendation} · package revision {revision}</p>
+        {readiness.findings.length ? <ul>{readiness.findings.map((finding) => <li key={finding.key}>
+          <strong>{finding.area} · {finding.severity}:</strong> {finding.message} Next: {finding.nextAction}
+        </li>)}</ul> : <p>Recorded readiness checks are clear. Confirm the receiving owner and deadline before release.</p>}
+        {canRelease ? <form className={styles.form} onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget);
+          void send({ action: policy.allowPartialRelease ? "release-package" : "release-set", packageId: exactPackage.id,
+            packageIds: policy.allowPartialRelease ? undefined : releaseSetIds, receivingOwner: field(form, "owner"),
+            dueDate: field(form, "due"), note: "Exact reviewed package and issued document revisions released" }); }}>
+          <label>Deploy receiving owner<input name="owner" required /></label><label>Receipt due<input name="due" type="date" required /></label>
+          <button disabled={busy}>Authorize exact release</button></form> : null}
+      </section>
+    </FocusedTaskFrame>;
+  }
   if (["package-prep", "package-engineering", "package-review-request"].includes(taskFocus ?? "")) {
     const linkedPackageId = linkedParams?.get("package");
     const linkedRevision = Number(linkedParams?.get("sourceRevision"));
