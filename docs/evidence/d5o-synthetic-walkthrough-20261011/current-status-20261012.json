@@ -1,6 +1,6 @@
 {
   "schema": "d5o.synthetic-walkthrough.current-status.v1",
-  "generatedAt": "2026-10-13T15:17:12.219Z",
+  "generatedAt": "2026-10-13T15:47:07.794Z",
   "originalRunImmutable": true,
   "originalRunSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
   "originalRunCounts": {
@@ -9,7 +9,7 @@
     "Not run": 45,
     "Blocked": 0
   },
-  "currentApplicationSha": "9ff714e5d74af6fe96ea327225b15d21629952b3",
+  "currentApplicationSha": "b7ee79013fc098c94799896c3951b8a70fc5513e",
   "fixtures": {
     "handoff": "http://127.0.0.1:61647/work?workspace=rybex; isolated database 57021",
     "delivery": "http://127.0.0.1:61643/work?workspace=rybex; isolated database 56621",
@@ -1316,6 +1316,15 @@
       "mode": "production-mode disposable 61651, separate authenticated fictional PM and Operations browser sessions, exact typed release and queue reload",
       "result": "Passed",
       "evidence": "A separate fictional witness package progressed through PM engineering, private PDF custody (retrieval 200, exact SHA-256 and bytes), document review/issue, dated demand and five current-revision independent reviews. Revision 2 was held for unknown material and showed no release button. PM corrected the source to revision 3 with an explicit counted material line, refreshed demand and obtained fresh reviews. The independent Operations leader saw Authorize package release from My Work; the Engineering reviewer and PM did not. At 390px the task was keyboard-openable with no horizontal overflow, showed exact scope and Ready for release, and committed release HTTP 200. Reload removed the release card and showed Receive Design release only to the separate Operations receiver. Saved release link became stale with no decision control or substitute package. Field execution and Deploy receipt of this witness were not performed."
+    },
+    {
+      "id": "I29",
+      "title": "Exact field-evidence linkage, returned-report correction and failed inspection",
+      "result": "Passed",
+      "applicationSha": "b7ee79013fc098c94799896c3951b8a70fc5513e",
+      "mode": "separate authenticated worker, Operations and Quality browser actions; authenticated API domain rejection; fresh disposable 81-file database replay",
+      "evidence": "Worker uploaded a 21637-byte fictional PNG (SHA-256 d1ebc6175f2aaec3e24872fb0a203756425b564aeda2cb1d3953e7b6034be699). Reviewer downloaded matching private bytes and independently reviewed it. Original submitted report was returned for an absent evidence link; worker corrected the same ID through retained rev2 and rev3 drafts, linked evidence aa1765d4-ac3b-43a7-81fe-d29fabf89aee, resubmitted, and a separate Operations user reviewed 0.25/1 set. Worker submitted a linked Fail inspection 8e3478a6-c85a-4d6e-96a4-e35110791fe2; Quality independently Verified Fail. A wrong evidence ID returned 409 field_evidence_scope_invalid before the valid inspection; only one new inspection was retained. Completion queue remains preparation: no independently verified passing inspection. Worker mobile scroll width 390px at a 390px viewport.",
+      "remainingGap": "The partial survey still needs authorized correction, passing retest and remaining reviewed quantity. No package turnover or customer acceptance was attempted in this clone."
     }
   ],
   "currentBuildChecks": [
@@ -1493,6 +1502,13 @@
       "mode": "production-mode isolated 61651 build, authenticated fictional role browsers, TypeScript, scoped ESLint and visual mobile check",
       "result": "Passed",
       "evidence": "npm run typecheck, scoped ESLint on FocusedMyWorkBoard.tsx, production build and git diff --check passed. Operations UI authorized exact current-shift package and worker mobile displayed Authorized start after reload; title computed rgb(255, 255, 255), scroll width equaled 390px. No migration changed after the earlier 80-file fresh replay."
+    },
+    {
+      "caseId": "I29 field evidence and inspection",
+      "applicationSha": "b7ee79013fc098c94799896c3951b8a70fc5513e",
+      "mode": "production-mode isolated build, TypeScript, scoped ESLint, authenticated browsers and fresh local DB replay",
+      "result": "Passed",
+      "evidence": "npm run typecheck, scoped ESLint, production build and git diff --check passed. A fresh database-only target replayed exactly 81 candidate files; final version 20261013152258 and authenticated/anon execute grant true/false. Browser role actions and domain rejection are recorded separately in walkthrough.md."
     }
   ],
   "runtimeStatus": "61651 isolated production-mode preview displays Build 9ff714e5d74a against disposable API 57621. Witness package rev3 has issued exact release awaiting independent Deploy receipt. Earlier survey package remains Authorized with zero actuals. Preserved 61648/57121 checkpoint unchanged; shared and production unchanged.",
@@ -1501,6 +1517,6 @@
     "jobFinanceClone": "d5o-service-mutable-20261012; cloned fictional changed-job Finance history; new USD 100 post-closeout payment only in clone",
     "partialServiceClone": "d5o-partial-service-mutable-20261012; exact canonical partially covered request/child/asset; separate mutable Auth/Storage; fictional terms, invoice, payment and cost correction persisted",
     "preserved": "Delivery/support observation checkpoints, original preclosure and original changed-job payment history unchanged.",
-    "currentShiftClone": "d5o-pr2-replay-20261013; 80 candidate migrations replayed on the initially empty local target. Survey package rev2 retains accepted release and Authorized start with zero reports. Separate fictional release-routing witness package rev3 has retained private PDF, five approvals and a newly issued release awaiting independent receipt."
+    "currentShiftClone": "d5o-pr2-replay-20261013; isolated production-mode 61651/57621, 81st migration applied incrementally. Survey report 4b3680b9-2bb6-4cac-a3ef-2bc23cafe60e revision 3 independently Reviewed at 0.25/1 set with exact reviewed PNG evidence; inspection 8e3478a6-c85a-4d6e-96a4-e35110791fe2 is independently Verified Fail. Completion remains blocked. Separate release witness awaits Deploy receipt."
   }
 }
