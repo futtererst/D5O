@@ -55,7 +55,7 @@ function tasksFor<T extends RecordSummary>(workspace: string, page: FocusedQueue
     work: action.requestTitle, customer: action.customer ?? "Customer not recorded", site: action.site, detail: `${action.coverage} · ${action.childWorkId ? "Service visit linked" : "Service visit pending"} · revision ${action.revision}`,
     owner: serviceRoleLabel(action.responsibleRole), blocker: action.blocker, due: action.dueDate, impact: action.impact, href: serviceActionHref(workspace, action),
     position: action.ownership === "Information only" ? "information" : action.actionable ? "action" : "waiting" }));
-  const role = (page.roleActions ?? []).map((action): Task => ({ key: `role:${action.workId}:${action.kind}:${action.packageId ?? ""}:${action.revision}`, canonical: `role:${action.workId}:${action.packageId ?? "work"}:${action.kind}:${action.decisionId ?? action.revision}`, title: action.kind,
+  const role = (page.roleActions ?? []).map((action): Task => ({ key: `role:${action.workId}:${action.kind}:${action.packageId ?? ""}:${action.revision}`, canonical: `role:${action.workId}:${action.packageId ?? "work"}:${action.kind}:${action.decisionId ?? action.revision}`, title: action.kind === "Design review" ? action.title : action.kind,
     work: action.workTitle ?? action.title, customer: action.customer ?? action.phase, site: action.site, detail: `${action.packageId ? `${action.packageName ?? "Package"} · ` : ""}revision ${action.revision}`,
     owner: action.ownership, blocker: action.blocker, due: action.dueDate, href: roleLink(workspace, action), position: action.position ?? "action" }));
   const seen = new Set<string>();
