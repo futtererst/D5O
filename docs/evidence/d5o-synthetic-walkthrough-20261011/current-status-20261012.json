@@ -1,6 +1,6 @@
 {
   "schema": "d5o.synthetic-walkthrough.current-status.v1",
-  "generatedAt": "2026-10-13T13:00:00Z",
+  "generatedAt": "2026-10-13T14:00:00Z",
   "originalRunImmutable": true,
   "originalRunSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
   "originalRunCounts": {
@@ -9,7 +9,7 @@
     "Not run": 45,
     "Blocked": 0
   },
-  "currentApplicationSha": "1c88c9a259a243a128455b5f5b4da00c19b7cdd8",
+  "currentApplicationSha": "ec47633b79c797e21bc73317eff14f382c2def5f",
   "fixtures": {
     "handoff": "http://127.0.0.1:61647/work?workspace=rybex; isolated database 57021",
     "delivery": "http://127.0.0.1:61643/work?workspace=rybex; isolated database 56621",
@@ -1197,6 +1197,13 @@
       "mode": "separate authenticated fictional Operations and worker browsers on disposable 61648; positive UI commands and reloads",
       "result": "Passed",
       "evidence": "The schedule previously labeled the accepted current revision Release held using a legacy Work blocker. Corrected projection displayed Design release received while preserving publication and field-start separation. Operations published the existing 2026-10-16 fictional one-person Controls service booking through Worker responses; reload showed Shared with workers and one awaiting response. Nate Walker's worker-only My crew schedule showed the exact package and Accept booking; he accepted with confirmation and reload showed Accepted by you, zero awaiting. Operations Deploy readiness subsequently displayed Ready for authorized start with no permit yet. Field start and future-dated actual work were not recorded."
+    },
+    {
+      "caseId": "I25 assigned-worker issued Design PDF retrieval",
+      "applicationSha": "ec47633b79c797e21bc73317eff14f382c2def5f",
+      "mode": "authenticated fictional worker and executive browsers on disposable 61648; private byte retrieval and negative route reads",
+      "result": "Passed",
+      "evidence": "The worker's assigned package initially listed the governing wiring PDF only as a document ID with no link. The corrected field view offers the exact released revision. Nate Walker followed the assignment and retrieved 729 private PDF bytes (200), SHA-256 4aedfd6ec44abe5164fd338be41433c5e7b8b92596bced55cdff34966d62af19. Other-document and other-tenant requests returned 403 design_document_scope_denied; the same URL from a read-only executive session returned 403. Server access requires the signed-in worker's current published assignment, matching accepted release/package revision and retained issued document snapshot. Field start was not granted."
     }
   ],
   "newCases": [
@@ -1447,7 +1454,7 @@
       "evidence": "Publication rejected 409 release_changed_before_publication with No shared bookings unchanged. Worker schedule showed zero awaiting and no fictional draft crew. No worker response or field-start authority was created."
     }
   ],
-  "runtimeStatus": "61648 isolated production-mode preview displays Build 1c88c9a259a2 and uses disposable API 57121. 61649/61650 remain older isolated builds. The 79-file candidate sequence replayed on a separate fresh disposable target; shared/production unchanged.",
+  "runtimeStatus": "61648 isolated production-mode preview displays Build ec47633b79c7 and uses disposable API 57121. 61649/61650 remain older isolated builds. The 79-file candidate sequence replayed on a separate fresh disposable target; shared/production unchanged.",
   "fixtureStatus": {
     "returnProject": "d5o-handoff-return-20261012; package revision 4 links issued private-PDF document @2, current dated demand and five approved synthetic discipline reviews. Release 4bd2f56a-17b9-45ab-9a88-8d9e3d335f3b was independently Accepted into Deploy. One 2026-10-16 booking was published and Nate Walker acknowledged it. No field-start permit or actual work was recorded; document @1 remains Returned and @2 Issued for use.",
     "jobFinanceClone": "d5o-service-mutable-20261012; cloned fictional changed-job Finance history; new USD 100 post-closeout payment only in clone",
