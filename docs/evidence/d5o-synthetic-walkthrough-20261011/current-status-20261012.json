@@ -1,6 +1,6 @@
 {
   "schema": "d5o.synthetic-walkthrough.current-status.v1",
-  "generatedAt": "2026-10-12",
+  "generatedAt": "2026-10-13T02:33:59.993454Z",
   "originalRunImmutable": true,
   "originalRunSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
   "originalRunCounts": {
@@ -9,7 +9,7 @@
     "Not run": 45,
     "Blocked": 0
   },
-  "currentApplicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+  "currentApplicationSha": "15f41eb40e72952f405bad571ff476ba8081fba2",
   "fixtures": {
     "handoff": "http://127.0.0.1:61647/work?workspace=rybex; isolated database 57021",
     "delivery": "http://127.0.0.1:61643/work?workspace=rybex; isolated database 56621",
@@ -1226,11 +1226,20 @@
     {
       "id": "I17",
       "title": "Draft crew booking is rejected until Design release despite planning UI",
-      "latestResult": "Failed",
-      "latestTestedSha": "7db8c25d7f910658fedd241d84467a58b4557b4c",
-      "mode": "fictional administrator workforce UI and Operations Crew Schedule browser; authenticated schedule command response",
-      "evidence": "Admin created the bound Nate Walker profile with Controls service and 40h capacity against the existing legacy roster identity. Crew Schedule showed Nate eligible and an unbound fictional profile disabled. PM saved one 2026-10-16 shift demand. Operations selected Nate for a planning booking, but save returned 409 released_demand_coverage_required and no booking persisted. The database save-booking branch requires an Accepted release; publish-week separately rechecks the accepted release.",
-      "remainingGap": "Planning before release is not functional despite UI copy; worker publication/acknowledgment and field start remain Not run. No booking or worker response was fabricated."
+      "latestResult": "Passed",
+      "latestTestedSha": "15f41eb40e72952f405bad571ff476ba8081fba2",
+      "mode": "authenticated fictional PM, Operations and worker browsers on disposable 61648; typed command and read-only revision inspection",
+      "evidence": "Initial draft save correctly rejected current_demand_coverage_required because the corrected package was revision 3 but the crew demand still cited revision 2. PM refreshed that same demand through the browser (HTTP 200). Operations then saved the qualified Nate Walker draft through the browser (HTTP 200), schedule revision 2; reload showed one planned 8h shift and Release held. Publication from Worker responses rejected HTTP 409 release_changed_before_publication. The worker browser showed no booking after load. No worker response or field authorization exists.",
+      "remainingGap": "Draft planning works. Publication, acknowledgment and field start remain gated by an accepted current release, which this fixture lacks. Fresh ordered 78-file migration replay is not yet qualified due Docker subnet exhaustion; only this forward migration was applied to the disposable pilot."
+    },
+    {
+      "id": "I18",
+      "title": "Unpublished draft is not worker assignment or field authority",
+      "latestResult": "Passed",
+      "latestTestedSha": "15f41eb40e72952f405bad571ff476ba8081fba2",
+      "mode": "separate authenticated fictional Operations and worker browsers; held-release typed publication response",
+      "evidence": "Operations saw one draft booking and a Release held status. Publish this week returned HTTP 409 release_changed_before_publication with No shared bookings unchanged. The worker My crew schedule showed zero awaiting and no draft crew after loading; the corrected copy says a booking appears only after publication.",
+      "remainingGap": "Positive publication and worker acknowledgment need a legitimately accepted Design release and remain Not run on this fixture."
     }
   ],
   "currentBuildChecks": [
@@ -1380,11 +1389,25 @@
       "mode": "authenticated fictional Operations browser and typed schedule response; read-only reload",
       "result": "Failed",
       "evidence": "Crew Schedule showed one eligible bound worker, one disabled unbound profile and one dated demand. Saving a draft planning booking returned 409 released_demand_coverage_required; reload showed zero crew bookings. Publication was not attempted, and field authorization remained unavailable."
+    },
+    {
+      "caseId": "I17 current-demand booking correction",
+      "applicationSha": "15f41eb40e72952f405bad571ff476ba8081fba2",
+      "mode": "separate authenticated fictional PM and Operations browsers with typed schedule responses",
+      "result": "Passed",
+      "evidence": "Stale revision-2 demand rejected before mutation; PM saved revision-3 demand HTTP 200; Operations saved source-bound qualified draft HTTP 200. Reload retained one draft and release-held status. No accepted release exists."
+    },
+    {
+      "caseId": "I18 held publication and worker invisibility",
+      "applicationSha": "15f41eb40e72952f405bad571ff476ba8081fba2",
+      "mode": "separate authenticated fictional Operations and worker browsers",
+      "result": "Passed",
+      "evidence": "Publication rejected 409 release_changed_before_publication with No shared bookings unchanged. Worker schedule showed zero awaiting and no fictional draft crew. No worker response or field-start authority was created."
     }
   ],
-  "runtimeStatus": "Disposable return preview 61648/API 57121 displays Build 7db8c25d7f91; separate job-Finance preview 61649/API 57221 and partial-service preview 61650/API 57421 remain on Build 9973b08df8f2. No production/shared target was used.",
+  "runtimeStatus": "61648 isolated production-mode preview displays Build 15f41eb40e72 and uses only disposable API 57121. 61649/61650 remain older isolated builds. The new draft-booking forward migration was applied only to the disposable 61648 database; shared/production unchanged. A fresh ordered 78-file replay is not yet qualified because Docker address pools are exhausted.",
   "fixtureStatus": {
-    "returnProject": "d5o-handoff-return-20261012; 77 ordered candidate migrations; accepted handoff and one package persisted. Mutable package is revision 3 after independent revision-2 return; document revision 1 awaits independent review; qualified workforce identity and dated demand exist, but zero crew bookings after 409 planning rejection.",
+    "returnProject": "d5o-handoff-return-20261012; 77 prior ordered candidate migrations plus forward draft-booking correction applied incrementally on this disposable target. Mutable package revision 3 and refreshed demand revision 3; one 2026-10-16 Nate Walker draft booking is retained, unpublished and release held. Document revision 1 awaits independent review; no release or execution.",
     "jobFinanceClone": "d5o-service-mutable-20261012; cloned fictional changed-job Finance history; new USD 100 post-closeout payment only in clone",
     "partialServiceClone": "d5o-partial-service-mutable-20261012; exact canonical partially covered request/child/asset; separate mutable Auth/Storage; fictional terms, invoice, payment and cost correction persisted",
     "preserved": "Delivery/support observation checkpoints, original preclosure and original changed-job payment history unchanged."

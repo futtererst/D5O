@@ -1,4 +1,4 @@
-# D5O production migration manifest (11 October 2026)
+# D5O production migration manifest (12 October 2026)
 
 Target: shared Supabase project `fcawktdjoxvahhgvkebx`. This is a read-only reconciliation and proposed order; no shared migration has been applied by this release-candidate work.
 
@@ -21,7 +21,7 @@ The 12 already-recorded D5O/worker migrations have SQL definitions identical to 
 
 The worker-excluding policies `d5o_hosted_work_member_read` and `d5o_hosted_work_event_member_read` also match the live read-only inspection. Do not rewrite the eight applied history versions. A raw version-only `supabase db push` is unsafe until the release operator explicitly reconciles those mappings; it would treat their local versions as unapplied.
 
-## Outstanding files, in required order (65)
+## Outstanding files, in required order (66)
 
 1. `20261008183310_d5o_prototype_authoritative_writes.sql`
 2. `20261008203000_d5o_reject_imported_commercial_decisions.sql`
@@ -87,7 +87,8 @@ The worker-excluding policies `d5o_hosted_work_member_read` and `d5o_hosted_work
 62. `20261010210000_d5o_support_document_obligations.sql`
 63. `20261011162940_optimize_connected_draft_projection.sql`
 64. `20261012110000_d5o_design_draft_required_arrays.sql`
-65. `20261012123000_d5o_design_handoff_clarification.sql`
+65. `20261012120000_d5o_draft_booking_before_release.sql`
+66. `20261012123000_d5o_design_handoff_clarification.sql`
 
 At the earlier invoice checkpoint, a fresh disposable Supabase instance replayed **71 hosted candidate files in filename order**, including the service-invoice migration. Relative to the prior 12-file shared read-only mapping, **59 files are outstanding**. The active fictional service pilot was incrementally patched; it is not evidence of full ordered replay. Shared-project definitions and migration history must be rechecked at cutover. Disposable replay does not establish shared-project compatibility or authorization to apply migrations. The deployment cutover must compare names, normalized SQL, policy definitions and migration history again immediately before any shared write.
 
@@ -109,4 +110,6 @@ The current support-document follow-through adds one forward migration. It separ
 
 The 11 October Discover draft-save correction adds `20261011162940_optimize_connected_draft_projection.sql`. It caches each unchanged authoritative phase projection once per draft-save call while retaining each submitted record's protected-field comparison. The current candidate is **75 ordered files**, including the 12 shared-history mappings above and **63 outstanding** files. The 75-file sequence was replayed from a reset local disposable database in both observation targets before their verified fixture/data and private-byte restoration; both recorded version `20261011162940`. This is not an application or migration cutover to shared Supabase. See [focused task and draft-save qualification](./evidence/d5o-role-task-presentation-20261011.md).
 
-The 12 October package-draft and Design handoff corrections add files 64 and 65 above. The current candidate has **77 ordered hosted files**, including the 12 previously mapped shared-history entries and **65 outstanding**. A separate disposable return fixture and a second fresh local project replayed the 77-file candidate sequence in order; the mutable service and changed-job clones were restored independently. The clarification command retains returned revision history and requires a PM correction before independent Operations acceptance. These local replays do not establish shared-project compatibility or authorize migration there. See [current walkthrough status](./evidence/d5o-synthetic-walkthrough-20261011/current-status-20261012.json).
+At the prior 12 October checkpoint, the package-draft and Design handoff corrections brought the candidate to **77 ordered hosted files**, including 12 previously mapped shared-history entries and **65 outstanding**. A separate disposable return fixture and a second fresh local project replayed the 77-file candidate sequence in order; the mutable service and changed-job clones were restored independently. The clarification command retains returned revision history and requires a PM correction before independent Operations acceptance. These local replays do not establish shared-project compatibility or authorize migration there. See [current walkthrough status](./evidence/d5o-synthetic-walkthrough-20261011/current-status-20261012.json).
+
+The draft-booking correction adds file 65 above, yielding **78 ordered hosted files**: 12 read-only mapped shared-history entries and **66 outstanding**. It permits qualified, current-demand draft bookings before Design release while keeping week publication release-gated. The changed function applied successfully on the disposable 61648 pilot and its authenticated browser checks passed. **A fresh 78-file ordered replay has not been completed** because the local Docker address pool is exhausted and preserved checkpoint/recovery networks remain in use. The prior 77-file fresh replay does not qualify this new file. Do not apply it to shared persistence without a complete disposable replay and coordinated cutover authorization. See [current walkthrough](./evidence/d5o-synthetic-walkthrough-20261011/walkthrough.md).
