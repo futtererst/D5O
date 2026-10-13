@@ -235,6 +235,13 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
       <section className={styles.card}><h2>Review the governing package</h2><p><strong>Scope:</strong> {packageBasis.scope}</p>
         <p><strong>Location:</strong> {packageBasis.location}</p><p><strong>Completion basis:</strong> {packageBasis.completionBasis?.kind ?? "Not recorded"}</p>
         <p><strong>Assigned queue:</strong> {review.assignee} · due {review.dueDate || "not recorded"}</p>
+        <h3>Governing file revisions</h3>
+        {packageBasis.documentRefs.length ? packageBasis.documentRefs.map((ref) => {
+          const governing = state.documents.find((item) => documentRef(item) === ref);
+          return <div key={ref}><p>{governing ? `${governing.title} · revision ${governing.revision} · ${governing.status}` : `Unavailable document revision ${ref}`}</p>
+            {governing && requiresDocumentCustody ? <DesignDocumentEvidence workspace={work.workspace} workId={work.id}
+              documentId={governing.id} revision={governing.revision} canUpload={false} /> : null}</div>;
+        }) : <p>No governing document revision is linked. Return the package or inspect the missing-source finding.</p>}
         <label>Decision rationale<input aria-label="Review rationale" value={decisionNote} onChange={(event) => setDecisionNote(event.target.value)} /></label>
         <div className={styles.actions}><button disabled={busy || !decisionNote.trim()} onClick={() => void send({ action: "decide-review", reviewId: review.id, decision: "Approved", note: decisionNote })}>Approve exact revision</button>
           <button disabled={busy || !decisionNote.trim()} onClick={() => void send({ action: "decide-review", reviewId: review.id, decision: "Returned", note: decisionNote })}>Return for correction</button></div>
