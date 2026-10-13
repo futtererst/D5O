@@ -277,7 +277,8 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
     const linkedDetail = state.packages.find((item) => item.packageId === linkedPackage?.id);
     const linkedRevision = Number(linkedParams?.get("sourceRevision"));
     const current = actorRole === "project_manager" && received && linkedPackage &&
-      linkedDetail?.revision === linkedRevision && linkedDetail.status === (correcting ? "Returned" : "In review") &&
+      linkedDetail?.revision === linkedRevision && (correcting ? linkedDetail.status === "Returned" :
+        ["Draft", "In review"].includes(linkedDetail.status)) &&
       !state.releases.some((release) => release.packageId === linkedPackage.id &&
         release.packageRevision === linkedRevision && ["Awaiting receipt", "Accepted"].includes(release.status));
     if (!current || !linkedPackage || !linkedDetail) return <section className={styles.workspace} role="status"><h2>This package task changed or was completed</h2>

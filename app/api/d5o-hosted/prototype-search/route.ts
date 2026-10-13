@@ -286,7 +286,14 @@ export async function GET(request: NextRequest) {
                 packageId: item.id, packageName: item.name, revision: detail.revision, status: detail.status,
                 position: "preparation", ownership: "Created by you · project manager",
                 blocker: returned?.note || "Review returned this exact revision; inspect the decision before resubmission." });
-            } else if (detail.status === "Draft")
+            } else if (detail.status === "Draft" && !detail.documentRefs.some((ref) =>
+              design.documents.some((document) => `${document.id}@${document.revision}` === ref &&
+                document.status === "Issued for use" && document.packageIds.includes(item.id))))
+              actions.push({ ...common, kind: "Link issued document to package", phase: "Design", focus: "package-release-prep",
+                packageId: item.id, packageName: item.name, revision: detail.revision, status: detail.status,
+                position: "preparation", ownership: "Created by you · project manager",
+                blocker: "The current package revision needs an exact issued governing document before review." });
+            else if (detail.status === "Draft")
               actions.push({ ...common, kind: "Request package review", phase: "Design", focus: "package-review-request",
                 packageId: item.id, packageName: item.name, revision: detail.revision, status: detail.status,
                 position: "preparation", ownership: "Created by you · project manager" });
