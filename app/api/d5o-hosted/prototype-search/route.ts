@@ -241,6 +241,19 @@ export async function GET(request: NextRequest) {
           commercial.designHandoff.brief.definitionRevision === define?.revision &&
           commercial.designHandoff.brief.configurationVersionId === record.phaseConfigurationVersionId;
         const currentPackages = (record as WorkRecord).packages ?? [];
+        const designDocuments = designState(record as WorkRecord).documents;
+        for (const document of designDocuments) {
+          const packageId = document.packageIds.find((id) => currentPackages.some((item) => item.id === id));
+          const packageName = currentPackages.find((item) => item.id === packageId)?.name;
+          if (document.status === "In review" && actorRole === "operations_leader" && document.submittedByActorId !== ctx.actor.id)
+            actions.push({ ...common, kind: `Review document · ${document.title}`, phase: "Design", focus: "document-review",
+              decisionId: document.id, packageId, packageName, revision: document.revision, status: "Submitted",
+              dueDate: document.dueDate || null, ownership: "Eligible independent engineering reviewer" });
+          if (mine && document.status === "Approved" && document.approvedByActorId !== ctx.actor.id)
+            actions.push({ ...common, kind: `Issue document · ${document.title}`, phase: "Design", focus: "document-issue",
+              decisionId: document.id, packageId, packageName, revision: document.revision, status: "Approved",
+              ownership: "Created by you · project manager", position: "preparation" });
+        }
         if (mine && acceptedDesignSource && !record.serviceSource &&
           (record as WorkRecord).deploy?.workAcceptance?.receipt !== "Accepted") {
           if (!currentPackages.length)

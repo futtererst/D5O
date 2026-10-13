@@ -17,7 +17,7 @@ type PackageRef = { id: string; name: string; owner: string; status: string };
 type Props = {
   taskFocus?: string | null; onFullRecord?: () => void;
   work: WorkRecord; packages: PackageRef[]; packageDemands: PackageCrewDemand[];
-  actorRole?: string;
+  actorRole?: string; actorId?: string;
   allWork: WorkRecord[]; configurationInventory: ConfigurationInventory; onSelectWork: (id: string) => void;
   policy?: DesignControlPolicy;
   onCommand: (command: Omit<DesignCommand, "workId" | "expectedRevision" | "commandId">) => Promise<boolean>;
@@ -54,7 +54,7 @@ function MaterialLinesField({ initial }: { initial: DesignMaterial[] }) {
   </div>)}<button type="button" onClick={() => setRows((current) => [...current, { id: crypto.randomUUID(), item: "", quantity: 0, unit: "", source: "", status: "Unknown", requiredDate: "", forecastDate: "", alternative: "" }])}>+ Add material item</button></fieldset>;
 }
 
-export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packageDemands, allWork, configurationInventory, onSelectWork, actorRole, policy = legacyDesignControlPolicy, onCommand, onHandoff, onCreatePackage, demand, resources }: Props) {
+export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packageDemands, allWork, configurationInventory, onSelectWork, actorRole, actorId, policy = legacyDesignControlPolicy, onCommand, onHandoff, onCreatePackage, demand, resources }: Props) {
   const [tab, setTab] = useState<Tab>("Basis");
   const [selectedId, setSelectedId] = useState(packages[0]?.id ?? "");
   useEffect(() => {
@@ -126,6 +126,41 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
     void send({ action: "record-change", packageId: selected.id, source: field(form, "source"), reason: field(form, "reason"), affectedRequirementIds: form.getAll("requirementIds").map(String), affectedDocumentRefs: form.getAll("documentRefs").map(String), technicalImpact: field(form, "technicalImpact"), commercialImpact: field(form, "commercialImpact"), scheduleImpact: field(form, "scheduleImpact"), note: "Design change recorded against exact package revision" });
   }
   const linkedParams = typeof window === "undefined" ? null : new URLSearchParams(window.location.search);
+  if (taskFocus === "document-review" || taskFocus === "document-issue") {
+    const documentId = linkedParams?.get("decision");
+    const sourceRevision = Number(linkedParams?.get("sourceRevision"));
+    const linkedPackageId = linkedParams?.get("package");
+    const document = state.documents.find((item) => item.id === documentId && item.revision === sourceRevision);
+    const review = taskFocus === "document-review";
+    const current = document && actorId && (!linkedPackageId || document.packageIds.includes(linkedPackageId)) &&
+      (review ? actorRole === "operations_leader" && document.status === "In review" && document.submittedByActorId !== actorId
+        : actorRole === "project_manager" && document.status === "Approved" && document.approvedByActorId !== actorId);
+    if (!current || !document) return <section className={styles.workspace} role="status"><h2>This document task changed or was decided</h2>
+      <p>The exact document revision, package or current role no longer matches. No substitute document was selected.</p>
+      <a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work</a></section>;
+    const packageNames = document.packageIds.map((id) => packages.find((item) => item.id === id)?.name ?? `Unavailable package ${id}`);
+    return <FocusedTaskFrame title={`${review ? "Review" : "Issue"} · ${document.title}`} work={work.title}
+      customer={work.customer} site={work.site} workspace={work.workspace} revision={document.revision}
+      scope={`${document.type} · ${packageNames.join(", ") || "Work Record"}`}
+      outcome={review ? "Independently assess this submitted revision before it can be issued for use." : "Issue the independently approved revision for the named packages."}
+      nextOwner={review ? "Project manager to issue the approved revision" : "Project manager to link the issued revision to the engineering package"}
+      onFullRecord={onFullRecord}
+      context={<><p>Source or custody reference: {document.source}</p><p>Document owner: {document.owner}</p>
+        <p>Requirements: {document.requirementIds.map((id) => requirementRefs.find((item) => item.id === id)?.label ?? id).join("; ") || "None linked"}</p>
+        {document.reviewNote ? <p>Independent review: {document.reviewNote}</p> : null}</>}>
+      <section className={styles.card}><h2>Exact document revision</h2><p>{document.title} · revision {document.revision} · {document.status}</p>
+        <p><strong>Recorded source:</strong> {document.source}</p>
+        <p>A source reference alone does not prove that private file bytes were retained. Inspect the source before approving or issuing.</p>
+        {review ? <><label>Independent review rationale<input aria-label="Document review rationale" value={documentReviewNote}
+          onChange={(event) => setDocumentReviewNote(event.target.value)} /></label>
+          <button disabled={busy || documentReviewNote.trim().length < 15} onClick={() => void send({ action: "approve-document",
+            documentId: document.id, documentRevision: document.revision, note: documentReviewNote })}>Approve exact document revision</button></>
+          : <><p><strong>Review basis:</strong> {document.reviewNote || "Independent approval recorded"}</p>
+            <button disabled={busy} onClick={() => void send({ action: "issue-document", documentId: document.id,
+              documentRevision: document.revision })}>Issue exact document revision</button></>}
+      </section>
+    </FocusedTaskFrame>;
+  }
   if (linkedParams?.get("focus") === "reviews") {
     const reviewId = linkedParams.get("decision");
     const sourceRevision = Number(linkedParams.get("sourceRevision"));
