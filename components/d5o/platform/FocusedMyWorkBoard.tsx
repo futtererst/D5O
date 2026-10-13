@@ -4,7 +4,7 @@ import type { DeliveryAction } from "@/lib/d5o/hosted/delivery-role-actions";
 import type { SupportAction } from "@/lib/d5o/hosted/support-role-actions";
 import { serviceActionHref, serviceRoleLabel, type ServiceAction } from "./service-actions";
 
-type RoleAction = { kind: string; workId: string; packageId?: string | null; packageName?: string; decisionId?: string | null; revision: number; status: string; title: string; workTitle?: string; customer?: string; site?: string; dueDate?: string | null; phase: string; focus?: string; ownership: string; position?: "preparation" | "waiting" | "action"; blocker?: string | null };
+type RoleAction = { kind: string; workId: string; packageId?: string | null; packageName?: string; decisionId?: string | null; sourceRevision?: number; revision: number; status: string; title: string; workTitle?: string; customer?: string; site?: string; dueDate?: string | null; phase: string; focus?: string; ownership: string; position?: "preparation" | "waiting" | "action"; blocker?: string | null };
 type RecordSummary = { id: string; title: string; customer: string; site: string; stage: string };
 export type FocusedQueuePage<T extends RecordSummary> = { roleActions?: RoleAction[]; serviceActions?: ServiceAction[]; deliveryActions?: DeliveryAction[]; supportActions?: SupportAction[]; records: T[]; total: number; nextCursor: string | null };
 type Task = { key: string; canonical: string; title: string; work: string; customer: string; site?: string | null; detail: string; owner: string; blocker?: string | null; due?: string | null; impact?: "Critical" | "High" | "Standard" | null; href: string; position: "action" | "preparation" | "waiting" | "information" };
@@ -29,6 +29,11 @@ function roleLink(workspace: string, action: RoleAction) {
   if (action.packageId) params.set("package", action.packageId);
   if (action.focus) params.set("focus", action.focus);
   if (action.decisionId) params.set("decision", action.decisionId);
+  if (action.focus === "design-release-receipt") {
+    params.set("sourceRevision", String(action.sourceRevision ?? action.revision));
+    params.set("decisionRevision", String(action.revision));
+    params.set("release", action.decisionId ?? "");
+  }
   if (action.kind === "Billing review") { params.set("focus", "finance"); params.set("taskKind", "bill-review"); }
   if (action.kind === "Design review") params.set("focus", "reviews");
   if (action.kind === "Field report review") params.set("focus", "reports");

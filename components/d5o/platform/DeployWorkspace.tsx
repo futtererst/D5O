@@ -7,6 +7,9 @@ import { assessDeployReadiness, assessPackageCompletion, currentAcceptedRelease,
 import type { DeployControlPolicy } from "./deploy-policy";
 import type { DeployCommand } from "@/lib/d5o/prototype-work/deploy-command";
 import { DesignDeployReceipt } from "./DesignWorkspace";
+import { designState } from "./design-model";
+import { DesignDocumentEvidence } from "./DesignDocumentEvidence";
+import { FocusedTaskFrame } from "./FocusedTaskFrame";
 import { CustomerDecisionEvidence } from "./CustomerDecisionEvidence";
 import { FieldChangeControl } from "./FieldChangeControl";
 import type { DesignCommand } from "@/lib/d5o/prototype-work/design-command";
@@ -16,7 +19,7 @@ type Action = Omit<DeployCommand, "workId" | "expectedRevision" | "commandId">;
 type Tab = "Overview" | "Crew & readiness" | "Field work" | "Inspections & issues" | "Acceptance & turnover";
 const text = (data: FormData, key: string) => String(data.get(key) ?? "").trim();
 
-export function DeployWorkspace({ work, schedule, policy, actorId, onCommand, onUpload, onDesignCommand, onCrew, hosted = false }: { work: WorkRecord; schedule: SharedSchedule | null; policy?: DeployControlPolicy; actorId: string; onCommand: (command: Action) => Promise<boolean>; onUpload: (packageId: string, data: FormData) => Promise<boolean>; onDesignCommand: (command: Omit<DesignCommand, "workId" | "expectedRevision" | "commandId">) => Promise<boolean>; onCrew: () => void; hosted?: boolean }) {
+export function DeployWorkspace({ work, schedule, policy, actorId, actorRole, onCommand, onUpload, onDesignCommand, onCrew, hosted = false }: { work: WorkRecord; schedule: SharedSchedule | null; policy?: DeployControlPolicy; actorId: string; actorRole: string; onCommand: (command: Action) => Promise<boolean>; onUpload: (packageId: string, data: FormData) => Promise<boolean>; onDesignCommand: (command: Omit<DesignCommand, "workId" | "expectedRevision" | "commandId">) => Promise<boolean>; onCrew: () => void; hosted?: boolean }) {
   const evidenceApi = hosted ? `/api/d5o-hosted/prototype-deploy-command?workspace=${encodeURIComponent(work.workspace)}` : "/api/work/deploy-command";
   const [tab, setTab] = useState<Tab>("Overview");
   const [packageId, setPackageId] = useState("");
@@ -36,12 +39,17 @@ export function DeployWorkspace({ work, schedule, policy, actorId, onCommand, on
   const [draft, setDraft] = useState<{ quantity: string; unit: string; laborHours: string; summary: string; material: string } | null>(null);
   const [syncState, setSyncState] = useState<"None" | "Local only" | "Synchronizing" | "Synchronized" | "Conflict">("None");
   const [message, setMessage] = useState("");
+  const [receiptNote, setReceiptNote] = useState("");
   const [decisionEvidence, setDecisionEvidence] = useState<Record<string, string>>({});
   const evidenceFor = (scope: string) => decisionEvidence[scope] ?? "";
   const setEvidence = (scope: string, id: string) => setDecisionEvidence((current) => ({ ...current, [scope]: id }));
   const state = deployState(work);
   const packages = work.packages ?? [];
   const linkedRelease = linkedAction?.packageId ? currentAcceptedRelease(work, linkedAction.packageId) : null;
+  const designPosition = designState(work);
+  const exactDesignReceipt = linkedAction?.focus === "design-release-receipt" ? designPosition.releases.find((item) =>
+    item.id === linkedAction.decisionId && item.id === linkedAction.releaseId && item.packageId === linkedAction.packageId &&
+    item.packageRevision === linkedAction.decisionRevision && item.status === "Awaiting receipt") : null;
   const linkedDecision = linkedAction ? linkedAction.focus === "report-review" ? state.reports.find((r) => r.id === linkedAction.decisionId && r.packageId === linkedAction.packageId && r.releaseId === linkedAction.releaseId && r.status === "Submitted" && r.revision === linkedAction.decisionRevision)
     : linkedAction.focus === "inspection-review" ? state.inspections.find((i) => i.id === linkedAction.decisionId && i.packageId === linkedAction.packageId && i.releaseId === linkedAction.releaseId && i.status === "Submitted")
     : linkedAction.focus === "evidence-review" ? state.evidence.find((e) => e.id === linkedAction.decisionId && e.packageId === linkedAction.packageId && e.releaseId === linkedAction.releaseId && e.state === "Uploaded")
@@ -52,9 +60,13 @@ export function DeployWorkspace({ work, schedule, policy, actorId, onCommand, on
     : linkedAction.focus === "work-acceptance" ? linkedAction.decisionId === work.id && !state.workAcceptance
     : linkedAction.focus === "work-receipt" ? state.workAcceptance?.id === linkedAction.decisionId && state.workAcceptance.receipt === "Awaiting" && state.workAcceptance.revision === linkedAction.decisionRevision && currentWorkAcceptanceScope(work)
     : null : null;
-  const linkedStale = linkedAction && (!Number.isInteger(linkedAction.sourceRevision) || linkedAction.sourceRevision !== (state.authorityRevision ?? 0)
-    || !!linkedAction.packageId && !packages.some((p) => p.id === linkedAction.packageId)
-    || !!linkedAction.packageId && linkedRelease?.id !== linkedAction.releaseId || !linkedDecision);
+  const linkedStale = linkedAction && (linkedAction.focus === "design-release-receipt"
+    ? !exactDesignReceipt || linkedAction.sourceRevision !== designPosition.authorityRevision ||
+      !["admin", "project_manager", "operations_leader"].includes(actorRole) || exactDesignReceipt.issuedByActorId === actorId ||
+      designPosition.packages.find((item) => item.packageId === linkedAction.packageId)?.revision !== exactDesignReceipt.packageRevision
+    : !Number.isInteger(linkedAction.sourceRevision) || linkedAction.sourceRevision !== (state.authorityRevision ?? 0)
+      || !!linkedAction.packageId && !packages.some((p) => p.id === linkedAction.packageId)
+      || !!linkedAction.packageId && linkedRelease?.id !== linkedAction.releaseId || !linkedDecision);
   const selected = packageId && packages.some((item) => item.id === packageId) ? packageId : packages[0]?.id ?? "";
   const release = currentAcceptedRelease(work, selected);
   const readiness = assessDeployReadiness(work, selected, schedule, policy);
@@ -88,6 +100,35 @@ export function DeployWorkspace({ work, schedule, policy, actorId, onCommand, on
     if (ok) { localStorage.removeItem(offlineKey); setDraft(null); setSyncState("Synchronized"); } else setSyncState("Conflict");
   };
   if (linkedStale) return <section className={style.workspace} role="alert"><header className={style.header}><div><p>DEPLOY · ACTION CHANGED</p><h2>This queue link is no longer current</h2><span>The exact package, decision or revision changed or has already been decided. No other package was opened in its place.</span></div></header><a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work →</a></section>;
+  if (linkedAction?.focus === "design-release-receipt" && exactDesignReceipt) {
+    const exactPackage = packages.find((item) => item.id === exactDesignReceipt.packageId);
+    return <FocusedTaskFrame title={`Receive Design release · ${exactPackage?.name ?? exactDesignReceipt.packageId}`}
+      work={work.title} customer={work.customer} site={work.site} workspace={work.workspace}
+      revision={exactDesignReceipt.packageRevision}
+      scope={`${exactPackage?.name ?? exactDesignReceipt.packageId} · ${exactDesignReceipt.snapshot.scope}`}
+      outcome="Accept or return this exact Design release into Deploy. Receipt does not publish a crew or authorize field start."
+      nextOwner="Scheduler and field-start authority after an accepted receipt"
+      onFullRecord={() => { const url = new URL(window.location.href); for (const key of ["focus", "decision", "sourceRevision", "decisionRevision", "release"]) url.searchParams.delete(key); window.location.assign(url.toString()); }}
+      context={<><p>Release {exactDesignReceipt.id} · source {exactDesignReceipt.sourceKind ?? "commercial delivery"} · issued {exactDesignReceipt.issuedAt}</p>
+        <p>Method: {exactDesignReceipt.snapshot.method} · rollback: {exactDesignReceipt.snapshot.rollback}</p>
+        <p>Safety: {exactDesignReceipt.snapshot.safetyControls} · access: {exactDesignReceipt.snapshot.access}</p>
+        <p>Verification: {exactDesignReceipt.snapshot.verification}</p></>}>
+      <section className={style.card}><h2>Released execution basis</h2>
+        <p><strong>Location:</strong> {exactDesignReceipt.snapshot.location}</p>
+        <p><strong>Receiver:</strong> {exactDesignReceipt.receivingOwner} · response due {exactDesignReceipt.responseDueDate}</p>
+        <h3>Exact issued documents</h3>{exactDesignReceipt.documentRefs.map((ref) => {
+          const document = designPosition.documents.find((item) => `${item.id}@${item.revision}` === ref);
+          return <div key={ref}><p>{document ? `${document.title} · revision ${document.revision}` : `Unavailable document ${ref}`}</p>
+            {document && work.canonicalWorkId ? <DesignDocumentEvidence workspace={work.workspace} workId={work.id}
+              documentId={document.id} revision={document.revision} canUpload={false} /> : null}</div>;
+        })}
+        <label>Receipt reason<input aria-label="Design release receipt reason" value={receiptNote}
+          onChange={(event) => setReceiptNote(event.target.value)} minLength={15} /></label>
+        <div className={style.actions}><button disabled={receiptNote.trim().length < 15} onClick={() => void onDesignCommand({ action: "respond-receipt", releaseId: exactDesignReceipt.id, response: "Accepted", note: receiptNote })}>Accept exact release</button>
+          <button disabled={receiptNote.trim().length < 15} onClick={() => void onDesignCommand({ action: "respond-receipt", releaseId: exactDesignReceipt.id, response: "Returned", note: receiptNote })}>Return exact release</button></div>
+      </section>
+    </FocusedTaskFrame>;
+  }
   return <section className={style.workspace} data-task-focus={linkedAction?.focus ?? undefined}>
     {linkedAction ? <p className={style.message}>Current action: {linkedAction.focus.replaceAll("-", " ")} · source {linkedAction.decisionId} · revision {linkedAction.decisionRevision}. The command will recheck authority and prerequisites.</p> : null}
     {!linkedAction ? <header className={style.header}><div><p>DEPLOY · CONTROLLED DELIVERY</p><h2>Deliver and verify the released work</h2><span>{work.customer} · {work.site}</span></div><strong>{wholeAcceptanceCurrent ? "Client Accepted · whole Work Record" : state.workAcceptance ? "Acceptance basis changed · review required" : turnovers.some((item) => item.status === "Client accepted") ? "Scoped package acceptance recorded" : permit?.status === "Authorized" ? "Field start authorized" : "Field start not authorized"}</strong></header> : null}

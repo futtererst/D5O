@@ -241,7 +241,19 @@ export async function GET(request: NextRequest) {
           commercial.designHandoff.brief.definitionRevision === define?.revision &&
           commercial.designHandoff.brief.configurationVersionId === record.phaseConfigurationVersionId;
         const currentPackages = (record as WorkRecord).packages ?? [];
-        const designDocuments = designState(record as WorkRecord).documents;
+        const designPosition = designState(record as WorkRecord);
+        const designDocuments = designPosition.documents;
+        if (actorRole === "operations_leader") for (const release of designPosition.releases) {
+          const packageItem = currentPackages.find((item) => item.id === release.packageId);
+          if (release.status !== "Awaiting receipt" || !packageItem ||
+            designPosition.packages.find((item) => item.packageId === release.packageId)?.revision !== release.packageRevision ||
+            release.issuedByActorId === ctx.actor.id) continue;
+          actions.push({ ...common, kind: "Receive Design release", phase: "Deploy", focus: "design-release-receipt",
+            decisionId: release.id, packageId: release.packageId, packageName: packageItem.name,
+            revision: release.packageRevision, sourceRevision: designPosition.authorityRevision,
+            status: "Awaiting receipt", dueDate: release.responseDueDate,
+            ownership: "Eligible independent Deploy receiver" });
+        }
         for (const document of designDocuments) {
           if (designDocuments.some((item) => item.id === document.id && item.revision > document.revision)) continue;
           const packageId = document.packageIds.find((id) => currentPackages.some((item) => item.id === id));
