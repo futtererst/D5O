@@ -1,6 +1,6 @@
 {
   "schema": "d5o.synthetic-walkthrough.current-status.v1",
-  "generatedAt": "2026-10-13T13:10:00Z",
+  "generatedAt": "2026-10-13T14:34:02.921Z",
   "originalRunImmutable": true,
   "originalRunSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
   "originalRunCounts": {
@@ -9,7 +9,7 @@
     "Not run": 45,
     "Blocked": 0
   },
-  "currentApplicationSha": "fe8cf58c4f3552ed533b432c0b4ac066a6be3e28",
+  "currentApplicationSha": "3134017af29945267e45a76f136732c2f875d0a9",
   "fixtures": {
     "handoff": "http://127.0.0.1:61647/work?workspace=rybex; isolated database 57021",
     "delivery": "http://127.0.0.1:61643/work?workspace=rybex; isolated database 56621",
@@ -1299,6 +1299,16 @@
       "mode": "rollback-only authenticated database probe before fix; authenticated Operations browser and API after fix; fresh disposable migration replay",
       "evidence": "Before fix, the Operations authenticated database command WOULD_AUTHORIZE the 2026-10-16 published booking on 2026-10-13 in a rolled-back transaction. After forward migration 20261013140000, the same exact current revisions rejected field_shift_not_current. Build fe8cf58c4f35 browser shows Hold for resolution, booked 2026-10-16 07:00-15:30 and pinned America/New_York, with no permit. Authenticated API probes returned future-shift 409 field_shift_not_current, wrong role 403 field_start_authority_required, stale source 409 stale_field_start_basis and other tenant 403 workspace_forbidden. Work 23, Design 31, schedule 4, Deploy 0, permits 0 and events 0 remained unchanged. At 390px the authenticated Operations browser showed the start button disabled, the correct hold, and no horizontal overflow; screenshot screenshots/i26-future-shift-held-mobile.png.",
       "remainingGap": "Positive start on the actual shift remains Not run; no field actuals or completion are claimed."
+    },
+    {
+      "id": "I27",
+      "title": "Positive current-shift field-start authority on a separate two-package pilot clone",
+      "originalFindingSha": "fe8cf58c4f3552ed533b432c0b4ac066a6be3e28",
+      "latestResult": "Passed",
+      "latestTestedSha": "3134017af29945267e45a76f136732c2f875d0a9",
+      "mode": "separate authenticated fictional PM, Operations-leader and worker browsers on disposable 61651/57621; read-only database state and private PDF byte comparison",
+      "evidence": "The isolated 80-migration target received a local-only clone of fictional Work/Auth/Storage, including matching private PDF bytes. PM created survey package wp-203522d0b30a4b1680f69e6783fe4df2, saved engineering and Oct 13 09:00-16:00 demand, uploaded private survey PDF d97a2c5a-c30e-4740-88c4-888c7fd9e70d (SHA-256 d3fe160cd56f4d9f2734b1f1001e2d4a947740b35e54cdeb8f9ff34746372fb3), submitted it, and an independent Operations actor retrieved identical bytes and approved it. PM issued/linked document f39de88b-1a65-4905-ab85-628e02e81731@1 in package revision 2; Operations approved five exact discipline reviews. The reviewing actor release attempt correctly rejected 403 release_separation_required. A separate Operations-leader release first rejected 409 dated_crew_demand_required because demand still cited revision 1; PM refreshed the same dated demand to revision 2 and that separate actor issued release b4570daa-c2ca-4759-b9ba-9bcd7c5b0577 (200). Original reviewer independently accepted Deploy receipt (200). Scheduler booked bound qualified Nate Walker on the exact shift and published the week; worker acknowledged the survey booking (200). Operations browser showed Ready for authorized start and committed authorize-start (200) during the current shift. Read-only state: one accepted survey release, five approved reviews, one Authorized permit, zero survey reports. Reload on Build 3134017af299 retained Authorized start and the worker viewed exact instructions. Desktop and 390px mobile screenshots i27-current-shift-authorized-desktop.png and i27-worker-authorized-mobile.png show no overflow; computed mobile title color is rgb(255, 255, 255).",
+      "remainingGap": "Fictional survey work has not been reported or verified; positive current-shift permit does not establish completion or acceptance. Review-card discipline title correction passed source/type/build checks but its post-fix browser card was not exercised because all five pending reviews were decided before rebuild."
     }
   ],
   "currentBuildChecks": [
@@ -1469,13 +1479,21 @@
       "mode": "authenticated fictional Operations browser read and authenticated API rejection probes on disposable 61648; database pre-fix rollback-only counterexample; fresh 80-file migration replay",
       "result": "Passed",
       "evidence": "Published future shift is held in the browser; typed command returns 409 field_shift_not_current. Wrong-role, stale and tenant denials retain exact domain errors. Rejected commands leave source, Design, schedule, Deploy, permits and events unchanged. Full 80-file ordered replay completed on empty disposable d5o-pr2-replay-20261013. A 390px browser check found the Authorize field start button disabled with no horizontal overflow."
+    },
+    {
+      "caseId": "I27 current-shift browser and scoped presentation",
+      "applicationSha": "3134017af29945267e45a76f136732c2f875d0a9",
+      "mode": "production-mode isolated 61651 build, authenticated fictional role browsers, TypeScript, scoped ESLint and visual mobile check",
+      "result": "Passed",
+      "evidence": "npm run typecheck, scoped ESLint on FocusedMyWorkBoard.tsx, production build and git diff --check passed. Operations UI authorized exact current-shift package and worker mobile displayed Authorized start after reload; title computed rgb(255, 255, 255), scroll width equaled 390px. No migration changed after the earlier 80-file fresh replay."
     }
   ],
-  "runtimeStatus": "61648 isolated production-mode preview displays Build fe8cf58c4f35 and uses disposable API 57121. The 80-file hosted candidate sequence replayed on separate empty disposable 57621; shared/production unchanged.",
+  "runtimeStatus": "61651 isolated production-mode preview displays Build 3134017af299 and uses disposable API 57621 with a positive current-shift Authorized survey permit. Preserved 61648/57121 preview retains original future-shift held case. Shared/production unchanged.",
   "fixtureStatus": {
     "returnProject": "d5o-handoff-return-20261012; package revision 4 has accepted release and exact issued private-PDF document @2. One future 2026-10-16 published booking was acknowledged by Nate Walker. Current Build fe8cf58c4f35 holds field start until the scheduled shift; Deploy revision 0, zero permits and actuals. No accepted history was altered.",
     "jobFinanceClone": "d5o-service-mutable-20261012; cloned fictional changed-job Finance history; new USD 100 post-closeout payment only in clone",
     "partialServiceClone": "d5o-partial-service-mutable-20261012; exact canonical partially covered request/child/asset; separate mutable Auth/Storage; fictional terms, invoice, payment and cost correction persisted",
-    "preserved": "Delivery/support observation checkpoints, original preclosure and original changed-job payment history unchanged."
+    "preserved": "Delivery/support observation checkpoints, original preclosure and original changed-job payment history unchanged.",
+    "currentShiftClone": "d5o-pr2-replay-20261013; local-only fictional Work/Auth/Storage clone after 80-file migration replay; survey package revision 2, accepted release b4570daa-c2ca-4759-b9ba-9bcd7c5b0577 and Authorized start during Oct 13 09:00-16:00. No survey actuals or acceptance recorded."
   }
 }
