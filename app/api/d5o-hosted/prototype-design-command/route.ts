@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
       return reply({ state: { ...result.state, revision: result.revision }, synthetic: false });
     }
     if (authoritativeD5OCommandsReady() && current.canonicalWorkId &&
-      ["save-document", "save-package", "save-demand", "submit-document", "approve-document",
+      ["save-document", "save-package", "save-demand", "submit-document", "return-document", "approve-document",
         "issue-document", "request-review", "decide-review",
         "release-package", "respond-receipt", "record-change", "acknowledge-hold", "resolve-change"].includes(command.action)) {
       if (!Number.isInteger(command.expectedDecisionRevision) ||

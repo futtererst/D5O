@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, type ReactNode, useEffect, useState } from "react";
+import { type FormEvent, type ReactNode, useCallback, useEffect, useState } from "react";
 import type { WorkRecord } from "./work-types";
 import type { PackageCrewDemand } from "./schedule-model";
 import { assessDesignPackage, designRequirementRefs, designState, documentRef, type DesignMaterial, type DesignPackage, type DesignReview } from "./design-model";
@@ -9,6 +9,7 @@ import { legacyDesignControlPolicy, type DesignControlPolicy } from "./design-po
 import type { ConfigurationInventory } from "@/lib/d5o/configuration/version-inventory";
 import { DesignPipeline } from "./DesignPipeline";
 import { FocusedTaskFrame } from "./FocusedTaskFrame";
+import { DesignDocumentEvidence } from "./DesignDocumentEvidence";
 import { FieldChangeDesignSummary } from "./FieldChangeDesignSummary";
 import styles from "./DesignWorkspace.module.css";
 import { serviceExecutionBasisIssue } from "@/lib/d5o/prototype-work/service-execution-basis";
@@ -69,6 +70,10 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
   const [decisionNote, setDecisionNote] = useState("");
   const [changeSource, setChangeSource] = useState("");
   const [documentReviewNote, setDocumentReviewNote] = useState("");
+  const [documentEvidence, setDocumentEvidence] = useState<Record<string, string>>({});
+  const requiresDocumentCustody = !!work.canonicalWorkId;
+  const rememberDocumentEvidence = useCallback((key: string, id: string) =>
+    setDocumentEvidence((current) => current[key] === id ? current : { ...current, [key]: id }), []);
   const [busy, setBusy] = useState(false);
   const state = designState(work);
   const requirementRefs = designRequirementRefs(work);
@@ -126,6 +131,41 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
     void send({ action: "record-change", packageId: selected.id, source: field(form, "source"), reason: field(form, "reason"), affectedRequirementIds: form.getAll("requirementIds").map(String), affectedDocumentRefs: form.getAll("documentRefs").map(String), technicalImpact: field(form, "technicalImpact"), commercialImpact: field(form, "commercialImpact"), scheduleImpact: field(form, "scheduleImpact"), note: "Design change recorded against exact package revision" });
   }
   const linkedParams = typeof window === "undefined" ? null : new URLSearchParams(window.location.search);
+  if (taskFocus === "document-correction" || taskFocus === "document-preparation") {
+    const documentId = linkedParams?.get("decision");
+    const sourceRevision = Number(linkedParams?.get("sourceRevision"));
+    const linkedPackageId = linkedParams?.get("package");
+    const document = state.documents.find((item) => item.id === documentId && item.revision === sourceRevision);
+    const correction = taskFocus === "document-correction";
+    const current = actorRole === "project_manager" && document &&
+      !state.documents.some((item) => item.id === document.id && item.revision > document.revision) &&
+      (!linkedPackageId || document.packageIds.includes(linkedPackageId)) &&
+      document.status === (correction ? "Returned" : "Draft");
+    if (!current || !document) return <section className={styles.workspace} role="status"><h2>This document task changed or was decided</h2>
+      <p>The exact revision or current role no longer matches. No substitute document was selected.</p>
+      <a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work</a></section>;
+    const key = documentRef(document);
+    return <FocusedTaskFrame title={`${correction ? "Correct" : "Submit"} · ${document.title}`} work={work.title}
+      customer={work.customer} site={work.site} workspace={work.workspace} revision={document.revision}
+      scope={`${document.type} · ${document.packageIds.map((id) => packages.find((item) => item.id === id)?.name ?? id).join(", ")}`}
+      outcome={correction ? "Create a new revision that addresses the independent return." : "Retain the exact PDF and submit this revision for independent review."}
+      blocker={correction ? document.returnNote : requiresDocumentCustody && !documentEvidence[key] ? "A private PDF is required before submission." : null}
+      nextOwner={correction ? "Project manager to retain and submit the new revision" : "Independent Operations document reviewer"}
+      onFullRecord={onFullRecord} context={<p>Earlier source: {document.source}. Previous decisions remain in document history.</p>}>
+      {correction ? <form className={styles.form} onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget);
+        void send({ action: "save-document", document: { id: document.id, type: document.type,
+          title: field(form, "title"), source: field(form, "source"), owner: document.owner,
+          packageIds: document.packageIds, requirementIds: document.requirementIds, dueDate: document.dueDate } });
+      }}><label>Corrected title<input name="title" defaultValue={document.title} required /></label>
+        <label>Controlled source reference<input name="source" defaultValue={document.source} required /></label>
+        <button disabled={busy}>Create corrected document revision</button></form>
+        : <section className={styles.card}><h2>Retain the exact PDF</h2>
+          {requiresDocumentCustody ? <DesignDocumentEvidence workspace={work.workspace} workId={work.id} documentId={document.id}
+            revision={document.revision} canUpload onEvidence={(id) => rememberDocumentEvidence(key, id)} /> : <p>Prototype source: {document.source}</p>}
+          <button disabled={busy || (requiresDocumentCustody && !documentEvidence[key])} onClick={() => void send({ action: "submit-document",
+            documentId: document.id, documentRevision: document.revision, evidenceId: documentEvidence[key] })}>Submit exact revision for review</button></section>}
+    </FocusedTaskFrame>;
+  }
   if (taskFocus === "document-review" || taskFocus === "document-issue") {
     const documentId = linkedParams?.get("decision");
     const sourceRevision = Number(linkedParams?.get("sourceRevision"));
@@ -150,13 +190,17 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
         {document.reviewNote ? <p>Independent review: {document.reviewNote}</p> : null}</>}>
       <section className={styles.card}><h2>Exact document revision</h2><p>{document.title} · revision {document.revision} · {document.status}</p>
         <p><strong>Recorded source:</strong> {document.source}</p>
-        <p>A source reference alone does not prove that private file bytes were retained. Inspect the source before approving or issuing.</p>
+        {requiresDocumentCustody ? <DesignDocumentEvidence workspace={work.workspace} workId={work.id} documentId={document.id}
+          revision={document.revision} canUpload={false} /> : null}
+        {requiresDocumentCustody && !document.evidenceId ? <p role="alert">No exact private PDF was bound at submission. Return this revision for correction.</p> : null}
         {review ? <><label>Independent review rationale<input aria-label="Document review rationale" value={documentReviewNote}
           onChange={(event) => setDocumentReviewNote(event.target.value)} /></label>
-          <button disabled={busy || documentReviewNote.trim().length < 15} onClick={() => void send({ action: "approve-document",
-            documentId: document.id, documentRevision: document.revision, note: documentReviewNote })}>Approve exact document revision</button></>
+          <button disabled={busy || (requiresDocumentCustody && !document.evidenceId) || documentReviewNote.trim().length < 15} onClick={() => void send({ action: "approve-document",
+            documentId: document.id, documentRevision: document.revision, note: documentReviewNote })}>Approve exact document revision</button>
+          <button disabled={busy || documentReviewNote.trim().length < 15} onClick={() => void send({ action: "return-document",
+            documentId: document.id, documentRevision: document.revision, note: documentReviewNote })}>Return for corrected PDF</button></>
           : <><p><strong>Review basis:</strong> {document.reviewNote || "Independent approval recorded"}</p>
-            <button disabled={busy} onClick={() => void send({ action: "issue-document", documentId: document.id,
+            <button disabled={busy || (requiresDocumentCustody && !document.evidenceId)} onClick={() => void send({ action: "issue-document", documentId: document.id,
               documentRevision: document.revision })}>Issue exact document revision</button></>}
       </section>
     </FocusedTaskFrame>;
@@ -315,7 +359,10 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
       <section className={styles.card}><h3>Requirements and interfaces from Define</h3><div className={styles.list}>{requirementRefs.map((item) => <article key={item.id}><strong>{item.id} · {item.label}</strong><small>Source: {item.source}</small></article>)}{!requirementRefs.length ? <p>No approved Define requirement or legacy acceptance reference is available.</p> : null}</div><details><summary>Interfaces, assumptions, and constraints</summary><p>{readable(work.definition?.dependencies)}</p><p>{readable(work.definition?.project?.accessConstraints)}</p></details></section>
       </> : null}
     </div> : null}
-    {tab === "Documents" ? <div className={styles.stack}><section className={styles.card}><h3>Engineering document index</h3><p>A new draft retains the issued revision until the new revision is reviewed and explicitly issued.</p><div className={styles.list}>{state.documents.map((item) => <article key={documentRef(item)}><div><strong>{item.title} · rev {item.revision}</strong><small>{item.type} · {item.status} · {item.source}</small><small>Packages: {item.packageIds.map((id) => packages.find((entry) => entry.id === id)?.name ?? id).join(", ") || "None"}</small></div><div className={styles.actions}>{item.status === "Draft" ? <button disabled={busy} onClick={() => void send({ action: "submit-document", documentId: item.id, documentRevision: item.revision })}>Submit review</button> : null}{item.status === "In review" ? <><input aria-label={`Document review rationale for ${item.title}`} value={documentReviewNote} onChange={(event) => setDocumentReviewNote(event.target.value)} placeholder="Independent review rationale" /><button disabled={busy || documentReviewNote.trim().length < 15} onClick={() => void send({ action: "approve-document", documentId: item.id, documentRevision: item.revision, note: documentReviewNote })}>Approve revision</button></> : null}{item.status === "Approved" ? <button disabled={busy} onClick={() => void send({ action: "issue-document", documentId: item.id, documentRevision: item.revision })}>Issue for use</button> : null}{item.status === "Issued for use" ? <button type="button" onClick={() => { setTab("Packages"); setSelectedId(item.packageIds[0] ?? selected?.id ?? ""); setChangeSource(""); }}>Use in package →</button> : null}</div></article>)}{!state.documents.length ? <p>No engineering deliverable recorded.</p> : null}</div></section>
+    {tab === "Documents" ? <div className={styles.stack}><section className={styles.card}><h3>Engineering document index</h3><p>A new draft retains the issued revision until the new revision is reviewed and explicitly issued.</p><div className={styles.list}>{state.documents.map((item) => <article key={documentRef(item)}><div><strong>{item.title} · rev {item.revision}</strong><small>{item.type} · {item.status} · {item.source}</small><small>Packages: {item.packageIds.map((id) => packages.find((entry) => entry.id === id)?.name ?? id).join(", ") || "None"}</small></div>{requiresDocumentCustody ? <DesignDocumentEvidence workspace={work.workspace} workId={work.id}
+          documentId={item.id} revision={item.revision} canUpload={item.status === "Draft" && actorRole === "project_manager"}
+          onEvidence={(id) => rememberDocumentEvidence(documentRef(item), id)} /> : null}
+        <div className={styles.actions}>{item.status === "Draft" ? <button disabled={busy || (requiresDocumentCustody && !documentEvidence[documentRef(item)])} onClick={() => void send({ action: "submit-document", documentId: item.id, documentRevision: item.revision, evidenceId: documentEvidence[documentRef(item)] })}>Submit review</button> : null}{item.status === "In review" ? <><input aria-label={`Document review rationale for ${item.title}`} value={documentReviewNote} onChange={(event) => setDocumentReviewNote(event.target.value)} placeholder="Independent review rationale" /><button disabled={busy || (requiresDocumentCustody && !item.evidenceId) || documentReviewNote.trim().length < 15} onClick={() => void send({ action: "approve-document", documentId: item.id, documentRevision: item.revision, note: documentReviewNote })}>Approve revision</button><button disabled={busy || documentReviewNote.trim().length < 15} onClick={() => void send({ action: "return-document", documentId: item.id, documentRevision: item.revision, note: documentReviewNote })}>Return for correction</button></> : null}{item.status === "Returned" ? <span>Returned: {item.returnNote || "A corrected revision is required."} Use Document identity below to create a new revision.</span> : null}{item.status === "Approved" ? <button disabled={busy || (requiresDocumentCustody && !item.evidenceId)} onClick={() => void send({ action: "issue-document", documentId: item.id, documentRevision: item.revision })}>Issue for use</button> : null}{item.status === "Issued for use" ? <button type="button" onClick={() => { setTab("Packages"); setSelectedId(item.packageIds[0] ?? selected?.id ?? ""); setChangeSource(""); }}>Use in package →</button> : null}</div></article>)}{!state.documents.length ? <p>No engineering deliverable recorded.</p> : null}</div></section>
       <section className={styles.card}><h3>Draft a deliverable</h3><form className={styles.form} onSubmit={saveDocument}><label>Document identity<select name="id"><option value="">New deliverable</option>{[...new Map(state.documents.map((item) => [item.id, item])).values()].map((item) => <option value={item.id} key={item.id}>New revision of {item.title}</option>)}</select></label><label>Type<select name="type"><option>IFC drawing</option><option>Specification</option><option>Cable schedule</option><option>Material submittal</option><option>Method of procedure</option><option>Safety plan</option><option>Quality plan</option><option>Service engineering</option></select></label><label>Title<input name="title" required /></label><label>Source or file reference<input name="source" required placeholder="Evidence ID or controlled document link" /></label><label>Owner<input name="owner" defaultValue={work.owner} /></label><label>Approved requirements<select name="requirements" multiple>{requirementRefs.map((item) => <option key={item.id} value={item.id}>{item.id} · {item.label}</option>)}</select></label><label>Review due<input name="due" type="date" /></label><button disabled={busy || !received}>Save draft for selected package</button></form></section></div> : null}
     {tab === "Packages" ? <div className={styles.stack}><section className={styles.card}><h3>Shared Work Packages</h3><p>Design records the executable method and crew demand. Installed, tested, and accepted quantities are recorded in Deploy.</p><div className={styles.packageStrip}>{packages.map((item) => <button type="button" className={selected?.id === item.id ? styles.selected : ""} key={item.id} onClick={() => { setSelectedId(item.id); setChangeSource(""); }}>{item.name}<small>{state.packages.find((entry) => entry.packageId === item.id)?.status ?? "Needs design"}</small></button>)}</div><form className={styles.form} onSubmit={onCreatePackage}><label>New Work Package<input name="package" required placeholder="e.g. Fiber trunks and termination" /></label><label>Owner<input name="owner" defaultValue={work.owner} /></label><button disabled={!received}>Create shared package</button></form></section>
       {selected ? <section className={styles.card}><h3>{selected.name} · engineering revision {detail?.revision ?? "new"}</h3><form key={`${selected.id}:${detail?.revision ?? 0}`} className={styles.form} onSubmit={savePackage}>

@@ -7,10 +7,10 @@ import { legacyDesignControlPolicy, type DesignControlPolicy } from "@/component
 import { serviceExecutionBasisIssue } from "./service-execution-basis";
 
 export type DesignCommand = {
-  action: "save-document" | "submit-document" | "approve-document" | "issue-document" | "save-package" | "save-demand" | "request-review" | "decide-review" | "record-customer-approval" | "record-change" | "resolve-change" | "acknowledge-hold" | "release-package" | "release-set" | "respond-receipt" | "withdraw-release" | "save-service-basis" | "revise-service-basis" | "submit-service-basis" | "accept-service-basis" | "return-service-basis";
+  action: "save-document" | "submit-document" | "return-document" | "approve-document" | "issue-document" | "save-package" | "save-demand" | "request-review" | "decide-review" | "record-customer-approval" | "record-change" | "resolve-change" | "acknowledge-hold" | "release-package" | "release-set" | "respond-receipt" | "withdraw-release" | "save-service-basis" | "revise-service-basis" | "submit-service-basis" | "accept-service-basis" | "return-service-basis";
   workId: string; expectedRevision: number; expectedDecisionRevision?: number; commandId: string; note?: string;
   expectedOperateRevision?: number; serviceBasis?: { scope: string; coveredScope?: string; uncoveredScope?: string; exclusions: string; completionCriteria: string; verification: string; coverageRationale: string; safety: string; access: string; resources: string; serviceCategory: string };
-  document?: Partial<DesignDocument>; documentId?: string; documentRevision?: number;
+  document?: Partial<DesignDocument>; documentId?: string; documentRevision?: number; evidenceId?: string;
   package?: Partial<DesignPackage>; packageId?: string; packageIds?: string[];
   demand?: PackageCrewDemand;
   discipline?: DesignReview["discipline"]; assignee?: string; dueDate?: string;
@@ -70,9 +70,10 @@ export function applyDesignCommand(work: WorkRecord, command: DesignCommand, act
     const revision = Math.max(0, ...state.documents.filter((item) => item.id === id).map((item) => item.revision)) + 1;
     state.documents.push({ id, revision, type: clean(input.type, 100), title: clean(input.title, 200), source: clean(input.source), owner: clean(input.owner, 120) || actor.name, packageIds: affected, requirementIds: requirements, status: "Draft", dueDate: date(input.dueDate), createdAt: now });
     record("Document draft saved", undefined, revision);
-  } else if (["submit-document", "approve-document", "issue-document"].includes(command.action)) {
+  } else if (["submit-document", "return-document", "approve-document", "issue-document"].includes(command.action)) {
     const target = document(); if (!target) fail("document_missing", "The exact document revision is unavailable.");
     if (command.action === "submit-document") { if (target.status !== "Draft") fail("document_not_draft", "Only a draft can enter review."); target.status = "In review"; target.submittedByActorId = actor.id; }
+    if (command.action === "return-document") { if (target.status !== "In review" || !engineering.has(actor.role) || target.submittedByActorId === actor.id || note.length < 15) fail("document_return_denied", "A separate reviewer must give a reason for returning this exact revision.", 403); target.status = "Returned"; target.returnNote = note; }
     if (command.action === "approve-document") { if (target.status !== "In review" || !engineering.has(actor.role) || target.submittedByActorId === actor.id) fail("document_review_denied", "A separate authorized engineering reviewer must approve the submitted revision.", 403); target.status = "Approved"; target.approvedByActorId = actor.id; }
     if (command.action === "issue-document") {
       if (target.status !== "Approved" || !engineering.has(actor.role)) fail("document_not_approved", "Approve the exact document revision before issue.", 403);

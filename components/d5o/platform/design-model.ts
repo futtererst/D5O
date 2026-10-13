@@ -8,8 +8,8 @@ import { legacyDesignControlPolicy, type DesignControlPolicy } from "./design-po
 export type DesignDocument = {
   id: string; type: string; title: string; revision: number; source: string;
   owner: string; packageIds: string[]; requirementIds: string[];
-  status: "Draft" | "In review" | "Approved" | "Issued for use" | "Superseded" | "Withdrawn";
-  dueDate: string; createdAt: string; submittedByActorId?: string; approvedByActorId?: string; reviewNote?: string; issuedAt?: string; issuedBy?: string;
+  status: "Draft" | "In review" | "Returned" | "Approved" | "Issued for use" | "Superseded" | "Withdrawn";
+  dueDate: string; createdAt: string; createdByActorId?: string; submittedByActorId?: string; approvedByActorId?: string; reviewNote?: string; returnNote?: string; evidenceId?: string; evidenceChecksumSha256?: string; issuedAt?: string; issuedBy?: string;
 };
 export type DesignMaterial = { id: string; item: string; quantity: number; unit: string; source: string; status: "Unknown" | "Planned" | "Ordered" | "Supplier confirmed" | "Received" | "Available"; requiredDate: string; forecastDate: string; alternative: string; quoteDate?: string; quoteExpiry?: string; receivedQuantity?: number; availableQuantity?: number; confidence?: "Unknown" | "Planning assumption" | "Supplier confirmed" | "Physically counted" };
 export type DesignPackage = {

@@ -243,8 +243,19 @@ export async function GET(request: NextRequest) {
         const currentPackages = (record as WorkRecord).packages ?? [];
         const designDocuments = designState(record as WorkRecord).documents;
         for (const document of designDocuments) {
+          if (designDocuments.some((item) => item.id === document.id && item.revision > document.revision)) continue;
           const packageId = document.packageIds.find((id) => currentPackages.some((item) => item.id === id));
           const packageName = currentPackages.find((item) => item.id === packageId)?.name;
+          if (mine && actorRole === "project_manager" && document.status === "Returned")
+            actions.push({ ...common, kind: `Correct document · ${document.title}`, phase: "Design", focus: "document-correction",
+              decisionId: document.id, packageId, packageName, revision: document.revision, status: "Returned",
+              ownership: "Created by you · project manager", position: "preparation",
+              blocker: document.returnNote || "The independent reviewer returned this revision." });
+          if (mine && actorRole === "project_manager" && document.status === "Draft")
+            actions.push({ ...common, kind: `Submit document · ${document.title}`, phase: "Design", focus: "document-preparation",
+              decisionId: document.id, packageId, packageName, revision: document.revision, status: "Draft",
+              ownership: "Created by you · project manager", position: "preparation",
+              blocker: "Retain an inspectable private PDF for this exact revision before submission." });
           if (document.status === "In review" && actorRole === "operations_leader" && document.submittedByActorId !== ctx.actor.id)
             actions.push({ ...common, kind: `Review document · ${document.title}`, phase: "Design", focus: "document-review",
               decisionId: document.id, packageId, packageName, revision: document.revision, status: "Submitted",
