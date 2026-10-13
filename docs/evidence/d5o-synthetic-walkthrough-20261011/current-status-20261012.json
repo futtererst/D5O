@@ -1,6 +1,6 @@
 {
   "schema": "d5o.synthetic-walkthrough.current-status.v1",
-  "generatedAt": "2026-10-13T14:00:00Z",
+  "generatedAt": "2026-10-13T13:10:00Z",
   "originalRunImmutable": true,
   "originalRunSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
   "originalRunCounts": {
@@ -9,7 +9,7 @@
     "Not run": 45,
     "Blocked": 0
   },
-  "currentApplicationSha": "ec47633b79c797e21bc73317eff14f382c2def5f",
+  "currentApplicationSha": "fe8cf58c4f3552ed533b432c0b4ac066a6be3e28",
   "fixtures": {
     "handoff": "http://127.0.0.1:61647/work?workspace=rybex; isolated database 57021",
     "delivery": "http://127.0.0.1:61643/work?workspace=rybex; isolated database 56621",
@@ -1289,6 +1289,16 @@
       "mode": "separate authenticated fictional Operations and worker browsers; held-release typed publication response",
       "evidence": "Operations saw one draft booking and a Release held status. Publish this week returned HTTP 409 release_changed_before_publication with No shared bookings unchanged. The worker My crew schedule showed zero awaiting and no draft crew after loading; the corrected copy says a booking appears only after publication.",
       "remainingGap": "Positive publication and worker acknowledgment need a legitimately accepted Design release and remain Not run on this fixture."
+    },
+    {
+      "id": "I26",
+      "title": "Future published shift must not authorize field start early",
+      "originalFindingSha": "ec47633b79c797e21bc73317eff14f382c2def5f",
+      "latestResult": "Passed",
+      "latestTestedSha": "fe8cf58c4f3552ed533b432c0b4ac066a6be3e28",
+      "mode": "rollback-only authenticated database probe before fix; authenticated Operations browser and API after fix; fresh disposable migration replay",
+      "evidence": "Before fix, the Operations authenticated database command WOULD_AUTHORIZE the 2026-10-16 published booking on 2026-10-13 in a rolled-back transaction. After forward migration 20261013140000, the same exact current revisions rejected field_shift_not_current. Build fe8cf58c4f35 browser shows Hold for resolution, booked 2026-10-16 07:00-15:30 and pinned America/New_York, with no permit. Authenticated API probes returned future-shift 409 field_shift_not_current, wrong role 403 field_start_authority_required, stale source 409 stale_field_start_basis and other tenant 403 workspace_forbidden. Work 23, Design 31, schedule 4, Deploy 0, permits 0 and events 0 remained unchanged.",
+      "remainingGap": "Positive start on the actual shift remains Not run; no field actuals or completion are claimed."
     }
   ],
   "currentBuildChecks": [
@@ -1452,11 +1462,18 @@
       "mode": "separate authenticated fictional Operations and worker browsers",
       "result": "Passed",
       "evidence": "Publication rejected 409 release_changed_before_publication with No shared bookings unchanged. Worker schedule showed zero awaiting and no fictional draft crew. No worker response or field-start authority was created."
+    },
+    {
+      "caseId": "I26 field-start shift guard",
+      "applicationSha": "fe8cf58c4f3552ed533b432c0b4ac066a6be3e28",
+      "mode": "authenticated fictional Operations browser read and authenticated API rejection probes on disposable 61648; database pre-fix rollback-only counterexample; fresh 80-file migration replay",
+      "result": "Passed",
+      "evidence": "Published future shift is held in the browser; typed command returns 409 field_shift_not_current. Wrong-role, stale and tenant denials retain exact domain errors. Rejected commands leave source, Design, schedule, Deploy, permits and events unchanged. Full 80-file ordered replay completed on empty disposable d5o-pr2-replay-20261013."
     }
   ],
-  "runtimeStatus": "61648 isolated production-mode preview displays Build ec47633b79c7 and uses disposable API 57121. 61649/61650 remain older isolated builds. The 79-file candidate sequence replayed on a separate fresh disposable target; shared/production unchanged.",
+  "runtimeStatus": "61648 isolated production-mode preview displays Build fe8cf58c4f35 and uses disposable API 57121. The 80-file hosted candidate sequence replayed on separate empty disposable 57621; shared/production unchanged.",
   "fixtureStatus": {
-    "returnProject": "d5o-handoff-return-20261012; package revision 4 links issued private-PDF document @2, current dated demand and five approved synthetic discipline reviews. Release 4bd2f56a-17b9-45ab-9a88-8d9e3d335f3b was independently Accepted into Deploy. One 2026-10-16 booking was published and Nate Walker acknowledged it. No field-start permit or actual work was recorded; document @1 remains Returned and @2 Issued for use.",
+    "returnProject": "d5o-handoff-return-20261012; package revision 4 has accepted release and exact issued private-PDF document @2. One future 2026-10-16 published booking was acknowledged by Nate Walker. Current Build fe8cf58c4f35 holds field start until the scheduled shift; Deploy revision 0, zero permits and actuals. No accepted history was altered.",
     "jobFinanceClone": "d5o-service-mutable-20261012; cloned fictional changed-job Finance history; new USD 100 post-closeout payment only in clone",
     "partialServiceClone": "d5o-partial-service-mutable-20261012; exact canonical partially covered request/child/asset; separate mutable Auth/Storage; fictional terms, invoice, payment and cost correction persisted",
     "preserved": "Delivery/support observation checkpoints, original preclosure and original changed-job payment history unchanged."

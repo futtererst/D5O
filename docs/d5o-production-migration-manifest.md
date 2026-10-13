@@ -21,7 +21,7 @@ The 12 already-recorded D5O/worker migrations have SQL definitions identical to 
 
 The worker-excluding policies `d5o_hosted_work_member_read` and `d5o_hosted_work_event_member_read` also match the live read-only inspection. Do not rewrite the eight applied history versions. A raw version-only `supabase db push` is unsafe until the release operator explicitly reconciles those mappings; it would treat their local versions as unapplied.
 
-## Outstanding files, in required order (67)
+## Outstanding files, in required order (68)
 
 1. `20261008183310_d5o_prototype_authoritative_writes.sql`
 2. `20261008203000_d5o_reject_imported_commercial_decisions.sql`
@@ -90,6 +90,7 @@ The worker-excluding policies `d5o_hosted_work_member_read` and `d5o_hosted_work
 65. `20261012120000_d5o_draft_booking_before_release.sql`
 66. `20261012123000_d5o_design_handoff_clarification.sql`
 67. `20261013111633_design_document_custody.sql`
+68. `20261013140000_d5o_field_start_shift_window.sql`
 
 At the earlier invoice checkpoint, a fresh disposable Supabase instance replayed **71 hosted candidate files in filename order**, including the service-invoice migration. Relative to the prior 12-file shared read-only mapping, **59 files are outstanding**. The active fictional service pilot was incrementally patched; it is not evidence of full ordered replay. Shared-project definitions and migration history must be rechecked at cutover. Disposable replay does not establish shared-project compatibility or authorization to apply migrations. The deployment cutover must compare names, normalized SQL, policy definitions and migration history again immediately before any shared write.
 
@@ -116,3 +117,5 @@ At the prior 12 October checkpoint, the package-draft and Design handoff correct
 The draft-booking correction adds file 65 above, yielding **78 ordered hosted files**: 12 read-only mapped shared-history entries and **66 outstanding**. It permits qualified, current-demand draft bookings before Design release while keeping week publication release-gated. The changed function applied successfully on the disposable 61648 pilot and its authenticated browser checks passed. A fresh 78-file replay was subsequently completed on a separate disposable network, followed by the 79-file replay described below. Neither replay authorizes shared persistence changes or cutover. See [current walkthrough](./evidence/d5o-synthetic-walkthrough-20261011/walkthrough.md).
 
 The 13 October exact Design document custody correction adds `20261013111633_design_document_custody.sql` after file 66 above. The candidate now contains **79 ordered files**: 12 previously mapped shared-history entries and **67 outstanding**. An empty disposable `d5o-pr2-replay-20261013` database replayed all 79 via the local Supabase CLI, recording last version `20261013111633`; registration of private document evidence is executable by `service_role` only. The populated fictional 61648 pilot received this final file incrementally. This local qualification does not update shared migration history or authorize production cutover. See [current Design custody walkthrough](./evidence/d5o-synthetic-walkthrough-20261011/walkthrough.md).
+
+The 13 October field-start timing correction adds `20261013140000_d5o_field_start_shift_window.sql`. The candidate now has **80 ordered hosted files**, comprising 12 read-only mappings already recorded on shared and **68 outstanding** files. The full sequence was replayed in the empty disposable `d5o-pr2-replay-20261013` target, ending at version `20261013140000`; the populated 61648 fictional pilot was patched incrementally. The command now requires a published booking matching the accepted release demand and window, and the current pinned-calendar shift for start or resume. A rollback-only pre-fix command would have authorized a future shift; the corrected command rejects it. This does not authorize shared-project migration or production cutover. See the [current walkthrough](./evidence/d5o-synthetic-walkthrough-20261011/walkthrough.md).
