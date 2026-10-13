@@ -1,6 +1,6 @@
 {
   "schema": "d5o.synthetic-walkthrough.current-status.v1",
-  "generatedAt": "2026-10-13T12:15:00Z",
+  "generatedAt": "2026-10-13T13:00:00Z",
   "originalRunImmutable": true,
   "originalRunSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
   "originalRunCounts": {
@@ -9,7 +9,7 @@
     "Not run": 45,
     "Blocked": 0
   },
-  "currentApplicationSha": "8772528739df3c167ccfb976bc56105fdf86889b",
+  "currentApplicationSha": "1c88c9a259a243a128455b5f5b4da00c19b7cdd8",
   "fixtures": {
     "handoff": "http://127.0.0.1:61647/work?workspace=rybex; isolated database 57021",
     "delivery": "http://127.0.0.1:61643/work?workspace=rybex; isolated database 56621",
@@ -1175,7 +1175,28 @@
       "applicationSha": "8772528739df3c167ccfb976bc56105fdf86889b",
       "mode": "authenticated fictional PM browser on disposable 61648, exact My Work task; read-only stale-link check",
       "result": "Passed",
-      "evidence": "After independent issue of document 5c15e2a7-f007-4480-8f8d-da8d50861cc0@2, PM My Work initially offered Request package review on Draft package rev 3 despite no governing document link. The corrected build offered Link issued document to package. PM followed that exact card, selected @2 and saved package rev 4 through the typed Design command (HTTP 200). Reload showed Request package review for rev 4. Saved rev-3 link showed changed/completed, no substitute package controls, and return to My Work. Review and release remain pending."
+      "evidence": "After independent issue of document 5c15e2a7-f007-4480-8f8d-da8d50861cc0@2, PM My Work initially offered Request package review on Draft package rev 3 despite no governing document link. The corrected build offered Link issued document to package. PM followed that exact card, selected @2 and saved package rev 4 through the typed Design command (HTTP 200). Reload showed Request package review for rev 4. Saved rev-3 link showed changed/completed, no substitute package controls, and return to My Work. Review and release were subsequently exercised in I22."
+    },
+    {
+      "caseId": "I22 revision-specific package reviews and Design release",
+      "applicationSha": "b37ed3c55e15cd4cc32efc54eedddc71ec52a5d6",
+      "mode": "separate authenticated fictional PM, Operations and Quality browsers on disposable 61648; read-only committed-state inspection",
+      "result": "Passed",
+      "evidence": "PM requested Engineering review for package wp-671ae5c6b3f4437f88705c386560c2db revision 4. Operations retrieved the exact retained PDF from the focused review task and approved Engineering. PM requested Delivery, Safety, Quality and Procurement; Operations approved Delivery, Safety and Procurement, while a separate fictional Quality account approved Quality. All five revision-4 reviews were Approved in committed state. PM's first release command rejected dated_crew_demand_required (409) with zero releases; PM refreshed dated demand for revision 4, rechecked readiness and issued release 4bd2f56a-17b9-45ab-9a88-8d9e3d335f3b (200), containing exact package revision 4 and document @2. Configured synthetic Operations membership covers several disciplines; this does not establish production specialist qualification."
+    },
+    {
+      "caseId": "I23 independent exact Design release receipt",
+      "applicationSha": "d2aee0e6642484a887af573264d7a03371bfdce0",
+      "mode": "separate authenticated fictional Operations and PM browsers on disposable 61648; actual private PDF-byte retrieval and typed receipt response",
+      "result": "Passed",
+      "evidence": "Operations My Work exposed exact Receive Design release, package revision 4 and release 4bd2f56a-17b9-45ab-9a88-8d9e3d335f3b. The focused Deploy task showed scope and the issued PDF. Operations retrieved matching SHA-256 4aedfd6ec44abe5164fd338be41433c5e7b8b92596bced55cdff34966d62af19 and accepted independently through the typed command (200). The card disappeared after reload; its saved link became stale without controls, and the PM issuer had no Accept control. Read-only committed state showed release Accepted. Receipt did not publish a booking or authorize field start."
+    },
+    {
+      "caseId": "I24 accepted release to published worker response",
+      "applicationSha": "1c88c9a259a243a128455b5f5b4da00c19b7cdd8",
+      "mode": "separate authenticated fictional Operations and worker browsers on disposable 61648; positive UI commands and reloads",
+      "result": "Passed",
+      "evidence": "The schedule previously labeled the accepted current revision Release held using a legacy Work blocker. Corrected projection displayed Design release received while preserving publication and field-start separation. Operations published the existing 2026-10-16 fictional one-person Controls service booking through Worker responses; reload showed Shared with workers and one awaiting response. Nate Walker's worker-only My crew schedule showed the exact package and Accept booking; he accepted with confirmation and reload showed Accepted by you, zero awaiting. Operations Deploy readiness subsequently displayed Ready for authorized start with no permit yet. Field start and future-dated actual work were not recorded."
     }
   ],
   "newCases": [
@@ -1426,9 +1447,9 @@
       "evidence": "Publication rejected 409 release_changed_before_publication with No shared bookings unchanged. Worker schedule showed zero awaiting and no fictional draft crew. No worker response or field-start authority was created."
     }
   ],
-  "runtimeStatus": "61648 isolated production-mode preview displays Build 8772528739df and uses disposable API 57121. 61649/61650 remain older isolated builds. The 79-file candidate sequence replayed on a separate fresh disposable target; shared/production unchanged.",
+  "runtimeStatus": "61648 isolated production-mode preview displays Build 1c88c9a259a2 and uses disposable API 57121. 61649/61650 remain older isolated builds. The 79-file candidate sequence replayed on a separate fresh disposable target; shared/production unchanged.",
   "fixtureStatus": {
-    "returnProject": "d5o-handoff-return-20261012; mutable package revision 4 links issued private-PDF document @2, demand revision 3 and one unpublished release-held crew draft. Document @1 Returned; @2 Issued for use. Fresh package discipline reviews, Design release and field execution remain pending.",
+    "returnProject": "d5o-handoff-return-20261012; package revision 4 links issued private-PDF document @2, current dated demand and five approved synthetic discipline reviews. Release 4bd2f56a-17b9-45ab-9a88-8d9e3d335f3b was independently Accepted into Deploy. One 2026-10-16 booking was published and Nate Walker acknowledged it. No field-start permit or actual work was recorded; document @1 remains Returned and @2 Issued for use.",
     "jobFinanceClone": "d5o-service-mutable-20261012; cloned fictional changed-job Finance history; new USD 100 post-closeout payment only in clone",
     "partialServiceClone": "d5o-partial-service-mutable-20261012; exact canonical partially covered request/child/asset; separate mutable Auth/Storage; fictional terms, invoice, payment and cost correction persisted",
     "preserved": "Delivery/support observation checkpoints, original preclosure and original changed-job payment history unchanged."
