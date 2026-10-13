@@ -1,6 +1,6 @@
 {
   "schema": "d5o.synthetic-walkthrough.current-status.v1",
-  "generatedAt": "2026-10-13T15:47:07.794Z",
+  "generatedAt": "2026-10-13T16:01:56.848Z",
   "originalRunImmutable": true,
   "originalRunSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
   "originalRunCounts": {
@@ -1325,6 +1325,15 @@
       "mode": "separate authenticated worker, Operations and Quality browser actions; authenticated API domain rejection; fresh disposable 81-file database replay",
       "evidence": "Worker uploaded a 21637-byte fictional PNG (SHA-256 d1ebc6175f2aaec3e24872fb0a203756425b564aeda2cb1d3953e7b6034be699). Reviewer downloaded matching private bytes and independently reviewed it. Original submitted report was returned for an absent evidence link; worker corrected the same ID through retained rev2 and rev3 drafts, linked evidence aa1765d4-ac3b-43a7-81fe-d29fabf89aee, resubmitted, and a separate Operations user reviewed 0.25/1 set. Worker submitted a linked Fail inspection 8e3478a6-c85a-4d6e-96a4-e35110791fe2; Quality independently Verified Fail. A wrong evidence ID returned 409 field_evidence_scope_invalid before the valid inspection; only one new inspection was retained. Completion queue remains preparation: no independently verified passing inspection. Worker mobile scroll width 390px at a 390px viewport.",
       "remainingGap": "The partial survey still needs authorized correction, passing retest and remaining reviewed quantity. No package turnover or customer acceptance was attempted in this clone."
+    },
+    {
+      "id": "I30",
+      "title": "Partial failure to corrected scoped package acceptance and independent receipt",
+      "result": "Passed",
+      "applicationSha": "b7ee79013fc098c94799896c3951b8a70fc5513e",
+      "mode": "separate authenticated worker, PM, Operations and Quality browser actions on isolated 61651",
+      "evidence": "Worker uploaded a distinct fictional after-work PNG 8b09f3c5-0e39-40db-8f14-9af779f647c9, SHA-256 be1b7ca06eb3fee6832463af5f1db77a7288ff5e7d7e76c02b251a1f85f48263; Quality downloaded identical private bytes. Worker synchronized and submitted 0.75 survey set in report b6af8a80-8e01-41b0-9db0-d4f23cad6284. Independent reviews passed. Worker submitted Pass inspection 749ef32a-bfca-4f9b-b2f7-3aa7aee8e0b8 explicitly superseding verified Fail 8e3478a6-c85a-4d6e-96a4-e35110791fe2; Quality verified it. Reviewed quantity reached exactly one of one set. Independent completion f3c42d90-ad16-408b-b649-1b9467254702. PM assembled turnover ed8140dc-964a-4387-aefa-314226c46e2f with exact two report IDs, passing inspection ID and completion ID. Separate Operations user retained fictional acceptance PDF evidence ad0ae30d-744b-4468-bafb-a79601ba0a3f; authorized download matched all 38941 bytes and SHA-256 59813d06d527f20723c2c7dec8ff058bb2c0138b1e6a4f6025b90e95a44c7668. A different Operations user accepted receipt. My Work removed completed actions after reload. Whole-work acceptance remained null.",
+      "remainingGap": "Only this package was accepted and received. Other packages and the separate release witness have not been completed. The signer and document are fictional; no real customer approval is claimed."
     }
   ],
   "currentBuildChecks": [
@@ -1517,6 +1526,6 @@
     "jobFinanceClone": "d5o-service-mutable-20261012; cloned fictional changed-job Finance history; new USD 100 post-closeout payment only in clone",
     "partialServiceClone": "d5o-partial-service-mutable-20261012; exact canonical partially covered request/child/asset; separate mutable Auth/Storage; fictional terms, invoice, payment and cost correction persisted",
     "preserved": "Delivery/support observation checkpoints, original preclosure and original changed-job payment history unchanged.",
-    "currentShiftClone": "d5o-pr2-replay-20261013; isolated production-mode 61651/57621, 81st migration applied incrementally. Survey report 4b3680b9-2bb6-4cac-a3ef-2bc23cafe60e revision 3 independently Reviewed at 0.25/1 set with exact reviewed PNG evidence; inspection 8e3478a6-c85a-4d6e-96a4-e35110791fe2 is independently Verified Fail. Completion remains blocked. Separate release witness awaits Deploy receipt."
+    "currentShiftClone": "d5o-pr2-replay-20261013; isolated production-mode 61651/57621, 81st migration incremental. Fictional survey package wp-203522d0b30a4b1680f69e6783fe4df2: reviewed 0.25+0.75 of one set, independently Verified Fail and superseding Pass, reviewed completion f3c42d90-ad16-408b-b649-1b9467254702, turnover ed8140dc-964a-4387-aefa-314226c46e2f Client accepted and independently received. Whole Work acceptance absent. Separate release witness awaits receipt."
   }
 }
