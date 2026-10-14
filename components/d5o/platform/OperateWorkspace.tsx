@@ -18,6 +18,7 @@ import { ServicePricingPanel } from "./ServicePricingPanel";
 import { JobFinancePanel } from "./JobFinancePanel";
 import { ServiceFinancialDisposition } from "./ServiceFinancialDisposition";
 import { serviceActionHref, serviceRoleLabel, type ServiceAction } from "./service-actions";
+import type { ServiceReturnAction } from "@/lib/d5o/hosted/service-return-actions";
 import { buildSupportQueue } from "./operate-queue";
 import { SupportDocumentationPanel } from "./SupportDocumentationPanel";
 import { supportDocumentationPositions } from "./support-documentation";
@@ -58,6 +59,8 @@ export function OperateWorkspace({ work, allWork, policy, hosted, actorRole, act
     });
   }, [work.id]);
   const [requestFocus, setRequestFocus] = useState<{ id: string; panel: string; kind: string | null; revision: number | null; cycle: string | null } | null>(null);
+  const [serviceReturnFocus, setServiceReturnFocus] = useState<{ requestId: string; jobId: string; kind: string; cycle: string; operateRevision: number; childRevision: number; acceptanceId: string } | null>(null);
+  const [serviceReturnStatus, setServiceReturnStatus] = useState<"checking" | "current" | "changed" | "unavailable">("checking");
   const [linkedServiceStatus, setLinkedServiceStatus] = useState<"checking" | "current" | "changed" | "unavailable">("checking");
   const [serviceActions, setServiceActions] = useState<ServiceAction[]>([]);
   useEffect(() => {
@@ -70,6 +73,13 @@ export function OperateWorkspace({ work, allWork, policy, hosted, actorRole, act
           revision: params.has("taskRevision") ? Number(params.get("taskRevision")) : null, cycle: params.get("requestCycle") });
       if (focus === "finance") setTab("Finance & lessons");
       if (focus === "pricing") setTab("Requests & jobs");
+      if (focus === "service-return") {
+        setServiceReturnFocus({ requestId: requestId ?? "", jobId: params.get("job") ?? "",
+          kind: params.get("taskKind") ?? "", cycle: params.get("requestCycle") ?? "",
+          operateRevision: Number(params.get("taskRevision")), childRevision: Number(params.get("childRevision")),
+          acceptanceId: params.get("acceptance") ?? "" });
+        setTab("Requests & jobs");
+      }
     });
   }, [work.id]);
   useEffect(() => {
@@ -85,6 +95,24 @@ export function OperateWorkspace({ work, allWork, policy, hosted, actorRole, act
       }).catch(() => { if (!controller.signal.aborted) setLinkedServiceStatus("unavailable"); });
     return () => controller.abort();
   }, [hosted, requestFocus, work.id, work.workspace, work.operate]);
+  useEffect(() => {
+    if (!serviceReturnFocus) return;
+    if (!hosted) { queueMicrotask(() => setServiceReturnStatus("current")); return; }
+    const controller = new AbortController();
+    void fetch(`/api/d5o-hosted/prototype-search?workspace=${encodeURIComponent(work.workspace)}&view=actions&filter=all`,
+      { cache: "no-store", signal: controller.signal })
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error("queue_unavailable")))
+      .then((body: { serviceReturnQueue?: ServiceReturnAction[] }) => {
+        if (controller.signal.aborted) return;
+        setServiceReturnStatus(body.serviceReturnQueue?.some((item) => item.workId === work.id &&
+          item.requestId === serviceReturnFocus.requestId && item.jobId === serviceReturnFocus.jobId &&
+          item.kind === serviceReturnFocus.kind && item.requestCycleAt === serviceReturnFocus.cycle &&
+          item.operateRevision === serviceReturnFocus.operateRevision &&
+          item.childDeployRevision === serviceReturnFocus.childRevision &&
+          item.acceptanceId === serviceReturnFocus.acceptanceId) ? "current" : "changed");
+      }).catch(() => { if (!controller.signal.aborted) setServiceReturnStatus("unavailable"); });
+    return () => controller.abort();
+  }, [hosted, serviceReturnFocus, work.id, work.workspace, work.operate, allWork]);
   useEffect(() => {
     if (!hosted || !work.canonicalWorkId || tab !== "Overview") return;
     const controller = new AbortController();
@@ -143,9 +171,23 @@ export function OperateWorkspace({ work, allWork, policy, hosted, actorRole, act
     return job.status === "Generated" && (request?.currentCycleJobIds ?? request?.jobIds ?? []).includes(job.id) && child && !child.serviceSource?.pricing && !child.design?.releases?.length && !child.deploy?.permits?.length && !child.deploy?.reports?.length && ["Chargeable", "Partially covered"].includes(request?.coverage ?? "") && request?.serviceEstimate?.status === "Approved" && request.serviceAuthorization?.estimateRevision === request.serviceEstimate.revision;
   });
   const tenantQueue = buildSupportQueue(allWork, work.workspace, now, activePolicy.timezone, !hosted);
+  const returnRequest = serviceReturnFocus ? state.requests.find((item) => item.id === serviceReturnFocus.requestId) : undefined;
+  const returnJob = serviceReturnFocus ? state.jobs.find((item) => item.id === serviceReturnFocus.jobId && item.requestId === serviceReturnFocus.requestId) : undefined;
+  const returnChild = returnJob ? allWork.find((item) => item.id === returnJob.workId && item.serviceSource?.parentWorkId === work.id) : undefined;
 
   if (staleSupportLink) return <section className={style.workspace} aria-label="Operate workspace" data-task-focus={requestFocus?.panel ?? linkedSupportAction?.kind ?? undefined}><article className={style.card} role="alert"><h2>This support action changed or was decided</h2><p>The saved link no longer matches the current acceptance, support or activation revision. No obsolete decision is available from this link.</p><a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work →</a></article></section>;
   if (requestFocus?.kind && linkedServiceStatus !== "current") return <section className={style.workspace} aria-label="Operate workspace" data-task-focus={requestFocus?.panel ?? linkedSupportAction?.kind ?? undefined}><article className={style.card} role="status"><h2>{linkedServiceStatus === "changed" ? "This service action changed or was decided" : linkedServiceStatus === "checking" ? "Checking the current service action" : "Service actions are temporarily unavailable"}</h2><p>{linkedServiceStatus === "changed" ? "The saved request, cycle or decision revision is no longer current. No other request was selected." : "The exact task must be checked against the current authenticated queue before its decision form opens."}</p><a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work →</a></article></section>;
+  if (serviceReturnFocus && serviceReturnStatus !== "current") return <section className={style.workspace} aria-label="Operate workspace" data-task-focus="service-return"><article className={style.card} role="status"><h2>{serviceReturnStatus === "changed" ? "This service return changed or was decided" : serviceReturnStatus === "checking" ? "Checking the exact service return" : "Service return actions are temporarily unavailable"}</h2><p>{serviceReturnStatus === "changed" ? "The saved request, cycle, job or source revision is no longer current. No other job was selected." : "The exact authenticated task must be checked before its decision opens."}</p><a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=my-work`}>Return to refreshed My Work →</a></article></section>;
+  if (serviceReturnFocus) return <section className={style.workspace} aria-label="Operate workspace" data-task-focus="service-return"><Card title={serviceReturnFocus.kind} lead={`${work.title} · ${work.customer} · ${work.site}`}>
+    <p><strong>{returnRequest?.title}</strong> · {returnRequest?.coverage} · {returnRequest?.status}</p>
+    <p>Service visit: {returnChild?.title ?? "Unavailable"} · {returnJob?.status} · accepted scope {returnChild?.deploy?.workAcceptance?.receipt ?? "not recorded"}</p>
+    <p>Current request cycle {serviceReturnFocus.cycle} · source revision {serviceReturnFocus.operateRevision} · child execution revision {serviceReturnFocus.childRevision}</p>
+    {returnJob ? <button type="button" onClick={() => onOpenWork(returnJob.workId)}>Review exact service Work Record and evidence →</button> : null}
+    {serviceReturnFocus.kind === "Link reviewed service execution" ? <><p>Confirm the independent receipt, reviewed report, passing inspection and completion before linking their exact references to asset history.</p><button type="button" disabled={busy} onClick={() => void action({ action: "link-execution", id: returnJob!.id })}>Link reviewed execution</button></> : null}
+    {serviceReturnFocus.kind === "Complete service job" ? <form className={style.form} onSubmit={submit("complete-job", (data) => ({ id: returnJob!.id, note: value(data, "note") }))}>{field("note", "Independent completion reason")}<button disabled={busy}>Complete reviewed service job</button></form> : null}
+    {serviceReturnFocus.kind === "Review request resolution" ? <form className={style.form} onSubmit={submit("resolve-request", (data) => ({ requestId: returnRequest!.id, resolution: value(data, "resolution"), reviewSource: value(data, "reviewSource"), resolutionMethod: value(data, "resolutionMethod") }))}>{field("resolution", "Reviewed resolution")}{field("reviewSource", "Evidence and review source")}<label>Resolution method<select name="resolutionMethod"><option>Field</option><option>Remote</option></select></label><button disabled={busy}>Record reviewed resolution</button></form> : null}
+    {serviceReturnFocus.kind === "Close reviewed request" ? <form className={style.form} onSubmit={submit("close-request", (data) => ({ requestId: returnRequest!.id, note: value(data, "note") }))}>{field("note", "Independent closure reason")}<button disabled={busy}>Close reviewed request</button></form> : null}
+  </Card></section>;
 
   return <section className={style.workspace} aria-label="Operate workspace" data-task-focus={requestFocus?.panel ?? linkedSupportAction?.kind ?? undefined}>
 

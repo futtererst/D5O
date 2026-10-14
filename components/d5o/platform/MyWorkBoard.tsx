@@ -11,6 +11,7 @@ import { SupportActionQueue } from "./SupportActionQueue";
 import { FocusedMyWorkBoard } from "./FocusedMyWorkBoard";
 import type { DeliveryAction } from "@/lib/d5o/hosted/delivery-role-actions";
 import type { SupportAction } from "@/lib/d5o/hosted/support-role-actions";
+import type { ServiceReturnAction } from "@/lib/d5o/hosted/service-return-actions";
 
 type WorkLike = ActionPriority & {
   source?: WorkLike;
@@ -31,7 +32,7 @@ type WorkLike = ActionPriority & {
 };
 type Filter = "all" | "mine" | "waiting" | "pricing" | "proposal" | "definition";
 type RoleAction = { kind: string; workId: string; packageId?: string | null; revision: number; status: string; title: string; dueDate?: string | null; phase: string; ownership: string };
-type QueuePage<T> = { ownedIds?: string[]; actorRole?: string; roleActions?: RoleAction[]; serviceActions?: ServiceAction[]; deliveryActions?: DeliveryAction[]; supportActions?: SupportAction[]; records: T[]; total: number; nextCursor: string | null; roles: string[];
+type QueuePage<T> = { ownedIds?: string[]; actorRole?: string; roleActions?: RoleAction[]; serviceActions?: ServiceAction[]; deliveryActions?: DeliveryAction[]; supportActions?: SupportAction[]; serviceReturnQueue?: ServiceReturnAction[]; records: T[]; total: number; nextCursor: string | null; roles: string[];
   overview: { total: number; mine: number; waiting: number; pricing: number; proposal: number; definition: number } };
 const isPricingReview = (item: WorkLike) => item.discovery?.estimate.status === "Pricing review" && Number.isInteger(item.discovery.estimate.revision) && item.discovery.estimate.review?.revision === item.discovery.estimate.revision;
 const isProposalReview = (item: WorkLike) => item.discovery?.proposal?.status === "Internal review" && Number.isInteger(item.discovery.proposal.package?.revision) && item.discovery.proposal.review?.revision === item.discovery.proposal.package?.revision;
