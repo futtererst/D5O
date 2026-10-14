@@ -29,3 +29,9 @@ In the same disposable **fictional routing fixture**, Operations opened request 
 An Operations browser did not receive the PM preparation card; opening the saved link showed no package-creation control. On a 390-pixel viewport, PM focused the new engineering card, pressed Enter, and reached the exact package and draft form. These are synthetic browser observations, not real-user usability findings. The routing-only child has **no released or executed field visit** and is not a substitute for the retained service visit above.
 
 The changed projection passed TypeScript, scoped ESLint and the production-mode build. No migration changed. Next for the retained visit remains its legitimate 2026-10-14 shift-window field authorization and independent completion sequence.
+
+## Pre-shift worker evidence and remaining presentation issue
+
+On displayed Build `471e172394d7`, the assigned Nate Walker mobile browser opened the retained booking and its exact accepted package: release `35fd9ae7-22b0-4d2c-aff3-16d6529df565`, package revision 3, scope, method, safety, access and verification. It explicitly said **Start not authorized**. Nate downloaded the issued private PDF as `application/pdf`, 2,554 bytes, with SHA-256 `c60324f942a24147381c9f097d28f610016d1b48a152bf4f101e4d5d5783f513`, matching the retained original. A separate unassigned worker session received `403 design_document_scope_denied` for the same URL. No work report or field permit was created by this read-only check.
+
+The worker schedule also displayed two older unresponded bookings dated 2026-10-12 and 2026-10-13 as “awaiting your response” after their shifts had passed. This is a visible task-priority/presentation issue; it does not change the current accepted booking or authorize field work. It remains to be addressed after the retained visit's essential execution path is qualified.
