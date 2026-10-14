@@ -1,6 +1,8 @@
-# D5O production migration manifest (12 October 2026)
+# D5O production migration manifest (14 October 2026)
 
 Target: shared Supabase project `fcawktdjoxvahhgvkebx`. This is a read-only reconciliation and proposed order; no shared migration has been applied by this release-candidate work.
+
+Current candidate: **84 ordered hosted migrations**, comprising the 12 read-only mapped shared-history entries below and **72 outstanding files**. A fresh empty disposable target replayed all 84 through `20261014230758` with healthy database/Auth/REST/Storage/Kong and Auth HTTP 200. The populated fictional clone received the two latest asset-identity files incrementally; it was not represented as a fresh replay. Shared migration history and definitions must be inspected again before a separately authorized cutover. No shared write is authorized by this manifest.
 
 The 12 already-recorded D5O/worker migrations have SQL definitions identical to the candidate files after newline normalization. Eight early releases carry Supabase-assigned versions instead of the local filename versions:
 
@@ -21,7 +23,7 @@ The 12 already-recorded D5O/worker migrations have SQL definitions identical to 
 
 The worker-excluding policies `d5o_hosted_work_member_read` and `d5o_hosted_work_event_member_read` also match the live read-only inspection. Do not rewrite the eight applied history versions. A raw version-only `supabase db push` is unsafe until the release operator explicitly reconciles those mappings; it would treat their local versions as unapplied.
 
-## Outstanding files, in required order (69)
+## Outstanding files, in required order (72)
 
 1. `20261008183310_d5o_prototype_authoritative_writes.sql`
 2. `20261008203000_d5o_reject_imported_commercial_decisions.sql`
@@ -92,6 +94,9 @@ The worker-excluding policies `d5o_hosted_work_member_read` and `d5o_hosted_work
 67. `20261013111633_design_document_custody.sql`
 68. `20261013140000_d5o_field_start_shift_window.sql`
 69. `20261013152258_d5o_connected_field_fact_evidence_links.sql`
+70. `20261014164339_carry_unchanged_crew_responses.sql`
+71. `20261014223405_guard_cross_work_asset_identity.sql`
+72. `20261014230758_link_accepted_delivery_to_existing_asset.sql`
 
 At the earlier invoice checkpoint, a fresh disposable Supabase instance replayed **71 hosted candidate files in filename order**, including the service-invoice migration. Relative to the prior 12-file shared read-only mapping, **59 files are outstanding**. The active fictional service pilot was incrementally patched; it is not evidence of full ordered replay. Shared-project definitions and migration history must be rechecked at cutover. Disposable replay does not establish shared-project compatibility or authorization to apply migrations. The deployment cutover must compare names, normalized SQL, policy definitions and migration history again immediately before any shared write.
 
@@ -126,3 +131,6 @@ The field-evidence correction adds `20261013152258_d5o_connected_field_fact_evid
 The 14 October crew-response correction adds forward file 20261014164339_carry_unchanged_crew_responses.sql. The hosted candidate sequence is now **82 ordered files**: the same 12 read-only shared-history mappings and **70 outstanding** files. The new function definition was applied transactionally and exercised with authenticated fictional users on the disposable 57721 target. An unchanged booking retained its previous response with a linked carried receipt; changing the booking required a new response. This is a single-file incremental rehearsal, not a fresh 82-file replay or shared-project qualification. See the 14 October follow-up in the connected-prototype evidence.
 
 Follow-up on 14 October: after the stalled CLI health check, a direct read-only PostgreSQL connection to the new disposable target at 127.0.0.1:57822 confirmed 82 recorded migration versions, ending at 20261014164339. The installed public.d5o_hosted_crew_command_v1 definition contains the package-demand comparison. EXECUTE is granted to authenticated and denied to anon. This confirms the ordered database replay, superseding the earlier unverified-history statement above. It does not establish a healthy Auth/API stack: the temporary target's Auth health request timed out, and Docker management commands stalled. The populated 57721 clone remains the browser-qualified target. Shared persistence and production remain unchanged.
+
+
+The two 14 October asset-identity files listed as 71–72 prevent another same-workspace external-identity copy and allow the current authenticated support owner to accept an exact, independently received delivery contribution on an existing supported asset. They do not reconcile historically duplicated fictional asset identities. The 84-file ordered replay and isolated browser/database checks are recorded in [connected-prototype evidence](./evidence/d5o-two-day-connected-prototype-20261013.md). Earlier counts and health observations above are dated checkpoints retained as history; they are not the current manifest. No shared Supabase migration or production cutover occurred.
