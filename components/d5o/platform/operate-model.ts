@@ -2,10 +2,12 @@ import type { WorkRecord } from "./work-types";
 import { currentWorkAcceptanceScope } from "./deploy-model";
 import { legacyOperateControlPolicy, type OperateControlPolicy } from "./operate-policy";
 import type { PricingEvaluation, PricingInput, PricingPolicy } from "./develop-pricing";
+import { supportDocumentationPositions } from "./support-documentation";
 
 export type OperateActor = { id: string; membershipId: string; name: string; role: string };
 export type OperateEvent = { id: string; commandId: string; fingerprint: string; at: string; actorId: string; membershipId: string; action: string; detail: string };
 export type SupportedAsset = { id: string; name: string; kind: string; customer: string; site: string; location: string; externalId?: string; manufacturer?: string; model?: string; serial?: string; parentId?: string; sourceWorkIds: string[]; sourceTurnoverId?: string; status: "Pending" | "Supported" | "Suspended" | "Retired"; owner: string; documentation: string; history: Array<{ at: string; action: string; source: string; actorId: string }> };
+export type AcceptedAssetLink = { id: string; status: "Accepted"; assetId: string; ownerWorkId: string; workAcceptanceId: string; workAcceptanceRevision: number; acceptedAt: string; acceptedByActorId: string; reason: string };
 export type CoverageAgreement = { id: string; name: string; kind: "Warranty" | "Service agreement" | "No coverage"; status: "Draft" | "Active" | "Expired" | "Superseded"; assetIds: string[]; effectiveFrom: string; effectiveTo: string; includes: string; excludes: string; serviceCategories?: string[]; laborCovered?: boolean; partsCovered?: boolean; travelCovered?: boolean; responseHours: number | null; restorationHours?: number | null; resolutionHours?: number | null; calendar: "Business hours" | "Continuous"; timezone: string; source: string; revision: number; createdByActorId?: string; approvedBy?: string; approvedAt?: string };
 export type ServiceEstimate = { revision: number; requestCycleAt: string; status: "Draft" | "Pricing review" | "Approved" | "Returned"; input: PricingInput; evaluation: PricingEvaluation; policySnapshot: PricingPolicy; savedAt: string; savedByActorId: string; submittedByActorId?: string; reviewedByActorId?: string; reviewedAt?: string; reviewNote?: string; history: Array<{ revision: number; status: string; at: string; actorId: string; note: string; input: PricingInput; evaluation: PricingEvaluation; policySnapshot: PricingPolicy }> };
 export type ServiceAuthorization = { estimateRevision: number; amountMinor: number; currency: string; source: string; customerParty: string; customerOrganization?: string; customerRole?: string; authorityBasis?: string; outcome?: string; conditions?: string; exclusions?: string; customerEvidence?: { id: string; checksumSha256: string; sizeBytes: number; uploadedAt: string }; recordedByActorId: string; recordedAt: string };
@@ -28,6 +30,7 @@ export type OperateState = {
   source?: { kind: "Accepted Deploy" | "Legacy onboarding"; workAcceptanceId?: string; revision?: number; turnoverIds: string[]; acceptedAt: string; acceptedByActorId: string; note: string };
   support?: { owner: string; ownerActorId: string; acceptedAt: string; customerContact: string; escalation: string; intakeRoute: string; warrantyDisposition: string; serviceDisposition: string; documentationReviewed: string; residualOwner: string };
   activation?: { status: "Active" | "Suspended" | "Deactivated"; at: string; actorId: string; basis: string; sourceRevision: number; history: Array<{ at: string; action: string; actorId: string; reason: string }> };
+  assetLinks?: AcceptedAssetLink[];
   assets: SupportedAsset[]; agreements: CoverageAgreement[]; requests: ServiceRequest[]; jobs: ServiceJob[]; maintenance: MaintenancePlan[];
   customerReviews: Array<{ id: string; at: string; contact: string; summary: string; actions: string; owner: string }>;
   lifecycleLinks: Array<{ id: string; opportunityWorkId: string; assetId?: string; requestId?: string; rationale: string; owner: string; at: string }>;
@@ -39,7 +42,7 @@ export const emptyOperate = (): OperateState => ({ assets: [], agreements: [], r
 export const operateState = (work: WorkRecord): OperateState => work.operate ?? emptyOperate();
 
 export type OperateFinding = { key: string; severity: "blocker" | "unknown"; fact: string; source: string; owner: string; nextAction: string };
-export function assessOperationalReadiness(work: WorkRecord, policy: OperateControlPolicy = legacyOperateControlPolicy): { recommendation: "Ready to activate" | "Hold for information" | "Hold for resolution"; findings: OperateFinding[] } {
+export function assessOperationalReadiness(work: WorkRecord, policy: OperateControlPolicy = legacyOperateControlPolicy, allWork?: WorkRecord[]): { recommendation: "Ready to activate" | "Supported through existing asset" | "Hold for information" | "Hold for resolution"; findings: OperateFinding[] } {
   const state = operateState(work), findings: OperateFinding[] = [];
   const add = (key: string, severity: OperateFinding["severity"], fact: string, source: string, owner: string, nextAction: string) => findings.push({ key, severity, fact, source, owner, nextAction });
   const receipt = work.deploy?.workAcceptance;
@@ -49,6 +52,18 @@ export function assessOperationalReadiness(work: WorkRecord, policy: OperateCont
   if (state.source?.kind === "Legacy onboarding" && !policy.allowLegacyOnboarding) add("legacy", "blocker", "This Work Type does not allow legacy support onboarding.", "Pinned Operate policy", "System administrator", "Use an approved source path or publish an applicable policy.");
   if (state.source?.kind === "Accepted Deploy" && !state.source.workAcceptanceId && !policy.allowPartialHandoff) add("partial", "blocker", "Partial handoff is not permitted by this policy.", "Pinned Operate policy", "Operations lead", "Receive the whole work or obtain an applicable policy decision.");
   if (state.source?.kind === "Accepted Deploy" && !state.source.workAcceptanceId && (!state.source.turnoverIds.length || state.source.turnoverIds.some((id) => !work.deploy?.turnovers.some((item) => item.id === id && item.status === "Client accepted" && item.receipt === "Accepted" && item.revision === state.source?.revision)))) add("partial-source", "blocker", "The exact accepted scoped turnover is unavailable or changed.", "Deploy turnover", "Operations lead", "Reconcile the accepted turnover revision.");
+  const acceptedLinks = state.assetLinks?.filter((item) => item.status === "Accepted") ?? [];
+  if (acceptedLinks.length) {
+    for (const link of acceptedLinks) {
+      const owner = allWork?.find((item) => item.workspace === work.workspace && item.id === link.ownerWorkId);
+      const asset = owner?.operate?.assets.find((item) => item.id === link.assetId);
+      if (!owner || !asset || !asset.sourceWorkIds.includes(work.id) || !owner.operate?.support?.ownerActorId || owner.operate.activation?.status !== "Active" || asset.status !== "Supported")
+        add(`linked-${link.id}`, owner ? "blocker" : "unknown", "The linked asset's current support ownership or active position cannot be confirmed.", "Owning asset Work Record", "Operations leader", "Inspect the linked asset and resolve its support position on the owning Work Record.");
+    }
+    if (supportDocumentationPositions(work).some((item) => item.status !== "Reviewed"))
+      add("linked-documents", "unknown", "Accepted turnover documents still require supply or independent review.", "Accepted Deploy turnovers", "Project manager and Operations leader", "Complete the retained document obligations for this delivery.");
+    return { recommendation: findings.some((item) => item.severity === "blocker") ? "Hold for resolution" : findings.length ? "Hold for information" : "Supported through existing asset", findings };
+  }
   if (!state.assets.length) add("assets", "blocker", "No supported asset or infrastructure is identified.", "Operate asset register", "Operations lead", "Link at least one asset to the accepted scope.");
   const support = state.support;
   if (!support?.ownerActorId || !support.acceptedAt) add("owner", "blocker", "Support responsibility has not been accepted by an authenticated owner.", "Operate support assignment", "Operations lead", "Accept support ownership.");

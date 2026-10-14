@@ -756,12 +756,15 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
     try {
       const endpoint = hostedPreview ? `/api/d5o-hosted/prototype-operate-command?workspace=${encodeURIComponent(activeWorkspace)}` : "/api/work/operate-command";
       const selected = work.find((item) => item.id === command.workId);
+      const assetOwnerWork = command.action === "link-existing-asset"
+        ? work.find((item) => item.id === command.sourceWorkId && item.workspace === activeWorkspace) : undefined;
       const serviceJob = selected?.operate?.jobs.find((item) => item.id === command.id)
         ?? selected?.operate?.jobs.find((item) => item.id === selected.operate?.requests.find((request) => request.id === command.requestId)?.currentCycleJobIds?.[0]);
       const serviceWork = serviceJob ? work.find((item) => item.id === serviceJob.workId) : undefined;
       const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...command, expectedRevision: pending.expectedRevision, commandId: pending.commandId,
         ...(authoritativeCommands && selected?.canonicalWorkId ? { expectedDeployRevision: selected.deploy?.authorityRevision ?? 0,
           expectedDecisionRevision: selected.operate?.authorityRevision ?? 0,
+          ...(command.action === "link-existing-asset" ? { expectedOwnerOperateRevision: assetOwnerWork?.operate?.authorityRevision ?? -1 } : {}),
           expectedServiceDeployRevision: serviceWork?.deploy?.authorityRevision ?? 0 } : {}) }) });
       const payload = await response.json() as { state?: { revision: number; records: Work[] }; message?: string };
       if (!response.ok || !payload.state) {

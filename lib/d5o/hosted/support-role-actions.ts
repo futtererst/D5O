@@ -39,13 +39,13 @@ export function supportRoleActions(records: WorkRecord[], actorId: string, role:
         position: blocker ? eligible ? "preparation" : "waiting" : eligible ? "available" : "waiting" });
     if (!state?.source) add("receive-handoff", "Operations leader who accepted the exact delivery receipt",
       role === "operations_leader" && receipt.receivedByActorId === actorId);
-    else if (!state.assets.length) add("add-asset", "Project manager or Operations leader", true,
+    else if (!state.assets.length && !state.assetLinks?.some((item) => item.status === "Accepted")) add("add-asset", "Project manager or Operations leader", true,
       "Identify at least one supported asset or infrastructure system from the accepted scope.");
-    else if (!state.support) add("accept-support", "Operations leader", role === "operations_leader",
+    else if (!state.support && !state.assetLinks?.some((item) => item.status === "Accepted")) add("accept-support", "Operations leader", role === "operations_leader",
       "Review contact, escalation, intake, coverage dispositions, documents and residual obligations.");
-    else if (!state.activation) add("activate", "Operations leader", role === "operations_leader",
+    else if (!state.activation && !state.assetLinks?.some((item) => item.status === "Accepted")) add("activate", "Operations leader", role === "operations_leader",
       "Review operational readiness and resolve any outstanding prerequisites before authorization.");
-    if (state?.source && state.support) {
+    if (state?.source && (state.support || state.assetLinks?.some((item) => item.status === "Accepted"))) {
       for (const doc of supportDocumentationPositions(work).filter((item) => item.status !== "Reviewed")) {
         const review = doc.status === "Submitted";
         actions.push({ ...base, kind: review ? "review-document" : "supply-document",
