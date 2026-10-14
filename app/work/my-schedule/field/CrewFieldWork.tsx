@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import type { Assignment } from "@/components/d5o/platform/schedule-model";
-import { currentAcceptedRelease, currentWorkAcceptanceScope, deployState } from "@/components/d5o/platform/deploy-model";
+import { currentAcceptedRelease, deployState } from "@/components/d5o/platform/deploy-model";
 import type { DeployCommand } from "@/lib/d5o/prototype-work/deploy-command";
 import { CrewInspectionPanel } from "./CrewInspectionPanel";
 import { FieldChangeControl } from "@/components/d5o/platform/FieldChangeControl";
@@ -14,7 +14,7 @@ import "./field.css";
 type Draft = { reportId?: string; quantity: string; unit: string; laborHours: string; material: string; summary: string; capturedAt: string; commandId: string; evidenceIds: string[] };
 const value = (data: FormData, key: string) => String(data.get(key) ?? "").trim();
 
-export function CrewFieldWork({ initialWork, initialRevision, initialScheduleRevision, assignment, publicationId, actorId, person, hosted = false }: { initialWork: WorkRecord; initialRevision: number; initialScheduleRevision: number; assignment: Assignment; publicationId: string; actorId: string; person: string; hosted?: boolean }) {
+export function CrewFieldWork({ initialWork, initialRevision, initialScheduleRevision, assignment, publicationId, actorId, person, acceptedScope, hosted = false }: { initialWork: WorkRecord; initialRevision: number; initialScheduleRevision: number; assignment: Assignment; publicationId: string; actorId: string; person: string; acceptedScope: boolean; hosted?: boolean }) {
   const api = hosted ? "/api/d5o-hosted/worker-deploy" : "/api/work/deploy-command";
   const [work, setWork] = useState(initialWork), [revision, setRevision] = useState(initialRevision);
   const [fieldHold, setFieldHold] = useState(false);
@@ -22,7 +22,6 @@ export function CrewFieldWork({ initialWork, initialRevision, initialScheduleRev
   const release = currentAcceptedRelease(work, assignment.packageId);
   const state = deployState(work);
   const permit = state.permits.filter((item) => item.packageId === assignment.packageId).at(-1);
-  const acceptedScope = state.workAcceptance?.receipt === "Accepted" && currentWorkAcceptanceScope(work);
   const reports = state.reports.filter((item) => item.packageId === assignment.packageId && item.bookingId === assignment.id);
   const evidence = (state.evidence ?? []).filter((item) => item.packageId === assignment.packageId);
   const inspections = state.inspections.filter((item) => item.packageId === assignment.packageId);
