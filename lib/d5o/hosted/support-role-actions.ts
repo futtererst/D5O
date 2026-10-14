@@ -10,12 +10,25 @@ export type SupportAction = {
   responsibleRole: string; blocker: string | null;
 };
 
+/** A returned service visit belongs to its parent request and supported asset, not a second support-onboarding queue. */
+export function serviceVisitReturnedToAsset(records: WorkRecord[], work: WorkRecord): boolean {
+  const source = work.serviceSource;
+  if (!source?.parentWorkId || !source.requestId || !source.assetIds.length) return false;
+  const parent = records.find((item) => item.id === source.parentWorkId && item.workspace === work.workspace);
+  const completedJob = parent?.operate?.jobs.some((item) => item.workId === work.id &&
+    item.requestId === source.requestId && item.status === "Completed");
+  return !!completedJob && source.assetIds.every((id) => parent?.operate?.assets.some((asset) =>
+    asset.id === id && asset.history.some((event) =>
+      event.action === "Reviewed service execution linked" && event.source === work.id)));
+}
+
 /** Read-only routing. The authenticated typed command owns every decision. */
 export function supportRoleActions(records: WorkRecord[], actorId: string, role: string): SupportAction[] {
   if (!["project_manager", "operations_leader"].includes(role)) return [];
   const actions: SupportAction[] = [];
   for (const work of records) {
     if (!work.canonicalWorkId || !work.deploy?.workAcceptance || !currentWorkAcceptanceScope(work)) continue;
+    if (serviceVisitReturnedToAsset(records, work)) continue;
     const receipt = work.deploy.workAcceptance, state = work.operate;
     if (receipt.receipt !== "Accepted") continue;
     const base = { workId: work.id, title: work.title, customer: work.customer,

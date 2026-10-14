@@ -22,6 +22,7 @@ import type { ServiceReturnAction } from "@/lib/d5o/hosted/service-return-action
 import { buildSupportQueue } from "./operate-queue";
 import { SupportDocumentationPanel } from "./SupportDocumentationPanel";
 import { supportDocumentationPositions } from "./support-documentation";
+import { serviceVisitReturnedToAsset } from "@/lib/d5o/hosted/support-role-actions";
 
 import { legacyOperateControlPolicy, type OperateControlPolicy } from "./operate-policy";
 
@@ -134,11 +135,12 @@ export function OperateWorkspace({ work, allWork, policy, hosted, actorRole, act
   const canCommitConnectedServiceReturn = !hosted || !work.canonicalWorkId || actorRole === "operations_leader";
   const canReviewConnectedRequest = !hosted || !work.canonicalWorkId || actorRole === "project_manager";
   const state = operateState(work), readiness = assessOperationalReadiness(work, activePolicy), source = work.deploy?.workAcceptance;
-  const currentSupportAction = !state.source ? "receive-handoff" : !state.assets.length ? "add-asset" : !state.support ? "accept-support" : !state.activation ? "activate" : null;
+  const serviceAlreadyReturned = serviceVisitReturnedToAsset(allWork, work);
+  const currentSupportAction = serviceAlreadyReturned ? null : !state.source ? "receive-handoff" : !state.assets.length ? "add-asset" : !state.support ? "accept-support" : !state.activation ? "activate" : null;
   const linkedDocument = linkedSupportAction && ["supply-document", "review-document"].includes(linkedSupportAction.kind)
     ? supportDocumentationPositions(work).find((item) =>
       item.turnoverId === linkedSupportAction.turnoverId && item.kind === linkedSupportAction.documentKind) : undefined;
-  const staleSupportLink = !!linkedSupportAction && (
+  const staleSupportLink = !!linkedSupportAction && (serviceAlreadyReturned ||
     linkedSupportAction.sourceRevision !== (state.authorityRevision ?? 0) ||
     linkedSupportAction.deployRevision !== (work.deploy?.authorityRevision ?? 0) ||
     (linkedDocument ? (
