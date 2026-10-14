@@ -6,6 +6,7 @@ import { supportRoleActions } from "@/lib/d5o/hosted/support-role-actions";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import { connectedLifecyclePosition } from "@/components/d5o/platform/connected-work-position";
 import { assessDesignPackage, designState } from "@/components/d5o/platform/design-model";
+import { serviceExecutionBasisIssue } from "@/lib/d5o/prototype-work/service-execution-basis";
 import type { PackageCrewDemand } from "@/components/d5o/platform/schedule-model";
 import { resolvePublishedPhaseConfiguration } from "@/components/d5o/platform/published-phase-configuration";
 import { hostedConfigurationInventory } from "@/lib/d5o/hosted/configuration-inventory";
@@ -251,7 +252,8 @@ export async function GET(request: NextRequest) {
         const designPosition = designState(record as WorkRecord);
         const designPolicy = resolvePublishedPhaseConfiguration(configurationInventory, workspace as WorkspaceKey,
           record.type, record as WorkRecord)?.designControls;
-        const acceptedServiceSource = !!record.serviceSource && (record as WorkRecord).serviceExecutionBasis?.status === "accepted";
+        const acceptedServiceSource = !!record.serviceSource && (record as WorkRecord).serviceExecutionBasis?.status === "accepted" &&
+          !serviceExecutionBasisIssue(record as WorkRecord, all as WorkRecord[]);
         const acceptedPackageSource = acceptedDesignSource || acceptedServiceSource;
         if (acceptedPackageSource && actorRole === "operations_leader" &&
           (record as WorkRecord).deploy?.workAcceptance?.receipt !== "Accepted") for (const item of currentPackages) {
@@ -309,10 +311,11 @@ export async function GET(request: NextRequest) {
               decisionId: document.id, packageId, packageName, revision: document.revision, status: "Approved",
               ownership: "Created by you · project manager", position: "preparation" });
         }
-        if (mine && acceptedDesignSource && !record.serviceSource &&
+        if (mine && acceptedPackageSource &&
           (record as WorkRecord).deploy?.workAcceptance?.receipt !== "Accepted") {
           if (!currentPackages.length)
-            prep("Prepare Work Package", "Design", "package-prep", commercial.designHandoff!.revision);
+            prep("Prepare Work Package", "Design", "package-prep", record.serviceSource
+              ? (record as WorkRecord).serviceExecutionBasis!.revision : commercial!.designHandoff!.revision);
           const design = designState(record as WorkRecord);
           for (const item of currentPackages) {
             const detail = design.packages.find((candidate) => candidate.packageId === item.id);

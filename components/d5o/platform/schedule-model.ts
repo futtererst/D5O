@@ -36,7 +36,7 @@ export function publishedWeekStatus(schedule: SharedSchedule, week: number) {
 export type ScheduleIssue = { kind: "qualification" | "overlap" | "capacity" | "availability" | "crew" | "window" | "configuration" | "work" | "shift"; person?: string; message: string; action: string };
 export type ScheduleRequirement = { packageId: string; qualification: string; minimumPeople: number; estimatedPersonHours: number; fixtureSeedDay: number; priority: "Critical" | "High" | "Normal"; prerequisite: string; crewSchedulable: boolean };
 export type CrewDemandSlot = { date: string; shift: string };
-export type PackageCrewDemand = Omit<ScheduleRequirement, "fixtureSeedDay"> & { workId: string; requiredSlots: CrewDemandSlot[] };
+export type PackageCrewDemand = Omit<ScheduleRequirement, "fixtureSeedDay"> & { workId: string; requiredSlots: CrewDemandSlot[]; designPackageRevision?: number };
 export type ScheduleDemand = PackageCrewDemand & CrewDemandSlot & { configured: boolean; workTitle: string; packageName: string; site: string; packageStatus: string; scheduledPersonHours: number; remainingPersonHours: number; release: string; releaseDetail: string };
 
 /** Keep an adjusted booking and its required slot in the same draft revision. */
