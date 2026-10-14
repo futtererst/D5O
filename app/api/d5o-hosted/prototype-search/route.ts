@@ -181,7 +181,11 @@ export async function GET(request: NextRequest) {
       const phaseReviews = all.flatMap((record) => {
         const actions: Record<string, unknown>[] = [];
         if (!record.canonicalWorkId) return actions;
-        const mine = actorRole === "project_manager" && ownedIds?.has(record.id);
+        // Operations may create a service child. Route its preparation to the
+        // canonical parent Work owner, not the display-only child owner label.
+        const mine = actorRole === "project_manager" && !!ownedIds &&
+          (ownedIds.has(record.id) || !!record.serviceSource &&
+            ownedIds.has((record as WorkRecord).serviceSource!.parentWorkId));
         const pursuit = (record.discovery as WorkRecord["discovery"] | undefined)?.pursuitControl;
         const handoff = pursuit?.handoff;
         const define = record.definition as WorkRecord["definition"] | undefined;
