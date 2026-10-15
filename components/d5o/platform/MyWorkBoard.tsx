@@ -9,6 +9,8 @@ import { ServiceActionQueue } from "./ServiceActionQueue";
 import { DeliveryActionQueue } from "./DeliveryActionQueue";
 import { SupportActionQueue } from "./SupportActionQueue";
 import { FocusedMyWorkBoard } from "./FocusedMyWorkBoard";
+import type { WorkRecord } from "./work-types";
+import type { OperateCommand } from "@/lib/d5o/prototype-work/operate-command";
 import type { DeliveryAction } from "@/lib/d5o/hosted/delivery-role-actions";
 import type { SupportAction } from "@/lib/d5o/hosted/support-role-actions";
 import type { ServiceReturnAction } from "@/lib/d5o/hosted/service-return-actions";
@@ -38,7 +40,7 @@ const isPricingReview = (item: WorkLike) => item.discovery?.estimate.status === 
 const isProposalReview = (item: WorkLike) => item.discovery?.proposal?.status === "Internal review" && Number.isInteger(item.discovery.proposal.package?.revision) && item.discovery.proposal.review?.revision === item.discovery.proposal.package?.revision;
 const money = (value: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
 
-export function MyWorkBoard<T extends WorkLike>({ actions: localActions, currentOwner, initialFilter = "all", onOpen, onReviewPricing, onReviewProposal, onReviewDefinition, getDecisionContext, hostedWorkspace }: {
+export function MyWorkBoard<T extends WorkLike>({ actions: localActions, currentOwner, initialFilter = "all", onOpen, onReviewPricing, onReviewProposal, onReviewDefinition, getDecisionContext, hostedWorkspace, workRecords, actorId, actorRole, onOperateCommand }: {
   actions: T[];
   currentOwner: string;
   initialFilter?: Filter;
@@ -48,7 +50,12 @@ export function MyWorkBoard<T extends WorkLike>({ actions: localActions, current
   onReviewDefinition: (item: T, role: "commercial" | "delivery") => void;
   getDecisionContext: (item: T) => DecisionQueueContext;
   hostedWorkspace?: string;
+  workRecords?: WorkRecord[];
+  actorId?: string;
+  actorRole?: string;
+  onOperateCommand?: (command: Omit<OperateCommand, "expectedRevision" | "commandId">) => Promise<boolean>;
 }) {
+  const [refreshVersion, setRefreshVersion] = useState(0);
   const [filter, setFilter] = useState<Filter>(initialFilter);
   const [proposalRoleFilter, setProposalRoleFilter] = useState("all");
   const [focusedId, setFocusedId] = useState("");
@@ -57,7 +64,7 @@ export function MyWorkBoard<T extends WorkLike>({ actions: localActions, current
   const [loadingMore, setLoadingMore] = useState(false);
   const [failure, setFailure] = useState<{ key: string; message: string } | null>(null);
   const localSignature = localActions.map((item) => `${item.id}:${item.stage}:${item.status}:${item.discovery?.estimate.revision ?? ""}:${item.discovery?.proposal?.package?.revision ?? ""}:${item.definition?.revision ?? ""}`).join("|");
-  const requestKey = `${filter}:${currentOwner}:${proposalRoleFilter}:${localSignature}`;
+  const requestKey = `${filter}:${currentOwner}:${proposalRoleFilter}:${localSignature}:${refreshVersion}`;
   const page = result?.key === requestKey ? result.page : null;
   const error = failure?.key === requestKey ? failure.message : "";
   const loading = (!page && !error) || loadingMore;
@@ -106,7 +113,7 @@ export function MyWorkBoard<T extends WorkLike>({ actions: localActions, current
 
   if (!page) return <section className="d5o-ops-mywork"><header className="d5o-ops-heading"><div><p>MY WORK</p><h1>Actions requiring attention</h1></div></header><div className="d5o-ops-panel d5o-queue-loading" role={error ? "alert" : "status"}>{error || "Loading workspace actions…"}{error ? <button onClick={() => window.location.reload()}>Retry</button> : null}</div></section>;
 
-  if (hostedWorkspace) return <FocusedMyWorkBoard workspace={hostedWorkspace} page={page} onOpen={onOpen} onLoadMore={() => { void loadMore(); }} loading={loading} />;
+  if (hostedWorkspace) return <FocusedMyWorkBoard workspace={hostedWorkspace} page={page} onOpen={onOpen} onLoadMore={() => { void loadMore(); }} loading={loading} records={workRecords} actorId={actorId} actorRole={actorRole} onOperateCommand={onOperateCommand} onCommitted={() => setRefreshVersion((version) => version + 1)} />;
 
   if (filter === "pricing") return <section className="d5o-ops-mywork">
     <header className="d5o-ops-heading"><div><p>MY WORK · ROLE-BASED QUEUE</p><h1>Pricing authority reviews</h1><span>Review the submitted revision, assumptions, margin, and decision deadline.</span></div><div className="d5o-ops-count"><strong>{counts?.pricing ?? pricing.length}</strong><span>Awaiting decision</span></div></header>
