@@ -21,7 +21,10 @@ export function connectedWorkPosition(work: WorkRecord): ConnectedWorkPosition |
   if (work.operate?.support && accepted?.receipt === "Accepted" && scopeCurrent)
     return { label: "Operate · support owner accepted", nextAction: "Assess operational activation", value };
   if (accepted?.receipt === "Accepted" && scopeCurrent)
-    return { label: "Deploy · Operations receipt accepted", nextAction: "Receive ongoing support responsibility in Operate", value };
+    return { label: "Deploy · Operations receipt accepted",
+      nextAction: work.operate?.assets.length || work.operate?.assetLinks?.some((link) => link.status === "Accepted")
+        ? "Receive ongoing support responsibility in Operate"
+        : "Identify or link a supported asset before accepting support responsibility", value };
   if (accepted && scopeCurrent)
     return { label: "Deploy · customer scope accepted", nextAction: "Obtain independent whole-work Operations receipt", value };
   const packages = work.packages ?? [];
