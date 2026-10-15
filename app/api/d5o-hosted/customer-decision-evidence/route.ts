@@ -125,6 +125,12 @@ export async function POST(request: NextRequest) {
       !["project_manager", "field_supervisor"].includes(target.context.actor.role))
       return reply({ error: "support_document_supplier_required" }, 403);
     if (!exact) return reply({ error: "current_decision_scope_required" }, 409);
+    // Keep the browser response actionable; the custody RPC repeats this check
+    // after upload so a revoked assignment cannot register the object.
+    if ((purpose === "support-as-built" || purpose === "support-inspection") &&
+      target.context.actor.role === "field_supervisor" &&
+      !work.supportDocumentSupplierPackageIds?.includes(String(exact.basis.packageId)))
+      return reply({ error: "support_document_package_assignment_required" }, 403);
     const id = randomUUID(), bytes = Buffer.from(await file.arrayBuffer());
     if (bytes.subarray(0, 5).toString("ascii") !== "%PDF-" || !bytes.subarray(-32).toString("ascii").includes("%%EOF"))
       return reply({ error: "signed_pdf_required" }, 400);
@@ -159,6 +165,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (uploadedPath) await createRybexSupabaseAdminClient().storage.from(bucket).remove([uploadedPath]);
     if (error instanceof Error && error.message === "unauthenticated") return reply({ error: "unauthenticated" }, 401);
+    if (error instanceof Error && error.message === "support_document_package_assignment_required")
+      return reply({ error: error.message }, 403);
     return reply({ error: "customer_evidence_unavailable" }, 503);
   }
 }
