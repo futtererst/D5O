@@ -29,7 +29,7 @@ export function supportRoleActions(records: WorkRecord[], actorId: string, role:
   const actions: SupportAction[] = [];
   const identityCounts = new Map<string, Map<string, number>>();
   for (const work of records) {
-    if (!work.canonicalWorkId || !work.deploy?.workAcceptance || !currentWorkAcceptanceScope(work)) continue;
+    if (!work.canonicalWorkId || !work.deploy?.workAcceptance) continue;
     if (serviceVisitReturnedToAsset(records, work)) continue;
     const receipt = work.deploy.workAcceptance, state = work.operate;
     if (receipt.receipt !== "Accepted") continue;
@@ -39,6 +39,7 @@ export function supportRoleActions(records: WorkRecord[], actorId: string, role:
     const add = (kind: SupportAction["kind"], responsibleRole: string, eligible: boolean, blocker: string | null = null) =>
       actions.push({ ...base, kind, responsibleRole, blocker,
         position: blocker ? eligible ? "preparation" : "waiting" : eligible ? "available" : "waiting" });
+    if (currentWorkAcceptanceScope(work)) {
     if (!state?.source) add("receive-handoff", "Operations leader who accepted the exact delivery receipt",
       role === "operations_leader" && receipt.receivedByActorId === actorId);
     else if (!state.assets.length && !state.assetLinks?.some((item) => item.status === "Accepted")) {
@@ -64,6 +65,7 @@ export function supportRoleActions(records: WorkRecord[], actorId: string, role:
       "Review contact, escalation, intake, coverage dispositions, documents and residual obligations.");
     else if (!state.activation && !state.assetLinks?.some((item) => item.status === "Accepted")) add("activate", "Operations leader", role === "operations_leader",
       "Review operational readiness and resolve any outstanding prerequisites before authorization.");
+    }
     if (state?.source && (state.support || state.assetLinks?.some((item) => item.status === "Accepted"))) {
       for (const doc of supportDocumentationPositions(work).filter((item) => item.status !== "Reviewed")) {
         const review = doc.status === "Submitted";
