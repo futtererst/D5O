@@ -92,7 +92,14 @@ begin
         and m.actor_user_id=v_actor and m.status='active';
     if v_role='field_supervisor' and not
       d5o_hosted.support_document_supervisor_scope_v1(
-        p_workspace_key,p_presentation_id,p_turnover_id,p_kind,v_actor) then
+        p_workspace_key,p_presentation_id,p_turnover_id,p_kind,v_actor)
+      and not exists (
+        select 1 from d5o_hosted.connected_operate_receipts c
+          join d5o_hosted.work_identity_links l
+            on l.workspace_id=c.workspace_id and l.work_id=c.work_id
+          join d5o_hosted.workspaces w on w.id=c.workspace_id
+          where w.workspace_key=p_workspace_key and l.presentation_id=p_presentation_id
+            and c.actor_user_id=v_actor and c.command_id=p_command_id) then
       raise exception 'support_document_package_assignment_required'
         using errcode='42501'; end if;
   end if;
@@ -247,7 +254,14 @@ begin
         and m.actor_user_id=v_actor and m.status='active';
     if v_role='field_supervisor' and not
       d5o_hosted.support_document_supervisor_scope_v1(
-        p_workspace_key,p_presentation_id,p_turnover_id,p_kind,v_actor) then
+        p_workspace_key,p_presentation_id,p_turnover_id,p_kind,v_actor)
+      and not exists (
+        select 1 from d5o_hosted.connected_operate_receipts c
+          join d5o_hosted.work_identity_links l
+            on l.workspace_id=c.workspace_id and l.work_id=c.work_id
+          join d5o_hosted.workspaces w on w.id=c.workspace_id
+          where w.workspace_key=p_workspace_key and l.presentation_id=p_presentation_id
+            and c.actor_user_id=v_actor and c.command_id=p_command_id) then
       raise exception 'support_document_package_assignment_required'
         using errcode='42501'; end if;
   end if;
