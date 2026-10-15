@@ -20,11 +20,15 @@ export function connectedWorkPosition(work: WorkRecord): ConnectedWorkPosition |
     return { label: "Operate · support active", nextAction: "Review support obligations and Finance separately", value };
   if (work.operate?.support && accepted?.receipt === "Accepted" && scopeCurrent)
     return { label: "Operate · support owner accepted", nextAction: "Assess operational activation", value };
-  if (accepted?.receipt === "Accepted" && scopeCurrent)
+  if (accepted?.receipt === "Accepted" && scopeCurrent) {
+    const supportedAssetRecorded = (work.operate?.assets.length ?? 0) > 0 ||
+      !!work.operate?.assetLinks?.some((link) => link.status === "Accepted");
     return { label: "Deploy · Operations receipt accepted",
-      nextAction: work.operate?.assets.length || work.operate?.assetLinks?.some((link) => link.status === "Accepted")
+      nextAction: supportedAssetRecorded
         ? "Receive ongoing support responsibility in Operate"
-        : "Identify or link a supported asset before accepting support responsibility", value };
+        : "Identify or link a supported asset before accepting support responsibility", value,
+      warning: supportedAssetRecorded ? undefined : "Accepted delivery has no recorded supported asset or accepted existing-asset contribution." };
+  }
   if (accepted && scopeCurrent)
     return { label: "Deploy · customer scope accepted", nextAction: "Obtain independent whole-work Operations receipt", value };
   const packages = work.packages ?? [];
