@@ -47,13 +47,27 @@ export function SupportDocumentationPanel({ work, hosted, actorRole, onCommand, 
   const review = (turnoverId: string, kind: Kind, evidenceId: string) =>
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault(); setBusy(true); setMessage("");
-      const data = new FormData(event.currentTarget);
+      const form = event.currentTarget, data = new FormData(form);
       try {
         const done = await onCommand({ action: "review-support-document", turnoverId,
           documentKind: kind, evidenceId,
           decision: String(data.get("decision")) as "Reviewed" | "Returned",
           note: String(data.get("note") ?? "").trim() });
         setMessage(done ? "Independent review retained." : "Review was not committed.");
+      } finally { setBusy(false); }
+    };
+  const assign = (turnoverId: string, action: "assign-support-supplier" | "revoke-support-supplier") =>
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault(); setBusy(true); setMessage("");
+      const form = event.currentTarget, data = new FormData(form);
+      try {
+        const done = await onCommand({ action, turnoverId,
+          supervisorEmail: String(data.get("supervisorEmail") ?? "").trim(),
+          note: String(data.get("reason") ?? "").trim() });
+        setMessage(done ? action === "assign-support-supplier" ?
+          "Named supervisor assigned to this accepted package." : "Supplier assignment revoked." :
+          "Assignment was not committed; check the Work decision message.");
+        if (done) form.reset();
       } finally { setBusy(false); }
     };
   if (!accepted || !state.source) return null;
@@ -65,6 +79,7 @@ export function SupportDocumentationPanel({ work, hosted, actorRole, onCommand, 
       .filter((kind) => turnover.obligations.toLowerCase().includes(kind) && (!focus || focus.documentKind === kind))
       .map((kind) => {
         const release = work.design?.releases.find((item) => turnover.releaseIds.includes(item.id));
+        const assignment = state.supportDocumentAssignments?.filter((item) => item.turnoverId === turnover.id).at(-1);
         const history = docs.filter((item) => item.turnoverId === turnover.id && item.kind === kind);
         const current = history.at(-1);
         return <article className={style.row} key={turnover.id + ":" + kind}>
@@ -73,6 +88,15 @@ export function SupportDocumentationPanel({ work, hosted, actorRole, onCommand, 
           <strong>{current?.status === "Reviewed" ? "Reviewed obligation complete" :
             current?.status === "Submitted" ? "Awaiting independent review" :
             current?.status === "Returned" ? "Returned: replacement required" : "Outstanding: document not supplied"}</strong>
+          {kind === "as-built" || !turnover.obligations.toLowerCase().includes("as-built") ? <>
+            <small>Document supplier: {assignment?.status === "Assigned" ? assignment.email : "No named supervisor assigned"}.</small>
+            {hosted && !!work.canonicalWorkId && actorRole === "operations_leader" ?
+              <form className={style.form} onSubmit={assign(turnover.id, assignment?.status === "Assigned" ? "revoke-support-supplier" : "assign-support-supplier")}>
+                <label>Confirmed supervisor account<input name="supervisorEmail" type="email" required defaultValue={assignment?.status === "Assigned" ? assignment.email : ""} /></label>
+                <label>Assignment reason<input name="reason" minLength={10} required /></label>
+                <button disabled={busy}>{assignment?.status === "Assigned" ? "Revoke supplier assignment" : "Assign document supplier"}</button>
+              </form> : null}
+          </> : null}
           {history.map((item, index) => <div key={item.id || `${turnover.id}:${kind}:${index}`}>
             {item.restricted ? <span>Another supplier&apos;s retained document · {item.status}. Private details are restricted.</span> : <>
               <a href={fileUrl(work, item.id)} target="_blank" rel="noreferrer">Open retained {item.filename}</a>

@@ -28,6 +28,7 @@ export type SupportDocumentation = {
 export type OperateState = {
   authorityRevision?: number;
   documentationObligations?: SupportDocumentation[];
+  supportDocumentAssignments?: Array<{ id: string; turnoverId: string; packageId: string; releaseId: string; actorId: string; email: string; status: "Assigned" | "Revoked"; previousAssignmentId?: string; byActorId: string; at: string; reason: string }>;
   source?: { kind: "Accepted Deploy" | "Legacy onboarding"; workAcceptanceId?: string; revision?: number; turnoverIds: string[]; acceptedAt: string; acceptedByActorId: string; note: string };
   support?: { owner: string; ownerActorId: string; acceptedAt: string; customerContact: string; escalation: string; intakeRoute: string; warrantyDisposition: string; serviceDisposition: string; documentationReviewed: string; residualOwner: string };
   activation?: { status: "Active" | "Suspended" | "Deactivated"; at: string; actorId: string; basis: string; sourceRevision: number; history: Array<{ at: string; action: string; actorId: string; reason: string }> };
