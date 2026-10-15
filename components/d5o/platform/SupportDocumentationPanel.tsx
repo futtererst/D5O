@@ -73,14 +73,18 @@ export function SupportDocumentationPanel({ work, hosted, actorRole, onCommand, 
           <strong>{current?.status === "Reviewed" ? "Reviewed obligation complete" :
             current?.status === "Submitted" ? "Awaiting independent review" :
             current?.status === "Returned" ? "Returned: replacement required" : "Outstanding: document not supplied"}</strong>
-          {history.map((item) => <div key={item.id}>
-            <a href={fileUrl(work, item.id)} target="_blank" rel="noreferrer">Open retained {item.filename}</a>
-            <small>{item.status}; SHA-256 {item.checksumSha256}; supplied by {item.uploadedByActorId} at {item.uploadedAt}
-              {item.reviewedByActorId ? "; reviewed by " + item.reviewedByActorId + " at " + item.reviewedAt : ""}
-              {item.supersedesId ? "; supersedes " + item.supersedesId : ""}</small>
-            {item.reviewReason ? <small>Review reason: {item.reviewReason}</small> : null}
+          {history.map((item, index) => <div key={item.id || `${turnover.id}:${kind}:${index}`}>
+            {item.restricted ? <span>Another supplier&apos;s retained document · {item.status}. Private details are restricted.</span> : <>
+              <a href={fileUrl(work, item.id)} target="_blank" rel="noreferrer">Open retained {item.filename}</a>
+              <small>{item.status}; SHA-256 {item.checksumSha256}; supplied by {item.uploadedByActorId} at {item.uploadedAt}
+                {item.reviewedByActorId ? "; reviewed by " + item.reviewedByActorId + " at " + item.reviewedAt : ""}
+                {item.supersedesId ? "; supersedes " + item.supersedesId : ""}</small>
+              {item.reviewReason ? <small>Review reason: {item.reviewReason}</small> : null}
+            </>}
           </div>)}
-          {canSupply && current?.status !== "Submitted" ? <form className={style.form} onSubmit={upload(turnover.id, kind)}>
+          {canSupply && current?.status !== "Submitted" &&
+            (actorRole === "project_manager" || !!(release && work.supportDocumentSupplierPackageIds?.includes(release.packageId)))
+            ? <form className={style.form} onSubmit={upload(turnover.id, kind)}>
             <label>Fictional PDF<input name="file" type="file" accept="application/pdf" required /></label>
             <label>Supply note<input name="note" minLength={10} required /></label>
             <button disabled={busy}>Retain and submit document</button>

@@ -98,6 +98,8 @@ export type DefinitionRecord = {
 export type WorkRecord = {
   id: string; workspace: WorkspaceKey; title: string; type: string; customer: string; site: string; stage: string; owner: string;
   canonicalWorkId?: string;
+  /** Server-projected package scope for a field supervisor supplying turnover records. */
+  supportDocumentSupplierPackageIds?: string[];
   phaseConfigurationVersionId?: string;
   nextAction: string; nextActionDue?: string | null; nextActionImpact?: "Critical" | "High" | "Standard" | null;
   progress: number; value: string; status: "attention" | "moving" | "complete"; proof: string[]; blockers: string[]; history: string[];

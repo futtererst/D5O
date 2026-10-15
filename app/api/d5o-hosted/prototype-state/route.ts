@@ -46,7 +46,7 @@ async function scoped(workspace: string) {
   if (actor.error || !actor.data || typeof actor.data !== "object")
     return { error: "workspace_forbidden", status: 403 as const };
   const role = (actor.data as { role?: string }).role ?? "";
-  return { call, canEdit: editors.has(role), status: 200 as const };
+  return { call, role, canEdit: editors.has(role), status: 200 as const };
 }
 
 function keyFrom(value: string | null): StateKey | null {
@@ -156,6 +156,16 @@ export async function POST(request: NextRequest) {
   const saved = result.data as PrototypeResult | null;
   if (!saved || !Number.isInteger(saved.revision) || !saved.state)
     return reply({ error: "invalid_response" }, 502);
-  return reply({ state: { ...saved.state, revision: saved.revision },
-    revision: saved.revision, canEdit: true, synthetic: true });
+  // A generic draft writer returns the unfiltered snapshot. Supervisors must
+  // receive the same server-scoped read projection as the ordinary GET path.
+  const visible = scope.role === "field_supervisor"
+    ? await scope.call("d5o_hosted_prototype_read_v1", {
+      p_workspace_key: workspace, p_state_key: key
+    }) : null;
+  if (visible?.error) return errorReply(visible.error);
+  const response = visible ? visible.data as PrototypeResult | null : saved;
+  if (!response?.state || !Number.isInteger(response.revision))
+    return reply({ error: "invalid_response" }, 502);
+  return reply({ state: { ...response.state, revision: response.revision },
+    revision: response.revision, canEdit: true, synthetic: true });
 }

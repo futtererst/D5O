@@ -15,6 +15,7 @@ export type ServiceRequest = { id: string; assetId: string; title: string; descr
 export type ServiceJob = { id: string; workId: string; assetIds: string[]; requestId?: string; planId?: string; dueDate: string; status: "Generated" | "Execution linked" | "Completed" | "Cancelled"; evidence: string[]; completionRefs?: string[]; createdAt: string; linkedByActorId?: string; completedAt?: string; completedByActorId?: string; completionReason?: string };
 export type MaintenancePlan = { id: string; assetId: string; title: string; frequencyDays: number; nextDue: string; mode: "Fixed date" | "Completion relative"; owner: string; skill: string; expectedHours: number; requiredEvidence: string; status: "Active" | "Suspended"; revision: number; generatedDates: string[]; deferrals?: Array<{ originalDue: string; revisedDue: string; reason: string; actorId: string; at: string }> };
 export type SupportDocumentation = {
+  restricted?: boolean;
   id: string; turnoverId: string; kind: "as-built" | "inspection";
   basis: { turnoverId: string; turnoverRevision: number; packageId: string; releaseId: string;
     releaseRevision: number; workAcceptanceId: string; workAcceptanceRevision: number; kind: string };

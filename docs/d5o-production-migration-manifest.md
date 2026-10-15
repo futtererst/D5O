@@ -2,7 +2,7 @@
 
 Target: shared Supabase project `fcawktdjoxvahhgvkebx`. This is a read-only reconciliation and proposed order; no shared migration has been applied by this release-candidate work.
 
-Current candidate: **87 ordered hosted migrations**, comprising the 12 read-only mapped shared-history entries below and **75 outstanding files**. A fresh empty disposable target replayed all 87 through `20261015111608` with healthy database/Auth/REST/Storage/Kong and Auth HTTP 200. The populated fictional clone received later asset-identity and custody files incrementally; it was not represented as a fresh replay. Shared migration history and definitions must be inspected again before a separately authorized cutover. No shared write is authorized by this manifest.
+Current candidate: **88 ordered hosted migrations**, comprising the 12 read-only mapped shared-history entries below and **76 outstanding files**. The last completed fresh empty disposable replay covered 87 files through `20261015111608` with healthy database/Auth/REST/Storage/Kong and Auth HTTP 200; the new file 88 is undergoing separate disposable qualification. The populated fictional clone received later asset-identity and custody files incrementally; it was not represented as a fresh replay. Shared migration history and definitions must be inspected again before a separately authorized cutover. No shared write is authorized by this manifest.
 
 The 12 already-recorded D5O/worker migrations have SQL definitions identical to the candidate files after newline normalization. Eight early releases carry Supabase-assigned versions instead of the local filename versions:
 
@@ -23,7 +23,7 @@ The 12 already-recorded D5O/worker migrations have SQL definitions identical to 
 
 The worker-excluding policies `d5o_hosted_work_member_read` and `d5o_hosted_work_event_member_read` also match the live read-only inspection. Do not rewrite the eight applied history versions. A raw version-only `supabase db push` is unsafe until the release operator explicitly reconciles those mappings; it would treat their local versions as unapplied.
 
-## Outstanding files, in required order (73)
+## Outstanding files, in required order (76)
 
 1. `20261008183310_d5o_prototype_authoritative_writes.sql`
 2. `20261008203000_d5o_reject_imported_commercial_decisions.sql`
@@ -100,6 +100,7 @@ The worker-excluding policies `d5o_hosted_work_member_read` and `d5o_hosted_work
 73. `20261014235613_reject_ambiguous_asset_contribution.sql`
 74. `20261014235900_d5o_private_evidence_index.sql`
 75. `20261015111608_restrict_supervisor_private_evidence.sql`
+76. `20261015123201_scope_support_documents_to_reviewing_supervisor.sql`
 
 At the earlier invoice checkpoint, a fresh disposable Supabase instance replayed **71 hosted candidate files in filename order**, including the service-invoice migration. Relative to the prior 12-file shared read-only mapping, **59 files are outstanding**. The active fictional service pilot was incrementally patched; it is not evidence of full ordered replay. Shared-project definitions and migration history must be rechecked at cutover. Disposable replay does not establish shared-project compatibility or authorization to apply migrations. The deployment cutover must compare names, normalized SQL, policy definitions and migration history again immediately before any shared write.
 
