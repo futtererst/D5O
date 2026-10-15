@@ -6,7 +6,7 @@ import { HostedStateError, hostedPrototypeContext } from "@/lib/d5o/hosted/proto
 export const dynamic = "force-dynamic";
 type Receipt = { id: string; work_id: string; kind: string; scope_id: string | null;
   document_id: string | null; revision: number; filename: string;
-  checksum_sha256: string; size_bytes: number; uploaded_at: string };
+  checksum_sha256: string; size_bytes: number; uploaded_at: string; uploaded_by: string };
 const reply = (body: unknown, status = 200) => NextResponse.json(body, {
   status, headers: { "Cache-Control": "private, no-store" }
 });
@@ -33,7 +33,8 @@ export async function GET(request: NextRequest) {
     });
     if (error || !Array.isArray(data)) return reply({ error: "evidence_index_unavailable" }, 503);
     const rows = (data as Receipt[]).filter((item) => work.has(item.work_id) &&
-      (item.kind === "design-document" ? designAllowed : customerAllowed));
+      (item.kind === "design-document" ? designAllowed : customerAllowed) &&
+      (role !== "field_supervisor" || item.uploaded_by === context.actor.id));
     return reply({
       entries: rows.map((item) => {
         const record = work.get(item.work_id)!;

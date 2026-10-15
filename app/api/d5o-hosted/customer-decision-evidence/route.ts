@@ -178,6 +178,8 @@ export async function GET(request: NextRequest) {
     if (!work) return reply({ error: "work_unavailable" }, 404);
     const admin = createRybexSupabaseAdminClient();
     const call = admin.rpc.bind(admin) as unknown as (name: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: { message: string } | null }>;
+    if (listTerms && target.context.actor.role === "field_supervisor")
+      return reply({ error: "customer_evidence_authority_required" }, 403);
     if (listTerms || target.context.actor.role === "billing_commercial_lead") {
       if (!requestId) return reply({ error: "request_scope_required" }, 400);
       const listed = await call("d5o_hosted_service_billing_terms_evidence_list_v1", {
@@ -194,7 +196,9 @@ export async function GET(request: NextRequest) {
       p_workspace_key: target.workspace,p_presentation_id: workId,p_evidence_id: id
     });
     if (error || !rows || typeof rows !== "object") return reply({ error: "evidence_unavailable" }, 404);
-    const receipt = rows as { objectPath: string; checksumSha256: string; filename: string };
+    const receipt = rows as { objectPath: string; checksumSha256: string; filename: string; uploadedBy: string };
+    if (target.context.actor.role === "field_supervisor" && receipt.uploadedBy !== target.context.actor.id)
+      return reply({ error: "customer_evidence_authority_required" }, 403);
     const file = await admin.storage.from(bucket).download(receipt.objectPath);
     if (file.error || !file.data) return reply({ error: "evidence_unavailable" }, 503);
     const bytes = Buffer.from(await file.data.arrayBuffer());
