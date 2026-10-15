@@ -46,7 +46,21 @@ async function exactLink(page, kind) {
   await page.goto(landing);
   await page.getByRole("heading", { name: "Actions requiring attention" }).waitFor({ timeout: 30000 });
   const links = page.locator(`a[href*="focus=${kind}"][href*="record=${workId}"][href*="turnover=${turnoverId}"][href*="documentKind=as-built"]`);
-  if (await links.count() !== 1) throw new Error("exact_queue_link_missing_or_duplicate:" + kind);
+  await links.first().waitFor({ timeout: 30000 }).catch(() => {});
+  if (await links.count() !== 1) {
+    const visible = await page.locator(`a[href*="focus=${kind}"]`).evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute("href")));
+    const position = await page.evaluate(async (id) => {
+      const response = await fetch("/api/d5o-hosted/prototype-search?workspace=rybex&view=actions");
+      const body = await response.json();
+      return { status: response.status, role: body.actorRole,
+        support: (body.supportActions ?? []).filter((item) => item.workId === id).map((item) =>
+          ({ kind: item.kind, turnoverId: item.turnoverId, documentKind: item.documentKind,
+            decisionId: item.decisionId, position: item.position })) };
+    }, workId);
+    throw new Error("exact_queue_link_missing_or_duplicate:" + kind + ":" + JSON.stringify({
+      visible, position, page: (await page.locator("body").innerText()).slice(0, 1100) }));
+  }
   return links.first();
 }
 function row(page) {
@@ -74,36 +88,47 @@ try {
   const pm = await signIn(byKey("pm"));
   const initial = await current(pm.page);
   const assignment = initial.operate.supportDocumentAssignments.filter((item) => item.turnoverId === turnoverId).at(-1);
-  const original = initial.operate.documentationObligations.filter((item) =>
-    item.turnoverId === turnoverId && item.kind === "as-built").at(-1);
+  const history = initial.operate.documentationObligations.filter((item) =>
+    item.turnoverId === turnoverId && item.kind === "as-built");
+  const latest = history.at(-1);
+  if (latest?.status === "Submitted" && history.at(-2)?.status === "Returned")
+    throw new Error("fixture_already_qualified_use_read_only_final_check");
+  const original = latest?.status === "Reviewed" ? latest : history.at(-2);
   if (assignment?.status !== "Assigned" || assignment.email !== byKey("supervisor").email ||
-    original?.status !== "Reviewed") throw new Error("disposable_clone_start_position_changed");
-  await pm.page.goto(base + `/work?workspace=rybex&view=record&record=${workId}&section=Operate`);
-  await pm.page.getByText("Handoff & activation", { exact: true }).first().click();
-  await row(pm.page).getByRole("button", { name: "Retain and submit document" }).waitFor();
-  const pmSubmitted = await submit(pm.page, "Fictional replacement index submitted for a scope-specific return and supplier queue check.");
-  if (pmSubmitted?.status !== "Submitted" || pmSubmitted.supersedesId !== original.id)
+    original?.status !== "Reviewed" || !["Reviewed", "Submitted", "Returned"].includes(latest?.status))
+    throw new Error("disposable_clone_start_position_changed");
+  let pmSubmitted = latest;
+  if (latest?.status === "Reviewed") {
+    await pm.page.goto(base + `/work?workspace=rybex&view=record&record=${workId}&section=Operate`);
+    await pm.page.getByText("Handoff & activation", { exact: true }).first().click();
+    await row(pm.page).getByRole("button", { name: "Retain and submit document" }).waitFor();
+    pmSubmitted = await submit(pm.page, "Fictional replacement index submitted for a scope-specific return and supplier queue check.");
+  }
+  if (!["Submitted", "Returned"].includes(pmSubmitted?.status) || pmSubmitted.supersedesId !== original.id)
     throw new Error("pm_replacement_not_retained");
   console.log(JSON.stringify({ stage: "pm_submitted_fictional_replacement", evidenceId: pmSubmitted.id }));
   await pm.context.close();
 
-  const operations = await signIn(byKey("operations"));
-  await (await exactLink(operations.page, "review-document")).click();
-  await row(operations.page).locator('select[name="decision"]').selectOption("Returned");
-  await row(operations.page).locator('input[name="note"]').fill(
-    "Fictional index lacks verified route and label detail; assigned supplier must supply a corrected record.");
-  const review = operations.page.waitForResponse((response) => response.url().includes("prototype-operate-command") &&
-    response.request().method() === "POST", { timeout: 30000 });
-  await row(operations.page).getByRole("button", { name: "Record independent review" }).click();
-  const returned = await review;
-  if (!returned.ok()) throw new Error("independent_return_rejected:" + returned.status());
-  const afterReturn = await current(operations.page);
-  const returnedDocument = afterReturn.operate.documentationObligations.filter((item) =>
-    item.turnoverId === turnoverId && item.kind === "as-built").at(-1);
+  let returnedDocument = pmSubmitted;
+  if (pmSubmitted.status === "Submitted") {
+    const operations = await signIn(byKey("operations"));
+    await (await exactLink(operations.page, "review-document")).click();
+    await row(operations.page).locator('select[name="decision"]').selectOption("Returned");
+    await row(operations.page).locator('input[name="note"]').fill(
+      "Fictional index lacks verified route and label detail; assigned supplier must supply a corrected record.");
+    const review = operations.page.waitForResponse((response) => response.url().includes("prototype-operate-command") &&
+      response.request().method() === "POST", { timeout: 30000 });
+    await row(operations.page).getByRole("button", { name: "Record independent review" }).click();
+    const returned = await review;
+    if (!returned.ok()) throw new Error("independent_return_rejected:" + returned.status());
+    const afterReturn = await current(operations.page);
+    returnedDocument = afterReturn.operate.documentationObligations.filter((item) =>
+      item.turnoverId === turnoverId && item.kind === "as-built").at(-1);
+    await operations.context.close();
+  }
   if (returnedDocument?.id !== pmSubmitted.id || returnedDocument.status !== "Returned")
     throw new Error("returned_document_not_current");
   console.log(JSON.stringify({ stage: "operations_returned_document", evidenceId: returnedDocument.id }));
-  await operations.context.close();
 
   const supervisor = await signIn(byKey("supervisor"));
   const supplyLink = await exactLink(supervisor.page, "supply-document");
@@ -129,7 +154,7 @@ try {
 
   const reviewer = await signIn(byKey("operations"));
   await (await exactLink(reviewer.page, "review-document")).click();
-  const retained = row(reviewer.page).getByRole("link", { name: "Open retained " + submitted.filename });
+  const retained = row(reviewer.page).locator(`a[href*="evidenceId=${submitted.id}"]`);
   const response = await reviewer.page.request.get(new URL(await retained.getAttribute("href"), base));
   if (!response.ok() || !Buffer.from(await response.body()).equals(bytes)) throw new Error("reviewer_pdf_bytes_mismatch");
   await reviewer.page.reload();
