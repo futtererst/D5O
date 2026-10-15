@@ -1150,3 +1150,4 @@
 .d5o-full-app .d5o-task-frame form { max-width:680px; }
 .d5o-full-app .d5o-task-frame input,.d5o-full-app .d5o-task-frame select,.d5o-full-app .d5o-task-frame textarea { max-width:100%; }
 @media (max-width:640px) { .d5o-full-app .d5o-task-frame { width:calc(100% - 16px); padding:16px; margin:8px auto; } .d5o-full-app .d5o-task-frame-header { display:block; } .d5o-full-app .d5o-task-frame-header a { margin-top:12px; } }
+.d5o-private-evidence-row { display:flex; justify-content:space-between; gap:20px; padding:14px 18px; border-top:1px solid #e1e8ec; } .d5o-private-evidence-row > div { display:grid; gap:5px; } .d5o-private-evidence-row small { color:#607783; } .d5o-private-evidence-row a { color:#16465d; font-weight:700; } @media (max-width:700px) { .d5o-private-evidence-row { flex-direction:column; } }
