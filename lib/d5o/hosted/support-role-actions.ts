@@ -1,6 +1,7 @@
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import { currentWorkAcceptanceScope } from "@/components/d5o/platform/deploy-model";
 import { supportDocumentationPositions } from "@/components/d5o/platform/support-documentation";
+import { externalAssetIdentityCounts } from "./asset-identity";
 
 export type SupportAction = {
   kind: "receive-handoff" | "add-asset" | "accept-support" | "activate" | "supply-document" | "review-document";
@@ -26,6 +27,7 @@ export function serviceVisitReturnedToAsset(records: WorkRecord[], work: WorkRec
 export function supportRoleActions(records: WorkRecord[], actorId: string, role: string): SupportAction[] {
   if (!["project_manager", "operations_leader"].includes(role)) return [];
   const actions: SupportAction[] = [];
+  const identityCounts = new Map<string, Map<string, number>>();
   for (const work of records) {
     if (!work.canonicalWorkId || !work.deploy?.workAcceptance || !currentWorkAcceptanceScope(work)) continue;
     if (serviceVisitReturnedToAsset(records, work)) continue;
@@ -39,8 +41,23 @@ export function supportRoleActions(records: WorkRecord[], actorId: string, role:
         position: blocker ? eligible ? "preparation" : "waiting" : eligible ? "available" : "waiting" });
     if (!state?.source) add("receive-handoff", "Operations leader who accepted the exact delivery receipt",
       role === "operations_leader" && receipt.receivedByActorId === actorId);
-    else if (!state.assets.length && !state.assetLinks?.some((item) => item.status === "Accepted")) add("add-asset", "Project manager or Operations leader", true,
-      "Identify at least one supported asset or infrastructure system from the accepted scope.");
+    else if (!state.assets.length && !state.assetLinks?.some((item) => item.status === "Accepted")) {
+      let counts = identityCounts.get(work.workspace);
+      if (!counts) {
+        counts = externalAssetIdentityCounts(records, work.workspace);
+        identityCounts.set(work.workspace, counts);
+      }
+      const conflicting = records.filter((record) => record.id !== work.id && record.workspace === work.workspace &&
+        record.customer.trim().toLowerCase() === work.customer.trim().toLowerCase() &&
+        record.site.trim().toLowerCase() === work.site.trim().toLowerCase())
+        .flatMap((record) => record.operate?.assets ?? [])
+        .filter((asset) => asset.externalId && (counts.get(asset.externalId.trim().toLowerCase()) ?? 0) > 1);
+      const identities = [...new Set(conflicting.map((asset) => asset.externalId?.trim()).filter((id): id is string => !!id))];
+      add("add-asset", "Project manager for preparation; current Operations support owner for an existing-asset link", true,
+        identities.length
+          ? `Asset identity conflict: ${identities.join(", ")} is recorded on multiple assets. Review retained identity evidence before linking this delivery; no asset contribution has been accepted.`
+          : "Identify at least one supported asset or infrastructure system from the accepted scope.");
+    }
     else if (!state.support && !state.assetLinks?.some((item) => item.status === "Accepted")) add("accept-support", "Operations leader", role === "operations_leader",
       "Review contact, escalation, intake, coverage dispositions, documents and residual obligations.");
     else if (!state.activation && !state.assetLinks?.some((item) => item.status === "Accepted")) add("activate", "Operations leader", role === "operations_leader",
