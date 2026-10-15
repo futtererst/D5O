@@ -1,5 +1,6 @@
 import type { WorkRecord } from "./work-types";
 import { currentAcceptedRelease, currentWorkAcceptanceScope } from "./deploy-model";
+import { supportDocumentationPositions } from "./support-documentation";
 
 export type ConnectedWorkPosition = { label: string; nextAction: string; value: string; warning?: string };
 
@@ -16,10 +17,18 @@ export function connectedWorkPosition(work: WorkRecord): ConnectedWorkPosition |
   if (accepted?.receipt === "Accepted" && !scopeCurrent)
     return { label: "Accepted prior scope · current scope changed", nextAction: "Reconcile current packages and releases under a separate governed Work Record", value,
       warning: "The retained customer and Operations decisions do not approve the current package set." };
-  if (work.operate?.activation?.status === "Active" && accepted?.receipt === "Accepted" && scopeCurrent)
-    return { label: "Operate · support active", nextAction: "Review support obligations and Finance separately", value };
+  if (work.operate?.activation?.status === "Active" && accepted?.receipt === "Accepted" && scopeCurrent) {
+    const pendingDocuments = supportDocumentationPositions(work).filter((item) => item.status !== "Reviewed").length;
+    return { label: "Operate · support active",
+      nextAction: pendingDocuments ? "Review assigned support documents while support remains active" : "Review support obligations and Finance separately", value,
+      warning: pendingDocuments ? `${pendingDocuments} assigned support document${pendingDocuments === 1 ? "" : "s"} remain unreviewed; support activation is separate.` : undefined };
+  }
   if (work.operate?.support && accepted?.receipt === "Accepted" && scopeCurrent)
     return { label: "Operate · support owner accepted", nextAction: "Assess operational activation", value };
+  if (work.operate?.assetLinks?.some((link) => link.status === "Accepted") && accepted?.receipt === "Accepted" && scopeCurrent)
+    return { label: "Operate · existing asset contribution accepted", nextAction: "Review the owning support Work's obligations and Finance separately", value };
+  if (work.serviceSource && accepted?.receipt === "Accepted" && scopeCurrent)
+    return { label: "Deploy · service visit received", nextAction: "Review the source request and asset-history return in Operate", value };
   if (accepted?.receipt === "Accepted" && scopeCurrent) {
     const supportedAssetRecorded = (work.operate?.assets.length ?? 0) > 0 ||
       !!work.operate?.assetLinks?.some((link) => link.status === "Accepted");
@@ -63,7 +72,7 @@ export function connectedLifecyclePosition(work: WorkRecord): number | null {
   if (!position) return null;
   if (position.warning) return 1; // Changed scope needs renewed readiness, not historical acceptance.
   if (position.label.startsWith("Operate") || position.label.startsWith("Deploy · customer scope accepted") ||
-    position.label.startsWith("Deploy · Operations receipt accepted")) return 5;
+    position.label.startsWith("Deploy · Operations receipt accepted") || position.label.startsWith("Deploy · service visit received")) return 5;
   if (position.label.startsWith("Deploy")) return 2;
   if (position.label.startsWith("Design")) return 1;
   return 0;

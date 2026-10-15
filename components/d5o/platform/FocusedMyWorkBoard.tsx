@@ -3,6 +3,8 @@
 import type { DeliveryAction } from "@/lib/d5o/hosted/delivery-role-actions";
 import type { SupportAction } from "@/lib/d5o/hosted/support-role-actions";
 import type { ServiceReturnAction } from "@/lib/d5o/hosted/service-return-actions";
+import { connectedWorkPosition } from "./connected-work-position";
+import type { WorkRecord } from "./work-types";
 import { serviceActionHref, serviceRoleLabel, type ServiceAction } from "./service-actions";
 
 type RoleAction = { kind: string; workId: string; packageId?: string | null; packageName?: string; decisionId?: string | null; sourceRevision?: number; revision: number; status: string; title: string; workTitle?: string; customer?: string; site?: string; dueDate?: string | null; phase: string; focus?: string; ownership: string; position?: "preparation" | "waiting" | "action"; blocker?: string | null };
@@ -107,7 +109,7 @@ export function FocusedMyWorkBoard<T extends RecordSummary>({ workspace, page, o
     <details><summary>Waiting on another role <span>{waiting.length}</span></summary>{waiting.length ? <div className="d5o-focused-task-grid">{waiting.map(renderTask)}</div> : <p>No waiting decisions.</p>}</details>
     {information.length ? <details><summary>Information and handoffs <span>{information.length}</span></summary><div className="d5o-focused-task-grid">{information.map(renderTask)}</div></details> : null}
     <details><summary>Browse Work Records <span>{page.total}</span></summary><p>Open a full record for context and history. Record ownership does not by itself create a decision for you.</p>
-      <div className="d5o-focused-task-grid">{page.records.map((record) => <button key={record.id} type="button" className="d5o-focused-task" onClick={() => onOpen(record)}><strong>{record.title}</strong><span>{record.customer} · {record.site}</span><small>{record.stage}</small><b>View Work Record →</b></button>)}</div>
+      <div className="d5o-focused-task-grid">{page.records.map((record) => { const position = connectedWorkPosition(record as unknown as WorkRecord); return <button key={record.id} type="button" className="d5o-focused-task" onClick={() => onOpen(record)}><strong>{record.title}</strong><span>{record.customer} · {record.site}</span><small>{position?.label ?? record.stage}</small>{position?.warning ? <small>{position.warning}</small> : null}<b>View Work Record →</b></button>; })}</div>
       {page.nextCursor ? <button type="button" disabled={loading} onClick={onLoadMore}>{loading ? "Loading…" : "Load more Work Records"}</button> : null}</details>
   </section>;
 }
