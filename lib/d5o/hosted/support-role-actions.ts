@@ -25,7 +25,7 @@ export function serviceVisitReturnedToAsset(records: WorkRecord[], work: WorkRec
 
 /** Read-only routing. The authenticated typed command owns every decision. */
 export function supportRoleActions(records: WorkRecord[], actorId: string, role: string): SupportAction[] {
-  if (!["project_manager", "operations_leader"].includes(role)) return [];
+  if (!["project_manager", "operations_leader", "field_supervisor"].includes(role)) return [];
   const actions: SupportAction[] = [];
   const identityCounts = new Map<string, Map<string, number>>();
   for (const work of records) {
@@ -39,7 +39,7 @@ export function supportRoleActions(records: WorkRecord[], actorId: string, role:
     const add = (kind: SupportAction["kind"], responsibleRole: string, eligible: boolean, blocker: string | null = null) =>
       actions.push({ ...base, kind, responsibleRole, blocker,
         position: blocker ? eligible ? "preparation" : "waiting" : eligible ? "available" : "waiting" });
-    if (currentWorkAcceptanceScope(work)) {
+    if (role !== "field_supervisor" && currentWorkAcceptanceScope(work)) {
     if (!state?.source) add("receive-handoff", "Operations leader who accepted the exact delivery receipt",
       role === "operations_leader" && receipt.receivedByActorId === actorId);
     else if (!state.assets.length && !state.assetLinks?.some((item) => item.status === "Accepted")) {
@@ -69,15 +69,21 @@ export function supportRoleActions(records: WorkRecord[], actorId: string, role:
     if (state?.source && (state.support || state.assetLinks?.some((item) => item.status === "Accepted"))) {
       for (const doc of supportDocumentationPositions(work).filter((item) => item.status !== "Reviewed")) {
         const review = doc.status === "Submitted";
+        if (role === "field_supervisor") {
+          const assignment = state.supportDocumentAssignments?.filter((item) =>
+            item.turnoverId === doc.turnoverId).at(-1);
+          if (review || assignment?.status !== "Assigned" || assignment.actorId !== actorId) continue;
+        }
         actions.push({ ...base, kind: review ? "review-document" : "supply-document",
           turnoverId: doc.turnoverId, documentKind: doc.kind, packageId: doc.packageId,
           packageName: work.packages?.find((item) => item.id === doc.packageId)?.name,
           decisionId: review ? doc.current!.id : doc.turnoverId,
           decisionRevision: doc.turnoverRevision,
-          responsibleRole: review ? "Operations leader" : "Project manager",
+          responsibleRole: review ? "Operations leader" : role === "field_supervisor"
+            ? "Assigned field supervisor" : "Project manager",
           blocker: review ? null : "Supply a retained PDF for the exact accepted package and release.",
           position: review ? role === "operations_leader" ? "available" : "waiting"
-            : role === "project_manager" ? "preparation" : "waiting" });
+            : ["project_manager", "field_supervisor"].includes(role) ? "preparation" : "waiting" });
       }
     }
   }

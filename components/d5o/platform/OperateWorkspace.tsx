@@ -166,10 +166,14 @@ export function OperateWorkspace({ work, allWork, policy, hosted, actorRole, act
   const linkedDocument = linkedSupportAction && ["supply-document", "review-document"].includes(linkedSupportAction.kind)
     ? supportDocumentationPositions(work).find((item) =>
       item.turnoverId === linkedSupportAction.turnoverId && item.kind === linkedSupportAction.documentKind) : undefined;
+  const linkedSupplier = linkedDocument && state.supportDocumentAssignments?.filter((item) =>
+    item.turnoverId === linkedDocument.turnoverId).at(-1);
   const staleSupportLink = !!linkedSupportAction && (serviceAlreadyReturned ||
     linkedSupportAction.sourceRevision !== (state.authorityRevision ?? 0) ||
     linkedSupportAction.deployRevision !== (work.deploy?.authorityRevision ?? 0) ||
     (linkedDocument ? (
+      (actorRole === "field_supervisor" && linkedSupportAction.kind === "supply-document" &&
+        (linkedSupplier?.status !== "Assigned" || linkedSupplier.actorId !== actorId)) ||
       linkedSupportAction.kind !== (linkedDocument.status === "Submitted" ? "review-document" : "supply-document") ||
       linkedDocument.status === "Reviewed" ||
       linkedSupportAction.decisionId !== (linkedDocument.status === "Submitted" ? linkedDocument.current?.id : linkedDocument.turnoverId) ||
