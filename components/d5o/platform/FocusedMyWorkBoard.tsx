@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import type { OperateCommand } from "@/lib/d5o/prototype-work/operate-command";
 import type { DeliveryAction } from "@/lib/d5o/hosted/delivery-role-actions";
 import type { SupportAction } from "@/lib/d5o/hosted/support-role-actions";
@@ -174,6 +174,8 @@ export function FocusedMyWorkBoard<T extends RecordSummary>({ workspace, page, o
   records?: WorkRecord[]; actorId?: string; actorRole?: string;
   onOperateCommand?: (command: OperateIntent) => Promise<boolean>; onCommitted?: () => void;
 }) {
+  const listRef = useRef<HTMLElement>(null);
+  const paneRef = useRef<HTMLElement>(null);
   const tasks = tasksFor(workspace, page);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -186,12 +188,12 @@ export function FocusedMyWorkBoard<T extends RecordSummary>({ workspace, page, o
   const information = shown.filter((task) => task.position === "information");
   const selected = shown.find((task) => task.key === selectedKey) ?? actionable[0] ?? waiting[0] ?? information[0];
   const renderTask = (task: Task) => <button type="button" className={`d5o-workbench-row${selected?.key === task.key ? " is-selected" : ""}`}
-    key={task.key} onClick={() => setSelectedKey(task.key)} aria-pressed={selected?.key === task.key}>
+    key={task.key} onClick={() => { setSelectedKey(task.key); if (window.matchMedia("(max-width: 760px)").matches) requestAnimationFrame(() => paneRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })); }} aria-pressed={selected?.key === task.key}>
     <span className="d5o-workbench-row-title">{task.title}<small>{task.work}</small></span><span>{task.category}</span>
   </button>;
   return <section className="d5o-focused-work d5o-workbench">
     <header className="d5o-workbench-top"><div><small>D5O / RYBEX</small><h1>My Work</h1></div><button type="button" onClick={() => window.location.reload()}>Refresh</button></header>
-    <div className="d5o-workbench-shell"><section className="d5o-workbench-list" aria-label="Worklist">
+    <div className="d5o-workbench-shell"><section className="d5o-workbench-list" aria-label="Worklist" ref={listRef}>
       <nav className="d5o-workbench-tabs" aria-label="Worklist filters"><button type="button" aria-pressed={!waitingOnly} onClick={() => setWaitingOnly(false)}>Action needed <span>{tasks.filter((task) => task.position === "action" || task.position === "preparation").length}</span></button>
         <button type="button" aria-pressed={waitingOnly} onClick={() => setWaitingOnly(true)}>Waiting <span>{tasks.filter((task) => task.position === "waiting").length}</span></button></nav>
       <label className="d5o-workbench-search"><input type="search" aria-label="Search tasks" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search work, customer or task…" /></label>
@@ -199,7 +201,7 @@ export function FocusedMyWorkBoard<T extends RecordSummary>({ workspace, page, o
       {!waitingOnly ? <section aria-label="Action needed"><h2>Action needed</h2>{actionable.length ? actionable.map(renderTask) : <p>No current action matches this view.</p>}</section> : null}
       <section aria-label="Waiting"><h2>Waiting</h2>{waiting.length ? waiting.map(renderTask) : <p>No waiting tasks match this view.</p>}</section>
       {!waitingOnly && information.length ? <details><summary>Information and handoffs · {information.length}</summary>{information.map(renderTask)}</details> : null}
-    </section><aside className="d5o-workbench-pane" aria-label="Selected task">{selected ? selected.supportAction?.kind === "add-asset" && onOperateCommand ?
+    </section><aside className="d5o-workbench-pane" aria-label="Selected task" ref={paneRef}><button type="button" className="d5o-workbench-back" onClick={() => listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}>← Back to tasks</button>{selected ? selected.supportAction?.kind === "add-asset" && onOperateCommand ?
       <AssetWorkPane key={selected.key} task={selected} records={records} actorId={actorId} actorRole={actorRole} onCommand={onOperateCommand} onCommitted={onCommitted ?? (() => window.location.reload())} /> : <>
       <header className="d5o-workbench-pane-head"><small>{selected.position === "waiting" ? "WAITING ON ANOTHER ROLE" : "CURRENT TASK"} · {selected.category}</small><h2>{selected.title}</h2><p>{selected.detail}</p></header>
       <div className="d5o-workbench-inherited"><small>CONTEXT</small><p><b>Job</b> {selected.work}</p><p><b>Customer</b> {selected.customer}</p><p><b>Site</b> {selected.site || "Not recorded"}</p></div>

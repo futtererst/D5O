@@ -97,3 +97,6 @@
 @media(max-width:600px) { .pipelineHeader { align-items:start; flex-direction:column; }.pipelineRollup { align-self:stretch; justify-content:center; }.pipelineStats { grid-template-columns:repeat(2,minmax(0,1fr)); }.pipelineStats>div:nth-child(2) { border-right:0; }.pipelineStats>div:nth-child(n+3) { border-top:1px solid var(--d5o-line); }.bidRow { gap:10px; padding:12px; } }
 @media(max-width:520px) { .changeList li { grid-template-columns:1fr; } }
 @media(max-width:700px) { .commercialAssessment { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+/* Pursuit and commercial facts share the workbench type and control scale. */
+.header h1{font-family:Arial,Helvetica,sans-serif;font-size:clamp(1.55rem,2.2vw,2rem);line-height:1.15}.kicker,.metric small,.identity small,.row>div>small,.facts small{font-size:.72rem}.workspaceTag,.sourceAlert span{font-size:.82rem}.commercialAssessment small,.reviewBasis small,.changeList li strong{font-size:.72rem}.commercialAssessment strong,.reviewBasis span,.commercialRoute span,.changeList li span{font-size:.82rem}

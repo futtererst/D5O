@@ -40,16 +40,7 @@ export function ExecutionFactsBoard({ workspaceName, work, schedule, onOpen, onS
   return <section className="d5o-execution-board">
     <header className="d5o-board-hero"><div><p>EXECUTION & CONTROL · {workspaceName.toUpperCase()}</p>
       <h1>Package delivery facts</h1><span>Current releases, reviewed actuals, completion decisions and scoped acceptance from the same Work Records.</span></div>
-      <aside><b>CONTROL RULE</b><strong>A report is not completion.</strong><small>A crew booking, review and customer acknowledgment each have a separate purpose.</small></aside>
     </header>
-    <section className="d5o-execution-pulse">
-      <article><span>PACKAGES</span><strong>{rows.length}</strong><small>Shared Work Package identities</small></article>
-      <article><span>FIELD WORK</span><strong>{count("field")}</strong><small>Current release; completion outstanding</small></article>
-      <article><span>COMPLETION REVIEWED</span><strong>{count("review")}</strong><small>Exact scope and verification reviewed</small></article>
-      <article><span>CLIENT ACCEPTED</span><strong>{count("accepted")}</strong><small>Scoped customer acceptance</small></article>
-    </section>
-    <section className="d5o-execution-crew"><div><p>CREW COVERAGE</p><h2>Plan and responses remain in Crew Schedule</h2>
-      <span>Published bookings are visible here; they do not grant field-start authority.</span></div><button onClick={onSchedule}>Open crew schedule →</button></section>
     <section className="d5o-execution-layout"><article className="d5o-execution-main"><header><p>PACKAGE CONTROL BOARD</p>
       <h2>What is current, measured and awaiting a decision</h2>
       <nav className="d5o-execution-filters" aria-label="Filter work packages">{filters.map((option) =>
@@ -59,15 +50,19 @@ export function ExecutionFactsBoard({ workspaceName, work, schedule, onOpen, onS
       {shown.map((item) => <button key={`${item.record.id}:${item.pkg.id}`} onClick={() => onOpen(item.record)}>
         <div><small>{item.record.title}</small><strong>{item.pkg.name}</strong><em>{item.record.site}</em></div>
         <div><strong>{item.pkg.owner}</strong><small>{item.crew}</small></div>
-        <div className="d5o-package-progress"><span>{item.plan}</span><span>{item.actual}</span></div>
+        <div className="d5o-package-progress"><span><small>Planned</small><strong>{item.plan}</strong></span><span><small>Reviewed</small><strong>{item.actual}</strong></span></div>
         <div className={item.position === "held" ? "is-held" : ""}><b>{item.position === "held" ? "Hold / no current release" : item.position === "field" ? "Field work" : item.position === "review" ? "Completion reviewed" : "Client accepted"}</b>
           <small>{item.next}</small><small>{item.releaseId ? `Release ${item.releaseId.slice(0, 8)}` : "Release unknown"}</small></div>
       </button>)}{!shown.length ? <p className="d5o-empty-state">No packages match this position.</p> : null}
-    </article><aside className="d5o-execution-side"><p>RECORDING BASIS</p><h2>Measured work only</h2>
-      <p>Older installed, tested and accepted percentages remain historical observations. They are not included in these counts or treated as reviewed quantities.</p>
-      <ol><li><b>1</b><span><strong>Plan</strong>Released quantity or qualitative criterion.</span></li>
-        <li><b>2</b><span><strong>Perform and verify</strong>Reviewed actuals and inspections.</span></li>
-        <li><b>3</b><span><strong>Accept</strong>Independent completion and scoped customer decision.</span></li></ol>
-    </aside></section>
+    </article></section>
+    <section className="d5o-execution-pulse" aria-label="Delivery totals">
+      <article><span>PACKAGES</span><strong>{rows.length}</strong><small>Shared Work Package identities</small></article>
+      <article><span>FIELD WORK</span><strong>{count("field")}</strong><small>Current release; completion outstanding</small></article>
+      <article><span>COMPLETION REVIEWED</span><strong>{count("review")}</strong><small>Exact scope and verification reviewed</small></article>
+      <article><span>CLIENT ACCEPTED</span><strong>{count("accepted")}</strong><small>Scoped customer acceptance</small></article>
+    </section>
+    <section className="d5o-execution-crew"><div><p>CREW COVERAGE</p><h2>Plan and responses remain in Crew Schedule</h2>
+      <span>Published bookings are visible here; they do not grant field-start authority.</span></div><button onClick={onSchedule}>Open crew schedule →</button></section>
+    <details className="d5o-execution-guidance"><summary>How delivery facts are counted</summary><p>Historical percentages do not count as reviewed quantities. Planning, reviewed work, verification and customer acceptance remain separate decisions. A report is not completion.</p></details>
   </section>;
 }

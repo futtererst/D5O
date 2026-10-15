@@ -1,10 +1,10 @@
 .root {
-  --d5o-content-max: 1400px;
-  --d5o-content-gutter: clamp(16px, 2.2vw, 32px);
-  --d5o-section-gap: 14px;
-  --d5o-card-radius: 8px;
-  --d5o-control-radius: 6px;
-  --d5o-control-height: 38px;
+  --d5o-content-max: 1520px;
+  --d5o-content-gutter: clamp(16px, 2vw, 32px);
+  --d5o-section-gap: 16px;
+  --d5o-card-radius: 10px;
+  --d5o-control-radius: 7px;
+  --d5o-control-height: 40px;
   --d5o-surface: #fff;
   --d5o-surface-muted: #f5f8fa;
   --d5o-ink: #183544;
@@ -38,6 +38,8 @@
   min-width: 0;
 }
 
+.root :global(.d5o-app-topbar > .d5o-top-actions) { display: flex; margin-left: auto; }
+
 .root :global(.d5o-surface-host > :is(.d5o-page, .d5o-ops-home, .d5o-ops-mywork, .d5o-portfolio-concept, .d5o-decisions-board, .d5o-crew-concept, .d5o-capacity-board, .d5o-execution-board, .d5o-handoff-concept, .d5o-library-board, .d5o-record-full)) {
   margin-inline: auto;
   max-width: var(--d5o-content-max);
@@ -56,10 +58,11 @@
 /* Shared heading, eyebrow, and introductory-copy rhythm. */
 .root :global(.d5o-surface-host h1) {
   color: var(--d5o-ink);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 3vw, 3rem);
-  letter-spacing: -.04em;
-  line-height: 1.04;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1.55rem, 2.2vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -.035em;
+  line-height: 1.15;
 }
 
 .root :global(.d5o-surface-host h2),
@@ -80,9 +83,9 @@
 .root :global(.d5o-library-board > header > div:first-child > p),
 .root :global(.d5o-record-full > header p) {
   color: color-mix(in srgb, var(--d5o-accent) 68%, #253f4b);
-  font-size: .65rem;
+  font-size: .72rem;
   font-weight: 900;
-  letter-spacing: .12em;
+  letter-spacing: .08em;
   line-height: 1.35;
   text-transform: uppercase;
 }
@@ -99,7 +102,7 @@
 .root :global(.d5o-handoff-concept > header > div > span),
 .root :global(.d5o-library-board > header > div:first-child > span) {
   color: var(--d5o-muted);
-  font-size: .82rem;
+  font-size: .875rem;
   line-height: 1.5;
   max-width: 78ch;
 }
@@ -214,4 +217,164 @@
   .root :global(.d5o-record-full) {
     max-width: none;
   }
+}
+
+/* The same compact record and control hierarchy applies in every phase. */
+.root :global(.d5o-surface-host :is(h2, h3)) {
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: -.02em;
+  line-height: 1.25;
+}
+
+.root :global(.d5o-phase-record-header) {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 12px 16px;
+}
+
+.root :global(.d5o-phase-record-header > div:first-child) { min-width: 0; }
+.root :global(.d5o-phase-record-header h1) {
+  font-size: clamp(1.2rem, 1.7vw, 1.5rem);
+  line-height: 1.25;
+  margin: 3px 0;
+  overflow-wrap: anywhere;
+}
+.root :global(.d5o-phase-record-header > div:first-child > span) {
+  color: var(--d5o-muted);
+  display: block;
+  font-size: .82rem;
+  line-height: 1.4;
+}
+.root :global(.d5o-phase-header-actions) {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.root :global(.d5o-phase-header-actions > :is(.d5o-stage-badge, .d5o-record-menu)) {
+  min-height: 42px;
+  min-width: 0;
+  width: auto;
+}
+.root :global(.d5o-record-menu summary) { min-height: 42px; }
+.root :global(.d5o-work-phase-nav) {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-block: 8px 14px;
+  overflow-x: auto;
+}
+.root :global(.d5o-work-phase-nav button) {
+  flex: 1 0 100px;
+  min-height: 42px;
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
+/* Current decisions must remain legible even with long work names or outcomes. */
+.root :global(.d5o-gate-overview .d5o-gate-requirements > button) {
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.root :global(.d5o-gate-overview .d5o-gate-requirements > button > div) { min-width: 0; }
+.root :global(.d5o-gate-overview .d5o-gate-requirements > button :is(strong, span)) {
+  font-size: .83rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.root :global(.d5o-gate-overview .d5o-gate-requirements > button > b) {
+  font-size: .78rem;
+  white-space: nowrap;
+}
+.root :global(.d5o-record-summary strong) { overflow-wrap: anywhere; }
+.root :global(.d5o-record-workspace.is-connected) { display: block; }
+.root :global(.d5o-record-workspace.is-connected .d5o-record-primary) { width: 100%; }
+.root :global(.d5o-record-workspace .d5o-record-body) { max-width: none; }
+
+/* Registers use the width for business facts; guidance is secondary. */
+.root :global(.d5o-execution-layout) { grid-template-columns: minmax(0, 1fr); }
+.root :global(.d5o-execution-board > .d5o-board-hero) { grid-template-columns: minmax(0, 1fr); }
+.root :global(.d5o-package-board-head),
+.root :global(.d5o-execution-main > button) {
+  grid-template-columns: minmax(230px, 1.5fr) minmax(150px, .85fr) minmax(180px, 1fr) minmax(210px, 1fr);
+}
+.root :global(.d5o-execution-main > button > div) { min-width: 0; }
+.root :global(.d5o-package-progress span) { display: block; font-size: .82rem; line-height: 1.4; overflow-wrap: anywhere; }
+.root :global(.d5o-package-progress span small) { color: var(--d5o-muted); font-size: .75rem; }
+.root :global(.d5o-package-progress span strong) { font-size: .85rem; }
+.root :global(.d5o-execution-guidance) {
+  background: #fff;
+  border: 1px solid var(--d5o-border);
+  border-radius: var(--d5o-card-radius);
+  color: var(--d5o-muted);
+  font-size: .85rem;
+  line-height: 1.5;
+  padding: 10px 16px;
+}
+.root :global(.d5o-execution-guidance summary) { color: var(--d5o-ink); cursor: pointer; font-weight: 700; }
+.root :global(.d5o-execution-guidance p) { margin: 8px 0 0; }
+
+.root :global(.d5o-handoff-list) { display: grid; }
+.root :global(.d5o-handoff-item) { border-top: 1px solid var(--d5o-border); min-width: 0; }
+.root :global(.d5o-handoff-item-main) {
+  align-items: start;
+  background: #fff;
+  border: 0;
+  color: var(--d5o-ink);
+  cursor: pointer;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(190px, 1.4fr) repeat(4, minmax(100px, .72fr)) minmax(150px, 1fr);
+  min-width: 0;
+  padding: 16px 18px;
+  text-align: left;
+  width: 100%;
+}
+.root :global(.d5o-handoff-item-main:hover) { background: #f6f9fa; }
+.root :global(.d5o-handoff-item-main > span) { min-width: 0; }
+.root :global(.d5o-handoff-item-main small) {
+  color: var(--d5o-muted);
+  display: block;
+  font-size: .75rem;
+  line-height: 1.35;
+  margin-bottom: 4px;
+}
+.root :global(.d5o-handoff-item-main strong) { display: block; font-size: .85rem; line-height: 1.35; overflow-wrap: anywhere; }
+.root :global(.d5o-handoff-identity em) { color: var(--d5o-muted); display: block; font-size: .75rem; font-style: normal; margin-top: 4px; }
+.root :global(.d5o-handoff-item-main .d5o-proof-state) { font-size: .8rem; line-height: 1.35; }
+.root :global(.d5o-handoff-item-detail) { background: #f7fafb; padding: 0 18px 12px; }
+.root :global(.d5o-handoff-item-detail summary) { color: #315b70; cursor: pointer; font-size: .8rem; font-weight: 700; padding: 10px 0; }
+.root :global(.d5o-handoff-item-detail p) { color: #496775; font-size: .8rem; line-height: 1.45; margin: 7px 0; overflow-wrap: anywhere; }
+
+/* Summary counts should orient the reader without pushing the register below the fold. */
+.root :global(.d5o-handoff-summary article) { min-width: 0; }
+.root :global(.d5o-handoff-summary span) { font-size: .75rem; line-height: 1.3; white-space: normal; }
+
+@media (max-width: 1100px) {
+  .root :global(.d5o-package-board-head),
+  .root :global(.d5o-execution-main > button) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .root :global(.d5o-handoff-item-main) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .root :global(.d5o-handoff-identity) { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  .root :global(.d5o-execution-main > button) { grid-template-columns: minmax(0, 1fr); }
+  .root :global(.d5o-back) { margin-bottom: 4px; }
+  .root :global(.d5o-phase-record-header) { align-items: stretch; flex-direction: column; gap: 8px; padding: 8px 12px; }
+  .root :global(.d5o-phase-record-header h1) { font-size: 1.15rem; }
+  .root :global(.d5o-phase-record-header > div:first-child > span) { font-size: .77rem; margin-top: 3px; }
+  .root :global(.d5o-phase-header-actions) { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .root :global(.d5o-phase-header-actions > :is(.d5o-stage-badge, .d5o-record-menu)) { min-height: 40px; width: auto; }
+  .root :global(.d5o-phase-header-actions .d5o-stage-badge) { padding: 6px 8px; }
+  .root :global(.d5o-phase-header-actions .d5o-stage-badge strong) { font-size: .76rem; overflow-wrap: anywhere; }
+  .root :global(.d5o-record-menu summary) { font-size: .7rem; min-height: 40px; padding: 6px 8px; }
+  .root :global(.d5o-work-phase-nav) { margin-block: 5px 10px; }
+  .root :global(.d5o-work-phase-nav button) { min-height: 36px; padding: 6px 10px; }
+  .root :global(.d5o-work-phase-nav button) { flex: 0 0 auto; }
+  .root :global(.d5o-handoff-item-main) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .root :global(.d5o-handoff-next) { grid-column: 1 / -1; }
+  .root :global(.d5o-handoff-summary) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
+  .root :global(.d5o-handoff-summary article) { padding: 8px; }
+  .root :global(.d5o-handoff-summary strong) { font-size: 1.15rem; }
 }
