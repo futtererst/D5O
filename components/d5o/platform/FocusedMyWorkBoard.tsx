@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { DeliveryAction } from "@/lib/d5o/hosted/delivery-role-actions";
 import type { SupportAction } from "@/lib/d5o/hosted/support-role-actions";
 import type { ServiceReturnAction } from "@/lib/d5o/hosted/service-return-actions";
@@ -97,17 +98,29 @@ export function FocusedMyWorkBoard<T extends RecordSummary>({ workspace, page, o
   const actionable = tasks.filter((task) => task.position === "action" || task.position === "preparation");
   const waiting = tasks.filter((task) => task.position === "waiting");
   const information = tasks.filter((task) => task.position === "information");
-  const renderTask = (task: Task) => <a className="d5o-focused-task" key={task.key} href={task.href}>
-    <span className="d5o-focused-task-kind">{task.position === "preparation" ? "Prepare or resolve" : task.position === "waiting" ? "Waiting" : task.position === "information" ? "For reference" : "Decision available"}</span>
-    <strong>{task.title}</strong><span>{task.work} · {task.customer}{task.site ? ` · ${task.site}` : ""}</span><small>{task.detail}</small>
-    {task.blocker ? <p>{task.blocker}</p> : null}<small>Responsible: {task.owner}{task.due ? ` · Due ${task.due}` : ""}</small><b>Open exact task →</b>
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const selected = tasks.find((task) => task.key === selectedKey) ?? actionable[0] ?? waiting[0] ?? information[0];
+  const renderTask = (task: Task) => <a className={`d5o-worklist-row${selected?.key === task.key ? " is-selected" : ""}`} key={task.key} href={task.href}
+    onMouseEnter={() => setSelectedKey(task.key)} onFocus={() => setSelectedKey(task.key)} aria-label={`${task.title}, ${task.work}, ${task.detail}`}>
+    <span className="d5o-worklist-row-main"><span className="d5o-focused-task-kind">{task.position === "preparation" ? "Prepare" : task.position === "waiting" ? "Waiting" : task.position === "information" ? "Reference" : "Decision"}</span>
+      <strong>{task.title}</strong><small>{task.work} · {task.customer}{task.site ? ` · ${task.site}` : ""}</small></span>
+    <span className="d5o-worklist-row-meta"><small>{task.due ? `Due ${task.due}` : task.owner}</small><b aria-hidden="true">→</b></span>
   </a>;
   return <section className="d5o-focused-work">
-    <header><p>MY WORK</p><h1>What needs your attention</h1><span>Tasks reflect your current account and role. Each decision checks eligibility and the exact source again when saved.</span>
+    <header><p>MY WORK</p><h1>Your worklist</h1><span>Open a task to act on its current scope. Decisions are checked again when saved.</span>
       <button type="button" onClick={() => window.location.reload()}>Refresh tasks</button></header>
-    <section aria-label="Action needed"><h2>Action needed <span>{actionable.length}</span></h2>{actionable.length ? <div className="d5o-focused-task-grid">{actionable.map(renderTask)}</div> : <p>No current action is available to your role.</p>}</section>
-    <details><summary>Waiting on another role <span>{waiting.length}</span></summary>{waiting.length ? <div className="d5o-focused-task-grid">{waiting.map(renderTask)}</div> : <p>No waiting decisions.</p>}</details>
-    {information.length ? <details><summary>Information and handoffs <span>{information.length}</span></summary><div className="d5o-focused-task-grid">{information.map(renderTask)}</div></details> : null}
+    <div className="d5o-worklist-layout"><div className="d5o-worklist-list">
+      <section aria-label="Action needed"><h2>Action needed <span>{actionable.length}</span></h2>{actionable.length ? <div className="d5o-worklist-rows">{actionable.map(renderTask)}</div> : <p>No current action is available to your role.</p>}</section>
+      <section aria-label="Waiting on another role"><h2>Waiting on another role <span>{waiting.length}</span></h2>{waiting.length ? <div className="d5o-worklist-rows">{waiting.map(renderTask)}</div> : <p>No waiting decisions.</p>}</section>
+      {information.length ? <details><summary>Information and handoffs <span>{information.length}</span></summary><div className="d5o-worklist-rows">{information.map(renderTask)}</div></details> : null}
+    </div><aside className="d5o-worklist-preview" aria-label="Selected task preview">{selected ? <>
+      <span className="d5o-focused-task-kind">{selected.position === "waiting" ? "WAITING ON ANOTHER ROLE" : selected.position === "information" ? "FOR REFERENCE" : "CURRENT TASK"}</span>
+      <h2>{selected.title}</h2><p><strong>{selected.work}</strong><br />{selected.customer}{selected.site ? ` · ${selected.site}` : ""}</p>
+      <dl><dt>Exact scope</dt><dd>{selected.detail}</dd><dt>Responsible</dt><dd>{selected.owner}</dd>{selected.due ? <><dt>Due</dt><dd>{selected.due}</dd></> : null}</dl>
+      {selected.blocker ? <p className="d5o-worklist-blocker"><strong>Before this can proceed</strong><br />{selected.blocker}</p> : null}
+      {selected.title === "Identify supported asset" ? <p>This connects accepted delivery to the asset or system Operations will support. Recording its identity does not accept support responsibility or activate service.</p> : null}
+      <a className="d5o-worklist-open" href={selected.href}>Open exact task →</a>
+    </> : <p>No current task is available.</p>}</aside></div>
     <details><summary>Browse Work Records <span>{page.total}</span></summary><p>Open a full record for context and history. Record ownership does not by itself create a decision for you.</p>
       <div className="d5o-focused-task-grid">{page.records.map((record) => { const position = connectedWorkPosition(record as unknown as WorkRecord); return <button key={record.id} type="button" className="d5o-focused-task" onClick={() => onOpen(record)}><strong>{record.title}</strong><span>{record.customer} · {record.site}</span><small>{position?.label ?? record.stage}</small>{position?.warning ? <small>{position.warning}</small> : null}<b>View Work Record →</b></button>; })}</div>
       {page.nextCursor ? <button type="button" disabled={loading} onClick={onLoadMore}>{loading ? "Loading…" : "Load more Work Records"}</button> : null}</details>
