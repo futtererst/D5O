@@ -36,6 +36,9 @@ try {
   if (!foreignDocument?.id) throw new Error("foreign_document_fixture_missing");
   await ops.context.close();
   const supervisor = await session(second);
+  const build = process.env.D5O_EXPECTED_BUILD;
+  if (build && !(await supervisor.page.locator("body").innerText()).includes("Build " + build))
+    throw new Error("displayed_build_mismatch");
   const paths = [
     "/api/d5o-hosted/prototype-state?workspace=rybex&key=work",
     "/api/d5o-hosted/prototype-search?workspace=rybex&view=search&record=" + workId,
@@ -56,5 +59,5 @@ try {
     throw new Error("foreign_document_retrieval_not_denied:" + denied.status);
   await supervisor.context.close();
   console.log(JSON.stringify({ result: "support_cross_route_scope_pass", routes: paths.length,
-    foreignDocumentRetrieval: denied.status }));
+    build: build ?? null, foreignDocumentRetrieval: denied.status }));
 } finally { await browser.close(); }
