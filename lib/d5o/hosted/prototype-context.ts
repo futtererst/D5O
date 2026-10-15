@@ -64,6 +64,18 @@ export async function hostedPrototypeContext(workspace: string) {
       const saved = result.data as HostedStateResult | null;
       if (!saved || !Number.isInteger(saved.revision) || !saved.state)
         throw new HostedStateError("invalid_response", 502);
+      // The service-only draft writer returns a full projection. A supervisor's
+      // response must go through the same actor-scoped read as a normal GET.
+      if (role === "field_supervisor" && key === "work") {
+        const visible = await call("d5o_hosted_prototype_read_v1", {
+          p_workspace_key: workspace, p_state_key: key
+        });
+        if (visible.error) throw rpcError(visible.error);
+        const read = visible.data as HostedStateResult | null;
+        if (!read || read.revision !== saved.revision || !read.state)
+          throw new HostedStateError("invalid_response", 502);
+        return read;
+      }
       return saved;
     }
   };
