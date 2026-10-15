@@ -1,6 +1,6 @@
 {
   "schema": "d5o.synthetic-walkthrough.current-status.v1",
-  "generatedAt": "2026-10-13T16:01:56.848Z",
+  "generatedAt": "2026-10-15T02:27:21Z",
   "originalRunImmutable": true,
   "originalRunSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
   "originalRunCounts": {
@@ -9,7 +9,7 @@
     "Not run": 45,
     "Blocked": 0
   },
-  "currentApplicationSha": "b7ee79013fc098c94799896c3951b8a70fc5513e",
+  "currentApplicationSha": "0a9ad0750afdd8759370d850c51d9fd841acfc20",
   "fixtures": {
     "handoff": "http://127.0.0.1:61647/work?workspace=rybex; isolated database 57021",
     "delivery": "http://127.0.0.1:61643/work?workspace=rybex; isolated database 56621",
@@ -930,11 +930,11 @@
       "id": "I01",
       "originalResult": "Not run",
       "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
-      "latestResult": "Not run",
-      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
-      "mode": "original run",
-      "evidence": "",
-      "remainingGap": "No execution on current build"
+      "latestResult": "Passed",
+      "latestTestedSha": "0a9ad0750afdd8759370d850c51d9fd841acfc20",
+      "mode": "read-only authenticated PM, Operations and auditor browsers",
+      "evidence": "Displayed Build 0a9ad0750afd on isolated 61651. PM My Work routed East Campus asset identity preparation; Operations showed it waiting; auditor browse showed the committed delivery receipt and asset warning and opened the exact Overview. Work hub and Portfolio showed the same East blocker and prior-scope acceptance warning. Handoff showed East 2/2 current releases, completions and scoped acceptances, exact Operations receipt, no support owner and no activation. Insights showed the asset blocker, prior-scope hold and received service visit without old Design preparation text. Evidence Library named its shared-reference boundary and searched East Campus to its owning Work Record; mobile width 390 px had no horizontal overflow. No decision or file was changed.",
+      "remainingGap": "Retained private decision documents are not indexed as shared references; authorized retrieval remains in the exact phase panels. This was synthetic projection verification, not a file-byte or real-user usability check."
     },
     {
       "id": "I02",
