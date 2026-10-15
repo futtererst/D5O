@@ -59,7 +59,12 @@ async function submit(page, note) {
   await target.locator('input[name="note"]').fill(note);
   const command = page.waitForResponse((response) => response.url().includes("prototype-operate-command") &&
     response.request().method() === "POST", { timeout: 30000 });
+  command.catch(() => {});
+  const upload = page.waitForResponse((response) => response.url().includes("customer-decision-evidence") &&
+    response.request().method() === "POST", { timeout: 30000 });
   await target.getByRole("button", { name: "Retain and submit document" }).click();
+  const uploaded = await upload;
+  if (!uploaded.ok()) throw new Error("support_upload_rejected:" + uploaded.status() + ":" + (await uploaded.json()).error);
   const response = await command;
   if (!response.ok()) throw new Error("support_submission_rejected:" + response.status() + ":" + (await response.json()).error);
   return (await current(page)).operate.documentationObligations.filter((item) =>
