@@ -29,6 +29,9 @@ async function login(user) {
 }
 try {
   const ops = await login(users.find((item) => item.key === "operations"));
+  const build = process.env.D5O_EXPECTED_BUILD;
+  if (build && !(await ops.page.locator("body").innerText()).includes("Build " + build))
+    throw new Error("displayed_build_mismatch");
   const before = await ops.page.evaluate(async (id) => {
     const payload = await (await fetch("/api/d5o-hosted/prototype-state?workspace=rybex&key=work")).json();
     return payload.state.records.find((record) => record.id === id);
@@ -44,6 +47,7 @@ try {
   const packageId = before.design.releases.find((item) => turnover.releaseIds.includes(item.id))?.packageId;
   const row = ops.page.locator('section[aria-label="Accepted turnover documentation"] article')
     .filter({ hasText: turnover.id }).filter({ hasText: "As-built controls record" });
+  let committedInThisRun = false;
   if (await row.getByRole("button", { name: "Assign document supplier" }).isVisible()) {
     await row.locator('input[name="supervisorEmail"]').fill(second.email);
     await row.locator('input[name="reason"]').fill("Fictional Operations assignment for this accepted package and retained support documents.");
@@ -51,6 +55,7 @@ try {
     await row.getByRole("button", { name: "Assign document supplier" }).click();
     const committed = await response;
     if (!committed.ok()) throw new Error("browser_assignment_failed:" + committed.status() + ":" + await committed.text());
+    committedInThisRun = true;
   }
   await ops.page.reload();
   await ops.page.getByText("Handoff & activation", { exact: true }).first().click();
@@ -94,7 +99,7 @@ try {
   await worker.context.close();
   console.log(JSON.stringify({ result: "support_supplier_browser_pass",workId,
     turnoverId: turnover.id,packageId,assignedEmail: second.email,
-    observed: ["operations_form_committed", "reload_retained_assignment",
+    observed: [committedInThisRun ? "operations_form_committed" : "prior_browser_assignment_retained", "reload_retained_assignment",
       "assigned_supervisor_has_supply_control", "other_package_has_no_supply_control",
       "unassigned_upload_denied_403", "other_supplier_assignment_document_and_event_metadata_redacted"] }));
 } finally { await browser.close(); }

@@ -1,8 +1,8 @@
-# D5O production migration manifest (14 October 2026)
+# D5O production migration manifest (15 October 2026)
 
 Target: shared Supabase project `fcawktdjoxvahhgvkebx`. This is a read-only reconciliation and proposed order; no shared migration has been applied by this release-candidate work.
 
-Current candidate: **88 ordered hosted migrations**, comprising the 12 read-only mapped shared-history entries below and **76 outstanding files**. The last completed fresh empty disposable replay covered 87 files through `20261015111608` with healthy database/Auth/REST/Storage/Kong and Auth HTTP 200; file 88 passed an incremental disposable application and focused checks. A new full-stack fresh replay was attempted but local Docker could not allocate another network subnet. The populated fictional clone received later asset-identity and custody files incrementally; it was not represented as a fresh replay. Shared migration history and definitions must be inspected again before a separately authorized cutover. No shared write is authorized by this manifest.
+Current candidate: **89 ordered hosted migrations**, comprising the 12 read-only mapped shared-history entries below and **77 outstanding files**. The last completed fresh empty disposable replay covered 87 files through `20261015111608` with healthy database/Auth/REST/Storage/Kong and Auth HTTP 200; files 88–89 passed incremental disposable application and focused checks. A new full-stack fresh replay was attempted for file 88 but local Docker could not allocate another network subnet. The populated fictional clone received later asset-identity and custody files incrementally; it was not represented as a fresh replay. Shared migration history and definitions must be inspected again before a separately authorized cutover. No shared write is authorized by this manifest.
 
 The 12 already-recorded D5O/worker migrations have SQL definitions identical to the candidate files after newline normalization. Eight early releases carry Supabase-assigned versions instead of the local filename versions:
 
@@ -23,7 +23,7 @@ The 12 already-recorded D5O/worker migrations have SQL definitions identical to 
 
 The worker-excluding policies `d5o_hosted_work_member_read` and `d5o_hosted_work_event_member_read` also match the live read-only inspection. Do not rewrite the eight applied history versions. A raw version-only `supabase db push` is unsafe until the release operator explicitly reconciles those mappings; it would treat their local versions as unapplied.
 
-## Outstanding files, in required order (76)
+## Outstanding files, in required order (77)
 
 1. `20261008183310_d5o_prototype_authoritative_writes.sql`
 2. `20261008203000_d5o_reject_imported_commercial_decisions.sql`
@@ -101,6 +101,7 @@ The worker-excluding policies `d5o_hosted_work_member_read` and `d5o_hosted_work
 74. `20261014235900_d5o_private_evidence_index.sql`
 75. `20261015111608_restrict_supervisor_private_evidence.sql`
 76. `20261015123201_scope_support_documents_to_reviewing_supervisor.sql`
+77. `20261015132434_assign_support_document_supplier.sql`
 
 At the earlier invoice checkpoint, a fresh disposable Supabase instance replayed **71 hosted candidate files in filename order**, including the service-invoice migration. Relative to the prior 12-file shared read-only mapping, **59 files are outstanding**. The active fictional service pilot was incrementally patched; it is not evidence of full ordered replay. Shared-project definitions and migration history must be rechecked at cutover. Disposable replay does not establish shared-project compatibility or authorization to apply migrations. The deployment cutover must compare names, normalized SQL, policy definitions and migration history again immediately before any shared write.
 
@@ -147,3 +148,5 @@ The private-evidence index adds `20261014235900_d5o_private_evidence_index.sql` 
 The 15 October supervisor custody correction adds `20261015111608_restrict_supervisor_private_evidence.sql` as file 87. Current candidate: **87 ordered hosted migrations**, with 12 read-only shared-history mappings and **75 outstanding** files. A new empty local target `d5o-private-index-fresh-replay-20261015` replayed all 87 in order, recorded last version `20261015111608`, returned Auth health HTTP 200 and installed the uploader identity in the server-only receipt read. `authenticated` and `anon` still lack EXECUTE on the index RPC; `service_role` has it. The target was stopped with its named volume retained. The populated 57721 pilot received file 87 incrementally and remains browser-qualified; its historical migration ledger was not rewritten. No shared migration was applied.
 
 File 88, `20261015123201_scope_support_documents_to_reviewing_supervisor.sql`, narrows supervisor document submission to an independently reviewed report on the exact package/release and redacts other suppliers' Work Record document metadata, including historical replay results. It applied transactionally to disposable `d5o-service-mutable-20261012` and recorded version `20261015123201` after its earlier 86 recorded versions; both supervisors passed focused authenticated checks. This is **incremental compatibility**, not a fresh 88-file replay. A fresh restart of `d5o-private-index-fresh-replay-20261015` with all 88 files stopped before database creation because Docker reported `all predefined address pools have been fully subnetted`. No existing checkpoint network or volume was deleted to make the replay pass. The 87-file fresh replay remains the last completed full-stack sequence evidence. No shared migration was applied.
+
+File 89, `20261015132434_assign_support_document_supplier.sql`, replaces reviewed-report participation as support-document supplier authority with an explicit Operations assignment to an active, confirmed field-supervisor account on the exact accepted turnover/package. It retains assignment/revocation history in typed Operate events and receipts, uses source/Deploy/Operate revision checks and Work locking, and redacts other suppliers' document, assignment and support-event metadata from authenticated supervisor Work reads. It was applied only to `d5o-service-mutable-20261012` and recorded as local version `20261015132434`. The first local CLI ledger-repair attempts could not resolve the separate fixture workdir or connect through its reported DB URL; the already applied version was recorded directly in that disposable migration ledger using the same version/name form as the preceding entry. This is not a fresh 89-file replay, shared migration, or production authorization.
