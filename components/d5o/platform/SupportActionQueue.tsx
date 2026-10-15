@@ -25,7 +25,8 @@ export function SupportActionQueue({ workspace, actions }: { workspace: string; 
             turnover: item.turnoverId ?? "", documentKind: item.documentKind ?? "",
             sourceRevision: String(item.sourceRevision), deployRevision: String(item.deployRevision) });
           return <a key={`${item.kind}:${item.workId}:${item.decisionId}`} href={`/work?${params}`}>
-            <strong>{labels[item.kind]}</strong>
+            <strong>{item.kind === "add-asset" && item.blocker?.startsWith("Asset identity conflict:")
+              ? "Resolve supported asset identity" : labels[item.kind]}</strong>
             <small>{item.title} · {item.customer}{item.packageName ? ` · ${item.packageName}` : ""} · acceptance {item.decisionId} rev {item.decisionRevision}</small>
             <small>Responsible: {item.responsibleRole}</small>
             {item.blocker ? <small>Next: {item.blocker}</small> : null}<span>Open exact action →</span>

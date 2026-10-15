@@ -53,9 +53,11 @@ export function supportRoleActions(records: WorkRecord[], actorId: string, role:
         .flatMap((record) => record.operate?.assets ?? [])
         .filter((asset) => asset.externalId && (counts.get(asset.externalId.trim().toLowerCase()) ?? 0) > 1);
       const identities = [...new Set(conflicting.map((asset) => asset.externalId?.trim()).filter((id): id is string => !!id))];
-      add("add-asset", "Project manager for preparation; current Operations support owner for an existing-asset link", true,
+      add("add-asset", identities.length
+        ? "Project manager to resolve identity; current Operations support owner for a later contribution decision"
+        : "Project manager or Operations leader", !identities.length || role === "project_manager",
         identities.length
-          ? `Asset identity conflict: ${identities.join(", ")} is recorded on multiple assets. Review retained identity evidence before linking this delivery; no asset contribution has been accepted.`
+          ? `Asset identity conflict: ${identities.join(", ")} is recorded on multiple assets. Project manager: obtain retained identity evidence. Operations: wait for a supported identity before accepting a contribution. No asset contribution has been accepted.`
           : "Identify at least one supported asset or infrastructure system from the accepted scope.");
     }
     else if (!state.support && !state.assetLinks?.some((item) => item.status === "Accepted")) add("accept-support", "Operations leader", role === "operations_leader",

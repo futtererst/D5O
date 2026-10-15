@@ -10,6 +10,11 @@ type RecordSummary = { id: string; title: string; customer: string; site: string
 export type FocusedQueuePage<T extends RecordSummary> = { roleActions?: RoleAction[]; serviceActions?: ServiceAction[]; deliveryActions?: DeliveryAction[]; supportActions?: SupportAction[]; serviceReturnQueue?: ServiceReturnAction[]; records: T[]; total: number; nextCursor: string | null };
 type Task = { key: string; canonical: string; title: string; work: string; customer: string; site?: string | null; detail: string; owner: string; blocker?: string | null; due?: string | null; impact?: "Critical" | "High" | "Standard" | null; href: string; position: "action" | "preparation" | "waiting" | "information" };
 
+const supportLabels: Record<SupportAction["kind"], string> = {
+  "receive-handoff": "Link accepted delivery handoff", "add-asset": "Identify supported asset", "accept-support": "Accept support responsibility",
+  activate: "Assess support activation", "supply-document": "Supply turnover document", "review-document": "Review turnover document"
+};
+
 function deliveryLink(workspace: string, action: DeliveryAction) {
   const params = new URLSearchParams({ workspace, view: "record", record: action.workId, section: "Deploy", focus: action.focus,
     decision: action.decisionId, sourceRevision: String(action.sourceRevision), decisionRevision: String(action.revision) });
@@ -59,10 +64,9 @@ function tasksFor<T extends RecordSummary>(workspace: string, page: FocusedQueue
     work: action.title, customer: action.customer, site: action.site, detail: action.packageId ? `${action.packageName ?? "Package name unavailable"} · revision ${action.revision}` : `Whole work · revision ${action.revision}`,
     owner: action.responsibleRole, blocker: action.blocker, href: deliveryLink(workspace, action),
     position: action.position === "available" ? "action" : action.position === "preparation" ? "preparation" : "waiting" }));
-  const support = (page.supportActions ?? []).map((action): Task => ({ key: `support:${action.workId}:${action.decisionId}:${action.kind}:${action.documentKind ?? ""}`, canonical: `support:${action.workId}:${action.decisionId}:${action.kind}:${action.documentKind ?? ""}`, title: ({
-    "receive-handoff": "Link accepted delivery handoff", "add-asset": "Identify supported asset", "accept-support": "Accept support responsibility",
-    activate: "Assess support activation", "supply-document": "Supply turnover document", "review-document": "Review turnover document"
-  } as Record<SupportAction["kind"], string>)[action.kind], work: action.title, customer: action.customer, site: action.site,
+  const support = (page.supportActions ?? []).map((action): Task => ({ key: `support:${action.workId}:${action.decisionId}:${action.kind}:${action.documentKind ?? ""}`, canonical: `support:${action.workId}:${action.decisionId}:${action.kind}:${action.documentKind ?? ""}`,
+    title: action.kind === "add-asset" && action.blocker?.startsWith("Asset identity conflict:")
+      ? "Resolve supported asset identity" : supportLabels[action.kind], work: action.title, customer: action.customer, site: action.site,
     detail: `${action.packageName ? `${action.packageName} · ` : ""}${action.documentKind ? `${action.documentKind} · ` : ""}source revision ${action.decisionRevision}`, owner: action.responsibleRole,
     blocker: action.blocker, href: supportLink(workspace, action),
     position: action.position === "available" ? "action" : action.position === "preparation" ? "preparation" : "waiting" }));
