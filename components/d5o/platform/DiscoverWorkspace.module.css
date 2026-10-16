@@ -6,6 +6,7 @@
 .sourceAlert { background:#f5f8fa; border:1px solid var(--d5o-line); border-left:3px solid var(--d5o-accent); border-radius:var(--d5o-card-radius,8px); box-sizing:border-box; display:grid; gap:5px; line-height:1.45; margin:16px 0; max-width:none; min-width:0; padding:12px 16px; width:100%; }
 .sourceAlert strong { color:var(--d5o-ink); font-size:.78rem; }
 .sourceAlert span { color:var(--d5o-muted); font-size:.72rem; }
+.sourceAlert button { justify-self:start; min-height:38px; margin-top:5px; }
 .metrics { display:grid; gap:10px; grid-template-columns:repeat(4,minmax(0,1fr)); margin:16px auto; max-width:var(--d5o-content-max,1400px); }
 .metric { background:#fff; border:1px solid var(--d5o-line); border-radius:var(--d5o-card-radius,8px); display:grid; gap:6px; min-height:100px; padding:14px 16px; }
 .metric small,.identity small,.row>div>small,.facts small { color:#607681; font-size:.62rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }

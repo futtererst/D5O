@@ -68,7 +68,7 @@ export function OperationalHome<T extends WorkLike>({ workspaceName, currentOwne
   ].sort((left, right) => compareActionPriority(left, right) || left.title.localeCompare(right.title));
 
   return <section className="d5o-ops-home d5o-hub">
-    <header className="d5o-ops-heading"><div><p>WORK HUB · {workspaceName.toUpperCase()}</p><h1>What needs attention now</h1><span>{currentOwner} · work you own and workspace exceptions that need coordination. Open My Work for exact eligible tasks.</span></div></header>
+    <header className="d5o-ops-heading"><div><p>WORK HUB · {workspaceName.toUpperCase()}</p><h1>What needs attention now</h1><span>Work you own and workspace exceptions that need coordination. Open My Work for your exact eligible tasks.</span></div></header>
     <section className="d5o-hub-status" aria-label="Actionable workspace status">
       <button type="button" onClick={onAssignedToYou} disabled={!mine.length}><strong>{mine.length}</strong><span>Work records you own</span><small>{mine.length ? "Open My Work for exact tasks →" : "No owned work in view"}</small></button>
       <button type="button" onClick={onConditions} disabled={!holds.length}><strong>{holds.length}</strong><span>Work with open conditions</span><small>{holds.length ? "Review affected work →" : "No open condition"}</small></button>
