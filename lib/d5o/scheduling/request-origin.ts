@@ -26,6 +26,7 @@ export function validLocalScheduleOrigin(headers: Headers): boolean {
       (process.env.D5O_REHEARSAL_TARGET_URL === "http://127.0.0.1:57221" && origin === "http://127.0.0.1:61649") ||
       (process.env.D5O_REHEARSAL_TARGET_URL === "http://127.0.0.1:57421" && origin === "http://127.0.0.1:61650") ||
       (process.env.D5O_REHEARSAL_TARGET_URL === "http://127.0.0.1:58221" && origin === "http://127.0.0.1:61650") ||
+      (process.env.D5O_REHEARSAL_TARGET_URL === "http://127.0.0.1:58221" && origin === "http://127.0.0.1:61656") ||
       (process.env.D5O_REHEARSAL_TARGET_URL === "http://127.0.0.1:57621" && origin === "http://127.0.0.1:61651");
     if (runtime === "production") return parsed.protocol === "https:";
     return localScheduleOrigins.has(origin);
