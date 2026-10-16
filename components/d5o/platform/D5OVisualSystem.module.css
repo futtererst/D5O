@@ -414,7 +414,7 @@
   letter-spacing: .09em;
   margin: 8px 12px 5px;
 }
-.root :global(.d5o-sidebar-menu) { row-gap: 10px; }
+.root :global(.d5o-sidebar-menu) { row-gap: 4px; }
 .root :global(.d5o-full-nav) { gap: 3px; }
 .root :global(.d5o-full-nav button) {
   border: 0;
@@ -550,7 +550,7 @@
 .root :global(.d5o-task-frame),
 .root :global(.d5o-asset-task),
 .root :global(.d5o-focused-record-header) {
-  max-width: 1180px;
+  max-width: var(--d5o-content-max);
   width: 100%;
 }
 .root :global(.d5o-task-frame) {

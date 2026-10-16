@@ -51,6 +51,14 @@
 .hint { color:#758790; display:block; font-size:.65rem; line-height:1.45; margin-top:8px; }.proposalFields { display:grid; gap:8px; grid-template-columns:1fr 1fr; }
 .pursuitControl { margin:14px 0; padding:18px; }
 .pursuitControlFocused { margin:0; padding:0; }
+.pursuitControlFocused .pursuitColumns { grid-template-columns:minmax(0,1fr); }
+.pursuitControlFocused .pursuitColumns>section { padding:24px; background:#f8fafc; }
+.pursuitControlFocused .pursuitColumns>section>strong { font-size:18px; }
+.pursuitControlFocused .pursuitColumns form { display:grid; grid-template-columns:minmax(220px,.7fr) minmax(0,1.3fr); gap:20px; align-items:start; }
+.pursuitControlFocused .pursuitColumns form>button { grid-column:1/-1; justify-self:start; }
+.pursuitControlFocused .pursuitColumns .field { margin:0; }
+.pursuitControlFocused .pursuitColumns textarea { min-height:110px; }
+@media(max-width:760px) { .pursuitControlFocused .pursuitColumns form { grid-template-columns:minmax(0,1fr); } }
 .pursuitControlFocused>.kicker,.pursuitControlFocused>h3,.pursuitControlFocused>.hint { display:none; }
 .pursuitControlFocused>.facts { background:#f8fafb; border:1px solid #e2e9ee; border-radius:8px; gap:0; margin:0 0 20px; padding:12px 16px; }
 .pursuitControlFocused>.facts>div { border-right:1px solid #e2e9ee; padding:0 12px; }

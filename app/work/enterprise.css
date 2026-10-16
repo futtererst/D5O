@@ -1089,10 +1089,11 @@
 .d5o-full-app .d5o-worklist-open { display:inline-block; padding:10px 14px; background:#e2b637; color:#112f42; border-radius:5px; font-weight:800; text-decoration:none; }
 /* Option A: a continuous, compact worklist with a live task pane. */
 .d5o-full-app .d5o-focused-work.d5o-workbench { display:block; max-width:none; padding:10px 18px 22px; color:#142f45; }
-.d5o-full-app .d5o-workbench .d5o-workbench-top { display:flex; align-items:center; justify-content:space-between; margin:0 0 9px; }
+.d5o-full-app .d5o-workbench .d5o-workbench-top { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:0 0 24px; }
+.d5o-full-app .d5o-workbench-top p { color:#63768a; font-size:14px; margin:8px 0 0; }
 .d5o-full-app .d5o-workbench-top small { color:#667e91; font:700 12px Arial,Helvetica,sans-serif; letter-spacing:.06em; }
 .d5o-full-app .d5o-workbench-top h1 { margin:2px 0 0; color:#102b44; font:800 27px Arial,Helvetica,sans-serif; letter-spacing:-.035em; }
-.d5o-full-app .d5o-workbench-shell { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(370px,.9fr); min-height:670px; background:#fff; border:1px solid #dce5ec; border-radius:10px; overflow:hidden; box-shadow:0 2px 12px rgba(19,47,67,.045); }
+.d5o-full-app .d5o-workbench-shell { display:grid; grid-template-columns:minmax(320px,.8fr) minmax(430px,1.2fr); min-height:670px; background:#fff; border:1px solid #dce5ec; border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(19,47,67,.04); }
 .d5o-full-app .d5o-workbench-list { min-width:0; border-right:1px solid #dce5ec; padding:0 0 20px; }
 .d5o-full-app .d5o-workbench-tabs { display:flex; gap:24px; padding:0 20px; border-bottom:1px solid #e5ebef; }
 .d5o-full-app .d5o-workbench .d5o-workbench-tabs button { min-height:44px; border:0; border-bottom:3px solid transparent; border-radius:0; padding:8px 7px 6px; color:#567086; font-size:14px; }
@@ -1104,19 +1105,21 @@
 .d5o-full-app .d5o-workbench-table-head,.d5o-full-app .d5o-workbench-row { display:grid; grid-template-columns:minmax(0,1fr) 110px; align-items:center; gap:10px; }
 .d5o-full-app .d5o-workbench-table-head { margin:0 14px; border:1px solid #e1e8ed; background:#f6f9fb; color:#38556d; padding:9px 13px; font-size:12px; font-weight:800; }
 .d5o-full-app .d5o-workbench-list section>h2 { margin:12px 14px 0; border:1px solid #e1e8ed; border-bottom:0; border-radius:4px 4px 0 0; padding:8px 12px; color:#173c57; background:#f3f7f9; font:800 12px Arial,Helvetica,sans-serif; }
-.d5o-full-app .d5o-workbench .d5o-workbench-row { box-sizing:border-box; width:calc(100% - 28px); margin:0 14px; min-height:50px; border:1px solid #e1e8ed; border-top:0; border-radius:0; padding:8px 12px; text-align:left; color:#194469; background:#fff; font-size:13px; font-weight:500; }
-.d5o-full-app .d5o-workbench .d5o-workbench-row:hover,.d5o-full-app .d5o-workbench .d5o-workbench-row.is-selected { background:#fff0c9; border-color:#e4ca8b; color:#142f45; }
-.d5o-full-app .d5o-workbench-row-title { display:grid; gap:2px; min-width:0; font-size:14px; font-weight:800; }
-.d5o-full-app .d5o-workbench-row-title small { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#687f90; font-size:12px; font-weight:400; }
-.d5o-full-app .d5o-workbench-row>span:last-child { color:#506e87; font-size:12px; }
+.d5o-full-app .d5o-workbench .d5o-workbench-row { box-sizing:border-box; grid-template-columns:minmax(0,1fr) 20px; width:100%; margin:0; min-height:100px; border:0; border-bottom:1px solid #e6ebef; border-left:3px solid transparent; border-radius:0; padding:18px 22px; text-align:left; color:#243b50; background:#fff; font-size:14px; font-weight:500; }
+.d5o-full-app .d5o-workbench .d5o-workbench-row:hover { background:#f7f9fb; }
+.d5o-full-app .d5o-workbench .d5o-workbench-row.is-selected { background:#f0f5fa; border-left-color:#245a7c; color:#142f45; }
+.d5o-full-app .d5o-workbench-row-title { display:grid; gap:6px; min-width:0; font-size:16px; font-weight:700; }
+.d5o-full-app .d5o-workbench-row-title>span { color:#63768a; font-size:11px; text-transform:uppercase; letter-spacing:.06em; font-weight:700; }
+.d5o-full-app .d5o-workbench-row-title small { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#687f90; font-size:13px; font-weight:400; }
+.d5o-full-app .d5o-workbench-row>span:last-child { color:#506e87; font-size:18px; }
 .d5o-full-app .d5o-workbench-list section>p { margin:0 14px; border:1px solid #e1e8ed; padding:12px; font-size:12px; color:#647d90; }
 .d5o-full-app .d5o-workbench-list>details { margin:13px 14px; font-size:11px; color:#46647a; }
 .d5o-full-app .d5o-workbench-list>details .d5o-workbench-row { width:100%; margin:0; }
-.d5o-full-app .d5o-workbench-pane { min-width:0; padding:19px 25px 26px; background:#fff; }
+.d5o-full-app .d5o-workbench-pane { min-width:0; padding:30px 34px; background:#fff; }
 .d5o-full-app .d5o-workbench-back { display:none; }
 .d5o-full-app .d5o-workbench-pane-head { margin-bottom:14px; }
 .d5o-full-app .d5o-workbench-pane-head small { color:#71869a; font-size:12px; font-weight:800; letter-spacing:.04em; }
-.d5o-full-app .d5o-workbench-pane-head h2 { margin:5px 0 6px; color:#0e3152; font:800 23px Arial,Helvetica,sans-serif; letter-spacing:-.03em; }
+.d5o-full-app .d5o-workbench-pane-head h2 { margin:10px 0 10px; color:#0e3152; font:700 28px Arial,Helvetica,sans-serif; letter-spacing:-.03em; }
 .d5o-full-app .d5o-workbench-pane-head p { margin:0; max-width:52ch; color:#4d6c88; font-size:14px; line-height:1.45; }
 .d5o-full-app .d5o-workbench-inherited { margin:12px 0 18px; padding:12px 14px; background:#f3f6f8; border:1px solid #edf1f3; border-radius:4px; }
 .d5o-full-app .d5o-workbench-inherited small { color:#53708a; font-size:12px; font-weight:800; }
@@ -1131,14 +1134,14 @@
 .d5o-full-app .d5o-workbench-form>label span { color:#bb572a; }
 .d5o-full-app .d5o-workbench-form input,.d5o-full-app .d5o-workbench-form select { box-sizing:border-box; width:100%; min-height:40px; border:1px solid #cddbe6; border-radius:7px; padding:8px 10px; color:#264b68; background:#fff; font:400 14px Arial,Helvetica,sans-serif; }
 .d5o-full-app .d5o-workbench-form>label>input,.d5o-full-app .d5o-workbench-form>label>select { display:block; margin-top:5px; }
-.d5o-full-app .d5o-workbench-form details { color:#46647a; font-size:11px; }
+.d5o-full-app .d5o-workbench-form details { color:#46647a; font-size:13px; }
 .d5o-full-app .d5o-workbench-form details label { display:grid; gap:5px; margin:8px 0; }
 .d5o-full-app .d5o-workbench-actions { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding-top:2px; }
 .d5o-full-app .d5o-workbench .d5o-workbench-actions button,.d5o-full-app .d5o-workbench-primary-link { display:inline-flex; align-items:center; justify-content:center; min-height:42px; padding:9px 16px; border:1px solid #d7a132; border-radius:7px; background:#e8b842; color:#142d40; font-size:14px; font-weight:800; text-decoration:none; }
 .d5o-full-app .d5o-workbench-actions a { display:inline-flex; align-items:center; min-height:37px; padding:8px 13px; border:1px solid #b9cddd; border-radius:4px; color:#214c74; font-size:12px; font-weight:700; text-decoration:none; }
 .d5o-full-app .d5o-workbench-next,.d5o-full-app .d5o-workbench-footnote { margin:14px 0 0; color:#55738a; font-size:13px; line-height:1.45; }
 .d5o-full-app .d5o-workbench-warning { border-left:3px solid #c6772f; background:#fff8ed; padding:10px 12px; color:#78420f; font-size:12px; }
-.d5o-full-app .d5o-workbench-context { margin-top:16px; padding-top:12px; border-top:1px solid #e0e8ed; color:#47657b; font-size:11px; }
+.d5o-full-app .d5o-workbench-context { margin-top:16px; padding-top:12px; border-top:1px solid #e0e8ed; color:#47657b; font-size:13px; }
 .d5o-full-app .d5o-workbench-browse { margin-top:14px; padding:13px 16px; border:1px solid #dce5ec; border-radius:5px; background:#fff; color:#496a81; font-size:12px; }
 .d5o-full-app .d5o-workbench-browse .d5o-focused-task-grid { margin-top:12px; }
 .d5o-full-app .d5o-workbench :focus-visible { outline:2px solid #1f65af; outline-offset:2px; }
@@ -1237,7 +1240,7 @@
 
 
 /* Exact tasks use one quiet decision column; registers remain opt-in context. */
-.d5o-full-app .d5o-task-frame { width:min(100% - 32px, 850px); margin:18px auto; padding:22px; background:#fff; border:1px solid #d8e3e8; border-radius:10px; color:#173c50; }
+.d5o-full-app .d5o-task-frame { box-sizing:border-box; width:100%; max-width:var(--d5o-content-max,1520px); margin:18px auto; padding:clamp(24px,2.5vw,40px); background:#fff; border:1px solid #d8e3e8; border-radius:10px; color:#173c50; }
 .d5o-full-app .d5o-task-frame-header { display:flex; justify-content:space-between; align-items:start; gap:18px; flex-wrap:wrap; border-bottom:1px solid #d8e3e8; padding-bottom:14px; margin-bottom:18px; }
 .d5o-full-app .d5o-task-frame-header h1 { font-size:clamp(23px,3vw,32px); line-height:1.2; margin:4px 0 9px; }
 .d5o-full-app .d5o-task-frame-header p { margin:3px 0; line-height:1.45; overflow-wrap:anywhere; }
@@ -1246,7 +1249,7 @@
 .d5o-full-app .d5o-task-frame a:focus-visible,.d5o-full-app .d5o-focused-record-header a:focus-visible { outline:3px solid #bd8c12; outline-offset:2px; }
 .d5o-full-app .d5o-task-frame details { border-top:1px solid #d8e3e8; margin-top:22px; padding-top:14px; }
 .d5o-full-app .d5o-task-frame summary { cursor:pointer; font-weight:700; }
-.d5o-full-app .d5o-task-frame form { max-width:680px; }
+.d5o-full-app .d5o-task-frame form { max-width:none; }
 .d5o-full-app .d5o-task-frame input,.d5o-full-app .d5o-task-frame select,.d5o-full-app .d5o-task-frame textarea { max-width:100%; }
 @media (max-width:640px) { .d5o-full-app .d5o-task-frame { width:calc(100% - 16px); padding:16px; margin:8px auto; } .d5o-full-app .d5o-task-frame-header { display:block; } .d5o-full-app .d5o-task-frame-header a { margin-top:12px; } }
 .d5o-private-evidence-row { display:flex; justify-content:space-between; gap:20px; padding:14px 18px; border-top:1px solid #e1e8ec; } .d5o-private-evidence-row > div { display:grid; gap:5px; } .d5o-private-evidence-row small { color:#607783; } .d5o-private-evidence-row a { color:#16465d; font-weight:700; } @media (max-width:700px) { .d5o-private-evidence-row { flex-direction:column; } }
