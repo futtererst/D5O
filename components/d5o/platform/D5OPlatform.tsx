@@ -37,6 +37,7 @@ import type { DeployCommand } from "@/lib/d5o/prototype-work/deploy-command";
 import type { OperateCommand } from "@/lib/d5o/prototype-work/operate-command";
 import type { DesignState } from "./design-model";
 import { DesignWorkspace } from "./DesignWorkspace";
+import { RomDesignPanel } from "./RomDesignPanel";
 import { DeployWorkspace } from "./DeployWorkspace";
 import { FieldChangeControl } from "./FieldChangeControl";
 import { currentAcceptedRelease } from "./deploy-model";
@@ -212,7 +213,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
   const [unavailableRecordId, setUnavailableRecordId] = useState<string | null>(null);
   const [recordReturn, setRecordReturn] = useState<Exclude<Screen, "record">>("portfolio");
   const [myWorkEntry, setMyWorkEntry] = useState<"all" | "mine" | "pricing" | "proposal" | "definition">("all");
-  const [discoverEntry, setDiscoverEntry] = useState<"pricing" | "proposal" | "solution-prep" | "solution-review" | "pricing-prep" | "proposal-prep" | "customer-submission-prep" | "design-handoff-receive" | "design-handoff-correction" | "pursuit-prep" | "pursuit-review" | "define-handoff-prep" | "define-handoff-receive" | null>(null);
+  const [discoverEntry, setDiscoverEntry] = useState<"pricing" | "proposal" | "solution-prep" | "solution-review" | "pricing-prep" | "proposal-prep" | "customer-submission-prep" | "rom-budget-ack" | "rom-design-authorization" | "design-handoff-receive" | "design-handoff-correction" | "pursuit-prep" | "pursuit-review" | "define-handoff-prep" | "define-handoff-receive" | null>(null);
   const [defineReviewEntry, setDefineReviewEntry] = useState<"commercial" | "delivery" | "define-prep" | "develop-handoff-prep" | "develop-handoff-receive" | null>(null);
   const [crewEntry, setCrewEntry] = useState<"coverage" | "attendance" | null>(null);
   const [crewFocusWorkId, setCrewFocusWorkId] = useState<string | null>(null);
@@ -461,7 +462,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       setTaskPackageId(view === "record" ? params.get("package") : null);
       setTaskRequestId(view === "record" ? params.get("request") : null);
       setTaskRevision(params.has("sourceRevision") ? Number(params.get("sourceRevision")) : null);
-      if ((view === "develop" || view === "discover") && ["pricing", "proposal", "solution-prep", "solution-review", "pricing-prep", "proposal-prep", "customer-submission-prep", "design-handoff-receive", "design-handoff-correction", "pursuit-prep", "pursuit-review", "define-handoff-prep", "define-handoff-receive"].includes(params.get("focus") ?? "")) setDiscoverEntry(params.get("focus") as typeof discoverEntry);
+      if ((view === "develop" || view === "discover") && ["pricing", "proposal", "solution-prep", "solution-review", "pricing-prep", "proposal-prep", "customer-submission-prep", "rom-budget-ack", "rom-design-authorization", "design-handoff-receive", "design-handoff-correction", "pursuit-prep", "pursuit-review", "define-handoff-prep", "define-handoff-receive"].includes(params.get("focus") ?? "")) setDiscoverEntry(params.get("focus") as typeof discoverEntry);
       if (view === "define" && ["commercial", "delivery", "define-prep", "develop-handoff-prep", "develop-handoff-receive"].includes(params.get("focus") ?? "")) setDefineReviewEntry(params.get("focus") as typeof defineReviewEntry);
       if (recordId && work.some((item) => item.id === recordId && item.workspace === activeWorkspace)) { setSelectedId(recordId); setUnavailableRecordId(null); }
       else if (recordId && ["record", "discover", "define", "develop"].includes(view ?? "")) setUnavailableRecordId(recordId);
@@ -488,11 +489,13 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
           ["admin", "operations_leader", "project_manager"].includes(actorRole ?? "");
         const eligibleDesignReceiver = view === "develop" && focus === "design-handoff-receive" &&
           Boolean(linkedReview?.canonicalWorkId) && actorRole === "operations_leader";
+        const eligibleRomAuthority = view === "develop" && focus === "rom-design-authorization" &&
+          Boolean(linkedReview?.canonicalWorkId) && actorRole === linkedReview?.discovery?.estimate.detailed?.policySnapshot.proposalApproverRole;
         const prepRevision = focus === "pursuit-prep" || focus === "define-handoff-prep" ? linkedReview?.discovery?.pursuitControl?.revision
           : focus === "define-prep" || focus === "develop-handoff-prep" ? linkedReview?.definition?.revision ?? (focus === "define-prep" ? 1 : undefined)
           : focus === "solution-prep" ? linkedReview?.develop?.revision ?? 0
           : focus === "pricing-prep" ? linkedReview?.discovery?.estimate.revision
-          : focus === "proposal-prep" || focus === "customer-submission-prep" ? linkedReview?.discovery?.proposal.package?.revision ?? 0
+          : focus === "proposal-prep" || focus === "customer-submission-prep" || focus === "rom-budget-ack" ? linkedReview?.discovery?.proposal.package?.revision ?? 0
           : focus === "design-handoff-correction" ? linkedReview?.discovery?.designHandoff?.revision : undefined;
         const pursuit = linkedReview?.discovery?.pursuitControl;
         const define = linkedReview?.definition;
@@ -505,10 +508,11 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
           : focus === "pricing-prep" ? Boolean(solution?.review?.status === "Approved" && !["Pricing review", "Approved"].includes(linkedReview?.discovery?.estimate.status ?? ""))
           : focus === "proposal-prep" ? Boolean(linkedReview?.discovery?.estimate.status === "Approved" && !["Internal review", "Approved", "Submitted"].includes(linkedReview?.discovery?.proposal.status ?? ""))
           : focus === "customer-submission-prep" ? Boolean(linkedReview?.discovery?.proposal.status === "Approved" && linkedReview.discovery.proposal.review?.revision === linkedReview.discovery.proposal.package?.revision)
+          : focus === "rom-budget-ack" ? Boolean(linkedReview?.discovery?.estimate.status === "Approved" && linkedReview.discovery.proposal.status === "Submitted" && linkedReview.discovery.estimate.detailed?.input.estimateMaturity === "ROM")
           : focus === "design-handoff-correction" ? Boolean(linkedReview?.discovery?.outcome === "Won" && linkedReview.discovery.designHandoff?.status === "returned" && actorRole === "project_manager")
           : true;
-        setStalePreparationLink(["pursuit-prep", "define-handoff-prep", "define-prep", "develop-handoff-prep", "solution-prep", "pricing-prep", "proposal-prep", "customer-submission-prep", "design-handoff-correction"].includes(focus ?? "") && (prepRevision === undefined || Number(params.get("sourceRevision")) !== prepRevision || !linkedReview || !prepCurrent));
-        if (canPresentSurface(presentation, view as Screen) || eligibleFocusedReview || eligiblePursuitReviewer || eligibleDiscoverReceiver || eligibleDevelopReceiver || eligibleDesignReceiver) setScreen(view as Screen);
+        setStalePreparationLink(["pursuit-prep", "define-handoff-prep", "define-prep", "develop-handoff-prep", "solution-prep", "pricing-prep", "proposal-prep", "customer-submission-prep", "rom-budget-ack", "design-handoff-correction"].includes(focus ?? "") && (prepRevision === undefined || Number(params.get("sourceRevision")) !== prepRevision || !linkedReview || !prepCurrent));
+        if (canPresentSurface(presentation, view as Screen) || eligibleFocusedReview || eligiblePursuitReviewer || eligibleDiscoverReceiver || eligibleDevelopReceiver || eligibleDesignReceiver || eligibleRomAuthority) setScreen(view as Screen);
         else { setScreen("my-work"); setNotice("This view is outside your role workspace. Choose an available task below."); }
       }
       if (section && durableRecordTabs.has(section as RecordTab)) setTab(section as RecordTab);
@@ -1086,7 +1090,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       {screen === "develop" && !stalePhaseTask && !unavailableRecordId ? <DiscoverWorkspace
         mode="develop" workspaceKey={activeWorkspace} workspaceName={palette.name} hosted={hostedPreview}
         configurationInventory={configurationInventory} work={visibleWork as WorkRecord[]}
-        commercialProfiles={commercialProfiles} actor={currentUserLabel}
+        commercialProfiles={commercialProfiles} actor={currentUserLabel} actorId={actorId ?? undefined} actorRole={actorRole}
         canEdit={canEditWork && sharedWorkRevision !== null} focusRecordId={selected?.id}
         reviewFocus={discoverEntry} onPhase={openJourneyPhase}
         onControl={(item, control) => { setSelectedId(item.id); setTab(control); go("record"); }}
@@ -1296,6 +1300,7 @@ function WorkRecord({ taskFocus, taskPackageId, taskRequestId, onFullRecord, pro
       {activeTab === "Develop" && hosted && work.canonicalWorkId && work.serviceSource ? work.packages?.filter((pkg) => currentAcceptedRelease(work, pkg.id)).map((pkg) => <FieldChangeControl key={pkg.id} mode="commercial" workspace={work.workspace} workId={work.id} packageId={pkg.id} releaseId={currentAcceptedRelease(work, pkg.id)?.id} reports={[]} evidence={[]} />) : null}
       {activeTab === "Develop" && work.discovery?.designHandoff?.status === "submitted" ? <Panel title="Design handoff awaiting a receiver" lead={`Revision ${work.discovery.designHandoff.revision} carries the awarded offer and approved Define basis to Design.`}><p>A different authorized workspace actor must accept or return the exact revision. Package planning stays held.</p><button className="d5o-primary" type="button" onClick={onOpenDevelop}>Open receiving decision in Develop →</button></Panel> : null}
       {activeTab === "Design" ? <DesignWorkspace key={work.id} taskFocus={taskFocus} onFullRecord={onFullRecord} work={work} allWork={allWork} configurationInventory={configurationInventory} onSelectWork={onSelectDesignWork} actorRole={actorRole} actorId={actorId} packages={packages} packageDemands={packageDemands} policy={phaseConfig?.designControls} onCommand={onDesignCommand} onHandoff={onDesignHandoff} onCreatePackage={onPackage} demand={<PackageDemandList work={work} profiles={profiles} demands={packageDemands} canEdit={canEditDemand} onSave={onPackageDemand} />} resources={<PhaseResourceBridge phase="Design" demandCount={phaseDemandCount} assignmentCount={phaseAssignmentCount} onPeople={onOpenPeople} onCrew={onOpenCrew} />} /> : null}
+      {activeTab === "Design" && hosted && work.discovery?.estimate.detailed?.input.estimateMaturity === "ROM" ? <RomDesignPanel work={work} workspace={work.workspace} role={actorRole} reconciliationOnly /> : null}
       {activeTab === "Overview" ? connectedPosition ? <div className="d5o-gate-overview"><section className="d5o-gate-progress"><div><p>CONNECTED WORK · CURRENT COMMITTED FACTS</p><h2>{connectedPosition.label}</h2><span>{connectedPosition.nextAction}</span></div></section><section className="d5o-gate-grid"><article className="d5o-gate-requirements"><header><p>CURRENT POSITION</p><h2>Separate phase decisions</h2></header><button type="button" onClick={() => setTab("Develop")}><div><strong>Commercial basis</strong><span>{work.discovery?.estimate.status === "Approved" ? `Estimate revision ${work.discovery.estimate.revision} approved` : "Approved estimate not recorded"}</span></div><b>Open Develop →</b></button><button type="button" onClick={() => setTab("Design")}><div><strong>Design and package releases</strong><span>{work.packages?.length ?? 0} current package identities</span></div><b>Open Design →</b></button><button type="button" onClick={() => setTab("Deploy")}><div><strong>Delivery and acceptance</strong><span>{work.deploy?.workAcceptance?.receipt === "Accepted" ? "Whole-work Operations receipt retained" : "Whole-work Operations receipt not recorded"}</span></div><b>Open Deploy →</b></button><button type="button" onClick={() => setTab("Operate")}><div><strong>Support responsibility</strong><span>{work.operate?.activation?.status ?? "Support not activated"}</span></div><b>Open Operate →</b></button></article><aside className="d5o-gate-proof"><header><p>EXACT SCOPE</p><h2>What needs action</h2></header><p>{connectedPosition.warning ?? connectedPosition.nextAction}</p><p>Historical prototype stage and percentages do not grant a phase approval.</p></aside></section></div> : phaseConfig?.decisionGuards?.length && work.phaseConfigurationVersionId ? <ConfiguredDecisionOverview work={work} config={phaseConfig} blockers={unmet} onTab={setTab} /> : <Overview work={work} blockers={unmet} onTab={setTab} /> : null}
       {activeTab === "Lifecycle" ? <Lifecycle work={work} phaseConfig={phaseConfig} onTab={setTab} /> : null}
       {activeTab === "Readiness" ? <div className="d5o-detail-stack">{connectedPosition ? <Panel title="Current connected position" lead={connectedPosition.label}><p>{connectedPosition.warning ?? connectedPosition.nextAction}</p><p>Open the owning phase or My Work for its exact decision.</p></Panel> : !blockedTransition ? <Panel title="Requirements satisfied" lead="The current gate requirements are satisfied. Review the decision and its authority before moving work forward."><Checklist items={["Current requirements are satisfied for the next prototype action."]} good /></Panel> : null}<Panel title="Action commitment" lead="Set when the next action is due and its impact. This orders the Work hub; it does not clear a requirement."><form className="d5o-inline-form d5o-action-priority-form" key={`${work.id}-${work.nextAction}`} onSubmit={onActionPriority}><label>Due date<input name="nextActionDue" type="date" defaultValue={work.nextActionDue ?? ""} /></label><label>Impact<select name="nextActionImpact" defaultValue={work.nextActionImpact ?? ""}><option value="">Not set</option><option value="Critical">Critical</option><option value="High">High</option><option value="Standard">Standard</option></select></label><button className="d5o-primary" type="submit">Save action priority</button></form></Panel></div> : null}

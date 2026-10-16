@@ -1,0 +1,25 @@
+# Define → Develop ROM: isolated fictional qualification
+
+This record describes technical qualification with fictional data, not Rybex-user observation or customer authority. The application source at the start of the run was `a8137886d95695a449acf6278602e9ed71f5b57e`; the final local commit and displayed build are recorded separately after rebuilding. The populated disposable target is `d5o-candidate-89-replay-20261015` at `127.0.0.1:58221`. Shared and production persistence were not used.
+
+## Browser decisions and retained position
+
+The canonical fictional Work is `f85daaed-685f-4b5b-9e11-3b8a0f5cf33c` (presentation `rybex-f85daaed685f4b5b9e113b8a0f5cf33c`), titled “FICTIONAL · Data Center Inside Plant and Structured Cabling · Hall R · 48-link ROM.” Separate authenticated PM, Commercial, Operations and administrator pilot accounts were used; credentials remain outside Git.
+
+PM and independent reviewers completed Discover qualification, structured Define approval and Develop receipt through the browser. PM prepared solution options and delivery assumptions; Operations approved solution revision 5. PM entered four sourced ROM lines and covered five approved Define obligations, including acceptance/testing work. The fictional administrator published a disposable pricing policy with target margin 25%, overhead 10% of direct cost and contingency 10% of direct cost. PM submitted estimate revision 1, and independent Operations approved it through My Work. The authoritative server retained direct cost USD 11,800, included cost USD 14,160 and low/base/high indicative prices USD 16,384 / 18,880 / 23,872. PM prepared the indicative proposal, Operations approved it, and PM recorded fictional customer submission. The customer job was **not** recorded as Won.
+
+PM recorded a sourced fictional budget acknowledgment. A separate Operations account opened “Authorize detailed Design” from My Work and recorded a Design-only extent and internal spend cap. The browser showed the current authorized position after reload. PM recorded a detailed Design quantity finding against the retained ROM: 48 estimated links versus 52 Design links, cause “Estimating assumption resolved,” with an explicit unpriced follow-up. This reconciliation did not change the approved ROM, create an award or release field work. The ROM Design ledger retained three ordered decisions and receipts.
+
+## API and database boundary probes
+
+Authenticated negative requests returned wrong-role `current_design_authorization_required` (409), cross-tenant `workspace_forbidden` (403), stale source `stale_state` (409), and wrong estimate revision `current_communicated_rom_required` (409). The ROM decision revision and reconciliation count stayed unchanged. An attempted awarded-job package creation returned `design_handoff_required` (409); Design-only permission was not treated as delivery award or execution authority.
+
+A rollback-only database probe called the typed reconciliation command at the committed decision revision: first call returned revision 4, an identical replay returned revision 4, and a conflicting reuse raised `command_reuse_conflict`. The transaction was rolled back; committed revision remained 3. These probes are not browser business decisions.
+
+The ROM review trigger was applied transactionally in the populated disposable pilot and used for the approved estimate. It requires an exact approved Define receipt, obligation coverage, source and quantity basis on each line, a reason for zero-cost treatment and a server-calculated scenario basis. Later source edits added duplicate line-ID rejection and the configured discount to scenario math; the populated pilot function received that replacement. The final policy-derived Design authority refinement exists in the migration source but still needs installation and rerun on a healthy disposable target after Docker Desktop recovers.
+
+## Reproducibility and limitations
+
+The ordered candidate contains 95 migration files (12 read-only shared-history mappings; 83 outstanding). A separate fresh disposable replay reached application of the final ROM migration without a SQL error, but Docker Desktop returned HTTP 502/500 during container startup and migration-ledger verification. This attempt is **not** a qualified healthy 95-file fresh replay. The last fully confirmed fresh startup remains the earlier 90-file checkpoint. The populated pilot stayed reachable at the application URL but Docker was unavailable for final direct database probes.
+
+The ROM path uses published target-margin policies and does not replace historical Budgetary/Firm estimates. The Design finding is an explicit study comparison; no execution Design package may be issued from this Design-only authority without the separate awarded-job path. The fictional customer statement and policy rates have no real customer or commercial standing. Capability and indicative capacity are captured as solution assumptions rather than a committed workforce availability determination. No full procurement BOM, final installation drawing, purchased materials, crew booking or field authorization was fabricated.

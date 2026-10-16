@@ -179,6 +179,18 @@ export async function GET(request: NextRequest) {
         stages: Object.fromEntries(lifecycle.map((_, i) => [i, all.filter((r) => pos(r) === i).length])) } });
     if (view === "actions") {
       const configurationInventory = await hostedConfigurationInventory(workspace as WorkspaceKey);
+      const romPositions = new Map<string, { status?: string | null; estimateRevision?: number | null; offerRevision?: number | null; acknowledgment?: { recordedByActorId?: string } | null }>();
+      if (authoritativeD5OCommandsReady() && ["admin", "project_manager", "operations_leader"].includes(actorRole)) {
+        const romClient = await createRybexSupabaseServerClient();
+        const romCall = romClient.rpc.bind(romClient) as unknown as (name: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: { message: string } | null }>;
+        const candidates = all.filter((record) => record.canonicalWorkId &&
+          (record.discovery as WorkRecord["discovery"] | undefined)?.estimate?.detailed?.input?.estimateMaturity === "ROM" &&
+          (record.discovery as WorkRecord["discovery"] | undefined)?.proposal?.status === "Submitted");
+        const positions = await Promise.all(candidates.map(async (record) => ({ record,
+          response: await romCall("d5o_hosted_rom_design_read_v1", { p_workspace_key: workspace, p_presentation_id: record.id }) })));
+        for (const { record, response } of positions)
+          if (!response.error && response.data) romPositions.set(record.id, response.data as { status?: string | null; estimateRevision?: number | null; offerRevision?: number | null; acknowledgment?: { recordedByActorId?: string } | null });
+      }
       const scheduleRead = await ctx.read("schedule");
       const packageDemands = Array.isArray(scheduleRead.state?.packageDemands)
         ? scheduleRead.state.packageDemands as PackageCrewDemand[] : [];
@@ -242,6 +254,20 @@ export async function GET(request: NextRequest) {
         if (canReviewPricing(record) && estimate?.revision) actions.push({ ...common, kind: "Pricing review", phase: "Develop", focus: "pricing", revision: estimate.revision, status: "Submitted", title: record.title });
         if (canReviewProposal(record) && offer?.revision) actions.push({ ...common, kind: "Proposal approval", phase: "Develop", focus: "proposal", revision: offer.revision, status: "Submitted", title: record.title });
         const commercial = record.discovery as WorkRecord["discovery"] | undefined;
+        const rom = romPositions.get(record.id);
+        const currentRom = rom && rom.estimateRevision === commercial?.estimate.revision &&
+          rom.offerRevision === commercial?.proposal.package?.revision;
+        if (commercial?.estimate.status === "Approved" && commercial.proposal.status === "Submitted" &&
+          commercial.estimate.detailed?.input.estimateMaturity === "ROM") {
+          if (mine && !rom?.status)
+            prep("Record ROM budget acknowledgment", "Develop", "rom-budget-ack", commercial.proposal.package?.revision ?? 0);
+          if (rom?.status === "Acknowledged" && currentRom &&
+            commercial.estimate.detailed?.policySnapshot.proposalApproverRole === actorRole &&
+            rom.acknowledgment?.recordedByActorId !== ctx.actor.id)
+            actions.push({ ...common, kind: "Authorize detailed Design", phase: "Develop", focus: "rom-design-authorization",
+              revision: commercial.proposal.package?.revision ?? 0, status: "Awaiting independent authorization",
+              ownership: `Eligible independent ${actorRole === "admin" ? "administrator" : "Operations"} authority` });
+        }
         if (mine && commercial?.proposal.status === "Approved" && offer?.revision &&
           commercial.proposal.review?.revision === offer.revision)
           prep("Record customer submission", "Develop", "customer-submission-prep", offer.revision);
