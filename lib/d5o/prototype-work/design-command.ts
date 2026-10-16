@@ -7,7 +7,7 @@ import { legacyDesignControlPolicy, type DesignControlPolicy } from "@/component
 import { serviceExecutionBasisIssue } from "./service-execution-basis";
 
 export type DesignCommand = {
-  action: "save-document" | "submit-document" | "return-document" | "approve-document" | "issue-document" | "save-package" | "save-demand" | "request-review" | "decide-review" | "record-customer-approval" | "record-change" | "resolve-change" | "acknowledge-hold" | "release-package" | "release-set" | "respond-receipt" | "withdraw-release" | "save-service-basis" | "revise-service-basis" | "submit-service-basis" | "accept-service-basis" | "return-service-basis";
+  action: "save-document" | "submit-document" | "return-document" | "approve-document" | "issue-document" | "save-package" | "save-demand" | "request-review" | "decide-review" | "record-customer-approval" | "record-change" | "record-schedule-hold" | "resolve-change" | "acknowledge-hold" | "release-package" | "release-set" | "respond-receipt" | "withdraw-release" | "save-service-basis" | "revise-service-basis" | "submit-service-basis" | "accept-service-basis" | "return-service-basis";
   workId: string; expectedRevision: number; expectedDecisionRevision?: number; commandId: string; note?: string;
   expectedOperateRevision?: number; serviceBasis?: { scope: string; coveredScope?: string; uncoveredScope?: string; exclusions: string; completionCriteria: string; verification: string; coverageRationale: string; safety: string; access: string; resources: string; serviceCategory: string };
   document?: Partial<DesignDocument>; documentId?: string; documentRevision?: number; evidenceId?: string;
@@ -15,7 +15,7 @@ export type DesignCommand = {
   demand?: PackageCrewDemand;
   discipline?: DesignReview["discipline"]; assignee?: string; dueDate?: string;
   reviewId?: string; decision?: "Approved" | "Returned";
-  releaseId?: string; response?: "Accepted" | "Returned"; receivingOwner?: string;
+  releaseId?: string; proposedDate?: string; response?: "Accepted" | "Returned"; receivingOwner?: string;
   customerParty?: string; authorityBasis?: string; source?: string; approvedAt?: string;
   changeId?: string; reason?: string; affectedRequirementIds?: string[]; affectedDocumentRefs?: string[]; technicalImpact?: string; commercialImpact?: string; scheduleImpact?: string;
 };

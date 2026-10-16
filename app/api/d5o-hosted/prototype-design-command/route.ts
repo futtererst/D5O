@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     if (authoritativeD5OCommandsReady() && current.canonicalWorkId &&
       ["save-document", "save-package", "save-demand", "submit-document", "return-document", "approve-document",
         "issue-document", "request-review", "decide-review",
-        "release-package", "respond-receipt", "record-change", "acknowledge-hold", "resolve-change"].includes(command.action)) {
+        "release-package", "respond-receipt", "record-change", "record-schedule-hold", "acknowledge-hold", "resolve-change"].includes(command.action)) {
       if (!Number.isInteger(command.expectedDecisionRevision) ||
         Number(command.expectedDecisionRevision) < 0)
         return reply({ error: "invalid_decision_revision" }, 400);
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       const call = client.rpc.bind(client) as unknown as (name: string, args: Record<string, unknown>) => Promise<{
         data: unknown; error: { code?: string; message: string } | null
       }>;
-      const commandName = ["record-change", "acknowledge-hold", "resolve-change"].includes(command.action)
+      const commandName = ["record-change", "record-schedule-hold", "acknowledge-hold", "resolve-change"].includes(command.action)
         ? "d5o_hosted_design_field_change_command_v1"
         : ["save-document", "save-package"].includes(command.action)
         ? "d5o_hosted_design_draft_command_v1"
