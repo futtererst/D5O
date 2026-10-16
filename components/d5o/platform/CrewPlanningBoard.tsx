@@ -25,7 +25,7 @@ function ScheduleIssueDetail({ candidate, work, assessment, onReviewWork }: {
   </section>;
 }
 
-export function CrewPlanningBoard({ workspaceKey, work, profiles, onOpen, onOpenDecision, shared, entryFocus = null, focusWorkId = null }: { workspaceKey: WorkspaceKey; work: ScheduleWork[]; profiles: PersonProfile[]; onOpen: (item: ScheduleWork) => void; onOpenDecision: (item: ScheduleWork) => void; shared: ReturnType<typeof useSharedSchedule>; entryFocus?: "coverage" | "attendance" | null; focusWorkId?: string | null }) {
+export function CrewPlanningBoard({ workspaceKey, work, workReady, profiles, onOpen, onOpenDecision, shared, entryFocus = null, focusWorkId = null }: { workspaceKey: WorkspaceKey; work: ScheduleWork[]; workReady: boolean; profiles: PersonProfile[]; onOpen: (item: ScheduleWork) => void; onOpenDecision: (item: ScheduleWork) => void; shared: ReturnType<typeof useSharedSchedule>; entryFocus?: "coverage" | "attendance" | null; focusWorkId?: string | null }) {
   const assignments = shared.schedule?.assignments ?? [];
   const packageDemands = shared.schedule?.packageDemands ?? [];
   const anchor = shared.schedule?.anchorDate ?? "";
@@ -96,7 +96,7 @@ export function CrewPlanningBoard({ workspaceKey, work, profiles, onOpen, onOpen
   const selectedWork = work.find((record) => record.id === selected?.workId);
   const pendingSource = assignments.find((item) => item.id === pendingMove?.id);
   const pendingRequirement = packageDemands.find((item) => item.workId === pendingMove?.workId && item.packageId === pendingMove?.packageId);
-  const pendingRevisedDemand = pendingMove && pendingSource && pendingRequirement
+  const pendingRevisedDemand = !shared.requiresPublication && pendingMove && pendingSource && pendingRequirement
     ? reconcileBookingDemand(pendingRequirement, { date: pendingSource.date ?? "", shift: pendingSource.shift }, pendingMove, assignments.filter((item) => item.id !== pendingMove.id)) : null;
   const pendingDemands = pendingRevisedDemand ? [...packageDemands.filter((item) => item.packageId !== pendingRevisedDemand.packageId), pendingRevisedDemand] : packageDemands;
   const pendingAssessment = pendingMove ? assignmentAssessment(pendingMove, assignments, workspaceKey, work, profiles, pendingDemands) : null;
@@ -104,7 +104,8 @@ export function CrewPlanningBoard({ workspaceKey, work, profiles, onOpen, onOpen
   const chosenDemand = packageDemands.find((item) => `${item.workId}|${item.packageId}` === selectedPackage);
   const chosenDate = anchor ? dateKeyForSchedule(anchor, visibleWeek, selectedDay) : "";
   const editorSlotChange = Boolean(chosenDemand && sourceSlot && (sourceSlot.date !== chosenDate || sourceSlot.shift !== selectedShift));
-  const editorRevisedDemand = chosenDemand && sourceSlot ? reconcileBookingDemand(chosenDemand, sourceSlot,
+  const editorSlotAllowed = Boolean(chosenDemand?.requiredSlots.some((slot) => slot.date === chosenDate && slot.shift === selectedShift));
+  const editorRevisedDemand = !shared.requiresPublication && chosenDemand && sourceSlot ? reconcileBookingDemand(chosenDemand, sourceSlot,
     { id: "crew-preview", crew: "Preview", people: [], workId: chosenDemand.workId, packageId: chosenDemand.packageId, week: visibleWeek, day: selectedDay, date: chosenDate, shift: selectedShift }, assignments) : null;
   const editorDemands = editorRevisedDemand ? [...packageDemands.filter((item) => item.packageId !== editorRevisedDemand.packageId), editorRevisedDemand] : packageDemands;
   const qualifiedProfiles = chosenDemand ? profiles.filter((person) => person.qualifications.includes(chosenDemand.qualification)) : [];
@@ -125,6 +126,10 @@ export function CrewPlanningBoard({ workspaceKey, work, profiles, onOpen, onOpen
     catch (error) { setMessage(error instanceof Error ? error.message : "Schedule save failed."); return false; }
   }
   async function saveBooking(assignment: Assignment, success: string, slot?: CrewDemandSlot) {
+    if (shared.requiresPublication && !packageDemands.find((item) => item.workId === assignment.workId && item.packageId === assignment.packageId)?.requiredSlots.some((required) => required.date === assignment.date && required.shift === assignment.shift)) {
+      setMessage("This date and shift are outside the current Design crew requirement. Revise the package basis before booking.");
+      return false;
+    }
     try { await shared.mutate({ action: "save-booking", assignment, sourceSlot: slot }); setMessage(success); return true; }
     catch (error) { setMessage(error instanceof Error ? error.message : "Schedule save failed."); return false; }
   }
@@ -168,12 +173,12 @@ export function CrewPlanningBoard({ workspaceKey, work, profiles, onOpen, onOpen
     const candidate: Assignment = { id: `crew-${workspaceKey}-${serial}`, crew, people, workId: selection.workId, packageId: selection.packageId, week: visibleWeek, day, date: dateKeyForSchedule(anchor, visibleWeek, day), shift };
     const demand = packageDemands.find((item) => item.workId === candidate.workId && item.packageId === candidate.packageId);
     if (!demand) { setMessage("This Work Package needs a configured crew requirement before it can be scheduled."); return; }
-    const revisedDemand = reconcileBookingDemand(demand, sourceSlot, candidate, assignments);
+    const revisedDemand = shared.requiresPublication ? demand : reconcileBookingDemand(demand, sourceSlot, candidate, assignments);
     const assessment = assignmentAssessment(candidate, assignments, workspaceKey, work, profiles,
       [...packageDemands.filter((item) => item.packageId !== demand.packageId), revisedDemand]);
     if (assessment.errors.length) { setMessage(assessment.errors.join(" ")); return; }
     setSavingCrew(true);
-    const saved = await saveBooking(candidate, `${people.length} people scheduled to ${crew} on ${weekdays[day]}. ${shared.requiresPublication ? "Publish this week's bookings in Plan details → Responses before workers can see them. " : "The booking was shared with assigned workers. "}${editorSlotChange ? "The Work Package required slot was updated. " : ""}${assessment.release === "Release held" ? "Work release remains held; open the Work Record for the required decision." : "Saving the schedule does not release controlled work."}`, sourceSlot);
+    const saved = await saveBooking(candidate, `${people.length} people scheduled to ${crew} on ${weekdays[day]}. ${shared.requiresPublication ? "Publish this week's bookings in Plan details → Responses before workers can see them. " : "The booking was shared with assigned workers. "}${editorSlotChange && !shared.requiresPublication ? "The Work Package required slot was updated. " : ""}${assessment.release === "Release held" ? "Work release remains held; open the Work Record for the required decision." : "Saving the schedule does not release controlled work."}`, sourceSlot);
     setSavingCrew(false);
     if (!saved) return;
     setSelectedId(candidate.id);
@@ -237,7 +242,7 @@ export function CrewPlanningBoard({ workspaceKey, work, profiles, onOpen, onOpen
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   }
 
-  if (!shared.schedule) return <section className="d5o-crew-concept d5o-schedule-workspace"><header className="d5o-crew-concept-head"><div><p>CREW SCHEDULE · {workspaceKey.toUpperCase()}</p><h1>Schedule crews and controlled work</h1><span>The shared crew plan must load before staffing advice or calendar dates can be shown.</span></div></header><div className="d5o-crew-load-state" role="status"><strong>{shared.error ? "Crew plan unavailable" : "Loading the shared crew plan…"}</strong><span>{shared.error || "Checking the current workspace bookings, dates, and publication."}</span>{shared.error ? <button onClick={() => shared.refresh().catch(() => undefined)}>Retry shared plan</button> : null}</div></section>;
+  if (!shared.schedule || !workReady) return <section className="d5o-crew-concept d5o-schedule-workspace"><header className="d5o-crew-concept-head"><div><p>CREW SCHEDULE · {workspaceKey.toUpperCase()}</p><h1>Schedule crews and controlled work</h1><span>The shared crew plan and Work Records must load before staffing advice is shown.</span></div></header><div className="d5o-crew-load-state" role="status"><strong>{shared.error ? "Crew plan unavailable" : !workReady ? "Loading Work Records…" : "Loading the shared crew plan…"}</strong><span>{shared.error || "Checking the current workspace bookings, packages, dates, and publication."}</span>{shared.error ? <button onClick={() => shared.refresh().catch(() => undefined)}>Retry shared plan</button> : null}</div></section>;
 
   return <section className="d5o-crew-concept d5o-schedule-workspace">
     <header className="d5o-crew-concept-head"><div><p>CREW SCHEDULE · {workspaceKey === "rybex" ? "TECHNICAL DELIVERY" : "MODERNIZATION SERVICE"}</p><h1>Crew schedule</h1><span>{shared.requiresPublication ? "Choose qualified people, save the draft booking, then publish the week for worker response." : "Choose qualified people with their workload and conflicts in view. Saving shares the booking with workers for a response."}</span></div><div className="d5o-schedule-head-actions"><button type="button" onClick={() => { setDetailsTab("overview"); setDetailsOpen(true); }}>Plan details</button><button type="button" disabled={!shared.canEdit} onClick={() => openAvailability("", 0)}>Record absence</button><button className="d5o-primary" disabled={!shared.canEdit} onClick={() => { setSelectedPackage(""); setSourceSlot(null); setSelectedDay(0); setSelectedShift("07:00–15:30"); setPeople([]); setCrewName(""); setShowAllPeople(false); setMessage(""); setDetailsTab("editor"); setDetailsOpen(true); }}>+ Schedule crew</button></div></header>
@@ -281,7 +286,7 @@ export function CrewPlanningBoard({ workspaceKey, work, profiles, onOpen, onOpen
         <label>Booking day<select name="day" value={selectedDay} onChange={(event) => setSelectedDay(Number(event.target.value))}>{[0, 1, 2, 3, 4].map((day) => <option key={day} value={day}>{dateFor(visibleWeek, day).toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" })}</option>)}</select></label>
         <div className="d5o-crew-time-fields"><label>Start time<input type="time" value={shiftTimes(selectedShift).start} onChange={(event) => setSelectedShift(`${event.target.value}–${shiftTimes(selectedShift).end}`)} required /></label><label>End time<input type="time" value={shiftTimes(selectedShift).end} onChange={(event) => setSelectedShift(`${shiftTimes(selectedShift).start}–${event.target.value}`)} required /></label></div>
       </div>
-      <p className="d5o-schedule-form-requirement">Work Package demand: <strong>{chosenDemand ? `${chosenDemand.minimumPeople}+ people · ${chosenDemand.qualification} · ${chosenDemand.requiredSlots.map((slot) => `${slot.date} ${slot.shift}`).join("; ")}` : selectedPackage ? "Not configured — set dates and shifts in Work Record Design" : "Select a package"}</strong>{editorSlotChange ? <span>Saving this assignment will also update its required date/shift. Existing bookings on the original slot remain covered.</span> : null}</p>
+      <p className="d5o-schedule-form-requirement">Work Package demand: <strong>{chosenDemand ? `${chosenDemand.minimumPeople}+ people · ${chosenDemand.qualification} · ${chosenDemand.requiredSlots.map((slot) => `${slot.date} ${slot.shift}`).join("; ")}` : selectedPackage ? "Not configured — set dates and shifts in Work Record Design" : "Select a package"}</strong>{shared.requiresPublication && chosenDemand && !editorSlotAllowed ? <span>This date and shift are outside the current Design requirement. Review the package basis before booking.</span> : editorSlotChange && !shared.requiresPublication ? <span>Saving this assignment will also update its required date/shift. Existing bookings on the original slot remain covered.</span> : null}</p>
       <div className="d5o-picker-controls"><span>{chosenDemand ? `${availableQualified.length} eligible for this shift · ${qualifiedProfiles.length} hold ${chosenDemand.qualification} · ${chosenDemand.minimumPeople} needed` : "Select a configured package to see eligible people"}</span>{chosenDemand ? <button type="button" onClick={() => setShowAllPeople((value) => !value)}>{showAllPeople ? "Show qualified people" : "Show all people"}</button> : null}</div>
       {chosenDemand && !availableQualified.length ? <div className="d5o-schedule-staffing-blocker" role="status"><strong>No qualified person is free for this shift.</strong><span>{existingPackageBooking && allQualifiedAlreadyBooked ? `${existingPackageBooking.people.join(" and ")} are already scheduled on this package for ${weekdays[selectedDay]} ${selectedShift}. This is a booking overlap, not a weekly capacity limit.` : `The ${qualifiedProfiles.length} people with ${chosenDemand.qualification} are booked, unavailable, or at capacity for ${weekdays[selectedDay]} ${selectedShift}. Try another day or time.`}</span>{existingPackageBooking ? <button type="button" onClick={() => { setSelectedId(existingPackageBooking.id); setDetailsTab("booking"); }}>Review existing booking →</button> : null}</div> : null}
       {chosenDemand ? <fieldset><legend>NAMED PEOPLE · {people.length} SELECTED</legend><p className="d5o-crew-candidate-guidance">Eligibility checks this shift against skills, recorded absences, overlapping bookings, and weekly hours. A release hold belongs to the Work Package and is shown after booking.</p><div>{visibleChoices.map(({ person, reason, qualified, eligible, hours, dayBookings }) => {
