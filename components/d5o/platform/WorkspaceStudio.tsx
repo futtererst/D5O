@@ -11,6 +11,7 @@ import type { ConfigurationInventory } from "@/lib/d5o/configuration/version-inv
 import { ConfigurationPublicationPanel } from "./ConfigurationPublicationPanel";
 import { phaseContractFromManifest } from "./published-phase-configuration";
 import { CrewAccessPanel } from "./CrewAccessPanel";
+import { HandoffRoutingAdmin } from "./HandoffRoutingAdmin";
 
 export function WorkspaceStudio({ workspaceKey, workspaceName, configurationInventory, canManageWorkerAccounts = false, accent, foundation, workTypes, commercialProfiles, onAccent, onFoundation, onWorkTypes, onCommercialProfiles }: {
   workspaceKey: LifecycleWorkspace; workspaceName: string; accent: string; foundation: string; workTypes: string[];
@@ -70,6 +71,7 @@ export function WorkspaceStudio({ workspaceKey, workspaceName, configurationInve
       <small className="d5o-commercial-note">Prototype limitation: commercial profile names are routing labels only. Hosted worker account access is governed separately and grants no commercial approval authority.</small>
     </section></details>
     {canManageWorkerAccounts ? <details className="d5o-studio-section"><summary>Worker account bindings</summary><CrewAccessPanel /></details> : null}
+    {canManageWorkerAccounts && activeVersion ? <details className="d5o-studio-section"><summary>Receiving roles for handoffs</summary><HandoffRoutingAdmin workspace={workspaceKey} version={activeVersion.id} /></details> : null}
     <details className="d5o-studio-section"><summary>Draft, publish and activate policy</summary><ConfigurationPublicationPanel inventory={configurationInventory} workspace={workspaceKey} /></details>
   </section>;
 }

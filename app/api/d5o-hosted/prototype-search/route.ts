@@ -213,7 +213,7 @@ export async function GET(request: NextRequest) {
           prep("Prepare Define handoff", "Discover", "define-handoff-prep", pursuit.revision);
         if (pursuit?.status === "qualified" && handoff?.status === "submitted" &&
           ["admin", "operations_leader", "project_manager"].includes(actorRole) &&
-          handoff.receiverActorId === ctx.actor.id && handoff.actorId !== ctx.actor.id)
+          (handoff.receiverRole ? handoff.receiverRole === actorRole : handoff.receiverActorId === ctx.actor.id) && handoff.actorId !== ctx.actor.id)
           actions.push({ ...common, kind: "Receive Define handoff", phase: "Discover", focus: "define-handoff-receive",
             revision: pursuit.revision, status: "Submitted", ownership: "Named receiving account" });
         if (mine && handoff?.status === "accepted" && (!define || ["Draft", "Changes requested"].includes(define.status)))

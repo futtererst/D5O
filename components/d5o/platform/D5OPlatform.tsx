@@ -473,7 +473,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
         const eligiblePursuitReviewer = view === "discover" && focus === "pursuit-review" && linkedReview?.discovery?.pursuitControl?.status === "submitted" && linkedReview.discovery.pursuitControl.submission?.actorId !== actorId && ["admin", "billing_commercial_lead", "business_development_lead"].includes(actorRole ?? "");
         const eligibleDiscoverReceiver = view === "discover" && focus === "define-handoff-receive" &&
           linkedReview?.discovery?.pursuitControl?.handoff?.status === "submitted" &&
-          linkedReview.discovery.pursuitControl.handoff.receiverActorId === actorId &&
+          (linkedReview.discovery.pursuitControl.handoff.receiverRole ? linkedReview.discovery.pursuitControl.handoff.receiverRole === actorRole : linkedReview.discovery.pursuitControl.handoff.receiverActorId === actorId) &&
           ["admin", "operations_leader", "project_manager"].includes(actorRole ?? "");
         const eligibleDevelopReceiver = view === "define" && focus === "develop-handoff-receive" &&
           linkedReview?.definition?.developHandoff?.status === "submitted" &&
@@ -527,7 +527,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
     (taskFocus === "pursuit-review" ? selected.discovery?.pursuitControl?.status !== "submitted" || selected.discovery.pursuitControl.revision !== taskRevision || selected.discovery.pursuitControl.submission?.actorId === actorId || !["admin", "billing_commercial_lead", "business_development_lead"].includes(actorRole ?? "")
       : taskFocus === "define-handoff-receive" ? selected.discovery?.pursuitControl?.status !== "qualified" ||
       selected.discovery.pursuitControl.revision !== taskRevision || selected.discovery.pursuitControl.handoff?.status !== "submitted" ||
-      selected.discovery.pursuitControl.handoff.receiverActorId !== actorId
+      (selected.discovery.pursuitControl.handoff.receiverRole ? selected.discovery.pursuitControl.handoff.receiverRole !== actorRole : selected.discovery.pursuitControl.handoff.receiverActorId !== actorId)
       : taskFocus === "design-handoff-receive" ? selected.discovery?.designHandoff?.status !== "submitted" ||
         selected.discovery.designHandoff.revision !== taskRevision || selected.discovery.designHandoff.submittedByActorId === actorId || actorRole !== "operations_leader"
       : taskFocus === "develop-handoff-receive" ? selected.definition?.status !== "Approved" ||
@@ -600,7 +600,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
     const intent = command.kind === "save" ? { ...command.fields, ...command.workFields }
       : command.kind === "decide" || command.kind === "respond-handoff"
         ? { outcome: command.outcome, reason: command.reason }
-        : command.kind === "submit-handoff" ? { receiver: command.receiver, brief: command.brief } : {};
+        : command.kind === "submit-handoff" ? { brief: command.brief } : {};
     try {
       const response = await fetch(`/api/d5o-hosted/prototype-pursuit-command?workspace=${encodeURIComponent(activeWorkspace)}`, {
         method: "POST", headers: { "Content-Type": "application/json" },

@@ -8,7 +8,7 @@ export type PursuitCommand =
   | { kind: "decide"; expected: number; actor: string; outcome: "returned" | "qualified" | "held" | "declined"; reason: string }
   | { kind: "request-spend"; expected: number; actor: string; cap: number; purpose: string }
   | { kind: "decide-spend"; expected: number; actor: string; outcome: "authorized" | "returned"; reason: string }
-  | { kind: "submit-handoff"; expected: number; actor: string; receiver: string; brief: string }
+  | { kind: "submit-handoff"; expected: number; actor: string; brief: string }
   | { kind: "respond-handoff"; expected: number; actor: string; outcome: "accepted" | "returned"; reason: string };
 
 export const blankPursuit = (): Pursuit => ({
@@ -68,13 +68,13 @@ export function applyPursuitCommand(work: WorkRecord, command: PursuitCommand): 
     action = `Pursuit spend ${command.outcome}`; note = command.reason.trim(); nextAction = "Prepare accepted Define handoff";
   } else if (command.kind === "submit-handoff") {
     if (prior.status !== "qualified" || prior.handoff?.status === "accepted") return { error: "A qualified pursuit without an accepted handoff is required." };
-    if (!command.receiver.trim() || command.brief.trim().length < 20) return { error: "Name the receiving owner and provide a brief of at least 20 characters." };
-    next = { ...next, handoff: { status: "submitted", receiver: command.receiver.trim(), brief: command.brief.trim(), revision: (prior.handoff?.revision ?? 0) + 1, actor: command.actor, at } };
-    action = "Define handoff submitted"; note = `Receiver: ${command.receiver.trim()}`; nextAction = `${command.receiver.trim()}: accept or return Define brief`;
+    if (command.brief.trim().length < 20) return { error: "Provide a receiving brief of at least 20 characters." };
+    next = { ...next, handoff: { status: "submitted", receiver: "Configured receiver queue", brief: command.brief.trim(), revision: (prior.handoff?.revision ?? 0) + 1, actor: command.actor, at } };
+    action = "Define handoff submitted"; note = "Configured receiver queue"; nextAction = "Define receiver queue: accept or return the brief";
   } else {
     if (prior.handoff?.status !== "submitted") return { error: "No Define handoff is awaiting a receiver." };
-    if (command.actor.trim().toLocaleLowerCase() !== prior.handoff.receiver.trim().toLocaleLowerCase())
-      return { error: `Only the named Define receiver (${prior.handoff.receiver}) can accept or return this brief.` };
+    if (command.actor.trim().toLocaleLowerCase() === prior.handoff.actor?.trim().toLocaleLowerCase())
+      return { error: "A separate receiver must accept or return this brief." };
     if (command.reason.trim().length < 10) return { error: "Give an acceptance or return reason of at least 10 characters." };
     next = { ...next, handoff: { ...prior.handoff, status: command.outcome, reason: command.reason.trim(), actor: command.actor, at } };
     action = `Define handoff ${command.outcome}`; note = command.reason.trim(); nextAction = command.outcome === "accepted" ? "Define owner: establish scope baseline" : "Pursuit owner: correct Define brief";
