@@ -16,12 +16,10 @@ async function admin(workspace: string) {
 export async function GET(request: NextRequest) {
   try {
     const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
-    const version = request.nextUrl.searchParams.get("version") ?? "";
-    if (!/^[0-9a-f-]{36}$/i.test(version)) return reply({ error: "invalid_configuration" }, 400);
     await admin(workspace);
     const client = await createRybexSupabaseServerClient();
-    const { data, error } = await (client.rpc as unknown as (name: string, args: Record<string, unknown>) => Promise<RpcResult>)("d5o_hosted_handoff_routes_v1", { p_workspace_key: workspace, p_version: version });
-    return error ? failure(error) : reply({ routes: data });
+    const { data, error } = await (client.rpc as unknown as (name: string, args: Record<string, unknown>) => Promise<RpcResult>)("d5o_hosted_handoff_configuration_v1", { p_workspace_key: workspace });
+    return error ? failure(error) : reply(data);
   } catch (error) { return error instanceof HostedStateError ? reply({ error: error.code }, error.status) : reply({ error: "handoff_route_unavailable" }, 503); }
 }
 export async function POST(request: NextRequest) {
@@ -31,16 +29,20 @@ export async function POST(request: NextRequest) {
     await admin(workspace);
     const raw = await request.text();
     if (raw.length > 1200) return reply({ error: "request_too_large" }, 413);
-    const input = JSON.parse(raw) as { version?: string; key?: string; role?: string; expectedRevision?: number; commandId?: string };
-    if (!/^[0-9a-f-]{36}$/i.test(input.version ?? "") || !["discoverDefine", "designDeploy", "deployOperate"].includes(input.key ?? "")
-      || !["admin", "operations_leader", "project_manager"].includes(input.role ?? "") || !Number.isInteger(input.expectedRevision)
+    const input = JSON.parse(raw) as { action?: string; version?: string; key?: string; role?: string; expectedRevision?: number; commandId?: string };
+    if (!/^[0-9a-f-]{36}$/i.test(input.version ?? "")
+      || !["create-draft", "save-route", "publish", "activate"].includes(input.action ?? "")
+      || (input.action === "save-route" && (!["discoverDefine", "designDeploy", "deployOperate"].includes(input.key ?? "")
+        || !["admin", "operations_leader", "project_manager"].includes(input.role ?? "")))
+      || !Number.isInteger(input.expectedRevision)
       || !input.commandId || input.commandId.length < 8 || input.commandId.length > 120) return reply({ error: "invalid_route" }, 400);
     const client = await createRybexSupabaseServerClient();
-    const { data, error } = await (client.rpc as unknown as (name: string, args: Record<string, unknown>) => Promise<RpcResult>)("d5o_hosted_configure_handoff_route_v1", {
-      p_workspace_key: workspace, p_version: input.version, p_route: input.key, p_role: input.role,
+    const { data, error } = await (client.rpc as unknown as (name: string, args: Record<string, unknown>) => Promise<RpcResult>)("d5o_hosted_handoff_configuration_command_v1", {
+      p_workspace_key: workspace, p_action: input.action, p_version: input.version,
+      p_route: input.key ?? null, p_role: input.role ?? null,
       p_expected_revision: input.expectedRevision, p_command_id: input.commandId
     });
-    return error ? failure(error) : reply({ route: data });
+    return error ? failure(error) : reply({ result: data });
   } catch (error) { return error instanceof HostedStateError ? reply({ error: error.code }, error.status)
     : error instanceof SyntaxError ? reply({ error: "invalid_request" }, 400) : reply({ error: "handoff_route_unavailable" }, 503); }
 }

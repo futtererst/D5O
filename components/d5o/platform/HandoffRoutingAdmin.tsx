@@ -1,57 +1,101 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { WorkspaceKey } from "./work-types";
 
-type Route = { key: string; role: string; revision: number; updatedAt?: string };
+type Route = { key: string; role: string; revision: number; eligibleCount: number };
+type Version = { id: string; version: number; status: "draft" | "validated" | "published"; routes: Route[] };
+type Inventory = { versions: Version[]; workTypes: Array<{ key: string; name: string }> };
 const names: Record<string, string> = { discoverDefine: "Discover to Define", designDeploy: "Design to Deploy", deployOperate: "Deploy to Operate" };
 const labels: Record<string, string> = { admin: "System administrator", operations_leader: "Operations leader", project_manager: "Project manager" };
-export function HandoffRoutingAdmin({ workspace, version }: { workspace: WorkspaceKey; version: string }) {
-  const [routes, setRoutes] = useState<Route[]>([]);
+const routeKeys = Object.keys(names);
+
+export function HandoffRoutingAdmin({ workspace }: { workspace: WorkspaceKey }) {
+  const [inventory, setInventory] = useState<Inventory | null>(null);
+  const [selected, setSelected] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
-  async function refresh() {
-    const response = await fetch(`/api/d5o-hosted/handoff-routes?workspace=${encodeURIComponent(workspace)}&version=${encodeURIComponent(version)}`, { cache: "no-store" });
-    const body = await response.json() as { routes?: Route[]; error?: string };
-    if (!response.ok) throw new Error(body.error ?? "Configured handoffs unavailable.");
-    setRoutes(body.routes ?? []);
-  }
+  const refresh = useCallback(async () => {
+    const response = await fetch(`/api/d5o-hosted/handoff-routes?workspace=${encodeURIComponent(workspace)}`, { cache: "no-store" });
+    const body = await response.json() as Inventory & { error?: string };
+    if (!response.ok) throw new Error(body.error ?? "Handoff configuration unavailable.");
+    setInventory(body);
+    const editable = body.versions.find((item) => item.status === "draft") ?? body.versions.find((item) => item.status === "published");
+    setSelected(Object.fromEntries((editable?.routes ?? []).map((route) => [route.key, route.role])));
+  }, [workspace]);
   useEffect(() => {
     let active = true;
-    void fetch(`/api/d5o-hosted/handoff-routes?workspace=${encodeURIComponent(workspace)}&version=${encodeURIComponent(version)}`, { cache: "no-store" })
+    void fetch(`/api/d5o-hosted/handoff-routes?workspace=${encodeURIComponent(workspace)}`, { cache: "no-store" })
       .then(async (response) => {
-        const body = await response.json() as { routes?: Route[]; error?: string };
-        if (!response.ok) throw new Error(body.error ?? "Configured handoffs unavailable.");
-        return body.routes ?? [];
-      })
-      .then((items) => { if (active) setRoutes(items); })
-      .catch((error) => { if (active) setMessage(error instanceof Error ? error.message : "Configured handoffs unavailable."); });
+        const body = await response.json() as Inventory & { error?: string };
+        if (!response.ok) throw new Error(body.error ?? "Handoff configuration unavailable.");
+        return body;
+      }).then((body) => {
+        if (!active) return;
+        setInventory(body);
+        const editable = body.versions.find((item) => item.status === "draft") ?? body.versions.find((item) => item.status === "published");
+        setSelected(Object.fromEntries((editable?.routes ?? []).map((route) => [route.key, route.role])));
+      }).catch((error) => { if (active) setMessage(error instanceof Error ? error.message : "Handoff configuration unavailable."); });
     return () => { active = false; };
-  }, [workspace, version]);
-  async function save(route: Route, role: string) {
+  }, [workspace]);
+
+  async function command(action: "create-draft" | "save-route" | "publish" | "activate", version: Version, route?: Route) {
     setBusy(true); setMessage("");
     try {
       const response = await fetch(`/api/d5o-hosted/handoff-routes?workspace=${encodeURIComponent(workspace)}`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ version, key: route.key, role, expectedRevision: route.revision, commandId: crypto.randomUUID() })
+        body: JSON.stringify({ action, version: version.id, key: route?.key, role: route ? selected[route.key] : undefined,
+          expectedRevision: route?.revision ?? 0, commandId: crypto.randomUUID() })
       });
       const body = await response.json() as { error?: string };
-      if (!response.ok) throw new Error(body.error ?? "Route could not be saved.");
-      await refresh(); setMessage("Receiving role saved. New handoffs use this route; existing decisions retain their recorded destination.");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Route could not be saved."); }
+      if (!response.ok) throw new Error(body.error ?? "Configuration change rejected.");
+      await refresh();
+      setMessage(action === "create-draft" ? "Draft copied. Existing work retains its current version."
+        : action === "save-route" ? "Draft receiving role saved. It is not active yet."
+        : action === "publish" ? "Routes validated. Activate when they should govern new Work Records."
+        : "New default activated. Existing Work Records and handoffs keep their prior basis.");
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Configuration change rejected."); }
     finally { setBusy(false); }
   }
+
+  const active = inventory?.versions.find((item) => item.status === "published");
+  const draft = inventory?.versions.find((item) => item.status === "draft");
+  const candidate = inventory?.versions.find((item) => item.status === "validated");
   return <section className="d5o-publication" aria-label="Configured handoff routing">
-    <header><div><p>WORKFLOW ROUTING · SYSTEM ADMINISTRATOR</p><h2>Who receives each handoff</h2><span>Submitters supply the work basis. The configured role receives it; an eligible independent member records acceptance.</span></div></header>
-    <div className="d5o-publication-fields">{Object.keys(names).map((key) => {
-      const route = routes.find((item) => item.key === key);
-      return <label key={key}>{names[key]}<select aria-label={`${names[key]} receiving role`} key={`${key}-${route?.revision ?? 0}`} defaultValue={route?.role ?? ""}
-        disabled={busy || (key === "deployOperate" && !!route)} onChange={(event) => { void save(route ?? { key, role: "", revision: 0 }, event.target.value); }}>
-        {!route ? <option value="">Not configured</option> : null}
-        {Object.entries(labels).filter(([role]) => key !== "deployOperate" || role === "operations_leader").map(([role, label]) => <option key={role} value={role}>{label}</option>)}
-      </select><small>{route ? `Configuration revision ${route.revision}` : "An administrator must configure this route before a handoff can be submitted."}</small></label>;
-    })}</div>
+    <header><div><p>HOSTED WORK CONFIGURATION · SYSTEM ADMINISTRATOR</p><h2>Receiving roles and effective setup</h2>
+      <span>New work pins the active version. Submitters provide the handoff basis; an eligible independent member accepts or returns it.</span></div>
+      <strong>{active ? `Active v${active.version}` : "No active version"}</strong></header>
+    {!inventory ? <p role="status">Loading effective setup…</p> : <>
+      <div className="d5o-publication-fields">{routeKeys.map((key) => {
+        const route = active?.routes.find((item) => item.key === key);
+        return <div key={key}><strong>{names[key]}</strong><p>{route ? labels[route.role] ?? route.role : "Not configured"}
+          {route ? ` · ${route.eligibleCount} active member${route.eligibleCount === 1 ? "" : "s"}` : ""}</p>
+          <small>{!route || route.eligibleCount === 0 ? "No eligible receiving member; new handoffs will be held." : "Independent receipt is checked for each handoff."}</small></div>;
+      })}</div>
+      <small>Active Work Types: {inventory.workTypes.map((item) => item.name).join(" · ") || "None"}. Typed commands retain all decision rights; this screen grants none.</small>
+      {!draft && !candidate && active ? <div className="d5o-publication-actions"><button type="button" disabled={busy} onClick={() => void command("create-draft", active)}>Create draft from active v{active.version}</button></div> : null}
+      {draft ? <div className="d5o-publication-editor"><h3>Draft v{draft.version} · not active</h3>
+        <div className="d5o-publication-fields">{routeKeys.map((key) => {
+          const route = draft.routes.find((item) => item.key === key);
+          return <label key={key}>{names[key]} receiving role<select aria-label={`${names[key]} draft receiving role`}
+            value={selected[key] ?? route?.role ?? ""} disabled={busy || key === "deployOperate"}
+            onChange={(event) => setSelected((current) => ({ ...current, [key]: event.target.value }))}>
+            {Object.entries(labels).filter(([role]) => key !== "deployOperate" || role === "operations_leader")
+              .map(([role, label]) => <option key={role} value={role}>{label}</option>)}
+          </select><small>{route ? `${route.eligibleCount} active member${route.eligibleCount === 1 ? "" : "s"} for the saved role` : "Missing route"}</small>
+          <button type="button" disabled={busy || !route || selected[key] === route.role}
+            onClick={() => { if (route) void command("save-route", draft, route); }}>Save draft route</button></label>;
+        })}</div>
+        <button type="button" disabled={busy || draft.routes.length !== routeKeys.length || draft.routes.some((route) => route.eligibleCount === 0)}
+          onClick={() => void command("publish", draft)}>Validate and publish candidate</button>
+        <small>Publication checks for active receiving members. Individual handoffs also require an independent receiver.</small>
+      </div> : null}
+      {candidate ? <div className="d5o-publication-editor"><h3>Validated candidate v{candidate.version}</h3>
+        <p>Routes are frozen. The current default is unchanged until activation.</p>
+        <button type="button" disabled={busy} onClick={() => void command("activate", candidate)}>Activate for new Work Records</button>
+      </div> : null}
+    </>}
     <p role="status" aria-live="polite">{message}</p>
-    <small>Deploy to Operate currently requires the Operations leader by the existing independent receipt policy. A missing eligible receiver holds submission; it never asks the submitter to nominate one.</small>
+    <small>Deploy to Operate remains assigned to the Operations leader by the existing receipt policy. Manage memberships under People & capacity.</small>
   </section>;
 }
