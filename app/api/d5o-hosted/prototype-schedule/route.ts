@@ -24,8 +24,10 @@ export async function GET(request: NextRequest) {
     const schedule = loaded.state
       ? { ...loaded.state, revision: loaded.revision }
       : initialHostedSchedule(workspace as WorkspaceKey);
-    return reply({ schedule, canEdit: context.canEdit, delivery,
-      requiresPublication: authoritativeD5OCommandsReady(), synthetic: true });
+    return reply({ schedule, canEdit: authoritativeD5OCommandsReady()
+      ? ["admin", "project_manager", "operations_leader"].includes(context.actor.role) : context.canEdit,
+      canManageAvailability: authoritativeD5OCommandsReady() && context.actor.role === "admin",
+      delivery, requiresPublication: authoritativeD5OCommandsReady(), synthetic: true });
   } catch (error) {
     if (error instanceof HostedStateError) return reply({ error: error.code }, error.status);
     return reply({ error: "schedule_unavailable" }, 503);
@@ -39,11 +41,14 @@ export async function POST(request: NextRequest) {
   const body = await request.text();
   if (body.length > 1_000_000) return reply({ error: "command_too_large" }, 413);
   try {
-    const input = JSON.parse(body) as ScheduleMutation;
+    const input = JSON.parse(body) as ScheduleMutation | { action: "record-unavailability" | "clear-unavailability"; data: Record<string, unknown>; expectedRevision: number; commandId?: string };
     const context = await hostedPrototypeContext(workspace);
-    if (!context.canEdit) return reply({ error: "workspace_forbidden" }, 403);
     if (authoritativeD5OCommandsReady()) {
-      if (input.action !== "save-booking" && input.action !== "publish")
+      const availabilityAction = input.action === "record-unavailability" || input.action === "clear-unavailability";
+      if (availabilityAction ? context.actor.role !== "admin"
+        : !["admin", "project_manager", "operations_leader"].includes(context.actor.role))
+        return reply({ error: availabilityAction ? "admin_availability_required" : "scheduling_authority_required" }, 403);
+      if (input.action !== "save-booking" && input.action !== "publish" && !availabilityAction)
         return reply({ error: "typed_schedule_command_required" }, 409);
       const commandId = (input as ScheduleMutation & { commandId?: string }).commandId;
       if (!commandId || !Number.isInteger(input.expectedRevision))
@@ -52,10 +57,12 @@ export async function POST(request: NextRequest) {
       const call = client.rpc.bind(client) as unknown as (name: string, args: Record<string, unknown>) => Promise<{
         data: unknown; error: { code?: string; message: string } | null
       }>;
-      const { data, error } = await call("d5o_hosted_crew_command_v1", {
+      const { data, error } = await call(availabilityAction ? "d5o_hosted_availability_command_v1" : "d5o_hosted_crew_command_v1", {
         p_workspace_key: workspace,
-        p_action: input.action === "publish" ? "publish-week" : "save-booking",
-        p_input: input.action === "publish" ? { week: input.week } : { assignment: input.assignment },
+        p_action: availabilityAction ? input.action : input.action === "publish" ? "publish-week" : "save-booking",
+        p_input: input.action === "publish" ? { week: input.week }
+          : input.action === "save-booking" ? { assignment: input.assignment }
+          : "data" in input ? input.data : {},
         p_command_id: commandId,
         p_expected_revision: input.expectedRevision
       });
@@ -65,11 +72,13 @@ export async function POST(request: NextRequest) {
       if (!result?.state || !Number.isInteger(result.revision)) return reply({ error: "invalid_response" }, 502);
       return reply({ schedule: { ...result.state, revision: result.revision }, delivery,
         requiresPublication: true,
-        deliveryWarning: input.action === "publish"
+        deliveryWarning: availabilityAction ? "Availability recorded. Existing bookings remain in place; scheduling conflicts need review."
+          : input.action === "publish"
           ? "The published booking is available in-app. External notification is not configured for this hosted pilot."
           : "Booking saved as a draft. Publish this week before workers can see it. External notification is not configured.",
         synthetic: false });
     }
+    if (!context.canEdit) return reply({ error: "workspace_forbidden" }, 403);
     if (input.action === "save-demand") {
       const workState = await context.read("work");
       const record = (workState.state?.records as Array<Record<string, unknown>> | undefined)?.find((item) => item.id === input.demand.workId);
@@ -84,7 +93,7 @@ export async function POST(request: NextRequest) {
     const catalogResult = await context.read("catalog");
     const catalog = catalogResult.state as SharedWorkCatalog | null;
     const changed = await applyScheduleMutation(schedule, workspace as WorkspaceKey,
-      context.actor, input,
+      context.actor, input as ScheduleMutation,
       async (workId, packageId) => Boolean(catalog?.packages.some((item) =>
         item.workId === workId && item.id === packageId)));
     if (!changed) return reply({ schedule, delivery, synthetic: true });

@@ -16,6 +16,7 @@ export function useSharedSchedule(workspace: WorkspaceKey, hostedPreview = false
     : "/api/work/schedule";
   const [schedule, setSchedule] = useState<SharedSchedule | null>(null);
   const [canEdit, setCanEdit] = useState(false);
+  const [canManageAvailability, setCanManageAvailability] = useState(false);
   const [requiresPublication, setRequiresPublication] = useState(false);
   const [error, setError] = useState("");
   const [delivery, setDelivery] = useState<{ sent: number; failed: number; attempting: number; unavailable?: boolean } | null>(null);
@@ -25,11 +26,12 @@ export function useSharedSchedule(workspace: WorkspaceKey, hostedPreview = false
   const refresh = useCallback(async () => {
     const response = await fetch(endpoint, { cache: "no-store" });
     if (!response.ok) throw new Error(response.status === 401 || response.status === 403 ? "Sign in to your authorized workspace to view the shared schedule." : "The shared schedule is unavailable.");
-    const payload = await response.json() as { schedule: SharedSchedule; canEdit: boolean; requiresPublication?: boolean; delivery?: { sent: number; failed: number; attempting: number; unavailable?: boolean } };
+    const payload = await response.json() as { schedule: SharedSchedule; canEdit: boolean; canManageAvailability?: boolean; requiresPublication?: boolean; delivery?: { sent: number; failed: number; attempting: number; unavailable?: boolean } };
     if (payload.schedule.workspace !== workspace) throw new Error("Schedule workspace mismatch.");
     current.current = payload.schedule;
     setSchedule(payload.schedule);
     setCanEdit(payload.canEdit);
+    setCanManageAvailability(payload.canManageAvailability === true);
     setRequiresPublication(payload.requiresPublication === true);
     setDelivery(payload.delivery ?? null);
     setError("");
@@ -65,7 +67,18 @@ export function useSharedSchedule(workspace: WorkspaceKey, hostedPreview = false
     const payload = change.action === "save-assignments" ? { ...change, assignments: datedAssignments(change.assignments, state.anchorDate) }
       : change.action === "save-booking" ? { ...change, assignment: datedAssignments([change.assignment], state.anchorDate)[0] }
       : change.action === "save-availability" ? { ...change, availabilityBlocks: datedAvailability(change.availabilityBlocks, state.anchorDate) } : change;
-    const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...payload, expectedRevision: state.revision, commandId: crypto.randomUUID() }) });
+    let command: Record<string, unknown> = payload as Record<string, unknown>;
+    if (hostedPreview && requiresPublication && change.action === "save-availability") {
+      const before = state.availabilityBlocks;
+      const added = payload.action === "save-availability" ? payload.availabilityBlocks.filter((item) => !before.some((old) => old.id === item.id)) : [];
+      const removed = before.filter((item) => !change.availabilityBlocks.some((next) => next.id === item.id));
+      if (added.length + removed.length !== 1) throw new Error("Change one availability day at a time.");
+      command = added.length ? { action: "record-unavailability", data: {
+        person: added[0].person, week: added[0].week, day: added[0].day,
+        date: added[0].date, note: added[0].reason
+      } } : { action: "clear-unavailability", data: { id: removed[0].id } };
+    }
+    const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...command, expectedRevision: state.revision, commandId: crypto.randomUUID() }) });
     const result = await response.json() as { schedule?: SharedSchedule; error?: string; message?: string; delivery?: { sent: number; failed: number; attempting: number; unavailable?: boolean }; deliveryWarning?: string };
     if (!response.ok || !result.schedule) {
       if (response.status === 409) await refresh();
@@ -79,10 +92,10 @@ export function useSharedSchedule(workspace: WorkspaceKey, hostedPreview = false
     setDeliveryWarning(result.deliveryWarning ?? "");
     setError("");
     return result.schedule;
-  }, [refresh, endpoint]);
+  }, [refresh, endpoint, hostedPreview, requiresPublication]);
   const dismissLegacy = useCallback(() => {
     localStorage.setItem(`d5o.crew-board-import-dismissed.v1:${workspace}`, "1");
     setLegacyPlan(null);
   }, [workspace]);
-  return { schedule, canEdit, requiresPublication, error, delivery, deliveryWarning, legacyPlan, refresh, mutate, dismissLegacy };
+  return { schedule, canEdit, canManageAvailability, requiresPublication, error, delivery, deliveryWarning, legacyPlan, refresh, mutate, dismissLegacy };
 }
