@@ -63,7 +63,8 @@ export function DefineWorkspace({ workspaceKey, configurationInventory, work, fo
   const [fieldDraft, setFieldDraft] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
   const [reviewNote, setReviewNote] = useState("");
-  const selected = candidates.find((item) => item.id === focusRecordId) ?? candidates[0];
+  const requestedWork = work.find((item) => item.id === focusRecordId);
+  const selected = focusRecordId ? candidates.find((item) => item.id === focusRecordId) : candidates[0];
   const definition = selected ? { ...initial(selected), ...selected.definition } : undefined;
   const config = selected ? resolvePublishedPhaseConfiguration(configurationInventory, workspaceKey, selected.type, selected) : null;
   const definePhase = config?.phases.find((item) => item.key === "define");
@@ -207,6 +208,18 @@ export function DefineWorkspace({ workspaceKey, configurationInventory, work, fo
     return <div className={styles.fieldSummary} key={key}><div><strong>{configured?.label ?? label}</strong><small>{configured?.help ?? hint}</small><p>{String(definition?.[key] ?? "") || "Not recorded"}</p></div><button type="button" className="d5o-outline" onClick={() => { setEditingField(key); setFieldDraft(String(definition?.[key] ?? "")); }}>{locked ? "View" : "Edit"}</button></div>;
   };
   const editableFields: Partial<Record<keyof DefinitionRecord, string>> = { outcome: "Promised outcome", excludedScope: "Exclusions and customer responsibilities", deliveryApproach: "Delivery approach" };
+
+  if (focusRecordId && !selected) return <main className="d5o-page d5o-define-phase">
+    <FocusedTaskFrame title="Define is not ready for this work" work={requestedWork?.title ?? "Work Record unavailable"}
+      customer={requestedWork?.customer ?? ""} site={requestedWork?.site} workspace={workspaceKey}
+      scope={requestedWork?.discovery?.need ?? "The requested Work Record is not available in this workspace."}
+      revision={requestedWork?.discovery?.pursuitControl?.revision ?? "unavailable"}
+      outcome="Complete the Discover handoff for this job before preparing its definition."
+      blocker={requestedWork ? "This job does not have an accepted Discover-to-Define handoff." : "The requested record is unavailable. Return to My Work for current actions."}
+      nextOwner={!requestedWork ? null : requestedWork.discovery?.pursuitControl?.handoff?.status === "submitted" ? "The named Define receiver" : "The project manager preparing the Discover handoff"}>
+      {requestedWork ? <button type="button" className="d5o-primary" onClick={() => onPhase(requestedWork, "Discover")}>Open this job in Discover</button> : null}
+    </FocusedTaskFrame>
+  </main>;
 
   if ((reviewFocus === "develop-handoff-prep" || reviewFocus === "develop-handoff-receive") && selected && definition) return <main className="d5o-page d5o-define-phase">
     <FocusedTaskFrame title={reviewFocus === "develop-handoff-prep" ? "Submit approved Define basis" : "Receive approved Define basis"}
