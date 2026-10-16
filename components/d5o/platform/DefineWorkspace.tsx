@@ -100,49 +100,69 @@ export function DefineWorkspace({ workspaceKey, configurationInventory, work, fo
 
   function saveField(key: keyof DefinitionRecord, value: string) {
     if (!selected || !definition || locked) return;
-    const newRevision = definition.status === "Changes requested";
-    onUpdate(selected.id, (current) => ({ ...current, definition: {
-      ...definition, [key]: value, status: "Draft", revision: newRevision ? definition.revision + 1 : definition.revision,
-      reviews: newRevision ? undefined : definition.reviews,
-      developHandoff: newRevision ? undefined : definition.developHandoff,
-      history: [...definition.history, ...(newRevision ? [{ at: now(), revision: definition.revision + 1, event: "New revision started", note: "Changes requested by a reviewer." }] : []), { at: now(), revision: newRevision ? definition.revision + 1 : definition.revision, event: "Definition field updated", note: `${actorLabel} updated ${String(key)}.` }],
-    } }));
+    onUpdate(selected.id, (current) => {
+      const latest = current.definition ?? definition;
+      if (latest.status !== "Draft" && latest.status !== "Changes requested") return current;
+      const newRevision = latest.status === "Changes requested";
+      const revision = newRevision ? latest.revision + 1 : latest.revision;
+      return { ...current, definition: {
+        ...latest, [key]: value, status: "Draft", revision,
+        reviews: newRevision ? undefined : latest.reviews,
+        developHandoff: newRevision ? undefined : latest.developHandoff,
+        history: [...latest.history, ...(newRevision ? [{ at: now(), revision, event: "New revision started", note: "Changes requested by a reviewer." }] : []), { at: now(), revision, event: "Definition field updated", note: `${actorLabel} updated ${String(key)}.` }],
+      } };
+    });
   }
 
   function saveRegister(key: string, rows: Array<Record<string, string>>) {
     if (!selected || !definition || locked) return;
-    const newRevision = definition.status === "Changes requested";
     const legacyKey: Record<string, "includedScope" | "acceptance" | "milestones" | "dependencies" | "risks"> = { scope_items: "includedScope", acceptance_criteria: "acceptance", milestones: "milestones", dependencies: "dependencies", risks: "risks" };
     if (!legacyKey[key]) { onNotice("This register has no compatible definition binding."); return; }
     const summary = rows.map((row) => Object.entries(row).filter(([field]) => !["id", "requirementId", "scopeId"].includes(field)).map(([, value]) => value).filter(Boolean).join(" · ")).join("; ");
-    onUpdate(selected.id, (current) => ({ ...current, definition: {
-      ...definition, registers: { ...definition.registers, [key]: rows }, [legacyKey[key]]: summary,
-      status: "Draft", revision: newRevision ? definition.revision + 1 : definition.revision,
-      reviews: newRevision ? undefined : definition.reviews,
-      developHandoff: newRevision ? undefined : definition.developHandoff,
-      history: [...definition.history, ...(newRevision ? [{ at: now(), revision: definition.revision + 1, event: "New revision started", note: "Changes requested by a reviewer." }] : []), { at: now(), revision: newRevision ? definition.revision + 1 : definition.revision, event: "Definition register updated", note: `${actorLabel} updated ${key}; ${rows.length} ${rows.length === 1 ? "item" : "items"} recorded.` }],
-    } }));
+    onUpdate(selected.id, (current) => {
+      const latest = current.definition ?? definition;
+      if (latest.status !== "Draft" && latest.status !== "Changes requested") return current;
+      const newRevision = latest.status === "Changes requested";
+      const revision = newRevision ? latest.revision + 1 : latest.revision;
+      return { ...current, definition: {
+        ...latest, registers: { ...latest.registers, [key]: rows }, [legacyKey[key]]: summary,
+        status: "Draft", revision,
+        reviews: newRevision ? undefined : latest.reviews,
+        developHandoff: newRevision ? undefined : latest.developHandoff,
+        history: [...latest.history, ...(newRevision ? [{ at: now(), revision, event: "New revision started", note: "Changes requested by a reviewer." }] : []), { at: now(), revision, event: "Definition register updated", note: `${actorLabel} updated ${key}; ${rows.length} ${rows.length === 1 ? "item" : "items"} recorded.` }],
+      } };
+    });
   }
 
   function saveInvestigation(patch: Partial<DefinitionRecord>) {
     if (!selected || !definition || locked) return;
-    const newRevision = definition.status === "Changes requested";
-    onUpdate(selected.id, (current) => ({ ...current, definition: {
-      ...definition, ...patch, status: "Draft", revision: newRevision ? definition.revision + 1 : definition.revision,
-      reviews: newRevision ? undefined : definition.reviews,
-      developHandoff: newRevision ? undefined : definition.developHandoff,
-      history: [...definition.history, ...(newRevision ? [{ at: now(), revision: definition.revision + 1, event: "New revision started", note: "Investigation updated after changes were requested." }] : []), { at: now(), revision: newRevision ? definition.revision + 1 : definition.revision, event: "Investigation updated", note: `${actorLabel} recorded project context, a finding, or a customer clarification.` }],
-    } }));
+    onUpdate(selected.id, (current) => {
+      const latest = current.definition ?? definition;
+      if (latest.status !== "Draft" && latest.status !== "Changes requested") return current;
+      const newRevision = latest.status === "Changes requested";
+      const revision = newRevision ? latest.revision + 1 : latest.revision;
+      return { ...current, definition: {
+        ...latest, ...patch, status: "Draft", revision,
+        reviews: newRevision ? undefined : latest.reviews,
+        developHandoff: newRevision ? undefined : latest.developHandoff,
+        history: [...latest.history, ...(newRevision ? [{ at: now(), revision, event: "New revision started", note: "Investigation updated after changes were requested." }] : []), { at: now(), revision, event: "Investigation updated", note: `${actorLabel} recorded project context, a finding, or a customer clarification.` }],
+      } };
+    });
   }
 
   function saveScopeControl(scopeControl: NonNullable<DefinitionRecord["scopeControl"]>) {
     if (!selected || !definition || locked) return;
-    const newRevision = definition.status === "Changes requested";
-    onUpdate(selected.id, (current) => ({ ...current, definition: {
-      ...definition, scopeControl, status: "Draft", revision: newRevision ? definition.revision + 1 : definition.revision,
-      reviews: newRevision ? undefined : definition.reviews, developHandoff: undefined,
-      history: [...definition.history, ...(newRevision ? [{ at: now(), revision: definition.revision + 1, event: "New revision started", note: "Scope controls corrected after review." }] : []), { at: now(), revision: newRevision ? definition.revision + 1 : definition.revision, event: "Scope control updated", note: `${actorLabel} changed requirements, interfaces, assumptions, agreement, or ROM basis.` }],
-    } }));
+    onUpdate(selected.id, (current) => {
+      const latest = current.definition ?? definition;
+      if (latest.status !== "Draft" && latest.status !== "Changes requested") return current;
+      const newRevision = latest.status === "Changes requested";
+      const revision = newRevision ? latest.revision + 1 : latest.revision;
+      return { ...current, definition: {
+        ...latest, scopeControl, status: "Draft", revision,
+        reviews: newRevision ? undefined : latest.reviews, developHandoff: undefined,
+        history: [...latest.history, ...(newRevision ? [{ at: now(), revision, event: "New revision started", note: "Scope controls corrected after review." }] : []), { at: now(), revision, event: "Scope control updated", note: `${actorLabel} changed requirements, interfaces, assumptions, agreement, or ROM basis.` }],
+      } };
+    });
   }
 
   const register = (key: string) => {
