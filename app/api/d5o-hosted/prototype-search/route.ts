@@ -95,6 +95,11 @@ export async function GET(request: NextRequest) {
         const queued = await call("d5o_hosted_role_actions_v1", { p_workspace_key: workspace });
         if (queued.error || !Array.isArray(queued.data)) return reply({ error: "role_queue_unavailable" }, 503);
         roleActions = (queued.data as Array<{ kind?: string }>).filter((item) => item.kind !== "Field report review");
+        const procurementQueued = await call("d5o_graybar_actions_v1", { p_workspace_key: workspace });
+        if (procurementQueued.error || !Array.isArray(procurementQueued.data)) return reply({ error: "procurement_queue_unavailable" }, 503);
+        const supplierCostQueued = await call("d5o_graybar_job_cost_actions_v1", { p_workspace_key: workspace });
+        if (supplierCostQueued.error || !Array.isArray(supplierCostQueued.data)) return reply({ error: "supplier_cost_queue_unavailable" }, 503);
+        roleActions = [...roleActions, ...procurementQueued.data, ...supplierCostQueued.data];
         const serviceQueued = await call("d5o_hosted_service_actions_v1", { p_workspace_key: workspace });
         if (serviceQueued.error || !Array.isArray(serviceQueued.data)) return reply({ error: "service_queue_unavailable" }, 503);
         const costQueued = await call("d5o_hosted_service_cost_actions_v1", { p_workspace_key: workspace });

@@ -40,6 +40,11 @@ function serviceReturnLink(workspace: string, action: ServiceReturnAction) {
   return `/work?${params}`;
 }
 function roleLink(workspace: string, action: RoleAction) {
+  if (action.phase === "Procurement") {
+    const params = new URLSearchParams({ workspace, workId: action.workId, step: action.focus ?? "quote",
+      sourceRevision: String(action.revision), decision: action.decisionId ?? "" });
+    return `/work/procurement?${params}`;
+  }
   const phaseView = action.phase === "Discover" ? "discover" : action.phase === "Define" ? "define" : action.phase === "Develop" ? "develop" : "record";
   const params = new URLSearchParams({ workspace, view: phaseView, record: action.workId, sourceRevision: String(action.revision) });
   if (phaseView === "record") params.set("section", action.phase);

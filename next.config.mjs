@@ -12,6 +12,8 @@ const nextConfig = {
   // The isolated local review app is opened through 127.0.0.1, while Next's
   // development server initializes with localhost. Keep the dev exception local.
   allowedDevOrigins: ["127.0.0.1"],
+  // Keep document parsers in the Node runtime; Turbopack worker bundling cannot resolve PDF font helpers.
+  serverExternalPackages: ["pdfjs-dist", "exceljs"],
   // Runtime local stores and recovery artifacts must never enter server bundles.
   outputFileTracingExcludes: {
     "/*": ["./.rybexos-local/**/*"],
