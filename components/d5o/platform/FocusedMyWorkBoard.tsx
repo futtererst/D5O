@@ -56,7 +56,7 @@ function roleLink(workspace: string, action: RoleAction) {
   if (action.kind === "Field report review") params.set("focus", "reports");
   return `/work?${params}`;
 }
-function tasksFor<T extends RecordSummary>(workspace: string, page: FocusedQueuePage<T>): Task[] {
+export function tasksFor<T extends RecordSummary>(workspace: string, page: FocusedQueuePage<T>): Task[] {
   const serviceReturn = (page.serviceReturnQueue ?? []).map((action): Task => ({
     key: `service-return:${action.workId}:${action.jobId}:${action.kind}:${action.operateRevision}`,
     canonical: `service-return:${action.workId}:${action.requestCycleAt}:${action.jobId}:${action.kind}`,

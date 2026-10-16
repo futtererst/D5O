@@ -661,3 +661,71 @@
   .root :global(.d5o-private-evidence-row > div:last-child) { justify-content: flex-start; }
   .root :global(.d5o-surface-host .d5o-record-full > .d5o-phase-record-header h1) { font-size: 1.1rem; }
 }
+
+/* The compact rail is global navigation; exact work stays in the task inbox and canvas. */
+.root { grid-template-columns: 76px minmax(0, 1fr); }
+.root :global(.d5o-nav-rail) { align-items:center; gap:0; width:76px; padding:12px 6px 10px; overflow:visible; z-index:15; }
+.root :global(.d5o-nav-rail .d5o-full-brand) { justify-content:center; width:60px; min-height:54px; margin:0 0 18px; padding:8px 2px 15px; }
+.root :global(.d5o-nav-rail .d5o-full-brand .d5o-wordmark) { font-size:25px; }
+.root :global(.d5o-rail-links), .root :global(.d5o-rail-bottom) { display:grid; width:100%; gap:5px; }
+.root :global(.d5o-rail-bottom) { margin-top:auto; padding-top:10px; border-top:1px solid rgb(255 255 255 / 13%); }
+.root :global(.d5o-rail-links button), .root :global(.d5o-rail-bottom button) { display:grid; justify-items:center; align-content:center; gap:4px; width:100%; min-height:58px; border:0; border-radius:9px; background:transparent; color:#d7e5ed; cursor:pointer; font-size:10px; font-weight:700; line-height:1.1; padding:7px 3px; }
+.root :global(.d5o-rail-links button:hover), .root :global(.d5o-rail-bottom button:hover) { background:rgb(255 255 255 / 10%); }
+.root :global(.d5o-rail-links button.is-active), .root :global(.d5o-rail-links button[aria-current=page]), .root :global(.d5o-rail-bottom button[aria-current=page]) { background:#29465b; color:#fff; box-shadow:inset 3px 0 var(--d5o-accent); }
+.root :global(.d5o-rail-links svg), .root :global(.d5o-rail-bottom svg) { width:21px; height:21px; }
+.root :global(.d5o-rail-build) { color:#9db1bf; font-size:9px; line-height:1.2; padding:10px 2px 0; text-align:center; overflow-wrap:anywhere; }
+.root :global(.d5o-nav-scrim) { position:fixed; inset:0; z-index:16; border:0; background:rgb(12 32 47 / 35%); cursor:default; }
+.root :global(.d5o-nav-drawer) { position:fixed; top:0; bottom:0; left:76px; z-index:17; display:flex; flex-direction:column; width:min(340px, calc(100vw - 76px)); padding:16px 14px; overflow:auto; background:#102b42; color:#fff; box-shadow:8px 0 28px rgb(14 37 53 / 20%); transform:translateX(-110%); visibility:hidden; }
+.root :global(.d5o-nav-drawer.is-open) { transform:none; visibility:visible; }
+.root :global(.d5o-nav-drawer-heading) { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:0 4px 12px; border-bottom:1px solid rgb(255 255 255 / 15%); }
+.root :global(.d5o-nav-drawer-heading div) { display:grid; gap:2px; }
+.root :global(.d5o-nav-drawer-heading strong) { font-size:17px; }
+.root :global(.d5o-nav-drawer-heading small) { color:#a9bfca; }
+.root :global(.d5o-nav-drawer-heading button) { border:0; border-radius:7px; background:rgb(255 255 255 / 10%); color:#fff; cursor:pointer; font-size:24px; width:36px; height:36px; }
+.root :global(.d5o-nav-drawer .d5o-sidebar-menu) { display:block; }
+.root :global(.d5o-nav-drawer .d5o-user-card) { margin-top:22px; }
+.root :global(.d5o-full-content) { padding:0 clamp(14px, 1.5vw, 26px) 42px; }
+.root :global(.d5o-app-topbar) { margin:0 calc(-1 * clamp(14px, 1.5vw, 26px)) 12px; padding:0 clamp(14px, 1.5vw, 26px); }
+.root :global(.d5o-surface-host) { max-width:none; }
+.root :global(.d5o-has-task-inbox) { display:grid; grid-template-columns: minmax(255px, 300px) minmax(0, 1fr); align-items:start; gap:0; min-height:calc(100vh - 75px); background:#fff; border:1px solid var(--d5o-border); border-radius:11px; overflow:clip; }
+.root :global(.d5o-task-main) { min-width:0; }
+.root :global(.d5o-has-task-inbox .d5o-task-main) { padding:12px clamp(16px, 2vw, 32px) 32px; }
+.root :global(.d5o-has-task-inbox .d5o-task-frame), .root :global(.d5o-has-task-inbox .d5o-focused-record-header), .root :global(.d5o-has-task-inbox .d5o-asset-task) { max-width:100%; }
+.root :global(.d5o-task-inbox-rail) { position:sticky; top:62px; align-self:start; display:flex; flex-direction:column; min-width:0; height:calc(100vh - 63px); border-right:1px solid var(--d5o-border); background:#fbfcfd; }
+.root :global(.d5o-task-inbox-rail header) { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:20px 16px 12px; }
+.root :global(.d5o-task-inbox-rail header small) { color:#657d8a; font-size:10px; font-weight:800; letter-spacing:.08em; }
+.root :global(.d5o-task-inbox-rail h2) { margin:2px 0 0; color:#122f43; font-size:20px; }
+.root :global(.d5o-task-inbox-rail header button) { border:1px solid #ccd9e0; border-radius:7px; background:#fff; color:#33566b; cursor:pointer; width:35px; height:35px; font-size:20px; }
+.root :global(.d5o-task-inbox-search) { display:block; padding:0 14px 12px; }
+.root :global(.d5o-task-inbox-search input) { width:100%; min-height:39px; padding:8px 10px; border:1px solid #cad9e1; border-radius:7px; background:#fff; color:#173c50; }
+.root :global(.d5o-task-inbox-tabs) { display:flex; padding:0 14px; gap:14px; border-bottom:1px solid var(--d5o-border); }
+.root :global(.d5o-task-inbox-tabs button) { border:0; border-bottom:3px solid transparent; background:none; color:#566e7d; cursor:pointer; font-size:12px; font-weight:700; padding:9px 2px; white-space:nowrap; }
+.root :global(.d5o-task-inbox-tabs button[aria-pressed=true]) { color:#153b56; border-bottom-color:var(--d5o-accent); }
+.root :global(.d5o-task-inbox-tabs b) { margin-left:4px; }
+.root :global(.d5o-task-inbox-rows) { flex:1; overflow-y:auto; }
+.root :global(.d5o-task-inbox-rows a) { display:grid; gap:3px; padding:12px 15px; border-bottom:1px solid #e4ebef; border-left:3px solid transparent; color:#173b52; text-decoration:none; }
+.root :global(.d5o-task-inbox-rows a:hover), .root :global(.d5o-task-inbox-rows a.is-current-record) { background:#f0f5f8; border-left-color:#bc8c1d; }
+.root :global(.d5o-task-inbox-rows small) { color:#627987; font-size:10px; font-weight:800; text-transform:uppercase; }
+.root :global(.d5o-task-inbox-rows strong) { font-size:13px; line-height:1.25; }
+.root :global(.d5o-task-inbox-rows span), .root :global(.d5o-task-inbox-rows em) { color:#5c7380; font-size:11px; font-style:normal; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.root :global(.d5o-task-inbox-rows p) { padding:14px; color:#59727f; font-size:12px; }
+.root :global(.d5o-task-inbox-all) { padding:12px 16px; border-top:1px solid var(--d5o-border); color:#245a7b; font-size:12px; font-weight:800; text-decoration:none; }
+.root :global(.d5o-workbench-shell) { grid-template-columns:minmax(300px, 350px) minmax(0, 1fr); }
+.root :global(.d5o-workbench .d5o-workbench-row) { min-height:78px; padding:12px 16px; }
+.root :global(.d5o-workbench-pane) { padding:24px clamp(20px, 2.5vw, 40px); }
+@media (max-width:1050px) { .root :global(.d5o-has-task-inbox) { grid-template-columns:minmax(220px, 255px) minmax(0, 1fr); } }
+@media (max-width:780px) {
+  .root { display:block; }
+  .root :global(.d5o-nav-rail) { display:flex; position:sticky; top:0; flex-direction:row; flex-wrap:nowrap; width:100%; height:58px; max-height:none; padding:4px 8px; }
+  .root :global(.d5o-nav-rail .d5o-full-brand) { margin:0 10px 0 0; padding:4px; min-height:42px; width:55px; border:0; }
+  .root :global(.d5o-rail-links) { display:flex; flex:1; justify-content:space-around; min-width:0; width:auto; overflow:auto; }
+  .root :global(.d5o-rail-links button:nth-child(n+4)) { display:none; }
+  .root :global(.d5o-rail-links button), .root :global(.d5o-rail-bottom button) { min-width:52px; min-height:46px; }
+  .root :global(.d5o-rail-links button span), .root :global(.d5o-rail-bottom button span), .root :global(.d5o-rail-build) { display:none; }
+  .root :global(.d5o-rail-bottom) { display:flex; flex:0 0 auto; width:auto; margin:0; border:0; padding:0; }
+  .root :global(.d5o-nav-drawer) { left:0; width:min(340px, 90vw); }
+  .root :global(.d5o-task-inbox-rail) { position:static; height:auto; max-height:330px; border-right:0; border-bottom:1px solid var(--d5o-border); }
+  .root :global(.d5o-has-task-inbox) { display:block; }
+  .root :global(.d5o-has-task-inbox .d5o-task-main) { padding:10px 14px 24px; }
+  .root :global(.d5o-workbench-shell) { grid-template-columns:1fr; }
+}
