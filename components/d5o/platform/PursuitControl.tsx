@@ -54,7 +54,7 @@ export function PursuitControl({ work, actor, canEdit, connected, taskMode, onCo
     event.preventDefault(); const form = new FormData(event.currentTarget);
     commit({ ...base, kind: "submit-handoff", receiver: value(form, "receiver"), brief: value(form, "brief") });
   }
-  return <article className={`${styles.card} ${styles.pursuitControl}`} aria-label="Pursuit and Define handoff control">
+  return <article className={`${styles.card} ${styles.pursuitControl}${taskMode ? ` ${styles.pursuitControlFocused}` : ""}`} aria-label="Pursuit and Define handoff control">
     <p className={styles.kicker}>D1 DISCOVER · CONTROLLED PURSUIT</p>
     <h3>Decide the pursuit, then hand it to Define</h3>
     <p>Intake revision {control.revision} · {control.status.replaceAll("_", " ")}. Qualification permits pursuit consideration; it does not authorize spending, an offer, or delivery.</p>

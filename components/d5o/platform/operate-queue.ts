@@ -31,11 +31,11 @@ export function buildSupportQueue(records: WorkRecord[], workspace: WorkspaceKey
       push({ key: `${work.id}:residual`, section: "Handoff & activation", severity: "Action", label: "Assign residual obligation", detail: "Accepted turnover names continuing work without an accountable owner.", owner: "Operations leader" });
     }
     for (const doc of supportDocumentationPositions(work).filter((entry) => entry.status !== "Reviewed")) {
+      const packageName = work.packages?.find((entry) => entry.id === doc.packageId)?.name ?? "Package name unavailable";
       push({ key: work.id + ":document:" + doc.turnoverId + ":" + doc.kind,
         section: "Handoff & activation", severity: "Action",
         label: (doc.kind === "as-built" ? "As-built record" : "Inspection record") + ": " + doc.status,
-        detail: "Package " + doc.packageId + ", release " + doc.releaseId +
-          "; " + (doc.status === "Submitted" ? "independent document review due" :
+        detail: packageName + " · " + (doc.status === "Submitted" ? "independent document review due" :
             "retained document supply or correction due"),
         owner: doc.status === "Submitted" ? "Operations leader" :
           state.support?.residualOwner || "Project manager" });
