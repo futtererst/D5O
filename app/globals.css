@@ -8820,3 +8820,9 @@ section:target {
 .d5o-record-menu summary:focus-visible,.d5o-record-menu nav button:focus-visible{outline:3px solid var(--d5o-accent);outline-offset:2px}
 @media(max-width:1200px){.d5o-record-full>.d5o-phase-record-header{display:grid;grid-template-columns:minmax(0,1fr)}}
 @media(max-width:760px){.d5o-phase-header-actions{grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.d5o-phase-header-actions .d5o-stage-badge small{white-space:normal}}
+.d5o-define-recovery{border-color:#d9b46b;margin-bottom:18px;max-width:100%}
+.d5o-define-recovery>p{max-width:78ch}
+.d5o-define-recovery details{border-top:1px solid #dce6eb;margin-top:16px;padding-top:14px}
+.d5o-define-recovery details>div{margin:14px 0;min-width:0}
+.d5o-define-recovery details>div pre{background:#f3f6f7;border:1px solid #dce6eb;border-radius:6px;margin:0;max-height:180px;min-width:0;overflow:auto;padding:12px;white-space:pre-wrap;word-break:break-word}
+.d5o-define-recovery button{margin:8px 10px 0 0}

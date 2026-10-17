@@ -1,6 +1,6 @@
 "use client";
 
-import { type CSSProperties, type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, type FormEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CrewPlanningBoard } from "./CrewPlanningBoard";
 import { PortfolioBoard } from "./PortfolioBoard";
@@ -60,6 +60,19 @@ import { WorkPhaseJourney, type WorkPhase, type WorkControl } from "./WorkPhaseJ
 import { canPresentSurface, presentationForRole } from "./role-presentation";
 
 type WorkspaceKey = "rybex" | "rotork";
+type DefineSaveRecovery = { workId: string; title: string; baseRevision: number; savedAt: string; before: DefinitionRecord | null; draft: DefinitionRecord };
+const defineRecoveryKey = (workspace: WorkspaceKey, actorId: string | undefined) => `d5o.define-unsaved.v1:${workspace}:${actorId ?? "local"}`;
+const recoveryValue = (value: unknown) => typeof value === "string" ? value : value === undefined ? "Not recorded" : JSON.stringify(value, null, 2);
+function changedDefineDrafts(before: Work[], draft: Work[], baseRevision: number): DefineSaveRecovery[] {
+  return draft.flatMap((item) => {
+    if (!item.definition) return [];
+    const prior = before.find((entry) => entry.id === item.id)?.definition ?? null;
+    return JSON.stringify(item.definition) === JSON.stringify(prior) ? [] : [{
+      workId: item.id, title: item.title, baseRevision, savedAt: new Date().toISOString(),
+      before: prior, draft: item.definition,
+    }];
+  });
+}
 type Screen = "discover" | "define" | "develop" | "operate" | "home" | "my-work" | "portfolio" | "decisions" | "crew" | "people" | "execution" | "handoff" | "library" | "insights" | "operating" | "configuration" | "start" | "record";
 type RecordTab = "Overview" | "Lifecycle" | "Develop" | "Design" | "Deploy" | "Operate" | "Plan" | "Readiness" | "Execution" | "Issues & changes" | "Evidence" | "Commercial" | "Handoff" | "Lifecycle Value" | "History";
 type WorkPackage = { id: string; name: string; owner: string; installed: number; tested: number; accepted: number; status: "planned" | "in progress" | "ready" | "accepted"; acceptanceBasis?: string };
@@ -236,6 +249,59 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
   const [tab, setTab] = useState<RecordTab>("Overview");
   const [operateFocus, setOperateFocus] = useState<{ workId: string; section: OperateTab } | null>(null);
   const [notice, setNotice] = useState("");
+  const [defineRecovery, setDefineRecovery] = useState<DefineSaveRecovery[]>([]);
+  const [recoveryBasisChecked, setRecoveryBasisChecked] = useState(false);
+  useEffect(() => {
+    let restored: DefineSaveRecovery[] = [];
+    try {
+      const saved = sessionStorage.getItem(defineRecoveryKey(activeWorkspace, actorId));
+      restored = saved ? JSON.parse(saved) as DefineSaveRecovery[] : [];
+    } catch { /* Keep this tab usable if its recovery copy is damaged. */ }
+    const frame = requestAnimationFrame(() => { setDefineRecovery(restored); setRecoveryBasisChecked(false); });
+    return () => cancelAnimationFrame(frame);
+  }, [activeWorkspace, actorId]);
+  const preserveFailedDefineDraft = useCallback((draft: Work[], revision: number | null) => {
+    if (revision === null || !lastSharedWork.current) return false;
+    try {
+      const prior = JSON.parse(lastSharedWork.current) as Work[];
+      const changed = changedDefineDrafts(prior, draft, revision);
+      if (!changed.length) return false;
+      setDefineRecovery(changed);
+      setRecoveryBasisChecked(false);
+      sessionStorage.setItem(defineRecoveryKey(activeWorkspace, actorId), JSON.stringify(changed));
+      return true;
+    } catch { return false; }
+  }, [activeWorkspace, actorId]);
+  async function loadCurrentForDefineRecovery() {
+    // Keep the unsaved copy in session storage while fetching the authoritative
+    // revision. No protected or approved field is merged into that revision.
+    if (JSON.stringify(work) !== lastSharedWork.current &&
+        !preserveFailedDefineDraft(work, sharedWorkRevisionRef.current)) {
+      setNotice("The browser could not retain these edits for reload. Copy your draft values before loading the current state.");
+      return;
+    }
+    try {
+      const response = await fetch(workStateEndpoint, { cache: "no-store" });
+      const payload = await response.json() as { state?: { revision: number; records: Work[] } };
+      if (!response.ok || !payload.state?.records) throw new Error("Current Work state is unavailable.");
+      const latest = payload.state.records.map(hydrate);
+      const pending = JSON.parse(sessionStorage.getItem(defineRecoveryKey(activeWorkspace, actorId)) ?? "[]") as DefineSaveRecovery[];
+      const alreadySaved = pending.length > 0 && pending.every((entry) =>
+        JSON.stringify(latest.find((item) => item.id === entry.workId)?.definition) === JSON.stringify(entry.draft));
+      lastSharedWork.current = JSON.stringify(latest);
+      sharedWorkRevisionRef.current = payload.state.revision;
+      setSharedWorkRevision(payload.state.revision);
+      setWork(latest);
+      setRecoveryBasisChecked(true);
+      if (alreadySaved) {
+        sessionStorage.removeItem(defineRecoveryKey(activeWorkspace, actorId));
+        setDefineRecovery([]);
+      }
+      setNotice(alreadySaved
+        ? `Shared revision ${payload.state.revision} already contains the retained Define draft. Do not retry that save.`
+        : `Loaded shared revision ${payload.state.revision}. Compare your retained draft below, then re-enter only the changes that still apply.`);
+    } catch (error) { setNotice(error instanceof Error ? error.message : "Could not load the current Work state."); }
+  }
   const [appearanceOpen, setAppearanceOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   useEffect(() => {
@@ -359,7 +425,9 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
         const payload = await response.json() as { state?: { revision: number; records?: Work[] }; error?: string; message?: string };
         if (!response.ok || !payload.state) {
           pendingReviewQueue.current = null;
-          if (response.status === 409 && payload.error === "stale_state") setNotice("This Work Record changed in another browser. Your current edits are preserved here; refresh to load the latest shared workspace state.");
+          const retained = preserveFailedDefineDraft(persistedWork, sharedWorkRevisionRef.current);
+          if (response.status === 409 && payload.error === "stale_state") setNotice(retained ? "The shared Define basis changed. Your unsaved draft is retained for comparison; load the current basis below before retrying." : "The shared state changed. Copy any unsaved edits before reloading the current basis.");
+          else if (response.status === 503) setNotice(retained ? "The save outcome is uncertain. Your Define draft is retained; check the current shared revision before retrying." : "The save outcome is uncertain. Check the current shared state before retrying.");
           else if (response.status === 409) setNotice(`The Work Record draft was blocked: ${payload.message ?? payload.error ?? "conflicting change"}.`);
           else if (pendingDiscoverSave.current) setNotice(`The Discover change was not saved: ${payload.message ?? payload.error ?? `HTTP ${response.status}`}.`);
           else setNotice(`The Work Record draft was not saved: ${payload.message ?? payload.error ?? `HTTP ${response.status}`}.`);
@@ -385,11 +453,13 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
         }
       } catch (error) {
         pendingReviewQueue.current = null;
+        const retained = preserveFailedDefineDraft(persistedWork, sharedWorkRevisionRef.current);
+        if (retained) setNotice("The save outcome is uncertain. Your Define draft is retained; check the current shared revision below before retrying.");
         if (pendingDiscoverSave.current) setNotice(`The Discover change was not saved: ${error instanceof Error ? error.message : "Connection failed"}.`);
       } finally { workSaveInFlight.current = false; }
     }, 250);
     return () => window.clearTimeout(timer);
-  }, [work, activeWorkspace, workLoaded, sharedWorkRevision, hostedPreview, workStateEndpoint]);
+  }, [work, activeWorkspace, workLoaded, sharedWorkRevision, hostedPreview, workStateEndpoint, preserveFailedDefineDraft]);
 
   useEffect(() => {
     if (!workLoaded || sharedWorkRevision === null) return;
@@ -1084,6 +1154,26 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
     </aside>
       <section className="d5o-full-content"><div className="d5o-app-topbar"><div><span>WORKSPACE</span><strong>{palette.name}</strong><i style={{ background: palette.color }} /></div><div className="d5o-top-actions">{hostedPreview ? <Link href="/work">Switch workspace</Link> : null}<AccountMenu hostedPreview={hostedPreview} workspace={activeWorkspace} snapshotReady={workLoaded && preferencesLoaded} onExportSnapshot={() => { void exportSnapshot(); }} />{presentation.canStart ? <button onClick={() => go("start")}>+ Start work</button> : null}</div></div>
       {notice ? <div className="d5o-platform-notice" role="status">{notice}<button onClick={() => setNotice("")}>×</button></div> : null}
+      {defineRecovery.length ? <section className="d5o-panel d5o-define-recovery" role="alert" aria-label="Unsaved Define draft recovery">
+        <h2>Unsaved Define draft retained</h2>
+        <p>A save failed or its outcome is uncertain. Check the current shared revision before retrying. Your draft remains in this browser tab through reload; it has not been merged into approved requirements.</p>
+        <button type="button" className="d5o-primary" onClick={() => void loadCurrentForDefineRecovery()}>Check and load current shared basis</button>
+        {defineRecovery.map((entry) => {
+          const current = work.find((item) => item.id === entry.workId);
+          const changed = Object.keys(entry.draft).filter((key) => !["history", "reviews", "status", "revision", "developHandoff", "decisions", "approvedBaselines", "authorityRevision", "sourceEstimateRevision", "sourceProposalRevision", "configurationVersion", "configurationWorkTypeKey"].includes(key) &&
+            JSON.stringify(entry.draft[key as keyof DefinitionRecord]) !== JSON.stringify(entry.before?.[key as keyof DefinitionRecord]));
+          return <details key={entry.workId}><summary>{entry.title} · unsaved changes from shared revision {entry.baseRevision}</summary>
+            <p>Compare each value with the current record. Copy and re-enter only the changes that still apply; a new review is required for changed approved scope.</p>
+            {changed.map((key) => {
+              const mine = recoveryValue(entry.draft[key as keyof DefinitionRecord]);
+              const theirs = recoveryValue(current?.definition?.[key as keyof DefinitionRecord]);
+              return <div key={key}><h3>{key.replace(/([A-Z])/g, " $1")}</h3><p><strong>My retained draft</strong></p><pre>{mine}</pre><p><strong>{recoveryBasisChecked ? "Current shared value" : "Displayed value — verify current basis first"}</strong></p><pre>{theirs}</pre><button type="button" className="d5o-outline" onClick={() => void navigator.clipboard.writeText(mine).then(() => setNotice(`${key} copied. Re-enter it only after checking the current scope.`)).catch(() => setNotice("Clipboard unavailable; select the retained text above to copy it."))}>Copy my value</button></div>;
+            })}
+            {current ? <button type="button" className="d5o-outline" disabled={!recoveryBasisChecked} onClick={() => openWorkspacePhase("define", current)}>Open current Define task</button> : <p>This Work is no longer available in the current workspace. The retained draft remains available for review.</p>}
+          </details>;
+        })}
+        <button type="button" className="d5o-outline" onClick={() => { sessionStorage.removeItem(defineRecoveryKey(activeWorkspace, actorId)); setDefineRecovery([]); }}>Discard retained copy after reconciliation</button>
+      </section> : null}
       <div className={`d5o-surface-host${hostedPreview && taskFocus && screen !== "my-work" ? " d5o-has-task-inbox" : ""}`}>
       {hostedPreview && taskFocus && screen !== "my-work" ? <TaskInboxRail workspace={activeWorkspace} currentRecordId={selected?.id} currentFocus={taskFocus} currentPackageId={taskPackageId} /> : null}
       <div className="d5o-task-main">
