@@ -139,7 +139,8 @@ export function assessDeployReadiness(work: WorkRecord, packageId: string, sched
   for (const material of policy.requirePhysicalMaterials ? detail?.materialLines ?? [] : [])
     if (material.status !== "Available" || (material.availableQuantity ?? 0) < material.quantity)
       add(`material:${material.id}`, "blocker", `${material.item}: ${material.availableQuantity ?? 0}/${material.quantity} ${material.unit} physically available.`, material.source || "Released material line", "Confirm physical availability or return the package for a controlled change.");
-  if (policy.requirePhysicalMaterials && detail && !detail.materialLines?.length && detail.materialStatus !== "Available")
+  if (policy.requirePhysicalMaterials && detail && !detail.materialLines?.length
+    && detail.materialStatus !== "Available" && detail.materialStatus !== "Not required")
     add("materials", "unknown", `Material availability is ${detail.materialStatus.toLowerCase()}.`, "Released package", "Confirm physically available materials.");
   if (policy.requireAccess && detail && !detail.access?.trim()) add("access", "unknown", "Access authorization is not recorded.", "Released package", "Confirm site access.");
   if (policy.requirePermit && detail && !detail.permit?.trim()) add("permit", "unknown", "Required permit disposition is not recorded.", "Released package", "Confirm permit approval or return for a controlled exception.");
