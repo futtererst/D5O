@@ -7,6 +7,7 @@ import type { WorkRecord } from "./work-types";
 import { assessJobFinance, dollarsToMinor, invoiceBalance, moneyMinor, type JobFinanceRead } from "./job-finance-model";
 import { deployState } from "./deploy-model";
 import { FocusedTaskFrame } from "./FocusedTaskFrame";
+import { WorkCostOutlook } from "./WorkCostOutlook";
 
 import style from "./OperateWorkspace.module.css";
 
@@ -145,6 +146,8 @@ export function JobFinancePanel({ work, actorRole }: { work: WorkRecord; actorRo
 
     <p>Fixed-price pilot basis · {view.currency ?? "currency unknown"}. Amounts are separate from support activation and physical acceptance. Where approved labor authority and a matching published assignment exist, independently reviewed field hours post sourced incurred labor cost. Legacy or unmatched hours remain operational evidence only.</p>
     <p role="status"><strong>{financeClosed ? "Finance Closed" : `Finance ${state.financeStatus ?? "position unknown"}`}</strong> · {view.billed === 0 ? "No invoice recorded" : view.receivable === 0 ? "Paid in full" : `${moneyMinor(view.receivable,currency)} outstanding receivable`}. Closeout and payment are separate decisions.</p>
+
+    <WorkCostOutlook workspace={work.workspace} workId={work.id} finance={state} />
 
     {error ? <p role="alert">{error}</p> : null}
 

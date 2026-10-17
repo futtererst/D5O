@@ -1,0 +1,14 @@
+.outlook{border-top:1px solid #d6e1e9;margin-top:1.25rem;padding-top:1rem;color:#102a43}
+.outlook h4{font:700 1.05rem Arial,Helvetica,sans-serif;letter-spacing:-.02em;margin:0 0 .5rem}
+.outlook h4:not(:first-child){margin-top:1.2rem}
+.outlook>p{font-size:.88rem;line-height:1.5;margin:.5rem 0;color:#35576c}
+.outlook>p[role="alert"]{border-left:3px solid #be7d22;background:#fff6e8;padding:.65rem .8rem;color:#623e18}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;margin:.75rem 0}
+.category{min-width:0;border:1px solid #d6e1e9;border-radius:8px;background:#f8fafc;padding:.7rem .8rem}
+.category b{font-size:.88rem}
+.category p{font-size:.82rem;line-height:1.45;margin:.35rem 0;color:#35576c;overflow-wrap:anywhere}
+.category small{color:#667f90}
+.category details{margin-top:.55rem;border-top:1px solid #dce6ed;padding-top:.45rem}
+.category summary{cursor:pointer;font-size:.8rem;font-weight:700;color:#234960;min-height:2rem;display:list-item;list-style-position:inside}
+.category summary:focus-visible{outline:2px solid #b28a00;outline-offset:2px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
