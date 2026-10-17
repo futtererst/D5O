@@ -14,6 +14,7 @@ import { PursuitControl } from "./PursuitControl";
 import { DiscoverCRMWorkspace } from "./DiscoverCRMWorkspace";
 import { DevelopPlanning } from "./DevelopPlanning";
 import { RomDesignPanel } from "./RomDesignPanel";
+import { DesignSpendControl } from "./DesignSpendControl";
 import { PricingPolicyAdmin } from "./PricingPolicyAdmin";
 import { DevelopPipeline } from "./DevelopPipeline";
 import { FieldChangeControl } from "./FieldChangeControl";
@@ -60,7 +61,7 @@ export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceNa
   actor: string; actorId?: string; actorRole?: string; canEdit: boolean;
   hosted?: boolean;
   focusRecordId?: string;
-  reviewFocus?: "pricing" | "proposal" | "solution-prep" | "solution-review" | "pricing-prep" | "proposal-prep" | "customer-submission-prep" | "rom-budget-ack" | "rom-design-authorization" | "design-handoff-receive" | "design-handoff-correction" | "pursuit-prep" | "pursuit-review" | "define-handoff-prep" | "define-handoff-receive" | null;
+  reviewFocus?: "pricing" | "proposal" | "solution-prep" | "solution-review" | "pricing-prep" | "proposal-prep" | "customer-submission-prep" | "rom-budget-ack" | "rom-design-authorization" | "design-spend-authority-prep" | "design-spend-authority-review" | "design-spend-commitment-prep" | "design-spend-commitment-review" | "design-handoff-receive" | "design-handoff-correction" | "pursuit-prep" | "pursuit-review" | "define-handoff-prep" | "define-handoff-receive" | null;
   onOpen: (record: WorkRecord) => void;
   onDefine: (record: WorkRecord) => void;
   onOpenDevelopControls?: (record: WorkRecord) => void;
@@ -495,6 +496,7 @@ export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceNa
         </div> : null}
         {isDevelop && (!reviewFocus || ["solution-prep", "solution-review", "pricing-prep"].includes(reviewFocus)) && onPeople ? <DevelopPlanning key={`${selected.id}-${estimate.revision}-${policyVersionSignal}`} work={selected} workspace={workspaceKey} canEdit={canEdit} hosted={hosted} focusMode={reviewFocus === "solution-prep" || reviewFocus === "solution-review" || reviewFocus === "pricing-prep" ? reviewFocus : undefined} onUpdate={onUpdate} onCommercialCommand={onCommercialCommand} onNotice={onNotice} onDefine={() => onDefine(selected)} onPeople={onPeople} /> : null}
         {isDevelop && hosted && estimate.detailed?.input.estimateMaturity === "ROM" && (!reviewFocus || reviewFocus === "customer-submission-prep" || reviewFocus === "rom-budget-ack" || reviewFocus === "rom-design-authorization") ? <RomDesignPanel work={selected} workspace={workspaceKey} role={actorRole} focus={reviewFocus} /> : null}
+        {isDevelop && hosted && estimate.detailed?.input.estimateMaturity === "ROM" && (!reviewFocus || reviewFocus.startsWith("design-spend-")) ? <DesignSpendControl work={selected} workspace={workspaceKey} role={actorRole} actorId={actorId} focus={reviewFocus} /> : null}
         <div className={styles.detailGrid}>
           {!isDevelop ? <article className={styles.card}><p className={styles.kicker}>CUSTOMER NEED &amp; FIT</p><h3>Why this work matters</h3><p className={styles.need}>{discovery.need || "Capture the customer outcome and the reason this work should proceed."}</p><div className={styles.facts}><Fact label="Procurement" value={discovery.procurement} /><Fact label="Source" value={discovery.source} /><Fact label="Qualification" value={discovery.fit} /></div>
             <small className={styles.hint}>{fitField?.label ?? "Qualification outcome"} is recorded through the D1 pursuit decision above. This display does not grant spend or delivery authority.</small>
@@ -595,3 +597,5 @@ function Metric({ label, value, note }: { label: string; value: string; note: st
 function Identity({ label, value, detail }: { label: string; value: string; detail: string }) { return <div><small>{label}</small><strong>{value}</strong><span>{detail}</span></div>; }
 function Fact({ label, value }: { label: string; value: string }) { return <div><small>{label}</small><strong>{value}</strong></div>; }
 function NumberField({ label, name, value }: { label: string; name: string; value: number }) { return <label className={styles.field}>{label}<input type="number" min="0" step="0.01" name={name} defaultValue={value} /></label>; }
+
+

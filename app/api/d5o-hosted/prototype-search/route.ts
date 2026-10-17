@@ -99,7 +99,9 @@ export async function GET(request: NextRequest) {
         if (procurementQueued.error || !Array.isArray(procurementQueued.data)) return reply({ error: "procurement_queue_unavailable" }, 503);
         const supplierCostQueued = await call("d5o_graybar_job_cost_actions_v1", { p_workspace_key: workspace });
         if (supplierCostQueued.error || !Array.isArray(supplierCostQueued.data)) return reply({ error: "supplier_cost_queue_unavailable" }, 503);
-        roleActions = [...roleActions, ...procurementQueued.data, ...supplierCostQueued.data];
+        const designSpendQueued = await call("d5o_hosted_design_spend_actions_v1", { p_workspace_key: workspace });
+        if (designSpendQueued.error || !Array.isArray(designSpendQueued.data)) return reply({ error: "design_spend_queue_unavailable" }, 503);
+        roleActions = [...roleActions, ...procurementQueued.data, ...supplierCostQueued.data, ...designSpendQueued.data];
         const serviceQueued = await call("d5o_hosted_service_actions_v1", { p_workspace_key: workspace });
         if (serviceQueued.error || !Array.isArray(serviceQueued.data)) return reply({ error: "service_queue_unavailable" }, 503);
         const costQueued = await call("d5o_hosted_service_cost_actions_v1", { p_workspace_key: workspace });
@@ -417,3 +419,4 @@ export async function GET(request: NextRequest) {
     return reply({ error: "search_unavailable" }, 503);
   }
 }
+

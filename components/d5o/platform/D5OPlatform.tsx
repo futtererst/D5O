@@ -213,7 +213,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
   const [unavailableRecordId, setUnavailableRecordId] = useState<string | null>(null);
   const [recordReturn, setRecordReturn] = useState<Exclude<Screen, "record">>("portfolio");
   const [myWorkEntry, setMyWorkEntry] = useState<"all" | "mine" | "pricing" | "proposal" | "definition">("all");
-  const [discoverEntry, setDiscoverEntry] = useState<"pricing" | "proposal" | "solution-prep" | "solution-review" | "pricing-prep" | "proposal-prep" | "customer-submission-prep" | "rom-budget-ack" | "rom-design-authorization" | "design-handoff-receive" | "design-handoff-correction" | "pursuit-prep" | "pursuit-review" | "define-handoff-prep" | "define-handoff-receive" | null>(null);
+  const [discoverEntry, setDiscoverEntry] = useState<"pricing" | "proposal" | "solution-prep" | "solution-review" | "pricing-prep" | "proposal-prep" | "customer-submission-prep" | "rom-budget-ack" | "rom-design-authorization" | "design-spend-authority-prep" | "design-spend-authority-review" | "design-spend-commitment-prep" | "design-spend-commitment-review" | "design-handoff-receive" | "design-handoff-correction" | "pursuit-prep" | "pursuit-review" | "define-handoff-prep" | "define-handoff-receive" | null>(null);
   const [defineReviewEntry, setDefineReviewEntry] = useState<"commercial" | "delivery" | "define-prep" | "develop-handoff-prep" | "develop-handoff-receive" | null>(null);
   const [crewEntry, setCrewEntry] = useState<"coverage" | "attendance" | null>(null);
   const [crewFocusWorkId, setCrewFocusWorkId] = useState<string | null>(null);
@@ -462,7 +462,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       setTaskPackageId(view === "record" ? params.get("package") : null);
       setTaskRequestId(view === "record" ? params.get("request") : null);
       setTaskRevision(params.has("sourceRevision") ? Number(params.get("sourceRevision")) : null);
-      if ((view === "develop" || view === "discover") && ["pricing", "proposal", "solution-prep", "solution-review", "pricing-prep", "proposal-prep", "customer-submission-prep", "rom-budget-ack", "rom-design-authorization", "design-handoff-receive", "design-handoff-correction", "pursuit-prep", "pursuit-review", "define-handoff-prep", "define-handoff-receive"].includes(params.get("focus") ?? "")) setDiscoverEntry(params.get("focus") as typeof discoverEntry);
+      if ((view === "develop" || view === "discover") && ["pricing", "proposal", "solution-prep", "solution-review", "pricing-prep", "proposal-prep", "customer-submission-prep", "rom-budget-ack", "rom-design-authorization", "design-spend-authority-prep", "design-spend-authority-review", "design-spend-commitment-prep", "design-spend-commitment-review", "design-handoff-receive", "design-handoff-correction", "pursuit-prep", "pursuit-review", "define-handoff-prep", "define-handoff-receive"].includes(params.get("focus") ?? "")) setDiscoverEntry(params.get("focus") as typeof discoverEntry);
       if (view === "define" && ["commercial", "delivery", "define-prep", "develop-handoff-prep", "develop-handoff-receive"].includes(params.get("focus") ?? "")) setDefineReviewEntry(params.get("focus") as typeof defineReviewEntry);
       if (recordId && work.some((item) => item.id === recordId && item.workspace === activeWorkspace)) { setSelectedId(recordId); setUnavailableRecordId(null); }
       else if (recordId && ["record", "discover", "define", "develop"].includes(view ?? "")) setUnavailableRecordId(recordId);
@@ -1457,3 +1457,4 @@ function IssueList({ issues, evidence, currentOwner, onResolve, onException, onO
   }) : <p className="d5o-good-copy">No uncontrolled issue is open on this Work Record.</p>}</div>;
 }
 function LifecycleList({ actions }: { actions: LifecycleAction[] }) { return <div className="d5o-lifecycle-list">{actions.map((item) => <article key={item.id}><i>↗</i><div><strong>{item.action}</strong><span>{item.owner} · {item.due}</span></div><b>{label(item.status)}</b></article>)}{!actions.length ? <p className="d5o-empty-state">No lifecycle action has been planned yet.</p> : null}</div>; }
+
