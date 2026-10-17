@@ -8,6 +8,7 @@ import { assessJobFinance, dollarsToMinor, invoiceBalance, moneyMinor, type JobF
 import { deployState } from "./deploy-model";
 import { FocusedTaskFrame } from "./FocusedTaskFrame";
 import { WorkCostOutlook } from "./WorkCostOutlook";
+import { DesignCostAssessment } from "./DesignCostAssessment";
 
 import style from "./OperateWorkspace.module.css";
 
@@ -103,6 +104,19 @@ export function JobFinancePanel({ work, actorRole }: { work: WorkRecord; actorRo
       <a href={financeHref("full")}>Supporting ledger, source events and history</a>
     </nav>
   </section>;
+  if (taskKind === "design-cost" || taskKind === "outlook-assessment") return <FocusedTaskFrame
+    title={taskKind === "design-cost" ? "Reconcile Design commitment and actual cost" : "Assess Work cost-outlook completeness"}
+    work={work.title} customer={work.customer} site={work.site} workspace={work.workspace}
+    scope={`Exact Work ${work.id} · Design commitment and Finance cost basis`}
+    revision={params?.has("sourceRevision") ? Number(params.get("sourceRevision")) : state.revision}
+    outcome={taskKind === "design-cost" ? "Link the approved Design commitment and obtain independent review of sourced actual cost." : "Record category-specific gaps and obtain an independent Finance assessment."}
+    blocker={null} nextOwner={canFinance ? "Assigned project manager for correction or next forecast" : "Independent Finance reviewer"}
+    onFullRecord={() => window.location.assign(financeHref("full"))}>
+    <DesignCostAssessment work={work} actorRole={actorRole} onCommitted={load} mode={taskKind}
+      expectedRevision={params?.has("sourceRevision") ? Number(params.get("sourceRevision")) : undefined}
+      decisionId={params?.get("decision")} remainingForecastMinor={state.remainingForecastMinor}
+      forecastSource={state.forecastSource} />
+  </FocusedTaskFrame>;
   if (taskKind !== "full") {
     const balance = exactBill ? invoiceBalance(state, exactBill.id) : null;
     const requiresBill = ["bill-review", "job-invoice", "job-payment"].includes(taskKind);
@@ -148,6 +162,9 @@ export function JobFinancePanel({ work, actorRole }: { work: WorkRecord; actorRo
     <p role="status"><strong>{financeClosed ? "Finance Closed" : `Finance ${state.financeStatus ?? "position unknown"}`}</strong> · {view.billed === 0 ? "No invoice recorded" : view.receivable === 0 ? "Paid in full" : `${moneyMinor(view.receivable,currency)} outstanding receivable`}. Closeout and payment are separate decisions.</p>
 
     <WorkCostOutlook workspace={work.workspace} workId={work.id} finance={state} />
+    {(actorRole === "project_manager" || canFinance) ?
+      <DesignCostAssessment work={work} actorRole={actorRole} onCommitted={load}
+        remainingForecastMinor={state.remainingForecastMinor} forecastSource={state.forecastSource} /> : null}
 
     {error ? <p role="alert">{error}</p> : null}
 

@@ -37,7 +37,7 @@ function sourceRows(finance: JobFinanceRead) {
     const incurred = facts.filter((cost) => cost.kind === "Incurred");
     const open = commitments.map((commitment) => {
       const linked = safeTotal(incurred.filter((cost) => cost.reconciles_id === commitment.id).map((cost) => cost.amount_minor));
-      return linked === null || linked > commitment.amount_minor ? NaN : commitment.amount_minor - linked;
+      return linked === null ? NaN : Math.max(commitment.amount_minor - linked, 0);
     });
     return {
       category, facts,
@@ -86,7 +86,19 @@ export function WorkCostOutlook({ workspace, workId, finance }: {
     authority.designCommittedMinor !== design.committedMinor);
   const remainingAuthority = authority?.parentCapMinor !== null && authority?.parentCapMinor !== undefined &&
     categoryConsumption !== null ? authority.parentCapMinor - categoryConsumption : null;
-  const unlinkedDesign = (design?.commitments ?? []).filter((item) => item.status === "Approved" && item.amount_minor > 0);
+  const unlinkedDesign = (design?.commitments ?? []).filter((item) => item.status === "Approved" && item.amount_minor > 0 &&
+    !finance.costs.some((cost) => cost.kind === "Committed" && cost.category === "Design" && cost.source.includes(item.id)));
+  const unlinkedDesignExposure = safeTotal(unlinkedDesign.map((item) => item.amount_minor));
+  const incurred = safeTotal(finance.costs.filter((item) => item.kind === "Incurred").map((item) => item.amount_minor));
+  const postedOutstanding = safeTotal(finance.costs.filter((item) => item.kind === "Committed").map((item) => {
+    const realized = safeTotal(finance.costs.filter((fact) => fact.reconciles_id === item.id).map((fact) => fact.amount_minor));
+    return realized === null ? NaN : Math.max(item.amount_minor - realized, 0);
+  }));
+  const laborOutstanding = safeTotal((finance.laborReservations ?? []).map((item) =>
+    item.status === "Active" ? Math.max(item.reservedMinor - item.incurredMinor, 0) : 0));
+  const outstanding = postedOutstanding === null || laborOutstanding === null ? null : safeTotal([postedOutstanding, laborOutstanding]);
+  const projected = incurred === null || outstanding === null || finance.remainingForecastMinor === null ? null :
+    safeTotal([incurred, outstanding, finance.remainingForecastMinor]);
 
   return <section className={styles.outlook} aria-label="Work cost sources and forecast limits">
     <h4>Work cost sources</h4>
@@ -99,9 +111,10 @@ export function WorkCostOutlook({ workspace, workId, finance }: {
       {sourceMismatch ? <p role="alert">Design commitment reads disagree. Refresh the source decisions before using this total.</p> : null}
       {incompatibleLabor ? <p role="alert">Labor and Work authority refer to different decisions. No combined headroom is stated until their source basis is reconciled.</p> : null}
       {authority?.legacyPurchaseHold ? <p role="status">A historical PO lacks a current Work-authority link. Its history remains visible; the combined authority position is incomplete.</p> : null}
-      {unlinkedDesign.length ? <p role="status">{unlinkedDesign.length} approved Design commitment{unlinkedDesign.length === 1 ? "" : "s"} have no stable link to a Finance incurred-cost record. Their commitment is visible above, but a complete final-cost or margin claim requires reconciliation.</p> : null}
+      {unlinkedDesign.length ? <p role="status">{unlinkedDesign.length} approved Design commitment{unlinkedDesign.length === 1 ? "" : "s"} totaling {moneyMinor(unlinkedDesignExposure,"USD")} have no stable Finance cost link. Their approved exposure is known, but realization against it is unresolved; the projected total excludes it to avoid double counting. The assigned PM must establish genuine source lineage before a complete outlook review.</p> : null}
     </>}
     <h4>Finance ledger by cost category</h4>
+    <p><b>Known cost outlook:</b> incurred {financeMoney(incurred)} + outstanding commitments {financeMoney(outstanding)} + additional sourced forecast {financeMoney(finance.remainingForecastMinor)} = projected {financeMoney(projected)}. The forecast must cover work beyond existing commitments; unlinked or unknown exposure remains a gap.</p>
     <div className={styles.grid}>{rows.map((row) => <div className={styles.category} key={row.category}>
       <b>{row.category}</b><p>Incurred {financeMoney(row.incurred)} · unreconciled posted commitment {financeMoney(row.open)}</p>
       {row.facts.length ? <details><summary>{row.facts.length} retained source fact{row.facts.length === 1 ? "" : "s"}</summary>

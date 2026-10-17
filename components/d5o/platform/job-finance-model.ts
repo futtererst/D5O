@@ -55,7 +55,7 @@ export function assessJobFinance(read: JobFinanceRead, work: WorkRecord) {
   const incurred = safeSum(read.costs.filter((item) => item.kind === "Incurred").map((item) => item.amount_minor));
   const postedOutstanding = safeSum(read.costs.filter((item) => item.kind === "Committed").map((item) => {
     const reconciled = safeSum(read.costs.filter((fact) => fact.reconciles_id === item.id).map((fact) => fact.amount_minor));
-    return reconciled === null || reconciled > item.amount_minor ? NaN : item.amount_minor - reconciled;
+    return reconciled === null ? NaN : Math.max(item.amount_minor - reconciled, 0);
   }));
   const laborOutstanding = safeSum((read.laborReservations ?? []).map((item) =>
     item.status === "Active" ? Math.max(item.reservedMinor - item.incurredMinor, 0) : 0));

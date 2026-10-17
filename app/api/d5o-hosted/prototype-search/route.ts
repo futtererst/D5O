@@ -101,6 +101,8 @@ export async function GET(request: NextRequest) {
         if (supplierCostQueued.error || !Array.isArray(supplierCostQueued.data)) return reply({ error: "supplier_cost_queue_unavailable" }, 503);
         const designSpendQueued = await call("d5o_hosted_design_spend_actions_v1", { p_workspace_key: workspace });
         if (designSpendQueued.error || !Array.isArray(designSpendQueued.data)) return reply({ error: "design_spend_queue_unavailable" }, 503);
+        const designCostQueued = await call("d5o_hosted_design_cost_actions_v1", { p_workspace_key: workspace });
+        if (designCostQueued.error || !Array.isArray(designCostQueued.data)) return reply({ error: "design_cost_queue_unavailable" }, 503);
         const purchaseAuthorityQueued = await call("d5o_purchase_authority_actions_v1", { p_workspace_key: workspace });
         if (purchaseAuthorityQueued.error || !Array.isArray(purchaseAuthorityQueued.data)) return reply({ error: "purchase_authority_queue_unavailable" }, 503);
         const subcontractQueued = await call("d5o_subcontract_actions_v1", { p_workspace_key: workspace });
@@ -108,7 +110,7 @@ export async function GET(request: NextRequest) {
         const laborQueued = await call("d5o_labor_authority_actions_v1", { p_workspace_key: workspace });
         if (laborQueued.error || !Array.isArray(laborQueued.data)) return reply({ error: "labor_queue_unavailable" }, 503);
         roleActions = [...roleActions, ...procurementQueued.data, ...supplierCostQueued.data,
-          ...designSpendQueued.data, ...purchaseAuthorityQueued.data, ...subcontractQueued.data, ...laborQueued.data];
+          ...designSpendQueued.data, ...designCostQueued.data, ...purchaseAuthorityQueued.data, ...subcontractQueued.data, ...laborQueued.data];
         const serviceQueued = await call("d5o_hosted_service_actions_v1", { p_workspace_key: workspace });
         if (serviceQueued.error || !Array.isArray(serviceQueued.data)) return reply({ error: "service_queue_unavailable" }, 503);
         const costQueued = await call("d5o_hosted_service_cost_actions_v1", { p_workspace_key: workspace });
