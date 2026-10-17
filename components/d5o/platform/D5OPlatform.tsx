@@ -58,6 +58,7 @@ import { WorkPhaseActions } from "./WorkPhaseActions";
 import { PhaseResourceBridge } from "./PhaseResourceBridge";
 import { WorkPhaseJourney, type WorkPhase, type WorkControl } from "./WorkPhaseJourney";
 import { canPresentSurface, presentationForRole } from "./role-presentation";
+import { retainedEditsPresent } from "./define-save-recovery";
 
 type WorkspaceKey = "rybex" | "rotork";
 type DefineSaveRecovery = { workId: string; title: string; baseRevision: number; savedAt: string; before: DefinitionRecord | null; draft: DefinitionRecord };
@@ -250,6 +251,8 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
   const [operateFocus, setOperateFocus] = useState<{ workId: string; section: OperateTab } | null>(null);
   const [notice, setNotice] = useState("");
   const [defineRecovery, setDefineRecovery] = useState<DefineSaveRecovery[]>([]);
+  const [defineRecoveryScope, setDefineRecoveryScope] = useState<string | null>(null);
+  const [defineRecoveryLoadEpoch, setDefineRecoveryLoadEpoch] = useState(0);
   const [recoveryBasisChecked, setRecoveryBasisChecked] = useState(false);
   useEffect(() => {
     let restored: DefineSaveRecovery[] = [];
@@ -257,21 +260,22 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       const saved = sessionStorage.getItem(defineRecoveryKey(activeWorkspace, actorId));
       restored = saved ? JSON.parse(saved) as DefineSaveRecovery[] : [];
     } catch { /* Keep this tab usable if its recovery copy is damaged. */ }
-    const frame = requestAnimationFrame(() => { setDefineRecovery(restored); setRecoveryBasisChecked(false); });
+    const frame = requestAnimationFrame(() => { setDefineRecovery(restored); setDefineRecoveryScope(actorId ? defineRecoveryKey(activeWorkspace, actorId) : null); setRecoveryBasisChecked(false); });
     return () => cancelAnimationFrame(frame);
   }, [activeWorkspace, actorId]);
   const preserveFailedDefineDraft = useCallback((draft: Work[], revision: number | null) => {
-    if (revision === null || !lastSharedWork.current) return false;
+    if (revision === null || !lastSharedWork.current || (hostedPreview && !actorId)) return false;
     try {
       const prior = JSON.parse(lastSharedWork.current) as Work[];
       const changed = changedDefineDrafts(prior, draft, revision);
       if (!changed.length) return false;
       setDefineRecovery(changed);
+      setDefineRecoveryScope(defineRecoveryKey(activeWorkspace, actorId));
       setRecoveryBasisChecked(false);
       sessionStorage.setItem(defineRecoveryKey(activeWorkspace, actorId), JSON.stringify(changed));
       return true;
     } catch { return false; }
-  }, [activeWorkspace, actorId]);
+  }, [activeWorkspace, actorId, hostedPreview]);
   async function loadCurrentForDefineRecovery() {
     // Keep the unsaved copy in session storage while fetching the authoritative
     // revision. No protected or approved field is merged into that revision.
@@ -286,19 +290,24 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       if (!response.ok || !payload.state?.records) throw new Error("Current Work state is unavailable.");
       const latest = payload.state.records.map(hydrate);
       const pending = JSON.parse(sessionStorage.getItem(defineRecoveryKey(activeWorkspace, actorId)) ?? "[]") as DefineSaveRecovery[];
-      const alreadySaved = pending.length > 0 && pending.every((entry) =>
-        JSON.stringify(latest.find((item) => item.id === entry.workId)?.definition) === JSON.stringify(entry.draft));
+      const alreadySaved = pending.length > 0 && pending.every((entry) => {
+        const current = latest.find((item) => item.id === entry.workId)?.definition;
+        return current && retainedEditsPresent(entry.before, entry.draft, current, true);
+      });
       lastSharedWork.current = JSON.stringify(latest);
       sharedWorkRevisionRef.current = payload.state.revision;
       setSharedWorkRevision(payload.state.revision);
       setWork(latest);
+      // Explicit reconciliation loads a new authoritative basis. Reset local
+      // form buffers while the retained draft remains available for comparison.
+      setDefineRecoveryLoadEpoch((value) => value + 1);
       setRecoveryBasisChecked(true);
       if (alreadySaved) {
         sessionStorage.removeItem(defineRecoveryKey(activeWorkspace, actorId));
         setDefineRecovery([]);
       }
       setNotice(alreadySaved
-        ? `Shared revision ${payload.state.revision} already contains the retained Define draft. Do not retry that save.`
+        ? `Shared revision ${payload.state.revision} already contains the retained edited values. Do not retry that save.`
         : `Loaded shared revision ${payload.state.revision}. Compare your retained draft below, then re-enter only the changes that still apply.`);
     } catch (error) { setNotice(error instanceof Error ? error.message : "Could not load the current Work state."); }
   }
@@ -1154,11 +1163,11 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
     </aside>
       <section className="d5o-full-content"><div className="d5o-app-topbar"><div><span>WORKSPACE</span><strong>{palette.name}</strong><i style={{ background: palette.color }} /></div><div className="d5o-top-actions">{hostedPreview ? <Link href="/work">Switch workspace</Link> : null}<AccountMenu hostedPreview={hostedPreview} workspace={activeWorkspace} snapshotReady={workLoaded && preferencesLoaded} onExportSnapshot={() => { void exportSnapshot(); }} />{presentation.canStart ? <button onClick={() => go("start")}>+ Start work</button> : null}</div></div>
       {notice ? <div className="d5o-platform-notice" role="status">{notice}<button onClick={() => setNotice("")}>×</button></div> : null}
-      {defineRecovery.length ? <section className="d5o-panel d5o-define-recovery" role="alert" aria-label="Unsaved Define draft recovery">
+      {screen === "define" && defineRecoveryScope === defineRecoveryKey(activeWorkspace, actorId) && defineRecovery.some((entry) => entry.workId === selectedId) ? <section className="d5o-panel d5o-define-recovery" role="alert" aria-label="Unsaved Define draft recovery">
         <h2>Unsaved Define draft retained</h2>
         <p>A save failed or its outcome is uncertain. Check the current shared revision before retrying. Your draft remains in this browser tab through reload; it has not been merged into approved requirements.</p>
         <button type="button" className="d5o-primary" onClick={() => void loadCurrentForDefineRecovery()}>Check and load current shared basis</button>
-        {defineRecovery.map((entry) => {
+        {defineRecovery.filter((entry) => entry.workId === selectedId).map((entry) => {
           const current = work.find((item) => item.id === entry.workId);
           const changed = Object.keys(entry.draft).filter((key) => !["history", "reviews", "status", "revision", "developHandoff", "decisions", "approvedBaselines", "authorityRevision", "sourceEstimateRevision", "sourceProposalRevision", "configurationVersion", "configurationWorkTypeKey"].includes(key) &&
             JSON.stringify(entry.draft[key as keyof DefinitionRecord]) !== JSON.stringify(entry.before?.[key as keyof DefinitionRecord]));
@@ -1178,7 +1187,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       {hostedPreview && taskFocus && screen !== "my-work" ? <TaskInboxRail workspace={activeWorkspace} currentRecordId={selected?.id} currentFocus={taskFocus} currentPackageId={taskPackageId} /> : null}
       <div className="d5o-task-main">
       {screen === "discover" && !stalePhaseTask && !unavailableRecordId ? <DiscoverWorkspace workspaceKey={activeWorkspace} workspaceName={palette.name} configurationInventory={configurationInventory} work={visibleWork as WorkRecord[]} commercialProfiles={commercialProfiles} actor={currentUserLabel} actorId={actorId ?? undefined} actorRole={actorRole} canEdit={canEditWork && sharedWorkRevision !== null} focusRecordId={selected?.id} reviewFocus={discoverEntry} onPhase={openJourneyPhase} onControl={(item, control) => { setSelectedId(item.id); setTab(control); go("record"); }} onBack={() => taskFocus ? go("my-work") : go("home")} onSelect={setSelectedId} onOpen={(item) => openRecord(item as Work)} onDefine={(item) => openWorkspacePhase("define", item as Work)} onPricingQueued={() => { pendingReviewQueue.current = "pricing"; setNotice("Saving the pricing review before opening its role queue."); }} onProposalQueued={() => { pendingReviewQueue.current = "proposal"; setNotice("Saving the proposal review before opening its role queue."); }} onCommercialCommand={executeCommercialCommand} onPursuitCommand={authoritativeCommands ? executePursuitCommand : undefined} onUpdate={(id, transform) => { pendingDiscoverSave.current = id; updateWork(id, (current) => transform(current as WorkRecord) as Work); }} onCreate={createDiscoverWork} onNotice={setNotice} /> : null}
-      {screen === "define" && !stalePhaseTask && !unavailableRecordId ? <DefineWorkspace workspaceKey={activeWorkspace} workspaceName={palette.name} configurationInventory={configurationInventory} work={visibleWork as WorkRecord[]} focusRecordId={selected?.id} reviewFocus={defineReviewEntry} actorLabel={currentUserLabel} onReviewQueued={() => { pendingReviewQueue.current = "definition"; setNotice("Saving the definition review before opening its role queue."); }} onCommand={executeDefineCommand} onPhase={openJourneyPhase} onControl={(item, control) => { setSelectedId(item.id); setTab(control); go("record"); }} onBack={() => taskFocus ? go("my-work") : openWorkspacePhase("discover")} onSelect={setSelectedId} onOpen={(item) => openRecord(item as Work)} onUpdate={(id, transform) => updateWork(id, (current) => transform(current as WorkRecord) as Work)} onNotice={setNotice} /> : null}
+      {screen === "define" && !stalePhaseTask && !unavailableRecordId ? <DefineWorkspace key={`${activeWorkspace}:${selected?.id ?? ""}:${defineRecoveryLoadEpoch}`} workspaceKey={activeWorkspace} workspaceName={palette.name} configurationInventory={configurationInventory} work={visibleWork as WorkRecord[]} focusRecordId={selected?.id} reviewFocus={defineReviewEntry} actorLabel={currentUserLabel} onReviewQueued={() => { pendingReviewQueue.current = "definition"; setNotice("Saving the definition review before opening its role queue."); }} onCommand={executeDefineCommand} onPhase={openJourneyPhase} onControl={(item, control) => { setSelectedId(item.id); setTab(control); go("record"); }} onBack={() => taskFocus ? go("my-work") : openWorkspacePhase("discover")} onSelect={setSelectedId} onOpen={(item) => openRecord(item as Work)} onUpdate={(id, transform) => updateWork(id, (current) => transform(current as WorkRecord) as Work)} onNotice={setNotice} /> : null}
       {screen === "develop" && !stalePhaseTask && !unavailableRecordId ? <DiscoverWorkspace
         mode="develop" workspaceKey={activeWorkspace} workspaceName={palette.name} hosted={hostedPreview}
         configurationInventory={configurationInventory} work={visibleWork as WorkRecord[]}
