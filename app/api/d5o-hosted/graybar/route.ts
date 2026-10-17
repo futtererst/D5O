@@ -6,7 +6,7 @@ import { graybarDirectAdapter, graybarDocumentCapabilities } from "@/lib/d5o/gra
 
 export const dynamic = "force-dynamic";
 const reply = (value: unknown, status = 200) => NextResponse.json(value, { status, headers: { "Cache-Control": "no-store" } });
-const actions = new Set(["accept-quote", "assess-product", "prepare-bom", "approve-bom", "prepare-po", "approve-po", "record-test-submission", "record-acknowledgment", "record-shipment", "record-receipt", "record-supplier-invoice", "review-supplier-invoice", "record-return", "record-credit", "handoff-installed"]);
+const actions = new Set(["accept-quote", "assess-product", "prepare-bom", "approve-bom", "prepare-po", "cancel-po-draft", "approve-po", "record-test-submission", "record-acknowledgment", "record-shipment", "record-receipt", "record-supplier-invoice", "review-supplier-invoice", "record-return", "record-credit", "handoff-installed"]);
 function target(request: NextRequest) {
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
   const workId = request.nextUrl.searchParams.get("workId") ?? "";

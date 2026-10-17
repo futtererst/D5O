@@ -14,6 +14,6 @@ export default async function ProcurementPage({ searchParams }: { searchParams: 
   const workspaces = await client.rpc("d5o_hosted_workspaces_v1");
   const role = (Array.isArray(workspaces.data) ? workspaces.data as Array<{ workspaceKey: string; role: string }> : []).find((item) => item.workspaceKey === workspace)?.role;
   if (!role || role === "field_worker") redirect(`/work?workspace=${workspace}`);
-  return <GraybarWorkspace workspace={workspace} workId={workId} role={role} build={process.env.D5O_SOURCE_SHA ?? "source-unidentified"}
+  return <GraybarWorkspace workspace={workspace} workId={workId} role={role} build={process.env.D5O_SOURCE_SHA ?? "source-unidentified"} initialSection={params.step}
     task={params.sourceRevision ? { step: params.step ?? "quote", sourceRevision: Number(params.sourceRevision), decision: params.decision ?? "" } : undefined} />;
 }

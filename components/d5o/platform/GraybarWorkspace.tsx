@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import styles from "./GraybarWorkspace.module.css";
+import { PurchaseAuthorityPanel } from "./PurchaseAuthorityPanel";
 
 type Row = Record<string, string>;
 type Quote = { id: string; quoteNumber: string; quoteRevision: string; accountReference: string; quotedAt: string; expiresAt: string; currency: string; documentId: string; lines: Row[]; freightMinor?: string; totalMinor: number; status: string };
@@ -12,6 +13,10 @@ type Invoice = { id: string; invoiceNumber: string; status: string; totalMinor: 
 type Order = { id: string; status: string; bomId: string; accountReference: string; shipTo: string; lines: Row[]; amountMinor: number; budgetMinor: number; acknowledgment?: Row };
 type Document = { id: string; kind: string; filename: string; sha256: string };
 type Procurement = { revision: number; state: { quotes: Quote[]; assessments: Row[]; bom: Bom | null; orders: Order[]; shipments: Shipment[]; receipts: Receipt[]; supplierInvoices: Invoice[]; returns: Row[]; credits: Row[]; installed: Row[] }; documents: Document[] };
+type AuthoritySummary = { revision: number; source: { digest: string; kind: string } | null;
+  parentCapMinor: number | null; purchaseCapMinor: number | null; parentRemainingMinor: number | null;
+  purchaseRemainingMinor: number | null; designCommittedMinor: number; purchaseReservedMinor: number;
+  authorities: Array<{ id: string; status: string; conditions: string; valid_until: string }> };
 type FinancePosting = { financeRevision: number; links: Array<{ orderId: string; invoiceId?: string; materialId: string; kind: string; costId: string; amountMinor: number; source: string }> };
 type Work = { id: string; title: string; customer?: string; site?: string; definition?: { scopeControl?: { requirements?: Array<{ id: string; need: string }> } }; discovery?: { estimate?: { detailed?: { status?: string } } }; design?: {
   packages?: Array<{ packageId: string; revision: number; status: string; materialLines?: Array<{ id: string; item: string; quantity: number; unit: string }> }>;
@@ -21,21 +26,26 @@ const minor = (value: string) => Math.round(Number(value || 0) * 100);
 const initialLine = (): Row => ({ lineNumber: "1", graybarSku: "", manufacturer: "", manufacturerPartNumber: "", description: "", quantity: "", unit: "each", packSize: "1", priceBasis: "each", unitPriceMinor: "", extendedMinor: "", noCostReason: "", availability: "", leadTime: "", returnability: "" });
 const cells = (form: FormData) => Object.fromEntries([...form.entries()].map(([key, value]) => [key, String(value)]));
 const docUrl = (workspace: string, workId: string, id: string) => `/api/d5o-hosted/graybar-document?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(workId)}&documentId=${encodeURIComponent(id)}`;
-export function GraybarWorkspace({ workspace, workId, role, build, task }: { workspace: string; workId: string; role: string; build: string;
+export function GraybarWorkspace({ workspace, workId, role, build, task, initialSection }: { workspace: string; workId: string; role: string; build: string; initialSection?: string;
   task?: { step: string; sourceRevision: number; decision: string } }) {
   const [data, setData] = useState<Procurement | null>(null), [work, setWork] = useState<Work | null>(null);
   const [financePosting, setFinancePosting] = useState<FinancePosting | null>(null);
+  const [authority, setAuthority] = useState<AuthoritySummary | null>(null);
   const [busy, setBusy] = useState(false), [notice, setNotice] = useState(""), [extraction, setExtraction] = useState("");
   const [sourceDocumentId, setSourceDocumentId] = useState("");
   const [quoteLines, setQuoteLines] = useState<Row[]>([initialLine()]);
-  const taskSection = task?.step === "cost-po" ? "po" : task?.step === "cost-invoice" ? "invoice" : task?.step;
-  const [bomLines, setBomLines] = useState<Row[]>([]), [section, setSection] = useState(taskSection ?? "quote");
+  const taskSection = task?.step?.startsWith("authority-") ? "authority" : task?.step === "cost-po" ? "po" : task?.step === "cost-invoice" ? "invoice" : task?.step;
+  const [selectedOrderId, setSelectedOrderId] = useState("");
+  const [bomLines, setBomLines] = useState<Row[]>([]), [section, setSection] = useState(taskSection ?? (["quote", "assess", "rom", "bom", "authority", "po", "fulfill", "invoice", "operate"].includes(initialSection ?? "") ? initialSection! : "quote"));
   const url = `/api/d5o-hosted/graybar?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(workId)}`;
   const refresh = useCallback(async () => {
-    const [procurement, firstWorkResult, financeResult] = await Promise.all([fetch(url, { cache: "no-store" }),
+    const [procurement, firstWorkResult, financeResult, authorityResult] = await Promise.all([fetch(url, { cache: "no-store" }),
       fetch(`/api/d5o-hosted/prototype-state?workspace=${encodeURIComponent(workspace)}&key=work`, { cache: "no-store" }),
       ["admin", "project_manager", "billing_commercial_lead"].includes(role)
         ? fetch(`/api/d5o-hosted/graybar-job-cost?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(workId)}`, { cache: "no-store" })
+        : Promise.resolve(null),
+      ["admin", "project_manager", "billing_commercial_lead"].includes(role)
+        ? fetch(`/api/d5o-hosted/purchase-authority?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(workId)}`, { cache: "no-store" })
         : Promise.resolve(null)]);
     let workResult = firstWorkResult;
     for (let attempt = 0; attempt < 3 && !workResult.ok; attempt++) {
@@ -46,6 +56,7 @@ export function GraybarWorkspace({ workspace, workId, role, build, task }: { wor
     if (!procurement.ok) { setNotice(parsed.error ?? "Procurement unavailable"); return; }
     setData(parsed as Procurement);
     if (financeResult?.ok) setFinancePosting(await financeResult.json() as FinancePosting);
+    if (authorityResult?.ok) setAuthority(await authorityResult.json() as AuthoritySummary);
     if (workResult.ok) {
       const body = await workResult.json();
       const records = body.state?.records as Work[] | undefined;
@@ -106,8 +117,11 @@ export function GraybarWorkspace({ workspace, workId, role, build, task }: { wor
     finally { setBusy(false); }
   };
   const quotes = data?.state.quotes ?? [], assessments = data?.state.assessments ?? [], bom = data?.state.bom ?? null;
-  const orders = data?.state.orders ?? [], currentOrder = orders.at(-1);
-  const staleTask = !!task && !!data && (data.revision !== task.sourceRevision ||
+  const orders = data?.state.orders ?? [];
+  const currentOrder = orders.find((order) => order.id === selectedOrderId) ??
+    orders.find((order) => order.status === "Acknowledged") ??
+    orders.find((order) => order.status === "Test submitted") ?? orders.at(-1);
+  const staleTask = !!task && !task.step.startsWith("authority-") && !!data && (data.revision !== task.sourceRevision ||
     task.step === "bom" && (bom?.id !== task.decision || bom?.status !== "Prepared") ||
     task.step === "po" && !orders.some((order) => order.id === task.decision && order.status === "Prepared") ||
     task.step === "invoice" && !data.state.supplierInvoices.some((invoice) => invoice.id === task.decision && ["Review", "Exception"].includes(invoice.status)) ||
@@ -142,7 +156,7 @@ export function GraybarWorkspace({ workspace, workId, role, build, task }: { wor
       <div className={styles.notice}>Graybar account connection is unconfigured. These records use retained documents and controlled local submission; they do not send an order or query live account pricing. AI provider unavailable: extracted fields require human review.</div>
       {staleTask && <div role="alert" className={styles.notice}>This exact decision changed or was completed. No substitute Work, order or invoice was opened. <Link href={`/work?workspace=${workspace}&view=my-work`}>Return to refreshed My Work</Link>.</div>}
       {notice && <div role="status" className={styles.status}>{notice}</div>}
-      <nav aria-label="Procurement steps" className={styles.steps}>{[["quote", "01 Quote"], ["assess", "02 Product fit"], ["rom", "03 ROM"], ["bom", "04 Design BOM"], ["po", "05 Purchase order"], ["fulfill", "06 Delivery"], ["invoice", "07 Supplier invoice"], ["operate", "08 Operate"]].filter(([key]) => !task || key === taskSection).map(([key, label]) =>
+      <nav aria-label="Procurement steps" className={styles.steps}>{[["quote", "01 Quote"], ["assess", "02 Product fit"], ["rom", "03 ROM"], ["bom", "04 Design BOM"], ["authority", "05 Spending authority"], ["po", "06 Purchase order"], ["fulfill", "06 Delivery"], ["invoice", "07 Supplier invoice"], ["operate", "08 Operate"]].filter(([key]) => !task || key === taskSection).map(([key, label]) =>
         <button key={key} type="button" aria-current={section === key ? "step" : undefined} onClick={() => setSection(key)}>{label}</button>)}</nav>
       <div className={styles.content}>
       {section === "quote" && <section className={styles.card}><h2>Review a distributor quote</h2><p>Upload a Graybar PDF, CSV or XLSX schedule. The original bytes and checksum are retained. Extraction is a draft, never an accepted offer.</p>
@@ -192,14 +206,29 @@ export function GraybarWorkspace({ workspace, workId, role, build, task }: { wor
         {bom && <article className={styles.record}><b>{bom.status} BOM · {bom.lines.length} lines</b><span>Design revision {bom.designRevision}. ROM difference: {bom.romDifference || "Not recorded"}</span><small>Historical ROM is not overwritten.</small></article>}
         {bom?.status === "Prepared" && canTechnical && <form onSubmit={(event) => { event.preventDefault(); void command("approve-bom", cells(new FormData(event.currentTarget))); }} className={styles.inline}><label>Independent technical decision note<input name="reviewNote" required /></label><button className={styles.primary} disabled={busy}>Approve BOM</button></form>}
       </section>}
-      {section === "po" && <section className={styles.card}><h2>Purchasing plan and purchase order</h2><p>Only a current approved BOM may be purchased. PM prepares; a different workspace administrator approves. No role receives automatic supplier-submission authority. A quote with stated freight is held until its charge treatment is configured and included in the budget.</p>
+      {section === "authority" && <PurchaseAuthorityPanel workspace={workspace} workId={workId} role={role} refreshKey={data?.revision ?? 0} orders={orders} task={task} onChanged={refresh} />}
+      {section === "po" && <section className={styles.card}><h2>Purchasing plan and purchase order</h2><p>Only a current approved BOM may be purchased. PM prepares; a different workspace administrator approves. A current independently approved Work and purchasing limit is required before PO approval. No role receives automatic supplier-submission authority. A quote with stated freight is held until its charge treatment is configured and included in the budget.</p>
+        {authority && <article className={styles.record}><b>Current Work purchasing authority</b>
+          <span>Work limit {money(authority.parentCapMinor ?? undefined)} · remaining {money(authority.parentRemainingMinor ?? undefined)}.
+            Purchasing allocation {money(authority.purchaseCapMinor ?? undefined)} · remaining {money(authority.purchaseRemainingMinor ?? undefined)}.</span>
+          <small>Design commitments {money(authority.designCommittedMinor)} and approved POs {money(authority.purchaseReservedMinor)} consume the Work limit once.
+            {authority.parentCapMinor === null ? " Independent authority is required before PO approval." : ""}</small>
+          <Link href={`/work/procurement?workspace=${workspace}&workId=${encodeURIComponent(workId)}&step=authority`}>Review authority and conditions</Link>
+        </article>}
         {financePosting ? <p>Job Finance posting: {financePosting.links.some((item) => item.kind === "Committed") ? money(financePosting.links.filter((item) => item.kind === "Committed").reduce((sum, item) => sum + item.amountMinor, 0)) : "Not posted"} sourced commitment; {financePosting.links.some((item) => item.kind === "Incurred") ? money(financePosting.links.filter((item) => item.kind === "Incurred").reduce((sum, item) => sum + item.amountMinor, 0)) : "Not posted"} reconciled incurred cost. These are Finance ledger facts, not supplier payments.</p> : null}
-        {bom?.status === "Approved" && canPrepare && <form className={styles.grid} onSubmit={(event) => { event.preventDefault(); const values = cells(new FormData(event.currentTarget)); void command("prepare-po", { ...values, lines: bom.lines.filter((line) => line.supplyResponsibility === "Rybex").map((line) => ({ materialId: line.materialId, quantity: line.quantity, unit: line.unit })), budgetMinor: String(minor(values.budgetUsd)) }); }}>
-          <label>Graybar account reference<input name="accountReference" required defaultValue={quotes.at(-1)?.accountReference} /></label><label>Delivery / ship-to address<input name="shipTo" required /></label><label>Required date<input type="date" name="requiredDate" required /></label><label>Authorized budget ceiling USD<input type="number" name="budgetUsd" min="0.01" step="0.01" required /></label><button className={styles.primary} disabled={busy}>Prepare purchase order</button></form>}
-        {orders.map((order) => <article className={styles.record} key={order.id}><b>PO {order.id.slice(0, 8)} · {order.status}</b><span>{order.accountReference} · {money(order.amountMinor)} committed when approved · ship to {order.shipTo}</span><small>BOM {order.bomId} · budget {money(order.budgetMinor)} · supplier acknowledgment {order.acknowledgment ? "retained" : "not recorded"}</small>
-          <div className={styles.inline}><a href={`/api/d5o-hosted/graybar-po?workspace=${workspace}&workId=${workId}&orderId=${order.id}`}>Download supplier-facing PO PDF</a>{order.status === "Prepared" && role === "admin" && <button disabled={busy} onClick={() => void command("approve-po", { orderId: order.id, authorityBasis: "Active workspace administrator" })}>Approve independently</button>}{order.status === "Approved" && role === "admin" && <button disabled={busy} onClick={() => void command("record-test-submission", { orderId: order.id, testOnly: true, sourceReference: `Fictional local handoff ${new Date().toISOString()}` })}>Record controlled test submission</button>}{role === "billing_commercial_lead" && ["Approved", "Test submitted", "Acknowledged"].includes(order.status) && financePosting && !financePosting.links.some((link) => link.orderId === order.id && link.kind === "Committed") ? <button disabled={busy} onClick={() => void postJobCost("post-commitment", { orderId: order.id })}>Post sourced PO commitment to Job Finance</button> : null}</div></article>)}
+        {bom?.status === "Approved" && canPrepare && <form className={styles.grid} onSubmit={(event) => { event.preventDefault(); const values = cells(new FormData(event.currentTarget)); void command("prepare-po", { ...values, lines: bom.lines.filter((line) => line.supplyResponsibility === "Rybex")
+            .map((line) => ({ materialId: line.materialId, quantity: values[`po-${line.materialId}`] ?? "0", unit: line.unit }))
+            .filter((line) => Number(line.quantity) > 0), budgetMinor: String(minor(values.budgetUsd)) }); }}>
+          {bom.lines.filter((line) => line.supplyResponsibility === "Rybex").map((line) =>
+            <label key={line.materialId}>Purchase quantity · {line.item} (approved {line.quantity} {line.unit})
+              <input type="number" name={`po-${line.materialId}`} min="0" max={line.quantity}
+                step="0.001" defaultValue={line.quantity} required /></label>)}
+          <label>Graybar account reference<input name="accountReference" required defaultValue={quotes.at(-1)?.accountReference} /></label><label>Delivery / ship-to address<input name="shipTo" required /></label><label>Required date<input type="date" name="requiredDate" required /></label><label>Draft planning ceiling USD (not spending authority)<input type="number" name="budgetUsd" min="0.01" step="0.01" required /></label><button className={styles.primary} disabled={busy}>Prepare purchase order</button></form>}
+        {orders.map((order) => <article className={styles.record} key={order.id}><b>PO {order.id.slice(0, 8)} · {order.status}</b><span>{order.accountReference} · {money(order.amountMinor)} committed when approved · ship to {order.shipTo}</span><small>BOM {order.bomId} · draft planning ceiling {money(order.budgetMinor)} · supplier acknowledgment {order.acknowledgment ? "retained" : "not recorded"}</small>
+          <div className={styles.inline}><a href={`/api/d5o-hosted/graybar-po?workspace=${workspace}&workId=${workId}&orderId=${order.id}`}>Download supplier-facing PO PDF</a>{order.status === "Prepared" && canPrepare && <button disabled={busy} onClick={() => { const reason = window.prompt("Why is this unapproved PO draft being abandoned? No authority was reserved."); if (reason && reason.trim().length >= 10) void command("cancel-po-draft", { orderId: order.id, reason: reason.trim() }); }}>Cancel draft</button>}{order.status === "Prepared" && role === "admin" && <button disabled={busy || !authority?.parentCapMinor || authority.purchaseRemainingMinor === null || order.amountMinor > authority.purchaseRemainingMinor || authority.parentRemainingMinor === null || order.amountMinor > authority.parentRemainingMinor} onClick={() => void command("approve-po", { orderId: order.id, authorityBasis: "Active workspace administrator" })}>Approve independently</button>}{order.status === "Approved" && role === "admin" && <button disabled={busy} onClick={() => void command("record-test-submission", { orderId: order.id, testOnly: true, sourceReference: `Fictional local handoff ${new Date().toISOString()}` })}>Record controlled test submission</button>}{role === "billing_commercial_lead" && ["Approved", "Test submitted", "Acknowledged"].includes(order.status) && financePosting && !financePosting.links.some((link) => link.orderId === order.id && link.kind === "Committed") ? <button disabled={busy} onClick={() => void postJobCost("post-commitment", { orderId: order.id })}>Post sourced PO commitment to Job Finance</button> : null}</div></article>)}
       </section>}
       {section === "fulfill" && <section className={styles.card}><h2>Acknowledgment, shipment and physical receipt</h2><p>Supplier acknowledgment is not a shipment. A shipment is not a physical receipt. Exceptions remain visible.</p>
+        <label>Exact purchase order<select value={currentOrder?.id ?? ""} onChange={(event) => setSelectedOrderId(event.target.value)}><option value="">Choose order</option>{orders.map((order) => <option key={order.id} value={order.id}>{order.id.slice(0, 8)} · {order.status} · {money(order.amountMinor)}</option>)}</select></label>
         <h3>Package material readiness from physical counts</h3>{materialReadiness.map((line) => <p key={line.materialId}><strong>{line.item}</strong> · package {line.packageId} · {line.available} of {line.quantity} {line.unit} received and not returned · {line.ready ? "Ready" : "Shortage"}</p>)}
         {currentOrder?.status === "Test submitted" && canTechnical && <form onSubmit={(event) => { event.preventDefault(); const values = cells(new FormData(event.currentTarget)); void command("record-acknowledgment", { ...values, orderId: currentOrder.id,
           lines: currentOrder.lines.map((line) => ({ ...line, promisedDate: values.promisedDate })) }); }} className={styles.grid}>
@@ -216,6 +245,7 @@ export function GraybarWorkspace({ workspace, workId, role, build, task }: { wor
         {canTechnical && data?.state.receipts.length ? <form className={styles.grid} onSubmit={(event) => { event.preventDefault(); void command("record-return", cells(new FormData(event.currentTarget))); }}><label>Received line<select name="source" required onChange={(event) => { const [receiptId, materialId] = event.target.value.split("|"); const form = event.target.form; if (form) { (form.elements.namedItem("receiptId") as HTMLInputElement).value = receiptId; (form.elements.namedItem("materialId") as HTMLInputElement).value = materialId; } }}><option value="">Choose physically received material</option>{data.state.receipts.flatMap((receipt) => receipt.lines.map((line) => <option key={`${receipt.id}-${line.materialId}`} value={`${receipt.id}|${line.materialId}`}>{receipt.location} · {line.materialId} · {line.acceptedQuantity} accepted</option>))}</select></label><input type="hidden" name="receiptId" /><input type="hidden" name="materialId" /><label>Return quantity<input type="number" name="quantity" min="0.001" step="0.001" required /></label><label>Supplier return reference<input name="supplierReturnReference" required /></label><label>Reason<input name="reason" required /></label><button disabled={busy}>Record controlled return</button></form> : null}        <h3>Receipts and discrepancies</h3>{data?.state.receipts.map((receipt) => <article className={styles.record} key={receipt.id}><b>{receipt.location} · {receipt.status}</b><span>{receipt.lines.map((line) => `${line.materialId}: ${line.acceptedQuantity} accepted, ${line.rejectedQuantity} rejected`).join("; ")}</span><small>Receipt {receipt.id} · immutable count history</small></article>)}
       </section>}
       {section === "invoice" && <section className={styles.card}><h2>Supplier invoice matching</h2><p>This is a Graybar payable source, separate from Rybex customer invoices. No payment is executed here.</p>
+        <label>Exact purchase order<select value={currentOrder?.id ?? ""} onChange={(event) => setSelectedOrderId(event.target.value)}><option value="">Choose order</option>{orders.map((order) => <option key={order.id} value={order.id}>{order.id.slice(0, 8)} · {order.status} · {money(order.amountMinor)}</option>)}</select></label>
         {currentOrder?.status === "Acknowledged" && canFinance && <form onSubmit={(event) => { event.preventDefault(); const values = cells(new FormData(event.currentTarget)); void command("record-supplier-invoice", { ...values, orderId: currentOrder.id, currency: "USD",
           totalMinor: String(minor(values.invoiceUsd)), lines: currentOrder.lines.map((line) => ({ materialId: line.materialId,
             quantity: values[`qty-${line.materialId}`], amountMinor: String(minor(values[`amount-${line.materialId}`])) })) }); }} className={styles.grid}>
