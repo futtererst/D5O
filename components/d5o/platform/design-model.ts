@@ -16,7 +16,7 @@ export type DesignPackage = {
   packageId: string; revision: number; scope: string; location: string; systems: string;
   completionBasis?: { kind: "Measured"; plannedQuantity: number; unit: string } | { kind: "Qualitative"; criterion: string };
   requirementIds: string[]; predecessorIds: string[]; documentRefs: string[];
-  materials: string; materialStatus: "Unknown" | "Planned" | "Ordered" | "Supplier confirmed" | "Received" | "Available";
+  materials: string; materialStatus: "Unknown" | "Planned" | "Ordered" | "Supplier confirmed" | "Received" | "Available" | "Not required";
   materialLines?: DesignMaterial[];
   materialRequiredDate: string; materialForecastDate: string; materialSource: string;
   access: string; permit: string; safetyControls: string; equipment: string;
@@ -99,7 +99,7 @@ export function forecastDesignPackage(work: WorkRecord, packageId: string, at = 
   const requiredReviews = policy.requiredReviews;
   const reviews = requiredReviews.map((discipline) => state.reviews.find((item) => item.packageId === packageId && item.revision === detail.revision && item.discipline === discipline));
   if (reviews.some((item) => !item)) return { at, packageId, packageRevision: detail.revision, targetDate: detail.targetReleaseDate, forecastDate: null, driver: "Review plan incomplete", reason: "Assign all mandatory discipline reviews and due dates to establish a forecast." };
-  const openMaterials = detail.materialLines?.length ? detail.materialLines.filter((item) => !["Available", "Received"].includes(item.status)) : detail.materialStatus !== "Available" && detail.materialStatus !== "Received" ? [{ forecastDate: detail.materialForecastDate }] : [];
+  const openMaterials = detail.materialLines?.length ? detail.materialLines.filter((item) => !["Available", "Received"].includes(item.status)) : !["Available", "Received", "Not required"].includes(detail.materialStatus) ? [{ forecastDate: detail.materialForecastDate }] : [];
   if (openMaterials.some((item) => !item.forecastDate)) return { at, packageId, packageRevision: detail.revision, targetDate: detail.targetReleaseDate, forecastDate: null, driver: "Material delivery unknown", reason: "Record an evidenced delivery forecast for each outstanding material." };
   const documentDue = detail.documentRefs.map((ref) => state.documents.find((item) => documentRef(item) === ref)).filter((item) => item?.status !== "Issued for use").map((item) => item?.dueDate ?? "");
   if (documentDue.includes("")) return { at, packageId, packageRevision: detail.revision, targetDate: detail.targetReleaseDate, forecastDate: null, driver: "Document review date unknown", reason: "Set due dates for unissued governing documents." };
@@ -148,7 +148,9 @@ export function assessDesignPackage(work: WorkRecord, packageId: string, at = ne
       if (line.requiredDate && line.forecastDate && addCalendarDays(line.forecastDate, policy.procurementBufferDays) > line.requiredDate) add(`material_late:${line.id}`, "Procurement", "blocker", `${line.item}: forecast delivery ${line.forecastDate} plus ${policy.procurementBufferDays} calendar-day buffer misses required date ${line.requiredDate}.`, "Revise sequence/window or assess the recorded alternative.");
     }
   } else {
-    if (policy.requireMaterialAvailability && (!detail.materials || detail.materialStatus === "Unknown")) add("material", "Procurement", "unknown", "Material requirement or procurement position is unknown.", "Record quantities, source, status, and required date.");
+    if (detail.materialStatus === "Not required") {
+      if (detail.materials.trim().length < 20 || detail.materialSource.trim().length < 8) add("material_not_required_basis", "Procurement", "blocker", "The no-material disposition needs an explicit scope reason and source.", "Record why this exact package needs no supplied material and identify the approved scope source for independent Procurement review.");
+    } else if (policy.requireMaterialAvailability && (!detail.materials || detail.materialStatus === "Unknown")) add("material", "Procurement", "unknown", "Material requirement or procurement position is unknown.", "Record quantities, source, status, and required date.");
     else if (policy.requireMaterialAvailability && !["Available", "Received"].includes(detail.materialStatus)) add("material", "Procurement", "blocker", `${detail.materialStatus} is not physical availability.`, "Confirm received/available material before release.");
     if (detail.materialRequiredDate && detail.materialForecastDate && addCalendarDays(detail.materialForecastDate, policy.procurementBufferDays) > detail.materialRequiredDate) add("material_late", "Procurement", "blocker", "Forecast material delivery and configured buffer miss the required-on-site date.", "Revise the sequence/window or obtain an evidenced alternative.");
   }
