@@ -48,6 +48,7 @@ try {
   const context = await browser.newContext();
   const page = await context.newPage();
   await signIn(page, "pm");
+  log("displayed-build", { marker: (await page.locator("body").innerText()).match(/Build\s+[0-9a-f]{12,40}/)?.[0] ?? "not displayed" });
   const beforeCommitted = await revision(page);
   const committedContact = `Fictional committed-response-loss ${Date.now().toString(36)}`;
   let committedStatus = null;
@@ -91,6 +92,7 @@ try {
 
   const beforeUncommitted = await revision(page);
   const uncommittedContact = `Fictional uncommitted-response-loss ${Date.now().toString(36)}`;
+  await page.getByRole("button", { name: "Investigation", exact: true }).click();
   let blockedRouteSeen;
   const blockedSeen = new Promise((resolve) => { blockedRouteSeen = resolve; });
   const blockedRequest = async (route) => {
