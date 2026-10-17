@@ -14,6 +14,20 @@ const delivery = { sent: 0, failed: 0, attempting: 0, unavailable: true };
 const reply = (body: unknown, status = 200) => NextResponse.json(body, {
   status, headers: { "Cache-Control": "no-store" }
 });
+async function withLaborHours(workspace: string, schedule: Record<string, unknown>, role: string) {
+  if (!authoritativeD5OCommandsReady() || !["admin", "project_manager", "operations_leader"].includes(role)) return schedule;
+  const client = await createRybexSupabaseServerClient();
+  const call = client.rpc.bind(client) as unknown as (name: string, args: Record<string, unknown>) =>
+    Promise<{ data: unknown; error: { message?: string } | null }>;
+  const { data, error } = await call("d5o_schedule_labor_hours_v1", { p_workspace_key: workspace });
+  if (error) throw new Error("schedule_labor_hours_unavailable");
+  const hours = data && typeof data === "object" && !Array.isArray(data) ? data as Record<string, unknown> : {};
+  const assignments = Array.isArray(schedule.assignments) ? schedule.assignments as Array<Record<string, unknown>> : [];
+  return { ...schedule, assignments: assignments.map((assignment) => {
+    const value = hours[String(assignment.id)];
+    return typeof value === "number" ? { ...assignment, personHoursPerWorker: value } : assignment;
+  }) };
+}
 
 export async function GET(request: NextRequest) {
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
@@ -24,7 +38,7 @@ export async function GET(request: NextRequest) {
     const schedule = loaded.state
       ? { ...loaded.state, revision: loaded.revision }
       : initialHostedSchedule(workspace as WorkspaceKey);
-    return reply({ schedule, canEdit: authoritativeD5OCommandsReady()
+    return reply({ schedule: await withLaborHours(workspace, schedule, context.actor.role), canEdit: authoritativeD5OCommandsReady()
       ? ["admin", "project_manager", "operations_leader"].includes(context.actor.role) : context.canEdit,
       canManageAvailability: authoritativeD5OCommandsReady() && context.actor.role === "admin",
       delivery, requiresPublication: authoritativeD5OCommandsReady(), synthetic: true });
@@ -70,7 +84,7 @@ export async function POST(request: NextRequest) {
         error.code === "42501" ? 403 : error.code === "23505" || error.code === "23514" ? 409 : 400);
       const result = data as { state?: Record<string, unknown>; revision?: number } | null;
       if (!result?.state || !Number.isInteger(result.revision)) return reply({ error: "invalid_response" }, 502);
-      return reply({ schedule: { ...result.state, revision: result.revision }, delivery,
+      return reply({ schedule: await withLaborHours(workspace, { ...result.state, revision: result.revision }, context.actor.role), delivery,
         requiresPublication: true,
         deliveryWarning: availabilityAction ? "Availability recorded. Existing bookings remain in place; scheduling conflicts need review."
           : input.action === "publish"

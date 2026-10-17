@@ -10,12 +10,16 @@ export type JobBillHistory = { bill_id: string; revision: number; status: string
   reviewed_by: string | null; review_reason: string | null; recorded_at: string };
 export type JobCash = { id: string; bill_id: string; kind: "Billed" | "Paid";
   amount_minor: number; event_date: string; source: string };
+export type LaborReservation = { id: string; packageId: string; person: string; workDate: string;
+  publicationId: string; authorizedHours: number; rateVersion: string; reservedMinor: number;
+  status: "Active" | "Superseded"; actualHours: number; incurredMinor: number };
 export type JobFinanceRead = { revision: number; currency: string | null; financeStatus: string | null;
   baseline: { pricingBasis?: { priceMinor?: number; includedCostMinor?: number; currency?: string; policyId?: string; policyVersion?: number }; revision?: number; awardEventId?: string; estimateRevision?: number } | null;
   remainingForecastMinor: number | null; forecastSource: string | null; forecastAt: string | null;
   changes: Array<{ id: string; packageId: string; priceAmount: string; currency: string;
     customerAuthorization: unknown; revisedReleaseId: string }>;
-  costs: JobCost[]; bills: JobBill[]; billHistory: JobBillHistory[]; cashEvents: JobCash[] };
+  costs: JobCost[]; bills: JobBill[]; billHistory: JobBillHistory[]; cashEvents: JobCash[];
+  laborReservations?: LaborReservation[]; governedLabor?: boolean };
 export function dollarsToMinor(value: string): number | null {
   if (!/^\d+(\.\d{1,2})?$/.test(value)) return null;
   const [whole, cents = ""] = value.split(".");
@@ -49,10 +53,16 @@ export function assessJobFinance(read: JobFinanceRead, work: WorkRecord) {
   const changeTotal = safeSum(changes.map((item) => item.amountMinor ?? NaN));
   const revised = original !== null && !invalidChange && changeTotal !== null ? safeSum([original, changeTotal]) : null;
   const incurred = safeSum(read.costs.filter((item) => item.kind === "Incurred").map((item) => item.amount_minor));
-  const outstanding = safeSum(read.costs.filter((item) => item.kind === "Committed").map((item) => {
+  const postedOutstanding = safeSum(read.costs.filter((item) => item.kind === "Committed").map((item) => {
     const reconciled = safeSum(read.costs.filter((fact) => fact.reconciles_id === item.id).map((fact) => fact.amount_minor));
     return reconciled === null || reconciled > item.amount_minor ? NaN : item.amount_minor - reconciled;
   }));
+  const laborOutstanding = safeSum((read.laborReservations ?? []).map((item) =>
+    item.status === "Active" ? Math.max(item.reservedMinor - item.incurredMinor, 0) : 0));
+  const outstanding = postedOutstanding === null || laborOutstanding === null ? null :
+    safeSum([postedOutstanding, laborOutstanding]);
+  const laborOverrun = safeSum((read.laborReservations ?? []).map((item) =>
+    Math.max(item.incurredMinor - item.reservedMinor, 0)));
   const forecastFinal = read.remainingForecastMinor === null || incurred === null || outstanding === null
     ? null : safeSum([incurred, outstanding, read.remainingForecastMinor]);
   const forecastProfit = revised === null || forecastFinal === null ? null : revised - forecastFinal;
@@ -69,12 +79,13 @@ export function assessJobFinance(read: JobFinanceRead, work: WorkRecord) {
     return turnover && completion ? [{ packageId: pkg.id, packageName: pkg.name, releaseId: release!.id,
       reviewedQuantity: completion.reviewedQuantity, unit: completion.unit, evidence: proof }] : [];
   });
-  return { currency, original, changes, revised, incurred, outstanding,
+  return { currency, original, changes, revised, incurred, outstanding, laborOverrun,
     remaining: read.remainingForecastMinor, forecastFinal, forecastProfit, forecastMargin,
     billed, paid, receivable, eligible, blocked: [
       ...(!read.baseline ? ["No recorded awarded fixed-price offer establishes the baseline."] : []),
       ...(invalidChange ? ["An authorized change has an unknown or different-currency price."] : []),
       ...(read.remainingForecastMinor === null ? ["Finance has not recorded a sourced remaining-cost forecast."] : []),
+      ...(laborOverrun !== null && laborOverrun > 0 ? ["Reviewed labor cost exceeds its original reservation; review the overrun before another commitment."] : []),
       ...([incurred, outstanding, billed, paid].some((amount) => amount === null) ? ["A monetary total exceeds safe precision or has inconsistent reconciliation."] : []),
       ...(!eligible.length ? ["No current package has reviewed completion, scoped acceptance and a current release."] : [])
     ] };

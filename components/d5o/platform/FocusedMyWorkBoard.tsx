@@ -40,6 +40,11 @@ function serviceReturnLink(workspace: string, action: ServiceReturnAction) {
   return `/work?${params}`;
 }
 function roleLink(workspace: string, action: RoleAction) {
+  if (action.phase === "Labor") {
+    const params = new URLSearchParams({ workspace, workId: action.workId, step: action.focus ?? "prepare",
+      sourceRevision: String(action.revision), decision: action.decisionId ?? "" });
+    return `/work/labor?${params}`;
+  }
   if (action.focus?.startsWith("subcontract-")) {
     const params = new URLSearchParams({ workspace, workId: action.workId, step: action.focus, sourceRevision: String(action.revision), decision: action.decisionId ?? "" });
     return "/work/subcontracts?" + params;

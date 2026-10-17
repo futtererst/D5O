@@ -1,6 +1,6 @@
 /** Synthetic planning data for the local prototype. Scheduling never grants work authority. */
 export type WorkspaceKey = "rybex" | "rotork";
-export type Assignment = { id: string; crew: string; people: string[]; workId: string; packageId: string; week: number; day: number; date?: string; shift: string };
+export type Assignment = { id: string; crew: string; people: string[]; workId: string; packageId: string; week: number; day: number; date?: string; shift: string; personHoursPerWorker?: number };
 export type ScheduleWork = { id: string; title: string; site: string; stage?: string; owner?: string; nextAction?: string; blockers: string[]; packages?: { id: string; name: string; status: "planned" | "in progress" | "ready" | "accepted" }[]; design?: { packages: { packageId: string; revision: number }[]; releases: { packageId: string; packageRevision: number; status: string }[] } };
 export type PersonProfile = { name: string; displayName?: string; qualifications: string[]; weeklyCapacityHours: number; active?: boolean; bound?: boolean; unavailable?: { week: number; day: number; reason: string }[] };
 export type AvailabilityBlock = { id: string; person: string; week: number; day: number; date?: string; reason: string };
@@ -307,7 +307,7 @@ export function assignmentAssessment(candidate: Assignment, assignments: Assignm
   const record = work.find((item) => item.id === candidate.workId);
   const workPackage = record?.packages?.find((item) => item.id === candidate.packageId);
   const original = assignments.find((item) => item.id === candidate.id);
-  const changed = !original || original.week !== candidate.week || original.day !== candidate.day || original.date !== candidate.date || original.crew !== candidate.crew || original.shift !== candidate.shift || original.people.join("|") !== candidate.people.join("|");
+  const changed = !original || original.week !== candidate.week || original.day !== candidate.day || original.date !== candidate.date || original.crew !== candidate.crew || original.shift !== candidate.shift || original.people.join("|") !== candidate.people.join("|") || original.personHoursPerWorker !== candidate.personHoursPerWorker;
   const requiredDateSlots = requirement?.requiredSlots.filter((slot) => slot.date === candidate.date) ?? [];
   const outsideRequiredDates = Boolean(requirement && candidate.date && requiredDateSlots.length === 0);
   const outsideRequiredShift = Boolean(requirement && candidate.date && requiredDateSlots.length > 0 && !requiredDateSlots.some((slot) => slot.shift === candidate.shift));
