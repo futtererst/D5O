@@ -18,6 +18,8 @@ Pilot readiness update: an executive production readiness gap review and
 controlled pilot launch package now exists. The maturity posture is controlled
 internal pilot candidate, not production-ready.
 
+D5O bounded-pilot decision update (17 October 2026): the [Design-only operating-policy and readiness packet](./evidence/d5o-design-pilot-policy-readiness-20261017.md) recommends a supervised internal Design-only first pilot after owner approval of funding/delegation, Design cost sources, rates/burden, and outlook completeness. The fictional USD 800-to-USD 850 Complete reassessment proves the workflow, not real cost evidence or production readiness. The [focused Define projection-cache release check](./evidence/d5o-define-projection-cache-release-check-20261017.md) passed sampled stale-source and cross-tenant denials, while reverse-overlap performance and Docker stability remain unqualified; source-custody decision, target recovery plan and named support owner remain entry conditions. The October 26 labor journey and broader delivery are later capabilities, not this pilot entry gate.
+
 Maturity scale:
 
 - Not started
