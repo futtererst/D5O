@@ -103,8 +103,10 @@ export async function GET(request: NextRequest) {
         if (designSpendQueued.error || !Array.isArray(designSpendQueued.data)) return reply({ error: "design_spend_queue_unavailable" }, 503);
         const purchaseAuthorityQueued = await call("d5o_purchase_authority_actions_v1", { p_workspace_key: workspace });
         if (purchaseAuthorityQueued.error || !Array.isArray(purchaseAuthorityQueued.data)) return reply({ error: "purchase_authority_queue_unavailable" }, 503);
+        const subcontractQueued = await call("d5o_subcontract_actions_v1", { p_workspace_key: workspace });
+        if (subcontractQueued.error || !Array.isArray(subcontractQueued.data)) return reply({ error: "subcontract_queue_unavailable" }, 503);
         roleActions = [...roleActions, ...procurementQueued.data, ...supplierCostQueued.data,
-          ...designSpendQueued.data, ...purchaseAuthorityQueued.data];
+          ...designSpendQueued.data, ...purchaseAuthorityQueued.data, ...subcontractQueued.data];
         const serviceQueued = await call("d5o_hosted_service_actions_v1", { p_workspace_key: workspace });
         if (serviceQueued.error || !Array.isArray(serviceQueued.data)) return reply({ error: "service_queue_unavailable" }, 503);
         const costQueued = await call("d5o_hosted_service_cost_actions_v1", { p_workspace_key: workspace });
@@ -422,4 +424,3 @@ export async function GET(request: NextRequest) {
     return reply({ error: "search_unavailable" }, 503);
   }
 }
-

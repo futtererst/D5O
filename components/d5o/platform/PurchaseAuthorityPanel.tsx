@@ -4,7 +4,7 @@ import Link from "next/link";
 import styles from "./GraybarWorkspace.module.css";
 
 type Authority = { id: string; status: string; parent_cap_minor: number; purchasing_cap_minor: number;
-  scope: string; conditions: string; funding_source: string; source_reference: string; purchasing_entity: string; graybar_account_reference: string; bom_id: string;
+  scope: string; conditions: string; funding_source: string; source_reference: string; subcontract_enabled?: boolean; purchasing_entity: string; graybar_account_reference: string; bom_id: string;
   valid_from: string; valid_until: string; prepared_by: string; review_note?: string };
 type Reservation = { id: string; order_id: string; amount_minor: number; status: string };
 type Position = { revision: number; currentBomId: string | null; legacyPurchaseHold: boolean; source: { kind: string; digest: string; defineRevision: number; estimateRevision: number } | null;
@@ -21,7 +21,7 @@ export function PurchaseAuthorityPanel({ workspace, workId, role, refreshKey, or
   onChanged: () => Promise<void>;
 }) {
   const [position, setPosition] = useState<Position | null>(null);
-  const [notice, setNotice] = useState(""); const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState(""); const [busy, setBusy] = useState(false); const [purchaseCapInput, setPurchaseCapInput] = useState("0");
   const url = `/api/d5o-hosted/purchase-authority?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(workId)}`;
   const refresh = useCallback(async () => {
     const response = await fetch(url, { cache: "no-store" }); const body = await response.json();
@@ -66,41 +66,41 @@ export function PurchaseAuthorityPanel({ workspace, workId, role, refreshKey, or
     finally { setBusy(false); }
   };
   return <section className={styles.card}>
-    <h2>Work budget and purchasing authority</h2>
-    <p>Purchasing needs an independently approved Work cap and purchasing allocation. A Design-only spending window does not grant purchasing rights. Prepared POs consume neither limit; approval reserves both.</p>
+    <h2>Work economic authority</h2>
+    <p>An independent administrator approves the Work cap. Purchasing requires a positive allocation and approved BOM. Off-site subcontract allocation may be enabled separately with purchasing set to zero. Drafts reserve nothing.</p>
     {stale && <p role="alert">This exact authority task changed or was decided. <Link href={`/work?workspace=${workspace}&view=my-work`}>Return to refreshed My Work</Link>.</p>}
     {notice && <p role="status">{notice}</p>}
     <div className={styles.grid}>
       <p><b>Current source</b><br />{position?.source ? `${position.source.kind} · Define ${position.source.defineRevision} · estimate ${position.source.estimateRevision}` : "Approved commercial or funded Design basis missing"}<br />Approved BOM: {position?.currentBomId ?? "missing"}</p>
       <p><b>Work limit / remaining</b><br />{money(position?.parentCapMinor ?? null)} / {money(position?.parentRemainingMinor ?? null)}</p>
       <p><b>Purchasing allocation / remaining</b><br />{money(position?.purchaseCapMinor ?? null)} / {money(position?.purchaseRemainingMinor ?? null)}</p>
-      <p><b>Counted once in Work limit</b><br />Design {money(position?.designCommittedMinor ?? 0)} · approved POs {money(position?.purchaseReservedMinor ?? 0)}</p>
+      <p><b>Counted once in Work limit</b><br />Design {money(position?.designCommittedMinor ?? 0)} · approved POs {money(position?.purchaseReservedMinor ?? 0)} · approved subcontracts within the same Work cap</p>
     </div>
     {position?.legacyPurchaseHold && <p role="alert">This Work has an earlier approved PO without reviewed Work authority. Its supplier and Finance history remains intact. New purchasing is held until a governed legacy transition is established; do not assign a new cap retroactively.</p>}
     {!position?.source && <p role="alert">Next: project manager resolves the approved Define, ROM and award or funded Design source before purchasing authority can be prepared.</p>}
-    {position?.source && position.currentBomId && role === "project_manager" && !position.parentCapMinor && !position.legacyPurchaseHold && !pending && !stale &&
+    {position?.source && role === "project_manager" && !position.parentCapMinor && !position.legacyPurchaseHold && !pending && !stale &&
       <form className={styles.grid} onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget);
         void command("prepare", { parentCapMinor: dollarsToMinor(String(form.get("parentCap"))),
-          purchaseCapMinor: dollarsToMinor(String(form.get("purchaseCap"))),
+          purchaseCapMinor: dollarsToMinor(String(form.get("purchaseCap"))), subcontractEnabled: form.has("subcontractEnabled"),
           scope: form.get("scope"), conditions: form.get("conditions"), fundingSource: form.get("fundingSource"),
-          purchasingEntity: form.get("purchasingEntity"), graybarAccountReference: form.get("graybarAccountReference"),
+          purchasingEntity: Number(purchaseCapInput) > 0 ? form.get("purchasingEntity") : "Not applicable", graybarAccountReference: Number(purchaseCapInput) > 0 ? form.get("graybarAccountReference") : "N/A",
           sourceReference: form.get("sourceReference"), validFrom: form.get("validFrom"), validUntil: form.get("validUntil"),
           supersedesId: position?.authorities.find((item) => item.status === "Returned" || item.status === "Revoked")?.id }); }}>
         <label>Work economic limit USD<input name="parentCap" type="number" step="0.01" min="0.01" required /></label>
-        <label>Purchasing allocation USD<input name="purchaseCap" type="number" step="0.01" min="0.01" required /></label>
-        <label>Rybex purchasing entity<input name="purchasingEntity" required /></label>
-        <label>Authorized Graybar account reference<input name="graybarAccountReference" required /></label>
+        <label>Purchasing allocation USD<input name="purchaseCap" type="number" step="0.01" min="0" value={purchaseCapInput} onChange={(event) => setPurchaseCapInput(event.target.value)} required /></label>
+        <label><input name="subcontractEnabled" type="checkbox" /> Include a separately reviewed subcontract allocation within this Work cap</label>{Number(purchaseCapInput) > 0 && <><label>Rybex purchasing entity<input name="purchasingEntity" required /></label>
+        <label>Authorized Graybar account reference<input name="graybarAccountReference" required /></label></>}
         <label>Authorized purchasing scope<textarea name="scope" required /></label>
         <label>Funding or credit basis<input name="fundingSource" required /></label>
         <label>Retained authority source reference<input name="sourceReference" required /></label>
         <label>Conditions and exclusions<textarea name="conditions" required /></label>
         <label>Effective from<input name="validFrom" type="date" required /></label>
         <label>Expires<input name="validUntil" type="date" required /></label>
-        <button className={styles.primary} disabled={busy}>Prepare independent purchasing review</button>
+        <button className={styles.primary} disabled={busy}>Prepare independent Work authority review</button>
       </form>}
     {selectedPending && <article className={styles.record}>
       <b>Prepared by project manager · independent decision required</b>
-      <span>Work {money(selectedPending.parent_cap_minor)} · purchasing {money(selectedPending.purchasing_cap_minor)} · {selectedPending.scope}</span>
+      <span>Work {money(selectedPending.parent_cap_minor)} · purchasing {money(selectedPending.purchasing_cap_minor)} · subcontract category {selectedPending.subcontract_enabled ? "eligible for separate allocation" : "not enabled"} · {selectedPending.scope}</span>
       <small>Funding: {selectedPending.funding_source} · source: {selectedPending.source_reference} · {selectedPending.valid_from} to {selectedPending.valid_until}</small>
       <p>Purchasing entity: {selectedPending.purchasing_entity} · Graybar account: {selectedPending.graybar_account_reference} · exact BOM: {selectedPending.bom_id}</p>
       <p>Conditions: {selectedPending.conditions}</p>
