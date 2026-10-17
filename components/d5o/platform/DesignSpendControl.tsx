@@ -45,7 +45,7 @@ export function DesignSpendControl({ work, workspace, role, actorId, focus }: {
   }, [endpoint]);
   const requested = typeof window === "undefined" ? null : new URLSearchParams(window.location.search);
   const requestedRevision = requested?.get("sourceRevision");
-  const requestedId = requested?.get("decisionId");
+  const requestedId = requested?.get("decision");
   const source = position?.source;
   const currentAuthority = position?.authorities.find((entry) => entry.status === "Approved" && entry.source_digest === source?.digest);
   const pendingAuthority = position?.authorities.find((entry) => entry.status === "Prepared" && entry.source_digest === source?.digest);
@@ -133,6 +133,7 @@ function ReviewButtons({ busy, onDecide }: { busy: boolean; onDecide: (decision:
     <div><button type="button" className="d5o-outline" disabled={busy || reason.trim().length < 10} onClick={() => onDecide("return", reason)}>Return for correction</button>
       <button type="button" className="d5o-primary" disabled={busy || reason.trim().length < 10} onClick={() => onDecide("approve", reason)}>Approve exact basis</button></div></div>;
 }
+
 
 
 

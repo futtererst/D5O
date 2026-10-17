@@ -489,6 +489,8 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
           ["admin", "operations_leader", "project_manager"].includes(actorRole ?? "");
         const eligibleDesignReceiver = view === "develop" && focus === "design-handoff-receive" &&
           Boolean(linkedReview?.canonicalWorkId) && actorRole === "operations_leader";
+        const eligibleDesignSpendReviewer = view === "develop" && ["design-spend-authority-review", "design-spend-commitment-review"].includes(focus ?? "") &&
+          Boolean(linkedReview?.canonicalWorkId) && actorRole === linkedReview?.discovery?.estimate.detailed?.policySnapshot.proposalApproverRole;
         const eligibleRomAuthority = view === "develop" && focus === "rom-design-authorization" &&
           Boolean(linkedReview?.canonicalWorkId) && actorRole === linkedReview?.discovery?.estimate.detailed?.policySnapshot.proposalApproverRole;
         const prepRevision = focus === "pursuit-prep" || focus === "define-handoff-prep" ? linkedReview?.discovery?.pursuitControl?.revision
@@ -512,7 +514,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
           : focus === "design-handoff-correction" ? Boolean(linkedReview?.discovery?.outcome === "Won" && linkedReview.discovery.designHandoff?.status === "returned" && actorRole === "project_manager")
           : true;
         setStalePreparationLink(["pursuit-prep", "define-handoff-prep", "define-prep", "develop-handoff-prep", "solution-prep", "pricing-prep", "proposal-prep", "customer-submission-prep", "rom-budget-ack", "design-handoff-correction"].includes(focus ?? "") && (prepRevision === undefined || Number(params.get("sourceRevision")) !== prepRevision || !linkedReview || !prepCurrent));
-        if (canPresentSurface(presentation, view as Screen) || eligibleFocusedReview || eligiblePursuitReviewer || eligibleDiscoverReceiver || eligibleDevelopReceiver || eligibleDesignReceiver || eligibleRomAuthority) setScreen(view as Screen);
+        if (canPresentSurface(presentation, view as Screen) || eligibleFocusedReview || eligiblePursuitReviewer || eligibleDiscoverReceiver || eligibleDevelopReceiver || eligibleDesignReceiver || eligibleRomAuthority || eligibleDesignSpendReviewer) setScreen(view as Screen);
         else { setScreen("my-work"); setNotice("This view is outside your role workspace. Choose an available task below."); }
       }
       if (section && durableRecordTabs.has(section as RecordTab)) setTab(section as RecordTab);
@@ -1457,4 +1459,5 @@ function IssueList({ issues, evidence, currentOwner, onResolve, onException, onO
   }) : <p className="d5o-good-copy">No uncontrolled issue is open on this Work Record.</p>}</div>;
 }
 function LifecycleList({ actions }: { actions: LifecycleAction[] }) { return <div className="d5o-lifecycle-list">{actions.map((item) => <article key={item.id}><i>↗</i><div><strong>{item.action}</strong><span>{item.owner} · {item.due}</span></div><b>{label(item.status)}</b></article>)}{!actions.length ? <p className="d5o-empty-state">No lifecycle action has been planned yet.</p> : null}</div>; }
+
 
