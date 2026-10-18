@@ -1,0 +1,22 @@
+# D5O subcontract commercial reviewer selection — local qualification
+
+18 October 2026. Fictional, isolated technical qualification. Application `b9358159bb73238be84b732212635ec99f0bbe5b`; migration `20261018190000_d5o_subcontract_delegate_selection.sql` (SHA-256 `83FADED338D098A76E0C88A9468EE860A946317C6F74B570CFAC8C032114192D`). Local preview: `http://127.0.0.1:61659/work?workspace=rybex&view=my-work`, displayed `Build b935815`. No shared or production policy was set.
+
+## Decision moved out of code
+
+The eligible human for subcontract allocation, agreement and variation review is selected by an administrator-maintained, effective-dated rule for category, Work Type, amount and currency. The initial eligible role remains **admin**. Configuration cannot confer the underlying command role or remove the independent-review, source, revision, cap, replay or tenant checks. A new draft without an eligible selected reviewer is held. Drafts prepared before a category was configured retain their earlier independent-admin contract; no historical approval is reassigned.
+
+The My Work review projection and focused review controls use the same exact-decision routing function. The authoritative subcontract state-transition trigger checks the selected actor inside the typed command transaction for both approval and return. A denied decision cannot create a reservation or receipt.
+
+## Qualification
+
+- Isolated populated target: `d5o-graybar-final-full-replay-20261016`, API `127.0.0.1:58521`, database `127.0.0.1:58522`. Forward migration applied transactionally. Its two existing subcontract states and three reservations remained. Its older partial migration ledger was not backfilled.
+- Empty disposable target: `d5o-delegation-137-replay-20261018`, database port `59132`; fresh `supabase db reset --local --no-seed` replayed **142** ordered files, exit 0, final version `20261018190000`, zero Work records. This is migration-order evidence, not populated rollback or shared-release approval.
+- Rolled-back SQL probe `scripts/qa-d5o-subcontract-delegation.sql` used fictional Auth, Work and state. Across all three categories, the nonselected admin was rejected and the selected admin could make the prepared transition. No probe fixture persisted.
+- Browser: fictional administrator configured the variation delegate through Administration (POST 200), selecting existing fictional admin `fictional-rom-admin-20261016@example.test` with a USD 1,000 maximum and 2027-10-18 end date. Fictional PM `fictional-rom-pm-20261016@example.test` retained synthetic CSV document `0e44b392-805c-4675-aff5-21dc50ded775` and prepared a USD 500 Hall S variation, Work revision 16. The selected admin saw “Review subcontract variation” in My Work; another active admin did not. The selected admin opened the exact task at revision 16, inspected its rack-interface-checklist scope and retained-document link, and approved it through the UI (POST 200, Work revision 17). Decision `72c67131-68b4-4a2a-a708-a810dc173386` records reviewer `e39648ff-1693-45f7-9ecf-368ac9ad6c22`, source digest and SHA-256 `4f242ec0637a999f2ae56db55ae979194ea787af3390f9bbb9428fbbbe14cf1d`.
+- Database readback: revision 17; three retained variations, newest Approved at `50000` minor units; three retained subcontract reservations total `550000` minor units. The prior USD 5,000 approved value remains in history and the new committed value is USD 5,500. The completed review disappeared from refreshed My Work for both administrators. The saved revision-16 link reported “This exact source or decision changed. Nothing else was selected,” offered refreshed My Work, and exposed no obsolete decision control.
+- TypeScript, scoped lint on modified app files and production build passed on `b935815`. Build output was used for the running preview. The browser script remains local under ignored/untracked `scripts/.delegation-fixture`; no credentials, source documents or database dumps were committed.
+
+## Limits
+
+Allocation and initial agreement decisions were tested at the authoritative boundary, not completed in this browser run. The PM variation was opened by full-record navigation because My Work does not currently project variation preparation; independent review was queue-led. No real subcontract decision, delegation policy, rate, supplier action or production availability is established. Existing subcontract cap and cost-reconciliation qualifications remain separate.
