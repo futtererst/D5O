@@ -76,6 +76,7 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
   const [position, setPosition] = useState<Position | null>(null);
   const [rates, setRates] = useState<RatePosition | null>(null);
   const [reviewRoutes, setReviewRoutes] = useState<Record<string, ReviewRoute>>({});
+  const [assessmentRoute, setAssessmentRoute] = useState<ReviewRoute | null>(null);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [selected, setSelected] = useState("");
@@ -86,6 +87,7 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
     if (!response.ok) throw new Error(body.error ?? "Design cost position unavailable");
     setPosition(body);
     setReviewRoutes({});
+    setAssessmentRoute(null);
     if (actorRole === "billing_commercial_lead") {
       const entries = await Promise.all(body.claims.filter((claim) => claim.status === "Prepared").map(async (claim) => {
         const routeResponse = await fetch(`/api/d5o-hosted/spending-review-route?workspace=${encodeURIComponent(work.workspace)}&workId=${encodeURIComponent(work.id)}&category=design_cost_review&subjectId=${encodeURIComponent(claim.id)}`, { cache: "no-store" });
@@ -96,9 +98,19 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
           route: route.route ?? "This review is not assigned to you." }] as const;
       }));
       setReviewRoutes(Object.fromEntries(entries));
+      const pending = body.assessments.find((assessment) => assessment.status === "Prepared" && (!decisionId || assessment.id === decisionId));
+      if (pending) {
+        const routeResponse = await fetch(`/api/d5o-hosted/spending-review-route?workspace=${encodeURIComponent(work.workspace)}&workId=${encodeURIComponent(work.id)}&category=outlook_assessment&subjectId=${encodeURIComponent(pending.id)}`, { cache: "no-store" });
+        if (routeResponse.ok) {
+          const route = await routeResponse.json() as { canReview?: boolean; route?: string };
+          setAssessmentRoute({ revision: body.revision, canReview: route.canReview === true,
+            route: route.route ?? "This assessment is not assigned to you." });
+        } else setAssessmentRoute({ revision: body.revision, canReview: false,
+          route: "The configured reviewer could not be checked. Refresh before deciding." });
+      }
     }
     onRevision?.(body.revision);
-  }, [actorRole, endpoint, onRevision, work.id, work.workspace]);
+  }, [actorRole, decisionId, endpoint, onRevision, work.id, work.workspace]);
   useEffect(() => {
     const timer = window.setTimeout(() => { void refresh().catch((error) =>
       setMessage(error instanceof Error ? error.message : "Design cost position unavailable")); }, 0);
@@ -237,11 +249,11 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
       <button disabled={busy}>Submit current outlook for Finance review</button>
     </form> : null}
     {pendingAssessment ? <div><p><b>Prepared assessment:</b> cutoff {pendingAssessment.actual_cutoff} · {pendingAssessment.limitations}. {pendingAssessment.source_digest !== position.sourceDigest ? "Its source changed; prepare again." : "Waiting for independent Finance."}</p>
-      {finance && pendingAssessment.source_digest === position.sourceDigest ? <form onSubmit={submit("review-assessment", (form) => ({ assessmentId: pendingAssessment.id, decision: field(form, "decision"), reason: field(form, "reason") }))}>
+      {finance && pendingAssessment.source_digest === position.sourceDigest && assessmentRoute?.revision === position.revision && assessmentRoute.canReview ? <form onSubmit={submit("review-assessment", (form) => ({ assessmentId: pendingAssessment.id, decision: field(form, "decision"), reason: field(form, "reason") }))}>
         <label>Decision <select name="decision"><option>Reviewed with gaps</option><option>Complete</option><option>Returned</option></select></label>
         <label>Review rationale <input name="reason" minLength={10} required /></label>
         <button disabled={busy}>Save Finance outlook review</button>
-      </form> : null}</div> : null}
+      </form> : finance ? <p>{assessmentRoute?.route ?? "Checking the configured independent reviewer."}</p> : null}</div> : null}
     </>}
     <details><summary>Prior Design cost and assessment decisions</summary>
       {position.claims.map((item) => <div key={item.id}><p>{item.status} · {item.source_reference} · {moneyMinor(item.amount_minor, "USD")}{item.supersedes_id ? ` · replaces ${item.supersedes_id}` : ""} · {item.review_note ?? "Awaiting review"}</p>
