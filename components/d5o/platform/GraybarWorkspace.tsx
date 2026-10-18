@@ -17,6 +17,7 @@ type AuthoritySummary = { revision: number; source: { digest: string; kind: stri
   parentCapMinor: number | null; purchaseCapMinor: number | null; parentRemainingMinor: number | null;
   purchaseRemainingMinor: number | null; designCommittedMinor: number; purchaseReservedMinor: number;
   authorities: Array<{ id: string; status: string; conditions: string; valid_until: string }> };
+type PurchaseReviewRoute = { pending: boolean; canReview: boolean; held?: boolean; route?: string };
 type FinancePosting = { financeRevision: number; links: Array<{ orderId: string; invoiceId?: string; materialId: string; kind: string; costId: string; amountMinor: number; source: string }> };
 type Work = { id: string; title: string; customer?: string; site?: string; definition?: { scopeControl?: { requirements?: Array<{ id: string; need: string }> } }; discovery?: { estimate?: { detailed?: { status?: string } } }; design?: {
   packages?: Array<{ packageId: string; revision: number; status: string; materialLines?: Array<{ id: string; item: string; quantity: number; unit: string }> }>;
@@ -31,6 +32,7 @@ export function GraybarWorkspace({ workspace, workId, role, build, task, initial
   const [data, setData] = useState<Procurement | null>(null), [work, setWork] = useState<Work | null>(null);
   const [financePosting, setFinancePosting] = useState<FinancePosting | null>(null);
   const [authority, setAuthority] = useState<AuthoritySummary | null>(null);
+  const [poReviewRoutes, setPoReviewRoutes] = useState<Record<string, PurchaseReviewRoute>>({});
   const [busy, setBusy] = useState(false), [notice, setNotice] = useState(""), [extraction, setExtraction] = useState("");
   const [sourceDocumentId, setSourceDocumentId] = useState("");
   const [quoteLines, setQuoteLines] = useState<Row[]>([initialLine()]);
@@ -39,6 +41,7 @@ export function GraybarWorkspace({ workspace, workId, role, build, task, initial
   const [bomLines, setBomLines] = useState<Row[]>([]), [section, setSection] = useState(taskSection ?? (["quote", "assess", "rom", "bom", "authority", "po", "fulfill", "invoice", "operate"].includes(initialSection ?? "") ? initialSection! : "quote"));
   const url = `/api/d5o-hosted/graybar?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(workId)}`;
   const refresh = useCallback(async () => {
+    setPoReviewRoutes({});
     const [procurement, firstWorkResult, financeResult, authorityResult] = await Promise.all([fetch(url, { cache: "no-store" }),
       fetch(`/api/d5o-hosted/prototype-state?workspace=${encodeURIComponent(workspace)}&key=work`, { cache: "no-store" }),
       ["admin", "project_manager", "billing_commercial_lead"].includes(role)
@@ -55,6 +58,18 @@ export function GraybarWorkspace({ workspace, workId, role, build, task, initial
     const parsed = await procurement.json();
     if (!procurement.ok) { setNotice(parsed.error ?? "Procurement unavailable"); return; }
     setData(parsed as Procurement);
+    if (role === "admin") {
+      const pending = (parsed as Procurement).state.orders.filter((order) => order.status === "Prepared");
+      const routes = await Promise.all(pending.map(async (order) => {
+        try {
+          const response = await fetch(`/api/d5o-hosted/spending-review-route?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(workId)}&category=purchase_order&subjectId=${encodeURIComponent(order.id)}`, { cache: "no-store" });
+          return [order.id, response.ok ? await response.json() as PurchaseReviewRoute : { pending: true, canReview: false, route: "Reviewer routing unavailable. Refresh before deciding." }] as const;
+        } catch {
+          return [order.id, { pending: true, canReview: false, route: "Reviewer routing unavailable. Refresh before deciding." }] as const;
+        }
+      }));
+      setPoReviewRoutes(Object.fromEntries(routes));
+    } else setPoReviewRoutes({});
     if (financeResult?.ok) setFinancePosting(await financeResult.json() as FinancePosting);
     if (authorityResult?.ok) setAuthority(await authorityResult.json() as AuthoritySummary);
     if (workResult.ok) {
@@ -225,7 +240,7 @@ export function GraybarWorkspace({ workspace, workId, role, build, task, initial
                 step="0.001" defaultValue={line.quantity} required /></label>)}
           <label>Graybar account reference<input name="accountReference" required defaultValue={quotes.at(-1)?.accountReference} /></label><label>Delivery / ship-to address<input name="shipTo" required /></label><label>Required date<input type="date" name="requiredDate" required /></label><label>Draft planning ceiling USD (not spending authority)<input type="number" name="budgetUsd" min="0.01" step="0.01" required /></label><button className={styles.primary} disabled={busy}>Prepare purchase order</button></form>}
         {orders.map((order) => <article className={styles.record} key={order.id}><b>PO {order.id.slice(0, 8)} · {order.status}</b><span>{order.accountReference} · {money(order.amountMinor)} committed when approved · ship to {order.shipTo}</span><small>BOM {order.bomId} · draft planning ceiling {money(order.budgetMinor)} · supplier acknowledgment {order.acknowledgment ? "retained" : "not recorded"}</small>
-          <div className={styles.inline}><a href={`/api/d5o-hosted/graybar-po?workspace=${workspace}&workId=${workId}&orderId=${order.id}`}>Download supplier-facing PO PDF</a>{order.status === "Prepared" && canPrepare && <button disabled={busy} onClick={() => { const reason = window.prompt("Why is this unapproved PO draft being abandoned? No authority was reserved."); if (reason && reason.trim().length >= 10) void command("cancel-po-draft", { orderId: order.id, reason: reason.trim() }); }}>Cancel draft</button>}{order.status === "Prepared" && role === "admin" && <button disabled={busy || !authority?.parentCapMinor || authority.purchaseRemainingMinor === null || order.amountMinor > authority.purchaseRemainingMinor || authority.parentRemainingMinor === null || order.amountMinor > authority.parentRemainingMinor} onClick={() => void command("approve-po", { orderId: order.id, authorityBasis: "Active workspace administrator" })}>Approve independently</button>}{order.status === "Approved" && role === "admin" && <button disabled={busy} onClick={() => void command("record-test-submission", { orderId: order.id, testOnly: true, sourceReference: `Fictional local handoff ${new Date().toISOString()}` })}>Record controlled test submission</button>}{role === "billing_commercial_lead" && ["Approved", "Test submitted", "Acknowledged"].includes(order.status) && financePosting && !financePosting.links.some((link) => link.orderId === order.id && link.kind === "Committed") ? <button disabled={busy} onClick={() => void postJobCost("post-commitment", { orderId: order.id })}>Post sourced PO commitment to Job Finance</button> : null}</div></article>)}
+<div className={styles.inline}><a href={`/api/d5o-hosted/graybar-po?workspace=${workspace}&workId=${workId}&orderId=${order.id}`}>Download supplier-facing PO PDF</a>{order.status === "Prepared" && canPrepare && <button disabled={busy} onClick={() => { const reason = window.prompt("Why is this unapproved PO draft being abandoned? No authority was reserved."); if (reason && reason.trim().length >= 10) void command("cancel-po-draft", { orderId: order.id, reason: reason.trim() }); }}>Cancel draft</button>}{order.status === "Prepared" && role === "admin" && poReviewRoutes[order.id]?.canReview && <button disabled={busy || !authority?.parentCapMinor || authority.purchaseRemainingMinor === null || order.amountMinor > authority.purchaseRemainingMinor || authority.parentRemainingMinor === null || order.amountMinor > authority.parentRemainingMinor} onClick={() => void command("approve-po", { orderId: order.id, authorityBasis: "Selected independent purchasing reviewer" })}>Approve independently</button>}{order.status === "Prepared" && role === "admin" && poReviewRoutes[order.id] && !poReviewRoutes[order.id].canReview && <small>{poReviewRoutes[order.id].route ?? "Waiting for the eligible purchasing reviewer."}</small>}{order.status === "Approved" && role === "admin" && <button disabled={busy} onClick={() => void command("record-test-submission", { orderId: order.id, testOnly: true, sourceReference: `Fictional local handoff ${new Date().toISOString()}` })}>Record controlled test submission</button>}{role === "billing_commercial_lead" && ["Approved", "Test submitted", "Acknowledged"].includes(order.status) && financePosting && !financePosting.links.some((link) => link.orderId === order.id && link.kind === "Committed") ? <button disabled={busy} onClick={() => void postJobCost("post-commitment", { orderId: order.id })}>Post sourced PO commitment to Job Finance</button> : null}</div></article>)}
       </section>}
       {section === "fulfill" && <section className={styles.card}><h2>Acknowledgment, shipment and physical receipt</h2><p>Supplier acknowledgment is not a shipment. A shipment is not a physical receipt. Exceptions remain visible.</p>
         <label>Exact purchase order<select value={currentOrder?.id ?? ""} onChange={(event) => setSelectedOrderId(event.target.value)}><option value="">Choose order</option>{orders.map((order) => <option key={order.id} value={order.id}>{order.id.slice(0, 8)} · {order.status} · {money(order.amountMinor)}</option>)}</select></label>

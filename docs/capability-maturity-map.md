@@ -76,3 +76,5 @@ The highest-value gap is not visual polish or module coverage. The highest-value
 Signal -> Decision -> Action -> Evidence -> Gate Movement.
 
 The product now communicates that pattern. The next step is making a limited set of those movements executable.
+
+**18 October purchasing-delegation candidate:** A forward-only local correction extends administrator-configured, system-selected human reviewers to exact prepared Graybar PO approval. The existing administrator command role, independent review, current source and parent/purchasing caps remain enforced. A 141-file empty-target replay and a rolled-back named-actor/queue/guard probe passed; the forward file also applied to an isolated populated clone. A final-build authenticated browser PO decision and populated release rehearsal remain open. See the [focused record](./evidence/d5o-purchase-order-delegation-20261018.md). Production delegates, sponsor, limits and funding rules are still unapproved.
