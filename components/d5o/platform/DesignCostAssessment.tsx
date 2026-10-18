@@ -18,6 +18,46 @@ const categories = ["Design", "Material", "Equipment", "Subcontract", "Labor", "
 const field = (form: FormData, key: string) => String(form.get(key) ?? "").trim();
 const today = () => new Date().toISOString().slice(0, 10);
 
+function CostSourceFile({ work, claim, actorRole }: {
+  work: WorkRecord; claim: Claim; actorRole: string
+}) {
+  const [receipt, setReceipt] = useState<{ filename: string; checksumSha256: string;
+    uploadedBy: string } | null>(null);
+  const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
+  const endpoint = `/api/d5o-hosted/design-cost-evidence?workspace=${encodeURIComponent(work.workspace)}&workId=${encodeURIComponent(work.id)}&claimId=${encodeURIComponent(claim.id)}`;
+  useEffect(() => {
+    let active = true;
+    void fetch(endpoint, { cache: "no-store" }).then(async (response) => {
+      if (active && response.ok) setReceipt(await response.json());
+    }).catch(() => { if (active) setMessage("Source file could not be checked."); });
+    return () => { active = false; };
+  }, [endpoint]);
+  async function upload(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setBusy(true); setMessage("");
+    try {
+      const form = new FormData(event.currentTarget);
+      const response = await fetch(endpoint, { method: "POST", body: form });
+      const body = await response.json() as { error?: string; filename?: string; checksumSha256?: string };
+      if (!response.ok) throw new Error(body.error ?? "Source upload failed");
+      setReceipt({ filename: body.filename ?? "Retained PDF",
+        checksumSha256: body.checksumSha256 ?? "", uploadedBy: "Current preparer" });
+      setMessage("Private source retained for this exact cost claim.");
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Source upload failed"); }
+    finally { setBusy(false); }
+  }
+  return <div>
+    {receipt ? <p><a href={`${endpoint}&download=1`} target="_blank" rel="noreferrer">Open retained source: {receipt.filename}</a>
+      <small> · SHA-256 {receipt.checksumSha256} · supplied by {receipt.uploadedBy}</small></p>
+      : <p>No retained source file is linked to this claim. Its text reference does not prove document custody.</p>}
+    {!receipt && claim.status === "Prepared" && actorRole === "project_manager"
+      ? <form onSubmit={upload}><label>Optional fictional source PDF <input name="file" type="file" accept="application/pdf" required /></label>
+        <button disabled={busy}>Retain source for this claim</button></form> : null}
+    {message ? <p role="status">{message}</p> : null}
+  </div>;
+}
+
 export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all", expectedRevision, decisionId,
   remainingForecastMinor, forecastSource }: {
   work: WorkRecord; actorRole: string; onCommitted: () => Promise<void>;
@@ -117,6 +157,7 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
     </form> : null}
     {mode !== "outlook-assessment" && prepared.filter((item) => !decisionId || item.id === decisionId).map((item) => <div key={item.id}>
       <p><b>Awaiting independent Finance review:</b> {item.source_reference} · {moneyMinor(item.amount_minor, "USD")} · {item.cost_date}. {item.evidence_note}</p>
+      <CostSourceFile work={work} claim={item} actorRole={actorRole} />
       {finance ? <form onSubmit={submit("review-cost", (form) => ({ claimId: item.id, decision: field(form, "decision"), reason: field(form, "reason") }))}>
         <label>Decision <select name="decision"><option>Reviewed</option><option>Returned</option></select></label>
         <label>Review rationale <input name="reason" minLength={10} required /></label>
@@ -158,7 +199,8 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
       </form> : null}</div> : null}
     </>}
     <details><summary>Prior Design cost and assessment decisions</summary>
-      {position.claims.map((item) => <p key={item.id}>{item.status} · {item.source_reference} · {moneyMinor(item.amount_minor, "USD")}{item.supersedes_id ? ` · replaces ${item.supersedes_id}` : ""} · {item.review_note ?? "Awaiting review"}</p>)}
+      {position.claims.map((item) => <div key={item.id}><p>{item.status} · {item.source_reference} · {moneyMinor(item.amount_minor, "USD")}{item.supersedes_id ? ` · replaces ${item.supersedes_id}` : ""} · {item.review_note ?? "Awaiting review"}</p>
+        <CostSourceFile work={work} claim={item} actorRole={actorRole} /></div>)}
       {position.assessments.map((item) => <p key={item.id}>{item.status} · {item.actual_cutoff} · {item.source_reference} · {item.review_note ?? "Awaiting review"}{item.source_digest !== position.sourceDigest ? ` · historical basis; changed: ${changes(item).join(", ") || "source basis"}` : " · current source basis"}</p>)}
     </details>
   </section>;
