@@ -12,12 +12,13 @@ import Link from "next/link";
 import "./enterprise.css";
 import "./settings/notification-settings.css";
 import styles from "./hosted-entry.module.css";
+import { publishInitialConfiguration } from "./initial-configuration-action";
 
 export const metadata = { title: "D5O Work" };
 export const dynamic = "force-dynamic";
 
 export default async function WorkHomePage({ searchParams }: {
-  searchParams?: Promise<{ workspace?: string }>;
+  searchParams?: Promise<{ workspace?: string; setupError?: string }>;
 }) {
   const sourceVersion = process.env.D5O_SOURCE_SHA ?? process.env.VERCEL_GIT_COMMIT_SHA ?? "source-unidentified";
   const commandRuntime = d5oCommandRuntime();
@@ -31,7 +32,8 @@ export default async function WorkHomePage({ searchParams }: {
     const result = await client.rpc("d5o_hosted_workspaces_v1");
     if (result.error || !Array.isArray(result.data)) throw new Error("hosted_workspace_unavailable");
     const entries = result.data as Array<{ workspaceKey: string; workspaceName: string; role: string }>;
-    const selected = (await searchParams)?.workspace;
+    const params = await searchParams;
+    const selected = params?.workspace;
     if (!selected && entries.length === 1 && entries[0].role === "field_worker")
       redirect(`/work/my-schedule?workspace=${encodeURIComponent(entries[0].workspaceKey)}`);
     if (!selected) return <main className={styles.entry}>
@@ -77,6 +79,36 @@ export default async function WorkHomePage({ searchParams }: {
         <p className={styles.notice}>{permitted.role === "admin"
           ? "Review the Work Types, phase contract, creation rights and receiving roles with the accountable owner before the first publication. The existing Work Record and decision controls remain locked until then."
           : "Your workspace administrator owns this setup. Your current role cannot publish its business rules."} Build {sourceVersion.slice(0, 12)}.</p>
+        {workspace === "rybex" && permitted.role === "admin" && configurationInventory.status === "no_mapping"
+          ? <section className={styles.setup}>
+            <h2>Publish the first Work configuration</h2>
+            <p>Review the approved initial choices. Publication pins these rules to future Work; it does not approve a customer award, spending, field work or support activation.</p>
+            <dl><dt>Work Types</dt><dd>Technical delivery; Lifecycle service</dd>
+              <dt>Work creation</dt><dd>Admin; Project Manager</dd>
+              <dt>Phase order</dt><dd>Discover → Define → Develop → Design → Deploy → Operate</dd></dl>
+            <form action={publishInitialConfiguration}>
+              <input type="hidden" name="commandId" value={crypto.randomUUID()} />
+              <label>Discover → Define receiving role
+                <select name="discoverDefine" required defaultValue=""><option value="" disabled>Choose an existing role</option>
+                  <option value="admin">Admin</option><option value="project_manager">Project Manager</option>
+                  <option value="operations_leader">Operations Leader</option></select></label>
+              <label>Design → Deploy receiving role
+                <select name="designDeploy" required defaultValue=""><option value="" disabled>Choose an existing role</option>
+                  <option value="admin">Admin</option><option value="project_manager">Project Manager</option>
+                  <option value="operations_leader">Operations Leader</option></select></label>
+              <label>Deploy → Operate receiving role
+                <select name="deployOperate" required defaultValue=""><option value="" disabled>Choose an existing role</option>
+                  <option value="admin">Admin</option><option value="project_manager">Project Manager</option>
+                  <option value="operations_leader">Operations Leader</option></select></label>
+              <label>Publication reason<input name="reason" required minLength={8} maxLength={240} placeholder="Record the approved first-configuration basis" /></label>
+              {params?.setupError ? <p role="alert">{params.setupError === "receiver"
+                ? "That receiving role has no active workspace member. Assign an eligible member or select another approved role."
+                : params.setupError === "changed" ? "Configuration changed. Refresh this workspace before deciding again."
+                  : params.setupError === "authority" ? "Only an active workspace administrator can publish this configuration."
+                    : "Publication did not complete. Review the current configuration before retrying."}</p> : null}
+              <button type="submit">Publish reviewed configuration</button>
+            </form>
+          </section> : null}
         <Link className={styles.signout} href="/work">Choose a workspace</Link>
       </main>;
     return <D5OPlatform initialWorkspace={workspace} actorId={userData.user.id} actorRole={permitted.role}
