@@ -11,7 +11,7 @@ const reply = (body: unknown, status = 200) => NextResponse.json(body, { status,
 type Claim = { id: string; status: string; prepared_by: string };
 type Receipt = { evidenceId: string; objectPath: string; checksumSha256: string;
   filename: string; sizeBytes: number; uploadedBy: string; uploadedAt: string };
-type RpcResult = { data: unknown; error: { message: string } | null };
+type RpcResult = { data: unknown; error: { code?: string; message: string } | null };
 
 async function scope(request: NextRequest) {
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
@@ -82,10 +82,11 @@ export async function GET(request: NextRequest) {
     const admin = createRybexSupabaseAdminClient();
     const call = admin.rpc.bind(admin) as unknown as
       (name: string, args: Record<string, unknown>) => Promise<RpcResult>;
-    const { data, error } = await call("d5o_hosted_design_cost_evidence_read_v1", {
+    const { data, error } = await call("d5o_hosted_design_cost_evidence_read_v2", {
       p_workspace_key: selected.workspace, p_presentation_id: selected.workId,
-      p_claim_id: selected.claimId
+      p_claim_id: selected.claimId, p_actor_id: selected.context.actor.id
     });
+    if (error?.code === "42501") return reply({ error: "design_cost_evidence_scope_denied" }, 403);
     if (error || !data || typeof data !== "object") return reply({ error: "design_cost_evidence_missing" }, 404);
     const receipt = data as Receipt;
     if (request.nextUrl.searchParams.get("download") !== "1") return reply({
