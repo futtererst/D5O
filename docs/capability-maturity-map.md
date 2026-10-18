@@ -26,6 +26,8 @@ D5O bounded-pilot decision update (17 October 2026): the [Design-only operating-
 
 **18 October Design actual-cost review routing:** The next [focused correction](./evidence/d5o-design-cost-review-delegation-20261018.md) replaces the fixed “any independent Finance reviewer” decision with administrator-configured, system-selected Finance review for exact prepared Design cost claims. Fictional browser preparation, selected My Work review/return, nonselected queue absence, reload and stale-link handling passed; rollback-only command probes passed wrong-actor, over-limit hold and cross-tenant denial. A 145-file empty-target replay passed. The returned USD 50 synthetic claim created no incurred cost; source custody and reviewed actuals were not qualified by this routing test. Production limits, sponsors, evidence policy and populated cutover remain open.
 
+**18 October Work outlook review routing:** The subsequent [focused correction](./evidence/d5o-outlook-review-delegation-20261018.md) replaces the fixed “any independent Finance reviewer” outlook decision with administrator-configured selection of one Finance member for an exact assessment. The rule is non-monetary; unknown costs are not treated as zero. A fictional PM submitted an honest assessment with six Unknown categories; the selected Finance user reviewed it with gaps from My Work, while the other Finance user had no card. Reload, stale-link, wrong-actor, no-eligible hold, cross-tenant route and replay checks passed; the 146-file empty-target migration replay passed. This does not appoint production delegates, qualify a new Complete outlook or authorize shared release.
+
 Maturity scale:
 
 - Not started
