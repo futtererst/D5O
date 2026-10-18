@@ -57,6 +57,8 @@ RybexOS is currently a credible seed-backed operating-system prototype. It has s
 
 **Later 18 October correction:** The same custody record now retains the **passed** 135-file empty-target ordered replay and final `292eb46` data-backed browser checks on a restored disposable clone. Exact owner PM and Finance retrieved checksum-matching bytes; Operations, another PM and cross-tenant requests were denied metadata and bytes. The local review preview is restored at `127.0.0.1:61657`. R3 remains partial because this fictional PDF does not establish employee effort, production rates or approved source policy. The populated clone's historical partial migration ledger was preserved, not backfilled.
 
+**Internal Design rate connection, 18 October:** The [fictional rate qualification](./evidence/d5o-internal-design-rate-20261018.md) now shows Finance preparation, independent administrator approval, exact person-hours valued server-side at an effective-dated base-plus-burden rate, independent Finance cost review, retained correction history and USD 600 incurred versus USD 0 remaining Design commitment. Role, tenant, stale-source, duplicate/replay and protected-write probes rejected without added claims. A curated 140-file empty-target migration replay passed. This advances the internal Design cost calculation path; it does not approve production rate/burden values, prove employee hours, set customer ROM price or complete the aggregate Work outlook. R3 remains partially qualified.
+
 ## Maturity Interpretation
 
 Architecture-ready capabilities have enough design and scaffolding to begin implementation. They are not safe for production use.
