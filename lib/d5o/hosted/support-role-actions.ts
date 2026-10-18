@@ -25,7 +25,7 @@ export function serviceVisitReturnedToAsset(records: WorkRecord[], work: WorkRec
 
 /** Read-only routing. The authenticated typed command owns every decision. */
 export function supportRoleActions(records: WorkRecord[], actorId: string, role: string): SupportAction[] {
-  if (!["project_manager", "operations_leader", "field_supervisor"].includes(role)) return [];
+  if (!["admin", "project_manager", "operations_leader", "field_supervisor"].includes(role)) return [];
   const actions: SupportAction[] = [];
   const identityCounts = new Map<string, Map<string, number>>();
   for (const work of records) {
@@ -40,8 +40,8 @@ export function supportRoleActions(records: WorkRecord[], actorId: string, role:
       actions.push({ ...base, kind, responsibleRole, blocker,
         position: blocker ? eligible ? "preparation" : "waiting" : eligible ? "available" : "waiting" });
     if (role !== "field_supervisor" && currentWorkAcceptanceScope(work)) {
-    if (!state?.source) add("receive-handoff", "Operations leader who accepted the exact delivery receipt",
-      role === "operations_leader" && receipt.receivedByActorId === actorId);
+    if (!state?.source) add("receive-handoff", "Configured receiver who accepted the exact delivery receipt",
+      role === (receipt.receivingRole ?? "operations_leader") && receipt.receivedByActorId === actorId);
     else if (!state.assets.length && !state.assetLinks?.some((item) => item.status === "Accepted")) {
       let counts = identityCounts.get(work.workspace);
       if (!counts) {

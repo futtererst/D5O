@@ -78,10 +78,9 @@ export function HandoffRoutingAdmin({ workspace }: { workspace: WorkspaceKey }) 
         <div className="d5o-publication-fields">{routeKeys.map((key) => {
           const route = draft.routes.find((item) => item.key === key);
           return <label key={key}>{names[key]} receiving role<select aria-label={`${names[key]} draft receiving role`}
-            value={selected[key] ?? route?.role ?? ""} disabled={busy || key === "deployOperate"}
+            value={selected[key] ?? route?.role ?? ""} disabled={busy}
             onChange={(event) => setSelected((current) => ({ ...current, [key]: event.target.value }))}>
-            {Object.entries(labels).filter(([role]) => key !== "deployOperate" || role === "operations_leader")
-              .map(([role, label]) => <option key={role} value={role}>{label}</option>)}
+            {Object.entries(labels).map(([role, label]) => <option key={role} value={role}>{label}</option>)}
           </select><small>{route ? `${route.eligibleCount} active member${route.eligibleCount === 1 ? "" : "s"} for the saved role` : "Missing route"}</small>
           <button type="button" disabled={busy || !route || selected[key] === route.role}
             onClick={() => { if (route) void command("save-route", draft, route); }}>Save draft route</button></label>;
@@ -96,6 +95,6 @@ export function HandoffRoutingAdmin({ workspace }: { workspace: WorkspaceKey }) 
       </div> : null}
     </>}
     <p role="status" aria-live="polite">{message}</p>
-    <small>Deploy to Operate remains assigned to the Operations leader by the existing receipt policy. Manage memberships under People & capacity.</small>
+    <small>The selected Deploy receiver records delivery receipt and links the exact accepted source. Operations separately accepts support ownership and activation. Manage memberships under People & capacity.</small>
   </section>;
 }

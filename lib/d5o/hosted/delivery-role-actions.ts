@@ -12,7 +12,7 @@ export type DeliveryAction = {
 export function deliveryRoleActions(records: WorkRecord[], actorId: string, role: string): DeliveryAction[] {
   // Field workers use their assignment-scoped view; this cross-work decision
   // projection must not disclose unrelated customer or package information.
-  if (!["project_manager", "field_supervisor", "operations_leader"].includes(role)) return [];
+  if (!["admin", "project_manager", "field_supervisor", "operations_leader"].includes(role)) return [];
   const actions: DeliveryAction[] = [];
   for (const work of records) {
     if (!work.canonicalWorkId || !work.packages?.length) continue;
@@ -57,11 +57,12 @@ export function deliveryRoleActions(records: WorkRecord[], actorId: string, role
           "Project manager or Operations leader; independent of assembler",
           ["project_manager", "operations_leader"].includes(role) && turnover.assembledByActorId !== actorId,
           "A retained customer-signed document for this exact turnover is required at decision time.");
-      if (turnover?.status === "Client accepted" && turnover.receipt === "Awaiting")
-        add("Operations package receipt", pkg.id, turnover.id, release.id, turnover.revision, "package-receipt",
-          "Operations leader; independent of assembler and acceptance recorder",
-          role === "operations_leader" && turnover.assembledByActorId !== actorId &&
-            (turnover as typeof turnover & { recordedByActorId?: string }).recordedByActorId !== actorId);
+      if (turnover?.status === "Client accepted" && turnover.receipt === "Awaiting") {
+        const receiverRole = turnover.operateRole ?? "operations_leader";
+        add("Receive package delivery", pkg.id, turnover.id, release.id, turnover.revision, "package-receipt",
+          `${receiverRole}; independent of assembler and acceptance recorder`,
+          role === receiverRole && turnover.assembledByActorId !== actorId && turnover.recordedByActorId !== actorId);
+      }
     }
     const accepted = state.workAcceptance;
     const currentScope = currentWorkAcceptanceScope(work);
@@ -76,13 +77,15 @@ export function deliveryRoleActions(records: WorkRecord[], actorId: string, role
         ["project_manager", "operations_leader"].includes(role) &&
           state.turnovers.every((t) => t.assembledByActorId !== actorId),
         "A retained customer-signed document for the exact current package set is required at decision time.");
-    if (accepted?.receipt === "Awaiting")
-      add("Operations whole-work receipt", null, accepted.id, null, accepted.revision, "work-receipt",
-        "Operations leader; independent of acceptance recorder",
-        role === "operations_leader" && accepted.recordedByActorId !== actorId,
+    if (accepted?.receipt === "Awaiting") {
+      const receiverRole = accepted.receivingRole ?? "operations_leader";
+      add("Receive whole-work delivery", null, accepted.id, null, accepted.revision, "work-receipt",
+        `${receiverRole}; independent of acceptance recorder`,
+        role === receiverRole && accepted.recordedByActorId !== actorId,
         currentScope ? state.turnovers.some((t) => accepted.turnoverIds.includes(t.id) && t.receipt !== "Accepted")
-          ? "Every accepted package needs an independent Operations receipt first." : null
+          ? "Every accepted package needs an independent delivery receipt first." : null
           : "The accepted package and release set no longer matches current scope.");
+    }
   }
   return actions;
 }
