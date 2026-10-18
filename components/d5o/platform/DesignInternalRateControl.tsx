@@ -12,7 +12,9 @@ const cents = (value: string) => /^\d+(?:\.\d{1,2})?$/.test(value)
   ? String(BigInt(value.split(".")[0]) * BigInt(100) + BigInt((value.split(".")[1] ?? "").padEnd(2, "0"))) : null;
 const input = (data: FormData, key: string) => String(data.get(key) ?? "").trim();
 
-export function DesignInternalRateControl({ workspace, role }: { workspace: WorkspaceKey; role: string }) {
+export function DesignInternalRateControl({ workspace, role, onRevision }: {
+  workspace: WorkspaceKey; role: string; onRevision?: (revision: number) => void;
+}) {
   const [position, setPosition] = useState<Position | null>(null);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
@@ -22,16 +24,17 @@ export function DesignInternalRateControl({ workspace, role }: { workspace: Work
     const body = await response.json() as Position & { error?: string };
     if (!response.ok) throw new Error(body.error ?? "Internal Design rates unavailable.");
     setPosition(body);
-  }, [endpoint]);
+    onRevision?.(body.revision);
+  }, [endpoint, onRevision]);
   useEffect(() => {
     let active = true;
     void fetch(endpoint, { cache: "no-store" }).then(async (response) => {
       const body = await response.json() as Position & { error?: string };
       if (!response.ok) throw new Error(body.error ?? "Internal Design rates unavailable.");
-      if (active) setPosition(body);
+      if (active) { setPosition(body); onRevision?.(body.revision); }
     }).catch((error) => { if (active) setMessage(error instanceof Error ? error.message : "Rates unavailable."); });
     return () => { active = false; };
-  }, [endpoint]);
+  }, [endpoint, onRevision]);
   async function command(action: string, value: Record<string, unknown>) {
     if (!position) return;
     setBusy(true); setMessage("");

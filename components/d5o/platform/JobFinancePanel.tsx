@@ -23,6 +23,8 @@ export function JobFinancePanel({ work, actorRole }: { work: WorkRecord; actorRo
 
   const [busy, setBusy] = useState(false);
   const [billingPackageId, setBillingPackageId] = useState("");
+  const [rateRevision, setRateRevision] = useState<number | null>(null);
+  const [designCostRevision, setDesignCostRevision] = useState<number | null>(null);
 
   const canFinance = actorRole === "billing_commercial_lead";
 
@@ -109,20 +111,21 @@ export function JobFinancePanel({ work, actorRole }: { work: WorkRecord; actorRo
   if (taskKind === "design-rate") return <FocusedTaskFrame
     title="Configure internal Design cost rate" work={work.title} customer={work.customer} site={work.site}
     workspace={work.workspace} scope="Workspace-wide USD cost per Design person-hour; separate from customer selling price"
-    revision={state.revision} outcome="Finance prepares a dated rate; an independent administrator approves exact use."
+    revision={rateRevision ?? "loading"} outcome="Finance prepares a dated rate; an independent administrator approves exact use."
     blocker={null} nextOwner={canFinance ? "Independent workspace administrator" : "Finance rate preparer"}
     onFullRecord={() => window.location.assign(financeHref("full"))}>
-    <DesignInternalRateControl workspace={work.workspace} role={actorRole} />
+    <DesignInternalRateControl workspace={work.workspace} role={actorRole} onRevision={setRateRevision} />
   </FocusedTaskFrame>;
   if (taskKind === "design-cost" || taskKind === "outlook-assessment") return <FocusedTaskFrame
     title={taskKind === "design-cost" ? "Reconcile Design commitment and actual cost" : "Assess Work cost-outlook completeness"}
     work={work.title} customer={work.customer} site={work.site} workspace={work.workspace}
     scope={`Exact Work ${work.id} · Design commitment and Finance cost basis`}
-    revision={params?.has("sourceRevision") ? Number(params.get("sourceRevision")) : state.revision}
+    revision={params?.has("sourceRevision") ? Number(params.get("sourceRevision")) : designCostRevision ?? "loading"}
     outcome={taskKind === "design-cost" ? "Link the approved Design commitment and obtain independent review of sourced actual cost." : "Record category-specific gaps and obtain an independent Finance assessment."}
     blocker={null} nextOwner={canFinance ? "Assigned project manager for correction or next forecast" : "Independent Finance reviewer"}
     onFullRecord={() => window.location.assign(financeHref("full"))}>
     <DesignCostAssessment work={work} actorRole={actorRole} onCommitted={load} mode={taskKind}
+      onRevision={setDesignCostRevision}
       expectedRevision={params?.has("sourceRevision") ? Number(params.get("sourceRevision")) : undefined}
       decisionId={params?.get("decision")} remainingForecastMinor={state.remainingForecastMinor}
       forecastSource={state.forecastSource} />

@@ -66,10 +66,11 @@ function CostSourceFile({ work, claim, actorRole }: {
 }
 
 export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all", expectedRevision, decisionId,
-  remainingForecastMinor, forecastSource }: {
+  remainingForecastMinor, forecastSource, onRevision }: {
   work: WorkRecord; actorRole: string; onCommitted: () => Promise<void>;
   mode?: "all" | "design-cost" | "outlook-assessment"; expectedRevision?: number; decisionId?: string | null;
   remainingForecastMinor?: number | null; forecastSource?: string | null;
+  onRevision?: (revision: number) => void;
 }) {
   const [position, setPosition] = useState<Position | null>(null);
   const [rates, setRates] = useState<RatePosition | null>(null);
@@ -82,17 +83,18 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
     const body = await response.json() as Position & { error?: string };
     if (!response.ok) throw new Error(body.error ?? "Design cost position unavailable");
     setPosition(body);
-  }, [endpoint]);
+    onRevision?.(body.revision);
+  }, [endpoint, onRevision]);
   useEffect(() => {
     let active = true;
     void fetch(endpoint, { cache: "no-store" }).then(async (response) => {
       const body = await response.json() as Position & { error?: string };
       if (!active) return;
       if (!response.ok) throw new Error(body.error ?? "Design cost position unavailable");
-      setPosition(body);
+      setPosition(body); onRevision?.(body.revision);
     }).catch((error) => { if (active) setMessage(error instanceof Error ? error.message : "Design cost position unavailable"); });
     return () => { active = false; };
-  }, [endpoint]);
+  }, [endpoint, onRevision]);
   useEffect(() => {
     let active = true;
     void fetch(`/api/d5o-hosted/design-internal-rate?workspace=${encodeURIComponent(work.workspace)}`, { cache: "no-store" })
