@@ -16,20 +16,29 @@ try {
   await page.getByRole("button", { name: "Investigation", exact: true }).waitFor({ timeout: 30000 });
   const outcome = await page.evaluate(async () => {
     const path = "/api/d5o-hosted/prototype-state?workspace=rybex&key=work";
-    const beginRead = performance.now();
-    const read = await fetch(path, { cache: "no-store" });
-    const data = await read.json();
-    const readMs = Math.round(performance.now() - beginRead);
-    const before = data.state?.revision;
-    const beginSave = performance.now();
-    const save = await fetch("/api/d5o-hosted/prototype-state?workspace=rybex", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ workspace: "rybex", key: "work", expectedRevision: before, state: data.state })
-    });
-    const result = await save.json();
-    return { readStatus: read.status, readMs, saveStatus: save.status,
-      saveMs: Math.round(performance.now() - beginSave), before,
-      after: result.state?.revision ?? null, error: result.error ?? null };
+    const samples = [];
+    for (let index = 0; index < 3; index++) {
+      const beginRead = performance.now();
+      const read = await fetch(path, { cache: "no-store" });
+      const data = await read.json();
+      const readMs = Math.round(performance.now() - beginRead);
+      const before = data.state?.revision;
+      const beginSerialize = performance.now();
+      const body = JSON.stringify({ workspace: "rybex", key: "work", expectedRevision: before, state: data.state });
+      const serializeMs = Math.round(performance.now() - beginSerialize);
+      const beginSave = performance.now();
+      const save = await fetch("/api/d5o-hosted/prototype-state?workspace=rybex", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body
+      });
+      const headerMs = Math.round(performance.now() - beginSave);
+      const result = await save.json();
+      samples.push({ index, readStatus: read.status, readMs, bodyBytes: body.length,
+        serializeMs, saveStatus: save.status, headerMs,
+        saveMs: Math.round(performance.now() - beginSave), serverTiming: save.headers.get("Server-Timing"),
+        before, after: result.state?.revision ?? null, error: result.error ?? null });
+      if (!save.ok) break;
+    }
+    return samples;
   });
   console.log(JSON.stringify(outcome));
 } finally { await browser.close(); }
