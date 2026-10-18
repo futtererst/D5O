@@ -223,7 +223,7 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
     </div>)}
     {mode !== "design-cost" && <><h5>Work cost-outlook completeness</h5>
     <p>Additional cost beyond approved commitments: {moneyMinor(remainingForecastMinor ?? null, "USD")} · {forecastSource ?? "No reviewed forecast source"}. This amount must exclude the remaining value of commitments already shown above.</p>
-    {finance ? <form onSubmit={submit("set-work-forecast", (form) => ({ amountMinor: dollarsToMinor(field(form, "amount")),
+    {finance && mode !== "outlook-assessment" ? <form onSubmit={submit("set-work-forecast", (form) => ({ amountMinor: dollarsToMinor(field(form, "amount")),
       forecastAt: field(form, "forecastAt"), source: field(form, "source") }))}>
       <h6>Record a sourced additional-cost forecast</h6>
       <label>Additional cost beyond commitments (USD) <input name="amount" type="number" min="0" step="0.01" required /></label>
@@ -248,7 +248,10 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
       <label>Source reference <input name="sourceReference" minLength={8} required /></label>
       <button disabled={busy}>Submit current outlook for Finance review</button>
     </form> : null}
-    {pendingAssessment ? <div><p><b>Prepared assessment:</b> cutoff {pendingAssessment.actual_cutoff} · {pendingAssessment.limitations}. {pendingAssessment.source_digest !== position.sourceDigest ? "Its source changed; prepare again." : "Waiting for independent Finance."}</p>
+    {pendingAssessment ? <div><p><b>Prepared assessment:</b> cutoff {pendingAssessment.actual_cutoff} · source {pendingAssessment.source_reference} · {pendingAssessment.limitations}. {pendingAssessment.source_digest !== position.sourceDigest ? "Its source changed; prepare again." : "Waiting for independent Finance."}</p>
+      <p>Category basis for this exact submitted assessment:</p>
+      <ul>{Object.entries(pendingAssessment.category_basis).map(([category, basis]) =>
+        <li key={category}><b>{category} · {basis.status}</b>: {basis.reason}</li>)}</ul>
       {finance && pendingAssessment.source_digest === position.sourceDigest && assessmentRoute?.revision === position.revision && assessmentRoute.canReview ? <form onSubmit={submit("review-assessment", (form) => ({ assessmentId: pendingAssessment.id, decision: field(form, "decision"), reason: field(form, "reason") }))}>
         <label>Decision <select name="decision"><option>Reviewed with gaps</option><option>Complete</option><option>Returned</option></select></label>
         <label>Review rationale <input name="reason" minLength={10} required /></label>
