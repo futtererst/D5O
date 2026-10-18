@@ -8,6 +8,7 @@ type Rate = { id: string; rate_key: string; status: string; currency: string;
   base_rate_minor: number; burden_basis_points: number; effective_from: string; effective_until: string;
   source_reference: string; basis_note: string; prepared_by: string; review_note: string | null };
 type Position = { revision: number; rates: Rate[] };
+type ReviewRoute = { revision: number; canReview: boolean; route: string; fullyBurdenedRateMinor: number | null };
 const cents = (value: string) => /^\d+(?:\.\d{1,2})?$/.test(value)
   ? String(BigInt(value.split(".")[0]) * BigInt(100) + BigInt((value.split(".")[1] ?? "").padEnd(2, "0"))) : null;
 const input = (data: FormData, key: string) => String(data.get(key) ?? "").trim();
@@ -16,6 +17,7 @@ export function DesignInternalRateControl({ workspace, role, onRevision }: {
   workspace: WorkspaceKey; role: string; onRevision?: (revision: number) => void;
 }) {
   const [position, setPosition] = useState<Position | null>(null);
+  const [reviewRoutes, setReviewRoutes] = useState<Record<string, ReviewRoute>>({});
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const endpoint = `/api/d5o-hosted/design-internal-rate?workspace=${encodeURIComponent(workspace)}`;
@@ -24,17 +26,28 @@ export function DesignInternalRateControl({ workspace, role, onRevision }: {
     const body = await response.json() as Position & { error?: string };
     if (!response.ok) throw new Error(body.error ?? "Internal Design rates unavailable.");
     setPosition(body);
+    setReviewRoutes({});
+    if (role === "admin") {
+      const entries = await Promise.all(body.rates.filter((rate) => rate.status === "Prepared").map(async (rate) => {
+        const routeResponse = await fetch(`/api/d5o-hosted/spending-review-route?workspace=${encodeURIComponent(workspace)}&category=internal_design_rate&subjectId=${encodeURIComponent(rate.id)}`, { cache: "no-store" });
+        if (!routeResponse.ok) return [rate.id, { revision: body.revision, canReview: false,
+          route: "The configured reviewer could not be checked. Refresh before deciding.", fullyBurdenedRateMinor: null }] as const;
+        const route = await routeResponse.json() as { canReview?: boolean; route?: string; fullyBurdenedRateMinor?: number };
+        const amount = typeof route.fullyBurdenedRateMinor === "number" ? route.fullyBurdenedRateMinor : null;
+        return [rate.id, { revision: body.revision, canReview: route.canReview === true && amount !== null,
+          route: amount === null ? "The reviewed hourly cost is unavailable. Refresh before deciding." :
+            route.route ?? "This review is not assigned to you.",
+          fullyBurdenedRateMinor: amount }] as const;
+      }));
+      setReviewRoutes(Object.fromEntries(entries));
+    }
     onRevision?.(body.revision);
-  }, [endpoint, onRevision]);
+  }, [endpoint, onRevision, role, workspace]);
   useEffect(() => {
-    let active = true;
-    void fetch(endpoint, { cache: "no-store" }).then(async (response) => {
-      const body = await response.json() as Position & { error?: string };
-      if (!response.ok) throw new Error(body.error ?? "Internal Design rates unavailable.");
-      if (active) { setPosition(body); onRevision?.(body.revision); }
-    }).catch((error) => { if (active) setMessage(error instanceof Error ? error.message : "Rates unavailable."); });
-    return () => { active = false; };
-  }, [endpoint, onRevision]);
+    const timer = window.setTimeout(() => { void refresh().catch((error) =>
+      setMessage(error instanceof Error ? error.message : "Rates unavailable.")); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [refresh]);
   async function command(action: string, value: Record<string, unknown>) {
     if (!position) return;
     setBusy(true); setMessage("");
@@ -58,12 +71,15 @@ export function DesignInternalRateControl({ workspace, role, onRevision }: {
   }
   return <section aria-label="Internal Design cost rates">
     <h3>Internal Design cost rates</h3>
-    <p>Finance prepares a dated base cost per person-hour and burden percentage. A separate administrator reviews it. These internal values do not set the customer ROM selling price or prove employee work.</p>
+    <p>Finance prepares a dated base cost per person-hour and burden percentage. The configured independent administrator reviews the exact version. These internal values do not set the customer ROM selling price or prove employee work.</p>
     <p role={message ? "status" : undefined}>{message || `Rate schedule revision ${position?.revision ?? "loading"}`}</p>
     {position?.rates.map((rate) => <article key={rate.id}>
       <p><b>{rate.rate_key} · {rate.status}</b> · {moneyMinor(rate.base_rate_minor, rate.currency)} base per person-hour + {(rate.burden_basis_points / 100).toFixed(2)}% burden · {rate.effective_from} to {rate.effective_until}</p>
       <p>Source {rate.source_reference}. {rate.basis_note} {rate.review_note ? `Review: ${rate.review_note}` : ""}</p>
-      {role === "admin" && rate.status === "Prepared" ? <RateDecision busy={busy} onDecision={(action, reason) => void command(action, { rateId: rate.id, reason })} /> : null}
+      {role === "admin" && rate.status === "Prepared" ? reviewRoutes[rate.id]?.revision === position.revision && reviewRoutes[rate.id].canReview ?
+        <><p>Reviewed fully burdened hourly cost: {moneyMinor(reviewRoutes[rate.id].fullyBurdenedRateMinor!, rate.currency)}.</p>
+        <RateDecision busy={busy} onDecision={(action, reason) => void command(action, { rateId: rate.id, reason })} /></> :
+        <p>{reviewRoutes[rate.id]?.route ?? "Checking the configured independent reviewer."}</p> : null}
       {role === "admin" && rate.status === "Approved" ? <RateDecision busy={busy} retireOnly onDecision={(_, reason) => void command("retire", { rateId: rate.id, reason })} /> : null}
     </article>)}
     {role === "billing_commercial_lead" ? <form onSubmit={prepare}>

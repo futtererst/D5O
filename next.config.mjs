@@ -12,6 +12,7 @@ const nextConfig = {
   ...(process.env.D5O_REVIEW_PORT === "61657" ? { distDir: ".next-review-61657" } : {}),
   ...(process.env.D5O_REVIEW_PORT === "61659" ? { distDir: ".next-review-61659" } : {}),
   ...(process.env.D5O_REVIEW_PORT === "61660" ? { distDir: ".next-review-61660" } : {}),
+  ...(process.env.D5O_REVIEW_PORT === "61661" ? { distDir: ".next-review-61661" } : {}),
   // The isolated local review app is opened through 127.0.0.1, while Next's
   // development server initializes with localhost. Keep the dev exception local.
   allowedDevOrigins: ["127.0.0.1"],
