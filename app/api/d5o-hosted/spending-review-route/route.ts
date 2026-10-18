@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     (category !== "internal_design_rate" && !/^[\w-]{8,120}$/.test(workId))
     || !["work_authority", "design_authority", "design_commitment", "purchase_order",
       "subcontract_allocation", "subcontract_agreement", "subcontract_variation", "field_labor_authority",
-      "internal_design_rate"].includes(category)
+      "internal_design_rate", "design_cost_review"].includes(category)
     || !/^[0-9a-f-]{36}$/i.test(subjectId)) return respond({ error: "invalid_target" }, 400);
   if (!authoritativeD5OCommandsReady()) return respond({ error: "authoritative_runtime_unavailable" }, 503);
   const client = await createRybexSupabaseServerClient();
@@ -24,6 +24,10 @@ export async function GET(request: NextRequest) {
   const { data, error } = category === "internal_design_rate"
     ? await call("d5o_internal_design_rate_my_review_v1", {
         p_workspace_key: workspace, p_rate_id: subjectId
+      })
+    : category === "design_cost_review"
+    ? await call("d5o_design_cost_my_review_v1", {
+        p_workspace_key: workspace, p_presentation_id: workId, p_claim_id: subjectId
       })
     : category === "field_labor_authority"
     ? await call("d5o_field_labor_my_review_v1", {

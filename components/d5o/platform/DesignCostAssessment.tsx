@@ -19,6 +19,7 @@ type Position = { revision: number; sourceDigest: string; sourceBasis: Record<st
 type RatePosition = { revision: number; rates: { id: string; rate_key: string; status: string;
   base_rate_minor: number; burden_basis_points: number; effective_from: string; effective_until: string;
   source_reference: string }[] };
+type ReviewRoute = { revision: number; canReview: boolean; route: string };
 const categories = ["Design", "Material", "Equipment", "Subcontract", "Labor", "Other"];
 const field = (form: FormData, key: string) => String(form.get(key) ?? "").trim();
 const today = () => new Date().toISOString().slice(0, 10);
@@ -74,6 +75,7 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
 }) {
   const [position, setPosition] = useState<Position | null>(null);
   const [rates, setRates] = useState<RatePosition | null>(null);
+  const [reviewRoutes, setReviewRoutes] = useState<Record<string, ReviewRoute>>({});
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [selected, setSelected] = useState("");
@@ -83,18 +85,25 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
     const body = await response.json() as Position & { error?: string };
     if (!response.ok) throw new Error(body.error ?? "Design cost position unavailable");
     setPosition(body);
+    setReviewRoutes({});
+    if (actorRole === "billing_commercial_lead") {
+      const entries = await Promise.all(body.claims.filter((claim) => claim.status === "Prepared").map(async (claim) => {
+        const routeResponse = await fetch(`/api/d5o-hosted/spending-review-route?workspace=${encodeURIComponent(work.workspace)}&workId=${encodeURIComponent(work.id)}&category=design_cost_review&subjectId=${encodeURIComponent(claim.id)}`, { cache: "no-store" });
+        if (!routeResponse.ok) return [claim.id, { revision: body.revision, canReview: false,
+          route: "The configured reviewer could not be checked. Refresh before deciding." }] as const;
+        const route = await routeResponse.json() as { canReview?: boolean; route?: string };
+        return [claim.id, { revision: body.revision, canReview: route.canReview === true,
+          route: route.route ?? "This review is not assigned to you." }] as const;
+      }));
+      setReviewRoutes(Object.fromEntries(entries));
+    }
     onRevision?.(body.revision);
-  }, [endpoint, onRevision]);
+  }, [actorRole, endpoint, onRevision, work.id, work.workspace]);
   useEffect(() => {
-    let active = true;
-    void fetch(endpoint, { cache: "no-store" }).then(async (response) => {
-      const body = await response.json() as Position & { error?: string };
-      if (!active) return;
-      if (!response.ok) throw new Error(body.error ?? "Design cost position unavailable");
-      setPosition(body); onRevision?.(body.revision);
-    }).catch((error) => { if (active) setMessage(error instanceof Error ? error.message : "Design cost position unavailable"); });
-    return () => { active = false; };
-  }, [endpoint, onRevision]);
+    const timer = window.setTimeout(() => { void refresh().catch((error) =>
+      setMessage(error instanceof Error ? error.message : "Design cost position unavailable")); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [refresh]);
   useEffect(() => {
     let active = true;
     void fetch(`/api/d5o-hosted/design-internal-rate?workspace=${encodeURIComponent(work.workspace)}`, { cache: "no-store" })
@@ -194,11 +203,11 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
       <p><b>Awaiting independent Finance review:</b> {item.source_reference} · {moneyMinor(item.amount_minor, "USD")} · {item.cost_date}. {item.evidence_note}</p>
       {position.ratedBases?.find((basis) => basis.claim_id === item.id) ? <p>Rated basis: {((position.ratedBases.find((basis) => basis.claim_id === item.id)?.person_hours_hundredths ?? 0) / 100).toFixed(2)} person-hours · approved base and burden retained with this exact claim.</p> : null}
       <CostSourceFile work={work} claim={item} actorRole={actorRole} />
-      {finance ? <form onSubmit={submit("review-cost", (form) => ({ claimId: item.id, decision: field(form, "decision"), reason: field(form, "reason") }))}>
+      {finance && reviewRoutes[item.id]?.revision === position.revision && reviewRoutes[item.id].canReview ? <form onSubmit={submit("review-cost", (form) => ({ claimId: item.id, decision: field(form, "decision"), reason: field(form, "reason") }))}>
         <label>Decision <select name="decision"><option>Reviewed</option><option>Returned</option></select></label>
         <label>Review rationale <input name="reason" minLength={10} required /></label>
         <button disabled={busy}>Save independent cost review</button>
-      </form> : null}
+      </form> : finance ? <p>{reviewRoutes[item.id]?.route ?? "Checking the configured independent reviewer."}</p> : null}
     </div>)}
     {mode !== "design-cost" && <><h5>Work cost-outlook completeness</h5>
     <p>Additional cost beyond approved commitments: {moneyMinor(remainingForecastMinor ?? null, "USD")} · {forecastSource ?? "No reviewed forecast source"}. This amount must exclude the remaining value of commitments already shown above.</p>
