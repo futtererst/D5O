@@ -54,7 +54,8 @@ export async function GET(request: NextRequest) {
   try {
     const ctx = await hostedPrototypeContext(workspace);
     const [work, catalog] = await Promise.all([ctx.read("work"), ctx.read("catalog")]);
-    const catalogRecords = Array.isArray(catalog.state?.records) ? catalog.state.records : initialHostedCatalog(workspace as WorkspaceKey).records;
+    const catalogRecords = Array.isArray(catalog.state?.records) ? catalog.state.records
+      : authoritativeD5OCommandsReady() ? [] : initialHostedCatalog(workspace as WorkspaceKey).records;
     const workRecords = Array.isArray(work.state?.records) ? work.state.records : [];
     const index = new Map<string, Work>();
     for (const item of [...catalogRecords, ...workRecords]) {
