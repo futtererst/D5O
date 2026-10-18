@@ -13,8 +13,8 @@ if (process.env.D5O_SOURCE_CUSTODY_TARGET !== "mutable-disposable-clone" ||
 const users = JSON.parse(readFileSync(process.env.D5O_PILOT_CREDENTIALS_FILE, "utf8")).users;
 const browser = await chromium.launch({ headless: true });
 const result = {};
-async function session(key) {
-  const user = users.find((item) => item.key === key);
+async function session(key, accountSet = users) {
+  const user = accountSet.find((item) => item.key === key);
   if (!user) throw new Error(`missing_fictional_role_${key}`);
   const context = await browser.newContext();
   const page = await context.newPage();
@@ -53,7 +53,15 @@ try {
   const pm = await session("pm");
   const before = await position(pm.page);
   if (before.http !== 200) throw new Error(`pm_read_${before.http}`);
-  result.buildVisible = (await pm.page.locator("body").innerText()).includes("Build 56ca793");
+  result.buildVisible = (await pm.page.locator("body").innerText()).includes("Build 292eb46");
+  if (!result.buildVisible) throw new Error("final_build_not_displayed");
+  if (process.env.D5O_SOURCE_CUSTODY_SMOKE === "1") {
+    result.authenticatedReadHttp = before.http;
+    result.existingClaims = before.claims.length;
+    console.log(JSON.stringify(result));
+    await pm.context.close();
+    process.exit(0);
+  }
   const linked = before.links?.[0];
   if (!linked) throw new Error("no_linked_design_commitment_on_clone");
   await pm.page.goto(`${origin}/work?workspace=rybex&view=record&record=${workId}&section=Operate&focus=finance&taskKind=design-cost`);
@@ -125,9 +133,51 @@ try {
   result.reviewedStatus = (await position(finance.page)).claims.find((item) => item.id === claim.id)?.status;
   await finance.context.close();
 
+  async function denied(page, path, download = true) {
+    return page.evaluate(async ({ url, download }) => {
+      const response = await fetch(download ? `${url}&download=1` : url);
+      const contentType = response.headers.get("content-type") ?? "";
+      const body = await response.text();
+      return { http: response.status, contentType, hasPdfBytes: body.startsWith("%PDF-"),
+        hasUsableLink: /https?:\/\/|objectPath|signedURL|downloadUrl/i.test(body), body };
+    }, { url: path, download });
+  }
   const wrongRole = await session("operations");
-  result.operationsRetrievalHttp = await wrongRole.page.evaluate(async (evidencePath) =>
-    (await fetch(`${evidencePath}&download=1`)).status, evidencePath);
+  result.operationsDenial = await denied(wrongRole.page, evidencePath);
+  result.operationsMetadataDenial = await denied(wrongRole.page, evidencePath, false);
   await wrongRole.context.close();
+
+  const secondCredentials = process.env.D5O_OTHER_PM_CREDENTIALS_FILE;
+  if (!secondCredentials) throw new Error("other_pm_credentials_required");
+  const secondUsers = JSON.parse(readFileSync(secondCredentials, "utf8")).users;
+  const anotherPm = await session("pm", secondUsers);
+  result.otherPmDenial = await denied(anotherPm.page, evidencePath);
+  result.otherPmMetadataDenial = await denied(anotherPm.page, evidencePath, false);
+  await anotherPm.context.close();
+
+  const owner = await session("pm");
+  result.crossTenantDenial = await denied(owner.page, evidencePath.replace("workspace=rybex", "workspace=rotork"));
+  result.crossTenantMetadataDenial = await denied(owner.page,
+    evidencePath.replace("workspace=rybex", "workspace=rotork"), false);
+  const ownerDownload = await owner.page.evaluate(async (url) => {
+    const response = await fetch(`${url}&download=1`);
+    const buffer = await response.arrayBuffer();
+    return { http: response.status, checksum: await crypto.subtle.digest("SHA-256", buffer)
+      .then((bytes) => Array.from(new Uint8Array(bytes)).map((item) => item.toString(16).padStart(2, "0")).join("")) };
+  }, evidencePath);
+  result.ownerRetrievalHttp = ownerDownload.http;
+  result.ownerChecksumMatches = ownerDownload.checksum === recordedChecksum;
+  await owner.context.close();
+  for (const [name, denial] of Object.entries({ operationsDenial: result.operationsDenial,
+    operationsMetadataDenial: result.operationsMetadataDenial,
+    otherPmDenial: result.otherPmDenial, otherPmMetadataDenial: result.otherPmMetadataDenial,
+    crossTenantDenial: result.crossTenantDenial,
+    crossTenantMetadataDenial: result.crossTenantMetadataDenial })) {
+    if (denial.http !== 403 || denial.hasPdfBytes || denial.hasUsableLink ||
+      !denial.contentType.includes("application/json"))
+      throw new Error(`custody_denial_failed_${name}_${JSON.stringify(denial)}`);
+  }
+  if (result.financeRetrievalHttp !== 200 || !result.financeChecksumMatches ||
+    result.ownerRetrievalHttp !== 200 || !result.ownerChecksumMatches) throw new Error("custody_retrieval_failed");
   console.log(JSON.stringify(result));
 } finally { await browser.close(); }
