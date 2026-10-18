@@ -13,6 +13,7 @@ type Position = { revision: number; source: { digest: string; kind: string; defi
   laborAuthorityId: string | null; laborCapMinor: number | null; laborRemainingMinor: number | null;
   laborExposureMinor: number; designConsumedMinor: number; purchaseConsumedMinor: number; subcontractConsumedMinor: number;
   authorities: Authority[]; reservations: Reservation[] };
+type ReviewRoute = { subjectId: string; revision: number; canReview: boolean; route: string };
 const money = (minor: number | null | undefined) => minor == null ? "Not approved" :
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(minor / 100);
 const minor = (value: string) => Math.round(Number(value) * 100);
@@ -25,6 +26,8 @@ export function LaborAuthorityWorkspace({ workspace, workId, role, build, task }
   const [work, setWork] = useState<{ title: string; customer: string; site: string } | null>(null);
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
+  const [reviewRoute, setReviewRoute] = useState<ReviewRoute | null>(null);
+  const taskDecision = task?.decision;
   const url = `/api/d5o-hosted/labor-authority?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(workId)}`;
   const refresh = useCallback(async () => {
     const [authority, records] = await Promise.all([
@@ -32,14 +35,30 @@ export function LaborAuthorityWorkspace({ workspace, workId, role, build, task }
       fetch(`/api/d5o-hosted/prototype-state?workspace=${encodeURIComponent(workspace)}&key=work`, { cache: "no-store" })
     ]);
     const body = await authority.json();
-    if (authority.ok) setPosition(body as Position); else setNotice(body.error ?? "Labor position unavailable");
+    if (authority.ok) {
+      const next = body as Position;
+      setPosition(next);
+      const current = next.authorities.find((item) => item.status === "Prepared" && (!taskDecision || item.id === taskDecision));
+      setReviewRoute(null);
+      if (current && role === "admin") {
+        const routeResponse = await fetch(`/api/d5o-hosted/spending-review-route?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(workId)}&category=field_labor_authority&subjectId=${encodeURIComponent(current.id)}`, { cache: "no-store" });
+        if (routeResponse.ok) {
+          const route = await routeResponse.json() as { canReview?: boolean; route?: string };
+          setReviewRoute({ subjectId: current.id, revision: next.revision, canReview: route.canReview === true,
+            route: route.route ?? "This review is not assigned to you." });
+        } else setReviewRoute({ subjectId: current.id, revision: next.revision, canReview: false,
+          route: "The configured reviewer could not be checked. Refresh before deciding." });
+      }
+    } else { setPosition(null); setReviewRoute(null); setNotice(body.error ?? "Labor position unavailable"); }
     if (records.ok) {
       const list = (await records.json() as { state?: { records?: Array<{ id: string; title: string; customer: string; site: string }> } }).state?.records ?? [];
       setWork(list.find((item) => item.id === workId) ?? null);
     }
-  }, [url, workspace, workId]);
+  }, [url, workspace, workId, role, taskDecision]);
   useEffect(() => { const timer = window.setTimeout(() => { void refresh(); }, 0); return () => window.clearTimeout(timer); }, [refresh]);
   const pending = position?.authorities.find((item) => item.status === "Prepared" && (!task?.decision || item.id === task.decision));
+  const permittedReview = !!pending && reviewRoute?.subjectId === pending.id &&
+    reviewRoute.revision === position?.revision && reviewRoute.canReview;
   const stale = !!task && !!position && (task.revision !== position.revision ||
     task.step === "review" && !pending || task.step === "prepare" && !!position.laborAuthorityId);
   const command = async (action: string, input: Record<string, unknown>) => {
@@ -94,13 +113,14 @@ export function LaborAuthorityWorkspace({ workspace, workId, role, build, task }
         {pending && <article className={styles.record}><b>Prepared labor allocation · {money(pending.cap_minor)}</b>
           <span>{pending.scope} · {pending.valid_from} to {pending.valid_until}</span><small>Cost basis {pending.rate_version} · {money(pending.rate_minor)} per person-hour · {pending.rate_source}</small>
           <p>{pending.rate_basis}</p><p>Conditions: {pending.conditions}</p>
-          {role === "admin" && !stale && <form className={styles.inline} onSubmit={(event) => { event.preventDefault();
+          {role === "admin" && !stale && permittedReview && <form className={styles.inline} onSubmit={(event) => { event.preventDefault();
             const form = new FormData(event.currentTarget);
             void command(String((event.nativeEvent as SubmitEvent).submitter?.getAttribute("value")),
               { authorityId: pending.id, reason: String(form.get("reason")) }); }}>
             <label>Independent review reason<input name="reason" minLength={10} required /></label>
             <button value="approve" disabled={busy}>Approve labor allocation</button><button value="return" disabled={busy}>Return for correction</button>
           </form>}
+          {role === "admin" && !stale && !permittedReview && <p>{reviewRoute?.route ?? "Checking the configured reviewer."}</p>}
         </article>}
         <h3>Commitments and reviewed actuals</h3>
         {position?.reservations.length ? position.reservations.map((item) => <article className={styles.record} key={item.id}>

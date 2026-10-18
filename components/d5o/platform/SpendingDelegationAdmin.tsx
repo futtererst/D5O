@@ -11,7 +11,7 @@ type Position = { revision: number; members: Member[]; categories: string[]; rul
 const categories = { work_authority: "Work economic authority", design_authority: "Design spending window",
   design_commitment: "Design effort commitment", purchase_order: "Purchase order approval",
   subcontract_allocation: "Subcontract spending allocation", subcontract_agreement: "Subcontract agreement approval",
-  subcontract_variation: "Subcontract variation approval" } as const;
+  subcontract_variation: "Subcontract variation approval", field_labor_authority: "Field-labor authority review" } as const;
 const today = () => new Date().toISOString().slice(0, 10);
 
 export function SpendingDelegationAdmin({ workspace }: { workspace: WorkspaceKey }) {
@@ -79,10 +79,10 @@ export function SpendingDelegationAdmin({ workspace }: { workspace: WorkspaceKey
         }}>Revoke rule</button></article>)}
       <form className="d5o-publication-editor" onSubmit={add}><h3>Add an eligible reviewer rule</h3>
         <div className="d5o-publication-fields"><label>Decision category<select value={category} onChange={(event) => {
-          const next = event.target.value as keyof typeof categories; setCategory(next); if (next === "work_authority" || next === "purchase_order" || next.startsWith("subcontract_")) setRole("admin");
+          const next = event.target.value as keyof typeof categories; setCategory(next); if (next === "work_authority" || next === "purchase_order" || next === "field_labor_authority" || next.startsWith("subcontract_")) setRole("admin");
         }}>{Object.entries(categories).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
         <label>Existing command role<select value={role} onChange={(event) => setRole(event.target.value)}>
-          <option value="admin">Administrator</option>{category !== "work_authority" && category !== "purchase_order" && !category.startsWith("subcontract_") && <option value="operations_leader">Operations leader</option>}</select></label>
+          <option value="admin">Administrator</option>{category !== "work_authority" && category !== "purchase_order" && category !== "field_labor_authority" && !category.startsWith("subcontract_") && <option value="operations_leader">Operations leader</option>}</select></label>
         <label>Rule kind<select name="kind"><option value="delegate">Delegate</option><option value="sponsor">Sponsor fallback</option></select></label>
         <label>Existing active member<select name="actor" required>{eligible.length ? eligible.map((member) => <option value={member.actorId} key={member.actorId}>{member.email}</option>) : <option value="">No eligible member</option>}</select></label>
         <label>Maximum decision amount<input name="max" type="number" min="0.01" step="0.01" required /></label>
