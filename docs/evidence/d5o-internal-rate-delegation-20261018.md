@@ -1,0 +1,26 @@
+# D5O internal Design rate reviewer delegation — local qualification
+
+18 October 2026. Application commit and displayed build: `f3ce3cdaf5077b8d2d0daba491b1fd6f12741e33`. Isolated preview: `http://127.0.0.1:61661/work?workspace=rybex&view=my-work`; command-allowlisted target: `http://127.0.0.1:58521`, project `d5o-graybar-final-full-replay-20261016`. These are fictional local decisions, not Rybex rate or delegation policy.
+
+## Fixed decision and implementation
+
+The existing internal Design cost-rate command let any independent active administrator approve or return a Finance-prepared rate. Forward migration `20261018200000_d5o_internal_rate_delegate_selection.sql` adds `internal_design_rate` to the existing administrator-managed spending-delegate configuration and selects one active independent administrator for a workspace-wide rate. The decision checks the **fully burdened cost per person-hour**, currency and rule validity through the rate's effective end date. Delegate precedes sponsor fallback. A configured category without an eligible actor holds the decision. The exact authoritative Prepared→Approved/Returned transition enforces the selection; UI filtering does not confer authority. Rate preparation remains Finance-only; retirement remains the existing administrator safety action. Earlier prepared rates keep their previous independent-admin review contract. The existing typed rate command retains revision, overlap, source, tenant, replay and decision-history checks.
+
+The admin form labels this rate limit in fully burdened hourly terms and omits Work Type; the command rejects a supplied Work Type for this workspace-wide category. The rate control obtains an authenticated exact reviewer route and fails closed when it cannot check the route. A completed decision no longer has approval/return controls after refresh. This is an extension of the existing rate and delegation UI, not another approval engine.
+
+## Disposable browser journey
+
+- From the normal landing page, fictional configuration administrator `d5o-pilot-admin@example.test` opened Administration → Spending decision delegates and saved rule `66ee54a6-5abd-4405-98f3-f91e07454418`: `internal_design_rate`, selected existing administrator `fictional-rom-admin-20261016@example.test`, USD 70.00 maximum fully burdened hourly cost, valid 18 October–31 December 2026, fictional source. The command returned revision 10.
+- Separate fictional Finance user navigated from My Work through Jobs → Hall S Work → Operate → Finance & lessons → Internal Design cost rates. They prepared `fictional-rate-delegate-20261018`, id `df771c89-8107-4676-b51c-3126f568a4b5`, with USD 50.00 base and 20% burden, effective 18 October–31 December 2026, using an explicitly synthetic source and calculation note. The command returned Prepared, rate revision 3. This was a distinct rate key; the earlier approved rate was left intact.
+- The other active administrator saw the exact pending rate but **no** approval/return control; the route said it was waiting for the configured independent reviewer. The selected administrator saw the control and approved it through the UI. The command returned Approved, rate revision 4. Separate Finance and administrator browser sessions reloaded and saw the approved rate; neither had a repeat approval control.
+- The populated database retained preparer `9dceac71-3f67-465b-89dc-41c935da52e6`, reviewer `e39648ff-1693-45f7-9ecf-368ac9ad6c22`, base 5000 minor, burden 2000 basis points, two rate events and two rate receipts (one preparation, one approval). This check inspected committed state; it did not create the decision.
+
+## Focused authoritative checks
+
+- A rollback-only authenticated typed-command probe configured the same fictional reviewer, prepared a USD 60.00 fully burdened rate, and received `selected_spending_reviewer_required` for approval by the other active administrator. The selected administrator's exact route returned `canReview: true` and its return command succeeded. The transaction rolled back, preserving the populated fixture.
+- Authenticated Finance route read on the completed rate returned `pending: false, canReview: false`. A cross-tenant route read returned `workspace_forbidden`. Existing rate-command replay, revision and overlap checks were not modified; their full journeys were not rerun for this UI/selection change.
+- TypeScript and scoped ESLint passed. The production build passed for the exact application commit. The empty disposable target `d5o-delegation-137-replay-20261018` replayed all **144** ordered migration files through `20261018200000`, exit 0, with zero Work records. The populated clone received only the forward migration transactionally and retains its older partial migration ledger; no populated cutover rehearsal occurred.
+
+## Remaining limits
+
+This rate review is reached through Administration or a Finance Work view, not a My Work card; no queue-led rate task is claimed. The fictional USD 50/20% input, USD 70 limit and named pilot reviewer are not approved production rate, burden or delegation values. There was no real employee effort, customer price decision, AI decision, shared database change or production release. Production owners still need to approve rate sources, effective dates, burden/premium policy, delegate/sponsor assignments and exception ownership.
