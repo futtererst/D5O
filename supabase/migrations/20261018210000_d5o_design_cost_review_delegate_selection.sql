@@ -165,3 +165,26 @@ begin
 end; $$;
 revoke all on function public.d5o_hosted_design_cost_actions_v1(text) from public,anon,service_role;
 grant execute on function public.d5o_hosted_design_cost_actions_v1(text) to authenticated;
+
+-- List existing Finance members for this category without changing membership rights.
+create or replace function public.d5o_spending_delegate_read_v1(p_workspace_key text) returns jsonb
+ language plpgsql stable security definer set search_path='' as $$
+declare actor uuid:=auth.uid(); ws uuid; rev integer;
+begin
+ if current_setting('role',true)<>'authenticated' or actor is null then
+  raise exception 'workspace_forbidden' using errcode='42501'; end if;
+ select id into ws from d5o_hosted.workspaces where workspace_key=p_workspace_key and status='active';
+ if not exists(select 1 from d5o_hosted.memberships where workspace_id=ws and actor_user_id=actor
+   and status='active' and role='admin') then
+  raise exception 'spending_configuration_admin_required' using errcode='42501'; end if;
+ select revision into rev from d5o_hosted.spending_delegate_positions where workspace_id=ws;
+ return pg_catalog.jsonb_build_object('revision',coalesce(rev,0),
+  'members',coalesce((select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(
+   'actorId',m.actor_user_id,'role',m.role,'email',u.email) order by u.email)
+   from d5o_hosted.memberships m join auth.users u on u.id=m.actor_user_id
+   where m.workspace_id=ws and m.status='active' and m.role in ('admin','operations_leader','billing_commercial_lead')),'[]'::jsonb),
+  'categories',coalesce((select pg_catalog.jsonb_agg(category order by category)
+   from d5o_hosted.spending_delegate_categories where workspace_id=ws),'[]'::jsonb),
+  'rules',coalesce((select pg_catalog.jsonb_agg(to_jsonb(r) order by r.created_at,r.id)
+   from d5o_hosted.spending_delegate_rules r where r.workspace_id=ws),'[]'::jsonb));
+end; $$;

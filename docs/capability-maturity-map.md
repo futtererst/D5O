@@ -24,6 +24,8 @@ D5O bounded-pilot decision update (17 October 2026): the [Design-only operating-
 
 **18 October internal-rate routing update:** The later [internal Design rate qualification](./evidence/d5o-internal-rate-delegation-20261018.md) supersedes the historical “no shared approved rate” gap above: Finance can prepare a versioned base-plus-burden rate, and a configured independent administrator now approves or returns its exact revision. A fictional USD 60.00 fully burdened rate, selected-actor denial, browser approval and reload passed on a disposable target; 144 forward migrations replayed on an empty target. The rate configuration was reached through Administration/Finance Work context, not My Work. Real rate and burden values, production delegates and populated release rehearsal remain unresolved; this is not production cost-policy approval.
 
+**18 October Design actual-cost review routing:** The next [focused correction](./evidence/d5o-design-cost-review-delegation-20261018.md) replaces the fixed “any independent Finance reviewer” decision with administrator-configured, system-selected Finance review for exact prepared Design cost claims. Fictional browser preparation, selected My Work review/return, nonselected queue absence, reload and stale-link handling passed; rollback-only command probes passed wrong-actor, over-limit hold and cross-tenant denial. A 145-file empty-target replay passed. The returned USD 50 synthetic claim created no incurred cost; source custody and reviewed actuals were not qualified by this routing test. Production limits, sponsors, evidence policy and populated cutover remain open.
+
 Maturity scale:
 
 - Not started
