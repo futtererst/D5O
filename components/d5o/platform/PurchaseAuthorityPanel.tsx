@@ -7,6 +7,7 @@ type Authority = { id: string; status: string; parent_cap_minor: number; purchas
   scope: string; conditions: string; funding_source: string; source_reference: string; subcontract_enabled?: boolean; purchasing_entity: string; graybar_account_reference: string; bom_id: string;
   valid_from: string; valid_until: string; prepared_by: string; review_note?: string };
 type Reservation = { id: string; order_id: string; amount_minor: number; status: string };
+type ReviewRoute = { pending: boolean; canReview: boolean; route: string };
 type Position = { revision: number; currentBomId: string | null; legacyPurchaseHold: boolean; source: { kind: string; digest: string; defineRevision: number; estimateRevision: number } | null;
   designCommittedMinor: number; purchaseReservedMinor: number; parentCapMinor: number | null;
   purchaseCapMinor: number | null; parentRemainingMinor: number | null; purchaseRemainingMinor: number | null;
@@ -21,6 +22,7 @@ export function PurchaseAuthorityPanel({ workspace, workId, role, refreshKey, or
   onChanged: () => Promise<void>;
 }) {
   const [position, setPosition] = useState<Position | null>(null);
+  const [reviewRoute, setReviewRoute] = useState<{ subjectId: string; value: ReviewRoute } | null>(null);
   const [notice, setNotice] = useState(""); const [busy, setBusy] = useState(false); const [purchaseCapInput, setPurchaseCapInput] = useState("0");
   const url = `/api/d5o-hosted/purchase-authority?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(workId)}`;
   const refresh = useCallback(async () => {
@@ -48,6 +50,18 @@ export function PurchaseAuthorityPanel({ workspace, workId, role, refreshKey, or
   const pending = position?.authorities.find((item) => item.status === "Prepared");
   const selectedPending = task?.step === "authority-review" ?
     position?.authorities.find((item) => item.id === task.decision && item.status === "Prepared") : pending;
+  const selectedPendingId = selectedPending?.id;
+  const currentRoute = reviewRoute && reviewRoute.subjectId === selectedPendingId ? reviewRoute.value : null;
+  useEffect(() => {
+    if (!selectedPendingId) return;
+    let active = true;
+    const routeUrl = `/api/d5o-hosted/spending-review-route?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(workId)}&category=work_authority&subjectId=${encodeURIComponent(selectedPendingId)}`;
+    void fetch(routeUrl, { cache: "no-store" }).then(async (response) => {
+      const body = await response.json() as ReviewRoute;
+      if (active && response.ok) setReviewRoute({ subjectId: selectedPendingId, value: body });
+    }).catch(() => {});
+    return () => { active = false; };
+  }, [selectedPendingId, workspace, workId, refreshKey, position?.revision]);
   const stale = !!task && !!position && (task.sourceRevision !== position.revision ||
     task.step === "authority-review" && !selectedPending ||
     task.step === "authority-prepare" && !!position.parentCapMinor);
@@ -104,7 +118,8 @@ export function PurchaseAuthorityPanel({ workspace, workId, role, refreshKey, or
       <small>Funding: {selectedPending.funding_source} · source: {selectedPending.source_reference} · {selectedPending.valid_from} to {selectedPending.valid_until}</small>
       <p>Purchasing entity: {selectedPending.purchasing_entity} · Graybar account: {selectedPending.graybar_account_reference} · exact BOM: {selectedPending.bom_id}</p>
       <p>Conditions: {selectedPending.conditions}</p>
-      {role === "admin" && !stale && <form className={styles.inline} onSubmit={(event) => {
+      <p role="status">{currentRoute?.route ?? "Checking exact reviewer assignment…"}</p>
+      {role === "admin" && currentRoute?.canReview && !stale && <form className={styles.inline} onSubmit={(event) => {
         event.preventDefault(); const form = new FormData(event.currentTarget);
         void command(String((event.nativeEvent as SubmitEvent).submitter?.getAttribute("value")), {
           authorityId: selectedPending.id, reason: String(form.get("reason")) }); }}>

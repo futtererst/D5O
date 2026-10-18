@@ -1,0 +1,23 @@
+import { NextRequest, NextResponse } from "next/server";
+import { authoritativeD5OCommandsReady } from "@/lib/d5o/auth/hosted-target";
+import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
+
+export const dynamic = "force-dynamic";
+export async function GET(request: NextRequest) {
+  const q = request.nextUrl.searchParams;
+  const workspace = q.get("workspace") ?? "";
+  const workId = q.get("workId") ?? "";
+  const category = q.get("category") ?? "";
+  const subjectId = q.get("subjectId") ?? "";
+  const respond = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
+  if (!["rybex", "rotork"].includes(workspace) || !/^[\w-]{8,120}$/.test(workId)
+    || !["work_authority", "design_authority", "design_commitment"].includes(category)
+    || !/^[0-9a-f-]{36}$/i.test(subjectId)) return respond({ error: "invalid_target" }, 400);
+  if (!authoritativeD5OCommandsReady()) return respond({ error: "authoritative_runtime_unavailable" }, 503);
+  const client = await createRybexSupabaseServerClient();
+  const call = client.rpc.bind(client) as unknown as (name: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: { code?: string; message: string } | null }>;
+  const { data, error } = await call("d5o_spending_delegate_my_review_v1", {
+    p_workspace_key: workspace, p_presentation_id: workId, p_category: category, p_subject_id: subjectId
+  });
+  return error ? respond({ error: error.message }, error.code === "42501" ? 403 : 503) : respond(data);
+}

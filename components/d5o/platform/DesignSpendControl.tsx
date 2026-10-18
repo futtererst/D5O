@@ -15,6 +15,7 @@ type Commitment = { id: string; authority_id: string; status: string; amount_min
   activity: string; source_reference: string; prepared_by: string; review_note: string | null };
 type Position = { revision: number; source: Source | null; committedMinor: number; remainingMinor: number | null; windowCapMinor?: number | null; designCapMinor?: number | null;
   authorities: Authority[]; commitments: Commitment[] };
+type ReviewRoute = { pending: boolean; canReview: boolean; route: string };
 const minor = (value: string) => /^\d+(?:\.\d{1,2})?$/.test(value) ?
   String(BigInt(value.split(".")[0]) * BigInt(100) + BigInt((value.split(".")[1] ?? "").padEnd(2, "0"))) : null;
 const today = () => new Date().toISOString().slice(0, 10);
@@ -26,6 +27,8 @@ export function DesignSpendControl({ work, workspace, role, actorId, focus }: {
   const [position, setPosition] = useState<Position | null>(null);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [authorityRoute, setAuthorityRoute] = useState<{ subjectId: string; value: ReviewRoute } | null>(null);
+  const [commitmentRoute, setCommitmentRoute] = useState<{ subjectId: string; value: ReviewRoute } | null>(null);
   const endpoint = `/api/d5o-hosted/design-spend?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(work.id)}`;
   const refresh = async () => {
     const response = await fetch(endpoint, { cache: "no-store" });
@@ -52,6 +55,21 @@ export function DesignSpendControl({ work, workspace, role, actorId, focus }: {
   const returnedAuthority = [...(position?.authorities ?? [])].reverse().find((entry) => entry.status === "Returned" && entry.source_digest === source?.digest);
   const expiredAuthority = [...(position?.authorities ?? [])].reverse().find((entry) => entry.status === "Approved" && entry.source_digest === source?.digest && entry.valid_until < today());
   const pendingCommitment = position?.commitments.find((entry) => entry.status === "Prepared" && entry.authority_id === currentAuthority?.id);
+  const pendingAuthorityId = pendingAuthority?.id;
+  const pendingCommitmentId = pendingCommitment?.id;
+  const currentAuthorityRoute = authorityRoute && authorityRoute.subjectId === pendingAuthorityId ? authorityRoute.value : null;
+  const currentCommitmentRoute = commitmentRoute && commitmentRoute.subjectId === pendingCommitmentId ? commitmentRoute.value : null;
+  useEffect(() => {
+    let active = true;
+    const load = async (category: string, subjectId: string, setRoute: (route: { subjectId: string; value: ReviewRoute }) => void) => {
+      const response = await fetch(`/api/d5o-hosted/spending-review-route?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(work.id)}&category=${category}&subjectId=${encodeURIComponent(subjectId)}`, { cache: "no-store" });
+      const body = await response.json() as ReviewRoute;
+      if (active && response.ok) setRoute({ subjectId, value: body });
+    };
+    if (pendingAuthorityId) void load("design_authority", pendingAuthorityId, setAuthorityRoute).catch(() => {});
+    if (pendingCommitmentId) void load("design_commitment", pendingCommitmentId, setCommitmentRoute).catch(() => {});
+    return () => { active = false; };
+  }, [pendingAuthorityId, pendingCommitmentId, position?.revision, workspace, work.id]);
   const returnedCommitment = [...(position?.commitments ?? [])].reverse().find((entry) => entry.status === "Returned" && entry.authority_id === currentAuthority?.id);
   const preparer = role === "project_manager";
   const reviewer = Boolean(source && role === source.approverRole);
@@ -104,7 +122,8 @@ export function DesignSpendControl({ work, workspace, role, actorId, focus }: {
       <button className="d5o-primary" disabled={busy}>Submit spending window</button></form> : null}
     {only("design-spend-authority-review") && pendingAuthority && reviewer ? <section>
       <h4>Review Design spending window</h4><p>{pendingAuthority.extent} · {formatMinor(pendingAuthority.cap_minor, pendingAuthority.currency)} · {pendingAuthority.valid_from} to {pendingAuthority.valid_until} · source {pendingAuthority.source_reference}</p>
-      <ReviewButtons busy={busy} onDecide={(decision, reason) => void run(`${decision}-authority`, { authorityId: pendingAuthority.id, reason })} />
+      <p role="status">{currentAuthorityRoute?.route ?? "Checking exact reviewer assignment…"}</p>
+      {currentAuthorityRoute?.canReview && <ReviewButtons busy={busy} onDecide={(decision, reason) => void run(`${decision}-authority`, { authorityId: pendingAuthority.id, reason })} />}
     </section> : null}
     {only("design-spend-commitment-prep") && currentAuthority && preparer ? <form className={styles.form} onSubmit={(event: FormEvent<HTMLFormElement>) => {
       event.preventDefault(); const form = new FormData(event.currentTarget); const amountMinor = minor(input(form, "amount"));
@@ -119,7 +138,8 @@ export function DesignSpendControl({ work, workspace, role, actorId, focus }: {
     {only("design-spend-commitment-review") && pendingCommitment && reviewer && pendingCommitment.prepared_by !== actorId ? <section>
       <h4>Review exact Design commitment</h4><p>{pendingCommitment.activity} · {formatMinor(pendingCommitment.amount_minor, pendingCommitment.currency)} · source {pendingCommitment.source_reference}</p>
       <p>Current remaining Design cap: {available === null ? "unknown" : formatMinor(available, pendingCommitment.currency)}. Approval consumes this amount; the server rechecks the cap.</p>
-      <ReviewButtons busy={busy} onDecide={(decision, reason) => void run(`${decision}-commitment`, { commitmentId: pendingCommitment.id, reason })} />
+      <p role="status">{currentCommitmentRoute?.route ?? "Checking exact reviewer assignment…"}</p>
+      {currentCommitmentRoute?.canReview && <ReviewButtons busy={busy} onDecide={(decision, reason) => void run(`${decision}-commitment`, { commitmentId: pendingCommitment.id, reason })} />}
     </section> : null}
     {position.authorities.some((entry) => entry.status === "Approved" && entry.source_digest === source.digest && entry.valid_until < today()) ? <p role="alert">The approved spending window expired. New commitments require a new independently reviewed window; earlier approved commitments remain history.</p> : null}
     {pendingAuthority && !reviewer ? <p>Waiting on {source.approverRole} to review the proposed spending window.</p> : null}
