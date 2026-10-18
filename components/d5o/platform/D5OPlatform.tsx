@@ -436,6 +436,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
           pendingReviewQueue.current = null;
           const retained = preserveFailedDefineDraft(persistedWork, sharedWorkRevisionRef.current);
           if (response.status === 409 && payload.error === "stale_state") setNotice(retained ? "The shared Define basis changed. Your unsaved draft is retained for comparison; load the current basis below before retrying." : "The shared state changed. Copy any unsaved edits before reloading the current basis.");
+          else if (response.status === 409 && payload.error === "protected_state_changed") setNotice(retained ? "A reviewed Define decision changed the shared basis while you were saving. Your draft is retained for comparison; load the current basis before making a new revision." : "A reviewed decision changed the shared basis. Reload the current Work Record before editing.");
           else if (response.status === 503) setNotice(retained ? "The save outcome is uncertain. Your Define draft is retained; check the current shared revision before retrying." : "The save outcome is uncertain. Check the current shared state before retrying.");
           else if (response.status === 409) setNotice(`The Work Record draft was blocked: ${payload.message ?? payload.error ?? "conflicting change"}.`);
           else if (pendingDiscoverSave.current) setNotice(`The Discover change was not saved: ${payload.message ?? payload.error ?? `HTTP ${response.status}`}.`);

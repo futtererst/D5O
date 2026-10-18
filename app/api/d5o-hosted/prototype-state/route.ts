@@ -29,6 +29,11 @@ const reply = (body: unknown, status = 200) => NextResponse.json(body, {
 });
 
 function errorReply(error: RpcError | null) {
+  // A concurrent typed decision can make a previously valid draft obsolete
+  // after the route's preflight read. Preserve the database guard and report
+  // that conflict as a changed basis, not as lost workspace membership.
+  if (error?.code === "42501" && error.message === "typed_command_required")
+    return reply({ error: "protected_state_changed" }, 409);
   if (error?.code === "42501") return reply({ error: "workspace_forbidden", ...(process.env.D5O_ISOLATED_PILOT === "1" ? { message: error.message } : {}) }, 403);
   if (error?.code === "23505") return reply({ error: "stale_state" }, 409);
   if (error?.code === "22023" || error?.code === "23514") return reply({ error: "invalid_state" }, 422);
@@ -77,6 +82,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const startedAt = performance.now();
   if (!validLocalScheduleOrigin(request.headers)) return reply({ error: "invalid_origin" }, 403);
   const text = await request.text();
   if (request.nextUrl.searchParams.get("pricing") === "1") {
@@ -129,12 +135,14 @@ export async function POST(request: NextRequest) {
         (record as Record<string, unknown>).workspace !== workspace)))
     return reply({ error: "workspace_mismatch" }, 400);
   const scope = await scoped(workspace);
+  const scopedAt = performance.now();
   if (!scope.call) return reply({ error: scope.error }, scope.status);
   if (!scope.canEdit) return reply({ error: "workspace_forbidden" }, 403);
   const [prior, catalog] = await Promise.all([
     scope.call("d5o_hosted_prototype_read_v1", { p_workspace_key: workspace, p_state_key: "work" }),
     scope.call("d5o_hosted_prototype_read_v1", { p_workspace_key: workspace, p_state_key: "catalog" })
   ]);
+  const preflightAt = performance.now();
   if (prior?.error) return errorReply(prior.error);
   if (catalog.error) return errorReply(catalog.error);
   const preserved = (prior?.data as PrototypeResult | null)?.state;
@@ -143,6 +151,7 @@ export async function POST(request: NextRequest) {
     try { assertSnapshotCommercialIntegrity(preserved.records, (input.state as { records: Record<string, unknown>[] }).records); assertSnapshotDefineIntegrity(preserved.records, (input.state as { records: Record<string, unknown>[] }).records); assertSnapshotDesignIntegrity(preserved.records, (input.state as { records: Record<string, unknown>[] }).records); assertSnapshotDeployIntegrity(preserved.records, (input.state as { records: Record<string, unknown>[] }).records); assertSnapshotOperateIntegrity(preserved.records, (input.state as { records: Record<string, unknown>[] }).records); assertSnapshotPositionIntegrity(preserved.records, (input.state as { records: Record<string, unknown>[] }).records, catalogRecords); }
     catch (error) { return reply({ error: error instanceof Error && "code" in error ? error.code : "protected_state_changed", message: error instanceof Error ? error.message : undefined }, error instanceof Error && "status" in error ? Number(error.status) : 409); }
   }
+  const guardedAt = performance.now();
   const state = { ...(input.state as Record<string, unknown>) };
   if (key === "work") for (const field of ["pricingPolicies", "activePricingPolicy", "pricingPolicyHistory"] as const) {
     delete state[field];
@@ -152,6 +161,7 @@ export async function POST(request: NextRequest) {
     p_workspace_key: workspace, p_state_key: key,
     p_expected_revision: input.expectedRevision, p_state: state
   });
+  const savedAt = performance.now();
   if (result.error) return errorReply(result.error);
   const saved = result.data as PrototypeResult | null;
   if (!saved || !Number.isInteger(saved.revision) || !saved.state)
@@ -166,6 +176,17 @@ export async function POST(request: NextRequest) {
   const response = visible ? visible.data as PrototypeResult | null : saved;
   if (!response?.state || !Number.isInteger(response.revision))
     return reply({ error: "invalid_response" }, 502);
-  return reply({ state: { ...response.state, revision: response.revision },
+  const output = reply({ state: { ...response.state, revision: response.revision },
     revision: response.revision, canEdit: true, synthetic: true });
+  if (process.env.D5O_COMMAND_RUNTIME === "rehearsal") {
+    const serializedAt = performance.now();
+    output.headers.set("Server-Timing", [
+      `scope;dur=${(scopedAt - startedAt).toFixed(1)}`,
+      `preflight;dur=${(preflightAt - scopedAt).toFixed(1)}`,
+      `guards;dur=${(guardedAt - preflightAt).toFixed(1)}`,
+      `command;dur=${(savedAt - guardedAt).toFixed(1)}`,
+      `response;dur=${(serializedAt - savedAt).toFixed(1)}`
+    ].join(", "));
+  }
+  return output;
 }
