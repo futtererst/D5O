@@ -61,8 +61,26 @@ export default async function WorkHomePage({ searchParams }: {
     if (permitted.role === "field_worker")
       redirect(`/work/my-schedule?workspace=${encodeURIComponent(permitted.workspaceKey)}`);
     const workspace = selected as WorkspaceKey;
+    const configurationInventory = await hostedConfigurationInventory(workspace);
+    if (configurationInventory.status !== "ready")
+      return <main className={styles.entry}>
+        <div className={styles.brand}>D5O <span>System of work</span></div>
+        <section className={styles.intro} role="status">
+          <p>WORKSPACE SETUP</p>
+          <h1>Configuration approval is still needed.</h1>
+          <span>{configurationInventory.status === "no_mapping"
+            ? "This workspace has no active configuration tenant. Work and decisions remain unavailable until an administrator publishes the first approved version."
+            : configurationInventory.status === "unavailable_version"
+              ? "This workspace has no current published configuration. Work and decisions remain unavailable until an approved version is active."
+              : "More than one configuration mapping applies to this workspace. An administrator must resolve the conflict before work resumes."}</span>
+        </section>
+        <p className={styles.notice}>{permitted.role === "admin"
+          ? "Review the Work Types, phase contract, creation rights and receiving roles with the accountable owner before the first publication. The existing Work Record and decision controls remain locked until then."
+          : "Your workspace administrator owns this setup. Your current role cannot publish its business rules."} Build {sourceVersion.slice(0, 12)}.</p>
+        <Link className={styles.signout} href="/work">Choose a workspace</Link>
+      </main>;
     return <D5OPlatform initialWorkspace={workspace} actorId={userData.user.id} actorRole={permitted.role}
-      configurationInventory={await hostedConfigurationInventory(workspace)}
+      configurationInventory={configurationInventory}
       actorLabel={`${userData.user.email ?? "Workspace member"} · ${permitted.role.replaceAll("_", " ")} · ${isolatedPilot ? "isolated pilot" : "authenticated workspace"}`}
       hostedPreview authoritativeCommands={authoritativeCommands} sourceVersion={sourceVersion} />;
   }
