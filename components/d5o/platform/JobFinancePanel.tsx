@@ -9,6 +9,7 @@ import { deployState } from "./deploy-model";
 import { FocusedTaskFrame } from "./FocusedTaskFrame";
 import { WorkCostOutlook } from "./WorkCostOutlook";
 import { DesignCostAssessment } from "./DesignCostAssessment";
+import { DesignInternalRateControl } from "./DesignInternalRateControl";
 
 import style from "./OperateWorkspace.module.css";
 
@@ -97,6 +98,7 @@ export function JobFinancePanel({ work, actorRole }: { work: WorkRecord; actorRo
     <p><strong>{financeClosed ? "Finance Closed" : `Finance ${state.financeStatus ?? "pending"}`}</strong> · revised contract {moneyMinor(view.revised,currency)} · billed {moneyMinor(view.billed,currency)} · paid {moneyMinor(view.paid,currency)} · outstanding {moneyMinor(view.receivable,currency)}</p>
     {view.blocked.length ? <p role="status">{view.blocked.join(" ")}</p> : null}
     <nav aria-label="Choose a Finance task" className={style.actions}>
+      {(canFinance || actorRole === "admin") ? <a href={financeHref("design-rate")}>Internal Design cost rates</a> : null}
       {canFinance && !financeClosed ? <><a href={financeHref("job-cost")}>Record sourced cost</a><a href={financeHref("job-forecast")}>Record remaining-cost forecast</a></> : null}
       {canDraft && !financeClosed && view.eligible.length ? <a href={financeHref("job-draft-bill")}>Prepare billing draft</a> : null}
       {state.bills.map((bill) => <a key={bill.id} href={financeHref(bill.status === "In review" ? "bill-review" : bill.status === "Reviewed" && (invoiceBalance(state,bill.id).outstanding ?? 0) > 0 ? "job-payment" : "job-invoice", bill.id,bill.revision)}>
@@ -104,6 +106,14 @@ export function JobFinancePanel({ work, actorRole }: { work: WorkRecord; actorRo
       <a href={financeHref("full")}>Supporting ledger, source events and history</a>
     </nav>
   </section>;
+  if (taskKind === "design-rate") return <FocusedTaskFrame
+    title="Configure internal Design cost rate" work={work.title} customer={work.customer} site={work.site}
+    workspace={work.workspace} scope="Workspace-wide USD cost per Design person-hour; separate from customer selling price"
+    revision={state.revision} outcome="Finance prepares a dated rate; an independent administrator approves exact use."
+    blocker={null} nextOwner={canFinance ? "Independent workspace administrator" : "Finance rate preparer"}
+    onFullRecord={() => window.location.assign(financeHref("full"))}>
+    <DesignInternalRateControl workspace={work.workspace} role={actorRole} />
+  </FocusedTaskFrame>;
   if (taskKind === "design-cost" || taskKind === "outlook-assessment") return <FocusedTaskFrame
     title={taskKind === "design-cost" ? "Reconcile Design commitment and actual cost" : "Assess Work cost-outlook completeness"}
     work={work.title} customer={work.customer} site={work.site} workspace={work.workspace}

@@ -13,10 +13,17 @@ type Assessment = { id: string; status: string; source_digest: string; actual_cu
   category_basis: Record<string, { status: string; reason: string }>;
   source_basis: Record<string, unknown>; limitations: string; source_reference: string; review_note: string | null };
 type Position = { revision: number; sourceDigest: string; sourceBasis: Record<string, unknown>; commitments: Commitment[];
-  links: Link[]; claims: Claim[]; assessments: Assessment[] };
+  links: Link[]; claims: Claim[]; assessments: Assessment[];
+  ratedBases: { claim_id: string; rate_id: string; rate_revision: number; person_hours_hundredths: number;
+    base_rate_minor: number; burden_basis_points: number; calculated_minor: number }[] };
+type RatePosition = { revision: number; rates: { id: string; rate_key: string; status: string;
+  base_rate_minor: number; burden_basis_points: number; effective_from: string; effective_until: string;
+  source_reference: string }[] };
 const categories = ["Design", "Material", "Equipment", "Subcontract", "Labor", "Other"];
 const field = (form: FormData, key: string) => String(form.get(key) ?? "").trim();
 const today = () => new Date().toISOString().slice(0, 10);
+const hundredths = (value: string) => /^\d+(?:\.\d{1,2})?$/.test(value)
+  ? String(BigInt(value.split(".")[0]) * BigInt(100) + BigInt((value.split(".")[1] ?? "").padEnd(2, "0"))) : null;
 
 function CostSourceFile({ work, claim, actorRole }: {
   work: WorkRecord; claim: Claim; actorRole: string
@@ -65,6 +72,7 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
   remainingForecastMinor?: number | null; forecastSource?: string | null;
 }) {
   const [position, setPosition] = useState<Position | null>(null);
+  const [rates, setRates] = useState<RatePosition | null>(null);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [selected, setSelected] = useState("");
@@ -85,6 +93,13 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
     }).catch((error) => { if (active) setMessage(error instanceof Error ? error.message : "Design cost position unavailable"); });
     return () => { active = false; };
   }, [endpoint]);
+  useEffect(() => {
+    let active = true;
+    void fetch(`/api/d5o-hosted/design-internal-rate?workspace=${encodeURIComponent(work.workspace)}`, { cache: "no-store" })
+      .then(async (response) => { if (active && response.ok) setRates(await response.json() as RatePosition); })
+      .catch(() => {});
+    return () => { active = false; };
+  }, [work.workspace]);
 
   async function send(action: string, input: Record<string, unknown>) {
     if (!position) return;
@@ -128,6 +143,7 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
   const pm = actorRole === "project_manager";
   const finance = actorRole === "billing_commercial_lead";
   const selection = linked.find((item) => item.commitment_id === selected) ?? linked[0];
+  const approvedRates = rates?.rates.filter((item) => item.status === "Approved") ?? [];
   return <section aria-label="Design cost and outlook assessment">
     <h4>Design costs and outlook review</h4>
     <p>Approved Design work is a commitment, not an incurred cost. Link its source, record actuals, then have Finance review them independently. Historical unlinked commitments remain unresolved.</p>
@@ -140,7 +156,24 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
       </form> : <p>Assigned project manager must link the approved source.</p>}
     </div>)}
     {mode !== "outlook-assessment" && linked.map((item) => <p key={item.commitment_id}><b>{item.commitment?.activity ?? "Design commitment"}:</b> approved {moneyMinor(item.commitment?.amount_minor ?? null, "USD")} · reviewed actual {moneyMinor(item.actual, "USD")} · outstanding {moneyMinor(item.remaining, "USD")}{item.actual > (item.commitment?.amount_minor ?? 0) ? " · cost overrun; further authority requires review" : ""}</p>)}
-    {mode !== "outlook-assessment" && pm && linked.length ? <form onSubmit={submit("prepare-cost", (form) => ({
+    {mode !== "outlook-assessment" && pm && linked.length && approvedRates.length ? <form onSubmit={submit("prepare-rated-cost", (form) => ({
+      commitmentId: field(form, "commitmentId"), rateId: field(form, "rateId"), rateRevision: rates?.revision,
+      hoursHundredths: hundredths(field(form, "hours")), costDate: field(form, "costDate"),
+      sourceReference: field(form, "sourceReference"), evidenceNote: field(form, "evidenceNote"),
+      ...(field(form, "supersedesId") ? { supersedesId: field(form, "supersedesId") } : {})
+    }))}>
+      <h5>Submit Design effort valued at an approved internal rate</h5>
+      <p>The server calculates base cost plus burden for the stated person-hours. This is incurred cost for independent review, not customer price or proof of payroll.</p>
+      <label>Approved commitment <select name="commitmentId" value={selected || selection?.commitment_id || ""} onChange={(event) => setSelected(event.target.value)}>{linked.map((item) => <option key={item.commitment_id} value={item.commitment_id}>{item.commitment?.activity} · {moneyMinor(item.commitment?.amount_minor ?? null, "USD")}</option>)}</select></label>
+      <label>Approved rate version <select name="rateId" required>{approvedRates.map((rate) => <option key={rate.id} value={rate.id}>{rate.rate_key} · {moneyMinor(rate.base_rate_minor, "USD")}/person-hour + {(rate.burden_basis_points / 100).toFixed(2)}% · {rate.effective_from} to {rate.effective_until}</option>)}</select></label>
+      <label>Correction of reviewed cost <select name="supersedesId"><option value="">New effort source</option>{latestClaims.filter((item) => item.commitment_id === (selected || selection?.commitment_id)).map((item) => <option key={item.id} value={item.id}>{item.source_reference} · {moneyMinor(item.amount_minor, "USD")}</option>)}</select></label>
+      <label>Reviewed fictional person-hours <input name="hours" type="number" min="0.01" step="0.01" required /></label>
+      <label>Effort incurred date <input name="costDate" type="date" max={today()} required /></label>
+      <label>Effort-source record reference <input name="sourceReference" minLength={8} required /></label>
+      <label>Evidence and hours basis <textarea name="evidenceNote" minLength={10} required /></label>
+      <button disabled={busy}>Submit rated Design cost for Finance review</button>
+    </form> : null}
+    {mode !== "outlook-assessment" && pm && linked.length ? <details><summary>Record an externally valued Design cost</summary><form onSubmit={submit("prepare-cost", (form) => ({
       commitmentId: field(form, "commitmentId"), amountMinor: dollarsToMinor(field(form, "amount")),
       costDate: field(form, "costDate"), sourceReference: field(form, "sourceReference"),
       evidenceNote: field(form, "evidenceNote"), ...(field(form, "supersedesId") ? { supersedesId: field(form, "supersedesId") } : {})
@@ -153,10 +186,11 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
       <label>Incurred date <input name="costDate" type="date" max={today()} required /></label>
       <label>Retained source reference <input name="sourceReference" minLength={8} required /></label>
       <label>Evidence and calculation basis <textarea name="evidenceNote" minLength={10} required /></label>
-      <button disabled={busy}>Submit Design cost for Finance review</button>
-    </form> : null}
+      <button disabled={busy}>Submit externally valued cost for Finance review</button>
+    </form></details> : null}
     {mode !== "outlook-assessment" && prepared.filter((item) => !decisionId || item.id === decisionId).map((item) => <div key={item.id}>
       <p><b>Awaiting independent Finance review:</b> {item.source_reference} · {moneyMinor(item.amount_minor, "USD")} · {item.cost_date}. {item.evidence_note}</p>
+      {position.ratedBases?.find((basis) => basis.claim_id === item.id) ? <p>Rated basis: {((position.ratedBases.find((basis) => basis.claim_id === item.id)?.person_hours_hundredths ?? 0) / 100).toFixed(2)} person-hours · approved base and burden retained with this exact claim.</p> : null}
       <CostSourceFile work={work} claim={item} actorRole={actorRole} />
       {finance ? <form onSubmit={submit("review-cost", (form) => ({ claimId: item.id, decision: field(form, "decision"), reason: field(form, "reason") }))}>
         <label>Decision <select name="decision"><option>Reviewed</option><option>Returned</option></select></label>
@@ -200,6 +234,7 @@ export function DesignCostAssessment({ work, actorRole, onCommitted, mode = "all
     </>}
     <details><summary>Prior Design cost and assessment decisions</summary>
       {position.claims.map((item) => <div key={item.id}><p>{item.status} · {item.source_reference} · {moneyMinor(item.amount_minor, "USD")}{item.supersedes_id ? ` · replaces ${item.supersedes_id}` : ""} · {item.review_note ?? "Awaiting review"}</p>
+        {position.ratedBases?.find((basis) => basis.claim_id === item.id) ? <p>Rate snapshot: {((position.ratedBases.find((basis) => basis.claim_id === item.id)?.person_hours_hundredths ?? 0) / 100).toFixed(2)} person-hours · {moneyMinor(position.ratedBases.find((basis) => basis.claim_id === item.id)?.base_rate_minor ?? null, "USD")} base/hour · {((position.ratedBases.find((basis) => basis.claim_id === item.id)?.burden_basis_points ?? 0) / 100).toFixed(2)}% burden.</p> : null}
         <CostSourceFile work={work} claim={item} actorRole={actorRole} /></div>)}
       {position.assessments.map((item) => <p key={item.id}>{item.status} · {item.actual_cutoff} · {item.source_reference} · {item.review_note ?? "Awaiting review"}{item.source_digest !== position.sourceDigest ? ` · historical basis; changed: ${changes(item).join(", ") || "source basis"}` : " · current source basis"}</p>)}
     </details>

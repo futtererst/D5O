@@ -6,7 +6,7 @@ import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body, { status,
   headers: { "Cache-Control": "no-store" } });
-const actions = new Set(["link-commitment", "prepare-cost", "review-cost",
+const actions = new Set(["link-commitment", "prepare-cost", "prepare-rated-cost", "review-cost",
   "prepare-assessment", "review-assessment", "set-work-forecast"]);
 type DbResult = { data: unknown; error: { code?: string; message: string } | null };
 function target(request: NextRequest) {
