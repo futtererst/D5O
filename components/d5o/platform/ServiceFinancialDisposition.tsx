@@ -53,6 +53,7 @@ export function ServiceFinancialDisposition({
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [selectedEvidence, setSelectedEvidence] = useState("");
+  const [paymentTermKind, setPaymentTermKind] = useState("");
   const endpoint = `/api/d5o-hosted/service-finance?workspace=${encodeURIComponent(work.workspace)}`;
   const refresh = useCallback(async () => {
     const response = await fetch(`${endpoint}&workId=${encodeURIComponent(work.id)}&requestId=${encodeURIComponent(requestId)}`,
@@ -93,7 +94,9 @@ export function ServiceFinancialDisposition({
           evidenceId: selectedEvidence,
           billingBasis: String(data.get("billingBasis") ?? ""),
           billingTrigger: String(data.get("billingTrigger") ?? ""),
-          paymentTerms: String(data.get("paymentTerms") ?? "").trim(),
+          paymentTerms: paymentTermKind === "net"
+            ? `Net ${String(data.get("netDays") ?? "").trim()} days from invoice`
+            : paymentTermKind === "receipt" ? "Due on receipt of invoice" : "",
           customerParty: String(data.get("customerParty") ?? "").trim(),
           customerOrganization: String(data.get("customerOrganization") ?? "").trim(),
           customerRole: String(data.get("customerRole") ?? "").trim(),
@@ -104,7 +107,7 @@ export function ServiceFinancialDisposition({
       if (!response.ok) throw new Error(result.error ?? "Service Finance decision rejected");
       await refresh();
       form.reset();
-      if (action === "record-terms") setSelectedEvidence("");
+      if (action === "record-terms") { setSelectedEvidence(""); setPaymentTermKind(""); }
     } catch (cause) { setError(String(cause)); }
     finally { setBusy(false); }
   }
@@ -158,17 +161,20 @@ export function ServiceFinancialDisposition({
           workspace={work.workspace} workId={work.id}
           purpose="service-billing-terms" scopeId={requestId}
           evidenceId={selectedEvidence} onEvidence={setSelectedEvidence} disabled={busy} />
-        <label>Billing basis<select name="billingBasis" required defaultValue="Fixed fee for approved uncovered scope">
-          <option>Fixed fee for approved uncovered scope</option>
-        </select></label>
-        <label>Billing trigger<select name="billingTrigger" required defaultValue="Accepted service scope">
-          <option>Accepted service scope</option>
-        </select></label>
-        <label>Payment terms<select name="paymentTerms" required defaultValue="">
+        <p>This workflow bills the approved uncovered scope at its fixed fee after service acceptance.
+          If the retained document states a different basis or trigger, hold this request for a supported commercial path.</p>
+        <input type="hidden" name="billingBasis" value="Fixed fee for approved uncovered scope" />
+        <input type="hidden" name="billingTrigger" value="Accepted service scope" />
+        <label>Payment terms stated in the retained document<select required value={paymentTermKind}
+          onChange={(event) => setPaymentTermKind(event.target.value)}>
           <option value="">Select documented terms</option>
-          <option>Net 30 days from invoice</option>
-          <option>Due on receipt of invoice</option>
+          <option value="net">Net days from invoice</option>
+          <option value="receipt">Due on receipt of invoice</option>
         </select></label>
+        {paymentTermKind === "net" ? <label>Number of calendar days from invoice
+          <input name="netDays" type="number" min="1" max="999" step="1" required
+            placeholder="Enter the days stated in the document" />
+        </label> : null}
         <label>Fictional customer representative<input name="customerParty" required minLength={5} /></label>
         <label>Customer organization<input name="customerOrganization" required minLength={5} /></label>
         <label>Representative role<input name="customerRole" required minLength={5} /></label>
