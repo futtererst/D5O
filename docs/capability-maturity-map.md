@@ -28,6 +28,8 @@ D5O bounded-pilot decision update (17 October 2026): the [Design-only operating-
 
 **18 October Work outlook review routing:** The subsequent [focused correction](./evidence/d5o-outlook-review-delegation-20261018.md) replaces the fixed “any independent Finance reviewer” outlook decision with administrator-configured selection of one Finance member for an exact assessment. The rule is non-monetary; unknown costs are not treated as zero. A fictional PM submitted an honest assessment with six Unknown categories; the selected Finance user reviewed it with gaps from My Work, while the other Finance user had no card. Reload, stale-link, wrong-actor, no-eligible hold, cross-tenant route and replay checks passed; the 146-file empty-target migration replay passed. This does not appoint production delegates, qualify a new Complete outlook or authorize shared release.
 
+**18 October tenant-varying decision follow-up:** The [scoped audit and correction record](./evidence/d5o-tenant-decision-corrections-20261018.md) distinguishes implemented configuration from remaining hard-coded choices. Future Work can pin an administrator-selected Deploy-to-Operate delivery receiver, and future published Deploy controls can select a bounded field-start lead. The package-demand editor no longer forces three shifts. Hosted browser-only commercial and Work Type preferences no longer masquerade as published policy. Service T&M remains held because reviewed hours are not allocated between covered and uncovered scope; service Finance role selection, non-USD ledgers, alternate distributors and versioned Work Type additions remain implementation gaps. These local corrections do not confer production readiness.
+
 Maturity scale:
 
 - Not started
