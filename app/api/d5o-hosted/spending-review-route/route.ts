@@ -11,15 +11,23 @@ export async function GET(request: NextRequest) {
   const subjectId = q.get("subjectId") ?? "";
   const respond = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
   if (!["rybex", "rotork"].includes(workspace) || !/^[\w-]{8,120}$/.test(workId)
-    || !["work_authority", "design_authority", "design_commitment", "purchase_order"].includes(category)
+    || !["work_authority", "design_authority", "design_commitment", "purchase_order",
+      "subcontract_allocation", "subcontract_agreement", "subcontract_variation"].includes(category)
     || !/^[0-9a-f-]{36}$/i.test(subjectId)) return respond({ error: "invalid_target" }, 400);
   if (!authoritativeD5OCommandsReady()) return respond({ error: "authoritative_runtime_unavailable" }, 503);
   const client = await createRybexSupabaseServerClient();
   const call = client.rpc.bind(client) as unknown as (name: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: { code?: string; message: string } | null }>;
+  const subcontractFocus = category.startsWith("subcontract_")
+    ? `subcontract-review-${category.slice("subcontract_".length)}` : null;
   const { data, error } = category === "purchase_order"
     ? await call("d5o_purchase_order_my_review_v1", {
         p_workspace_key: workspace, p_presentation_id: workId, p_order_id: subjectId
       })
+    : subcontractFocus
+      ? await call("d5o_subcontract_my_review_v1", {
+          p_workspace_key: workspace, p_presentation_id: workId,
+          p_focus: subcontractFocus, p_subject_id: subjectId
+        })
     : await call("d5o_spending_delegate_my_review_v1", {
         p_workspace_key: workspace, p_presentation_id: workId, p_category: category, p_subject_id: subjectId
       });

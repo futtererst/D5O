@@ -15,6 +15,7 @@ type Position = {
  costLinks: Array<{ reservationId?: string; invoiceId?: string; kind: string; amountMinor: number }>;
 };
 type Document = { id: string; kind: string; filename: string; sha256: string };
+type ReviewRoute = { revision: number; canReview: boolean; route?: string };
 const money = (minor?: number | null) => minor === null || minor === undefined ? "Not authorized" :
  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(minor / 100);
 const minor = (value: string) => Math.round(Number(value) * 100);
@@ -28,6 +29,7 @@ export function SubcontractWorkspace({ workspace, workId, role, build, task }: {
  task?: { step: string; revision: number; decision: string };
 }) {
  const [position, setPosition] = useState<Position | null>(null);
+ const [reviewRoutes, setReviewRoutes] = useState<Record<string, ReviewRoute>>({});
  const [documents, setDocuments] = useState<Document[]>([]);
  const [work, setWork] = useState<{ title: string; customer: string; site: string } | null>(null);
  const [notice, setNotice] = useState(""), [busy, setBusy] = useState(false);
@@ -40,13 +42,32 @@ export function SubcontractWorkspace({ workspace, workId, role, build, task }: {
      fetch("/api/d5o-hosted/prototype-state?workspace=" + workspace + "&key=work", { cache: "no-store" })
    ]);
    const result = await basis.json();
-   if (basis.ok) setPosition(result as Position); else setNotice(result.error ?? "Subcontract basis unavailable");
+   if (basis.ok) {
+     const current = result as Position;
+     setReviewRoutes({}); setPosition(current);
+     if (role === "admin") {
+       const targets = ([
+         ["subcontract_allocation", current.state.allocations],
+         ["subcontract_agreement", current.state.agreements],
+         ["subcontract_variation", current.state.variations]
+       ] as const).flatMap(([category, items]) => items.filter((item) => item.status === "Prepared" && item.id)
+         .map((item) => ({ category, id: String(item.id) })));
+       const routes = await Promise.all(targets.map(async ({ category, id }) => {
+         try {
+           const response = await fetch(`/api/d5o-hosted/spending-review-route?workspace=${encodeURIComponent(workspace)}&workId=${encodeURIComponent(workId)}&category=${category}&subjectId=${encodeURIComponent(id)}`, { cache: "no-store" });
+           const route = response.ok ? await response.json() as ReviewRoute : { canReview: false, route: "Reviewer routing unavailable. Refresh before deciding." };
+           return [id, { ...route, revision: current.revision }] as const;
+         } catch { return [id, { canReview: false, route: "Reviewer routing unavailable. Refresh before deciding.", revision: current.revision }] as const; }
+       }));
+       setReviewRoutes(Object.fromEntries(routes));
+     }
+   } else setNotice(result.error ?? "Subcontract basis unavailable");
    if (files.ok) setDocuments((await files.json() as { documents: Document[] }).documents.filter((item) => item.kind === "other"));
    if (records.ok) {
      const list = (await records.json() as { state?: { records?: Array<{ id: string; title: string; customer: string; site: string }> } }).state?.records ?? [];
      setWork(list.find((item) => item.id === workId) ?? null);
    }
- }, [url, workspace, workId]);
+ }, [url, workspace, workId, role]);
  useEffect(() => { const timer = window.setTimeout(() => { void refresh(); }, 0); return () => window.clearTimeout(timer); }, [refresh]);
  const state = position?.state, agreements = state?.agreements ?? [], allocations = state?.allocations ?? [];
  const exactInvoiceDelivery = state?.deliverables.find((item) => item.status === "Accepted" && item.id === task?.decision);
@@ -57,6 +78,8 @@ export function SubcontractWorkspace({ workspace, workId, role, build, task }: {
  const pendingDelivery = state?.deliverables.find((item) => item.status === "Submitted");
  const pendingInvoice = state?.invoices.find((item) => item.status === "Review");
  const exact = (item?: Item) => !task || !task.decision || item?.id === task.decision;
+ const routeFor = (item?: Item) => item?.id && reviewRoutes[String(item.id)]?.revision === position?.revision
+   ? reviewRoutes[String(item.id)] : null;
  const stale = !!task && !!position && (position.revision !== task.revision ||
    task.step === "subcontract-review-allocation" && !exact(pendingAllocation) ||
    task.step === "subcontract-review-agreement" && !exact(pendingAgreement) ||
@@ -139,9 +162,10 @@ export function SubcontractWorkspace({ workspace, workId, role, build, task }: {
      <button disabled={busy}>Prepare independent allocation review</button></form>}</section>}
  {only(task,"subcontract-review-allocation") && pendingAllocation && exact(pendingAllocation) && <section className={styles.card}><h2>Review subcontract allocation</h2>
    <p>{money(Number(pendingAllocation.capMinor))} · {pendingAllocation.scope} · {pendingAllocation.conditions} · source {pendingAllocation.sourceReference}</p>
-   {role === "admin" && !stale && <form className={styles.inline} onSubmit={review("review-allocation","allocationId",pendingAllocation)}>
+   {role === "admin" && !stale && routeFor(pendingAllocation)?.canReview && <form className={styles.inline} onSubmit={review("review-allocation","allocationId",pendingAllocation)}>
      <label>Decision<select name="decision"><option value="Approved">Approve</option><option value="Returned">Return</option></select></label>
-     <label>Independent reason<input name="reason" minLength={10} required /></label><button disabled={busy}>Record decision</button></form>}</section>}
+     <label>Independent reason<input name="reason" minLength={10} required /></label><button disabled={busy}>Record decision</button></form>}
+   {role === "admin" && !stale && !routeFor(pendingAllocation)?.canReview && <p>{routeFor(pendingAllocation)?.route ?? "Checking the configured reviewer."}</p>}</section>}
  {only(task,"subcontract-agreement") && <section id="agreement" className={styles.card}><h2>Prepare fixed-price agreement</h2>
    <p>Define the exact deliverable and acceptance basis before asking an independent administrator to reserve authority.</p>
    {role === "project_manager" && !stale && <><form className={styles.grid} onSubmit={submit("register-company")}>
@@ -161,9 +185,10 @@ export function SubcontractWorkspace({ workspace, workId, role, build, task }: {
    <p>{pendingAgreement.agreementReference} · {money(Number(pendingAgreement.amountMinor))} · {pendingAgreement.scope}</p>
    <p>Deliverables: {pendingAgreement.deliverables}. Acceptance: {pendingAgreement.acceptanceCriteria}. Exclusions: {pendingAgreement.exclusions}. Dates: {pendingAgreement.scheduleBasis}. Milestone: {pendingAgreement.milestoneBasis}.</p>
    <a target="_blank" rel="noreferrer" href={docUrl+"&documentId="+pendingAgreement.documentId}>Inspect retained agreement</a>
-   {role === "admin" && !stale && <form className={styles.inline} onSubmit={review("review-agreement","agreementId",pendingAgreement)}>
+   {role === "admin" && !stale && routeFor(pendingAgreement)?.canReview && <form className={styles.inline} onSubmit={review("review-agreement","agreementId",pendingAgreement)}>
       <label>Decision<select name="decision"><option value="Approved">Approve and reserve</option><option value="Returned">Return</option></select></label>
-      <label>Independent reason<input name="reason" minLength={10} required /></label><button disabled={busy}>Record decision</button></form>}</section>}
+      <label>Independent reason<input name="reason" minLength={10} required /></label><button disabled={busy}>Record decision</button></form>}
+   {role === "admin" && !stale && !routeFor(pendingAgreement)?.canReview && <p>{routeFor(pendingAgreement)?.route ?? "Checking the configured reviewer."}</p>}</section>}
  {only(task,"subcontract-variation") && agreement && <section id="variation" className={styles.card}><h2>Controlled variation</h2>
    <p>Current approved value {money(revised)}. A proposed change reserves nothing until independent approval.</p>
    {role === "project_manager" && !stale && <form className={styles.grid} onSubmit={submit("prepare-variation", (input) => ({ ...input, agreementId: agreement.id, deltaMinor: minor(input.delta), supersedesId: uncorrectedReturn(state?.variations ?? [], String(agreement.id))?.id }))}>
@@ -175,9 +200,10 @@ export function SubcontractWorkspace({ workspace, workId, role, build, task }: {
  {only(task,"subcontract-review-variation") && pendingVariation && exact(pendingVariation) && <section className={styles.card}><h2>Review variation</h2>
    <p>Change {money(Number(pendingVariation.deltaMinor))} · {pendingVariation.scopeDifference} · {pendingVariation.scheduleImpact} · {pendingVariation.rationale}</p>
    <a target="_blank" rel="noreferrer" href={docUrl+"&documentId="+pendingVariation.documentId}>Inspect retained change</a>
-   {role === "admin" && !stale && <form className={styles.inline} onSubmit={review("review-variation","variationId",pendingVariation)}>
+   {role === "admin" && !stale && routeFor(pendingVariation)?.canReview && <form className={styles.inline} onSubmit={review("review-variation","variationId",pendingVariation)}>
       <input name="agreementId" type="hidden" value={pendingVariation.agreementId} /><label>Decision<select name="decision"><option value="Approved">Approve</option><option value="Returned">Return</option></select></label>
-      <label>Reason<input name="reason" minLength={10} required /></label><button disabled={busy}>Record decision</button></form>}</section>}
+      <label>Reason<input name="reason" minLength={10} required /></label><button disabled={busy}>Record decision</button></form>}
+   {role === "admin" && !stale && !routeFor(pendingVariation)?.canReview && <p>{routeFor(pendingVariation)?.route ?? "Checking the configured reviewer."}</p>}</section>}
  {only(task,"subcontract-delivery") && agreement && <section id="delivery" className={styles.card}><h2>Submit service deliverable</h2>
    <p>Record an off-site service fact with retained evidence. Supplier progress is not acceptance.</p>
    {role === "project_manager" && !stale && <form className={styles.grid} onSubmit={submit("submit-deliverable", (input) => ({ ...input, agreementId: agreement.id, amountMinor: minor(input.amount), supersedesId: uncorrectedReturn(state?.deliverables ?? [], String(agreement.id))?.id }))}>
