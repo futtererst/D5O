@@ -51,6 +51,8 @@ RybexOS is currently a credible seed-backed operating-system prototype. It has s
 | External collaboration and integrations | Not started | Integration strategy documented only. | No email/PDF exports, Procore/Autodesk, accounting, identity, DocuSign, or notification integrations. | Defer until internal workflows are stable. |
 | Production operations | Prototype | Verification scripts, route smoke checks, demo packaging, visual QA capture. | No deployment pipeline, environment separation, monitoring, backups, incident response, or production security review. | Add before any live-data pilot. |
 
+**18 October Design-cost update:** The R3 row above describes the original clean Work. A [separate synthetic source-custody exercise](./evidence/d5o-design-cost-source-custody-20261018.md) now links one fictional PDF to an exact Design-cost claim, retains a checksum, and shows Finance retrieval/review with Operations denied on the first build. A later owner-only private-read correction compiles but is not yet database-qualified because the disposable Docker engine failed. Keep R3 **partial** and the final data-backed preview **blocked** until that correction and the 135-file sequence are tested. The PDF does not establish real Design hours or approved source policy.
+
 ## Maturity Interpretation
 
 Architecture-ready capabilities have enough design and scaffolding to begin implementation. They are not safe for production use.
