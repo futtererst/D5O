@@ -3,7 +3,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import type { ConfigurationInventory } from "@/lib/d5o/configuration/version-inventory";
 import { verifyActiveConfigurationPin } from "@/app/work/configuration-actions";
-import { activePhaseConfigurationVersion, phaseContractFromManifest } from "./published-phase-configuration";
+import { activePhaseConfigurationVersion, activePublishedWorkTypeLabels } from "./published-phase-configuration";
 import { assessDiscover, assessmentBasis, activeForecast, resolveDiscoverPolicy, weightedPotential } from "./discover-decision";
 import { groupIndicativeOrders, type ForecastPeriod } from "./discover-forecast";
 import { blankPursuit, type PursuitCommand } from "./pursuit-control";
@@ -54,9 +54,9 @@ export function DiscoverCRMWorkspace({ workspaceKey, workspaceName, configuratio
   const [customerOpen, setCustomerOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const opportunities = useMemo(() => work.filter((item) => item.workspace === workspaceKey && item.discovery), [work, workspaceKey]);
-  const configuredTypes = phaseContractFromManifest(
+  const configuredTypes = activePublishedWorkTypeLabels(
     configurationInventory.versions.find((item) => item.id === configurationInventory.activeVersionId)?.config_manifest_json,
-    workspaceKey)?.workTypes.map((item) => item.workTypeLabel) ?? [];
+    workspaceKey);
   const selected = opportunities.find((item) => item.id === focusRecordId) ?? (taskFocus ? undefined : opportunities[0]);
   const crmEditable = canEdit && (!selected || selected.discovery?.phase === "Qualification" && !selected.definition);
   const crm = selected?.discovery?.crm ?? blankCRM();

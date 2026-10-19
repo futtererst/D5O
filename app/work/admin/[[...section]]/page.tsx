@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { HostedStateError, hostedPrototypeContext } from "@/lib/d5o/hosted/prototype-context";
 import { MemberAccessPanel } from "@/components/d5o/platform/MemberAccessPanel";
 import { CrewAccessPanel } from "@/components/d5o/platform/CrewAccessPanel";
-import { HandoffRoutingAdmin } from "@/components/d5o/platform/HandoffRoutingAdmin";
+import { AdminConfigurationEditor } from "@/components/d5o/admin/AdminConfigurationEditor";
 import { SpendingDelegationAdmin } from "@/components/d5o/platform/SpendingDelegationAdmin";
 import { DesignInternalRateControl } from "@/components/d5o/platform/DesignInternalRateControl";
 import { AdminAudit } from "@/components/d5o/admin/AdminAudit";
@@ -63,8 +63,7 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
       </div>}
       {active === "users" && <MemberAccessPanel workspace="rybex" selectedUserId={selectedId} />}
       {active === "workforce" && <CrewAccessPanel selectedPersonId={selectedId} />}
-      {active === "configuration" && <><HandoffRoutingAdmin workspace="rybex" />
-        <p>Published Work Types remain pinned on existing Work. Creation and retirement of Work Types and the hosted phase-policy editor are a separate release.</p>
+      {active === "configuration" && <><AdminConfigurationEditor workspace="rybex" />
         <p>Appearance settings in the Work workspace are browser-local preferences, not published operating policy.</p></>}
       {active === "authority" && <><SpendingDelegationAdmin workspace="rybex" />
         <DesignInternalRateControl workspace="rybex" role="admin" />

@@ -25,24 +25,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   if (!validLocalScheduleOrigin(request.headers)) return reply({ error: "invalid_origin" }, 403);
   try {
-    const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
-    await admin(workspace);
-    const raw = await request.text();
-    if (raw.length > 1200) return reply({ error: "request_too_large" }, 413);
-    const input = JSON.parse(raw) as { action?: string; version?: string; key?: string; role?: string; expectedRevision?: number; commandId?: string };
-    if (!/^[0-9a-f-]{36}$/i.test(input.version ?? "")
-      || !["create-draft", "save-route", "publish", "activate"].includes(input.action ?? "")
-      || (input.action === "save-route" && (!["discoverDefine", "designDeploy", "deployOperate"].includes(input.key ?? "")
-        || !["admin", "operations_leader", "project_manager"].includes(input.role ?? "")))
-      || !Number.isInteger(input.expectedRevision)
-      || !input.commandId || input.commandId.length < 8 || input.commandId.length > 120) return reply({ error: "invalid_route" }, 400);
-    const client = await createRybexSupabaseServerClient();
-    const { data, error } = await (client.rpc as unknown as (name: string, args: Record<string, unknown>) => Promise<RpcResult>)("d5o_hosted_handoff_configuration_command_v1", {
-      p_workspace_key: workspace, p_action: input.action, p_version: input.version,
-      p_route: input.key ?? null, p_role: input.role ?? null,
-      p_expected_revision: input.expectedRevision, p_command_id: input.commandId
-    });
-    return error ? failure(error) : reply({ result: data });
+    await admin(request.nextUrl.searchParams.get("workspace") ?? "");
+    return reply({ error: "configuration_editor_required", next: "/work/admin/configuration?workspace=rybex" }, 410);
   } catch (error) { return error instanceof HostedStateError ? reply({ error: error.code }, error.status)
-    : error instanceof SyntaxError ? reply({ error: "invalid_request" }, 400) : reply({ error: "handoff_route_unavailable" }, 503); }
+    : reply({ error: "handoff_route_unavailable" }, 503); }
 }

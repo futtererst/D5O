@@ -7,7 +7,7 @@ import { assessCommercialAuthority, type CommercialAuthorityProfile } from "./co
 import styles from "./DiscoverWorkspace.module.css";
 import { ConfiguredPhasePanel } from "./ConfiguredPhasePanel";
 import type { ConfigurationInventory } from "@/lib/d5o/configuration/version-inventory";
-import { activePhaseConfigurationVersion, phaseContractFromManifest, resolvePublishedPhaseConfiguration } from "./published-phase-configuration";
+import { activePhaseConfigurationVersion, activePublishedWorkTypeLabels, resolvePublishedPhaseConfiguration } from "./published-phase-configuration";
 import { verifyActiveConfigurationPin } from "@/app/work/configuration-actions";
 import { WorkPhaseJourney, type WorkPhase, type WorkControl } from "./WorkPhaseJourney";
 import { PursuitControl } from "./PursuitControl";
@@ -117,7 +117,7 @@ export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceNa
   const phaseConfig = selected ? resolvePublishedPhaseConfiguration(configurationInventory, workspaceKey, selected.type, selected) : null;
   const captureConfig = resolvePublishedPhaseConfiguration(configurationInventory, workspaceKey, awaitingIntake?.type ?? captureType, awaitingIntake);
   const activeVersion = configurationInventory.versions.find((item) => item.id === configurationInventory.activeVersionId);
-  const availableTypes = phaseContractFromManifest(activeVersion?.config_manifest_json, workspaceKey)?.workTypes.map((item) => item.workTypeLabel) ?? [];
+  const availableTypes = activePublishedWorkTypeLabels(activeVersion?.config_manifest_json, workspaceKey);
   const captureComponent = (key: string) => captureConfig?.phases.find((phase) => phase.key === "discover")?.components.find((item) => item.key === key);
   const captureField = (componentKey: string, fieldKey: string) => captureComponent(componentKey)?.fields?.find((item) => item.key === fieldKey);
   const sourceOptions = captureField("demand_source", "source")?.options ?? ["Direct customer", "Existing customer", "Partner referral", "Formal tender", "Service renewal"];
