@@ -148,3 +148,7 @@
 "147","20261018230000_d5o_service_invoice_documented_net_terms.sql","0c6dd994d39c86ef94fb16faf4afb1c305994d7bc8979a677c296fdf25677fb6","pending",""
 "148","20261019000000_d5o_field_start_lead_policy.sql","ae2ac3881dc7381d9b1c92611fbd2690322dc674be01ca0b96ecc37c1b0c158f","pending",""
 "149","20261019010000_d5o_configured_delivery_receiver.sql","a6fdc5d0828a676e694c65a4b21ebe29119e836ab3e6083f778dec775ff01b55","pending",""
+"150","20261019020000_hosted_initial_configuration_publication.sql","2c71347dfeb5853bccf49aa50cd50db16a4615d576ad0b09ababe883bc0578b2","pending",""
+"151","20261019030000_hosted_initial_configuration_sha256_correction.sql","8998e1ed62da29509dff7f98bac7175b2f20fc77eb9eb5eb7820d8eef0d06697","pending",""
+"152","20261019040000_hosted_initial_configuration_empty_queue.sql","06208205065696e8e0dee69f6011c579bc022718511dce45c55836dc536b734e","pending",""
+"153","20261019050000_hosted_initial_configuration_empty_read.sql","5bf4cdceb899ad688cb64d63d794a8df2e1eb2c4acaf6f6cbf4c59e127ec4a6d","pending",""
