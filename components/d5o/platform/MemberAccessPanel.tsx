@@ -29,6 +29,7 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState<Pending | null>(null);
+  const [retryReady, setRetryReady] = useState(false);
   const endpoint = `/api/d5o-hosted/membership-access?workspace=${encodeURIComponent(workspace)}`;
   const refresh = useCallback(async () => {
     const query = new URLSearchParams({ workspace, search: submittedSearch, offset: String(offset), limit: "25" });
@@ -51,15 +52,43 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
     setBusy(true);
     try {
       const current = await receipt(pending.commandId);
-      if (current.found) { await refresh(); setPending(null); setMessage("The original command committed. No second change was sent."); }
-      else setMessage("No receipt exists yet. The outcome remains uncertain; check again before retrying this exact command.");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Receipt unavailable"); }
+      if (current.found) { await refresh(); setPending(null); setRetryReady(false); setMessage("The original command committed. No second change was sent."); }
+      else { setRetryReady(true); setMessage("No receipt exists yet. You may retry the original command with its retained identity and exact input."); }
+    } catch (error) { setRetryReady(false); setMessage(error instanceof Error ? error.message : "Receipt unavailable"); }
     finally { setBusy(false); }
+  }
+  async function retryOriginal() {
+    if (!pending || !retryReady) return;
+    setBusy(true); setRetryReady(false);
+    try {
+      const current = await receipt(pending.commandId);
+      if (current.found) {
+        await refresh(); setPending(null); setMessage("The original command committed. No second change was sent."); return;
+      }
+      const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...pending.payload, commandId: pending.commandId }) });
+      const body = await response.json() as { error?: string; message?: string };
+      if (!response.ok) {
+        if (response.status === 503) throw new Error("The retry outcome is uncertain.");
+        setPending(null); await refresh();
+        setMessage(body.message ?? `${body.error ?? "Change rejected"}. Your input remains available; compare current access before a new command.`);
+        return;
+      }
+      await refresh(); setPending(null);
+      setMessage("The original command was saved once. Workspace access and roster identity remain separate.");
+      if (pending.payload.action !== "suspend") setEmail("");
+    } catch {
+      try {
+        const current = await receipt(pending.commandId);
+        if (current.found) { await refresh(); setPending(null); setMessage("The original command committed despite the lost response. No duplicate was sent."); }
+        else setMessage("The retry outcome remains uncertain. Your input and command identity are retained; check the receipt again.");
+      } catch { setMessage("The retry and receipt checks are unavailable. Your input and command identity are retained; check again before another retry."); }
+    } finally { setBusy(false); }
   }
   async function change(payload: Record<string, unknown>) {
     if (pending) { setMessage("Resolve the pending command before starting a different access change."); return; }
     const command: Pending = { commandId: crypto.randomUUID(), payload };
-    setPending(command); setBusy(true); setMessage("");
+    setPending(command); setRetryReady(false); setBusy(true); setMessage("");
     try {
       const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...payload, commandId: command.commandId }) });
@@ -109,7 +138,8 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
     {selectedUserId && <p><Link href={`/work/admin/users?workspace=${workspace}`}>← All users</Link></p>}
     <p role="status" aria-live="polite">{message}</p>
     {pending && <div><p>Pending command {pending.commandId}. Its original input remains retained in this tab.</p>
-      <button type="button" disabled={busy} onClick={() => void reconcile()}>Check original command receipt</button></div>}
+      <button type="button" disabled={busy} onClick={() => void reconcile()}>Check original command receipt</button>
+      {retryReady && <button type="button" disabled={busy} onClick={() => void retryOriginal()}>Retry original command</button>}</div>}
     {identityPending && <div><p>Identity request {identityPending} has an uncertain outcome. No second email request will be sent.</p>
       <button type="button" disabled={busy} onClick={() => void receipt(identityPending).then((current) => {
         if (!current.found || current.result?.status === "pending" || current.result?.status === "uncertain")
