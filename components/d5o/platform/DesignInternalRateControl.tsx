@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import type { WorkspaceKey } from "./work-types";
 import { moneyMinor } from "./job-finance-model";
+import { useAdminCommand } from "@/components/d5o/admin/useAdminCommand";
 
 type Rate = { id: string; rate_key: string; status: string; currency: string;
   base_rate_minor: number; burden_basis_points: number; effective_from: string; effective_until: string;
@@ -18,8 +19,6 @@ export function DesignInternalRateControl({ workspace, role, onRevision }: {
 }) {
   const [position, setPosition] = useState<Position | null>(null);
   const [reviewRoutes, setReviewRoutes] = useState<Record<string, ReviewRoute>>({});
-  const [message, setMessage] = useState("");
-  const [busy, setBusy] = useState(false);
   const endpoint = `/api/d5o-hosted/design-internal-rate?workspace=${encodeURIComponent(workspace)}`;
   const refresh = useCallback(async () => {
     const response = await fetch(endpoint, { cache: "no-store" });
@@ -43,22 +42,16 @@ export function DesignInternalRateControl({ workspace, role, onRevision }: {
     }
     onRevision?.(body.revision);
   }, [endpoint, onRevision, role, workspace]);
+  const { pending, busy, canRetry, message, setMessage, execute, reconcile, retry } = useAdminCommand(workspace, refresh);
   useEffect(() => {
     const timer = window.setTimeout(() => { void refresh().catch((error) =>
       setMessage(error instanceof Error ? error.message : "Rates unavailable.")); }, 0);
     return () => window.clearTimeout(timer);
-  }, [refresh]);
-  async function command(action: string, value: Record<string, unknown>) {
+  }, [refresh, setMessage]);
+  function command(action: string, value: Record<string, unknown>) {
     if (!position) return;
-    setBusy(true); setMessage("");
-    try {
-      const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, input: value, commandId: crypto.randomUUID(), expectedRevision: position.revision }) });
-      const body = await response.json() as { error?: string };
-      if (!response.ok) throw new Error(body.error ?? "Rate decision was not saved.");
-      await refresh(); setMessage("Rate decision saved. Review the current version before valuing another claim.");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Rate decision unavailable."); }
-    finally { setBusy(false); }
+    execute(endpoint, { action, input: value, expectedRevision: position.revision },
+      "Rate decision saved. Review the current version before valuing another claim.");
   }
   function prepare(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const data = new FormData(event.currentTarget);
@@ -73,14 +66,15 @@ export function DesignInternalRateControl({ workspace, role, onRevision }: {
     <h3>Internal Design cost rates</h3>
     <p>Finance prepares a dated base cost per person-hour and burden percentage. The configured independent administrator reviews the exact version. These internal values do not set the customer ROM selling price or prove employee work.</p>
     <p role={message ? "status" : undefined}>{message || `Rate schedule revision ${position?.revision ?? "loading"}`}</p>
+    {pending && <p>Command {pending.commandId} awaits reconciliation. <button type="button" disabled={busy} onClick={() => void reconcile()}>Check receipt</button> <button type="button" disabled={busy || !canRetry} onClick={retry}>Retry this command</button></p>}
     {position?.rates.map((rate) => <article key={rate.id}>
       <p><b>{rate.rate_key} · {rate.status}</b> · {moneyMinor(rate.base_rate_minor, rate.currency)} base per person-hour + {(rate.burden_basis_points / 100).toFixed(2)}% burden · {rate.effective_from} to {rate.effective_until}</p>
       <p>Source {rate.source_reference}. {rate.basis_note} {rate.review_note ? `Review: ${rate.review_note}` : ""}</p>
       {role === "admin" && rate.status === "Prepared" ? reviewRoutes[rate.id]?.revision === position.revision && reviewRoutes[rate.id].canReview ?
         <><p>Reviewed fully burdened hourly cost: {moneyMinor(reviewRoutes[rate.id].fullyBurdenedRateMinor!, rate.currency)}.</p>
-        <RateDecision busy={busy} onDecision={(action, reason) => void command(action, { rateId: rate.id, reason })} /></> :
+        <RateDecision busy={busy || Boolean(pending)} onDecision={(action, reason) => command(action, { rateId: rate.id, reason })} /></> :
         <p>{reviewRoutes[rate.id]?.route ?? "Checking the configured independent reviewer."}</p> : null}
-      {role === "admin" && rate.status === "Approved" ? <RateDecision busy={busy} retireOnly onDecision={(_, reason) => void command("retire", { rateId: rate.id, reason })} /> : null}
+      {role === "admin" && rate.status === "Approved" ? <RateDecision busy={busy || Boolean(pending)} retireOnly onDecision={(_, reason) => command("retire", { rateId: rate.id, reason })} /> : null}
     </article>)}
     {role === "billing_commercial_lead" ? <form onSubmit={prepare}>
       <h4>Prepare a rate version for independent approval</h4>
@@ -91,7 +85,7 @@ export function DesignInternalRateControl({ workspace, role, onRevision }: {
       <label>Effective until<input name="until" type="date" required /></label>
       <label>Retained rate source<input name="source" minLength={8} required /></label>
       <label>Calculation and applicability basis<textarea name="basis" minLength={10} required /></label>
-      <button disabled={busy || !position}>Submit rate for independent approval</button>
+      <button disabled={busy || Boolean(pending) || !position}>Submit rate for independent approval</button>
     </form> : null}
     <p>Overtime, premiums and actual payroll remain outside this first rated Design-cost path. Hold those cases until an approved source and rule exists.</p>
   </section>;

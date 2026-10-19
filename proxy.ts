@@ -31,6 +31,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/work", request.url));
   }
   if (hostedD5O && pathname !== "/work" && pathname !== "/work/procurement" && pathname !== "/work/labor" && pathname !== "/work/my-schedule"
+    && (pathname !== "/work/admin" && !pathname.startsWith("/work/admin/"))
     && !pathname.startsWith("/work/my-schedule/") && !pathname.startsWith("/api/d5o-hosted/")) {
     return new NextResponse("The hosted D5O work surface is not yet available.", {
       status: 503,
@@ -122,6 +123,7 @@ function isPublicRoute(pathname: string) {
     pathname.startsWith(`${SIGN_IN_PATH}/`) ||
     pathname === SIGN_OUT_PATH ||
     pathname.startsWith(`${SIGN_OUT_PATH}/`) ||
+    pathname === "/auth/set-password" ||
     pathname === "/api/health" ||
     pathname === "/api/readiness"
   );

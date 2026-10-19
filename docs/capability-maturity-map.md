@@ -1,5 +1,7 @@
 # Capability Maturity Map
 
+**19 October administrator candidate:** A dedicated `/work/admin` shell, scoped Users & access/Workforce detail, reasoned access and binding corrections, provider invitation/recovery request handling, and paginated retained Audit are implemented locally on the release worktree. The [focused checkpoint](./evidence/d5o-administrator-backend-20261019.md) records TypeScript, lint, build-stage and disposable SQL observations. Ordinary-user browser qualification, the final 157-file replay, populated compatibility and hosted deployment remain **open** after the named disposable database became intermittently unavailable. Existing hosted field-beta and Design-reference qualifications are not evidence for this new Admin UI. Invite/recovery delivery requires an approved synthetic recipient domain and mailbox; no message was sent.
+
 Update: Auth/RBAC has moved from architecture-only to foundation enforcement
 for workflow transaction writes. The capability is not enterprise-ready because
 production login, Supabase session resolution, RLS, invitations, and external

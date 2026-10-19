@@ -1,7 +1,7 @@
 import { getSupabaseUrl } from "./supabase-server";
 
 const hostedProjectRef = "fcawktdjoxvahhgvkebx";
-const isolatedTargets = new Set(["http://127.0.0.1:56321", "http://127.0.0.1:56621", "http://127.0.0.1:56821", "http://127.0.0.1:56921", "http://127.0.0.1:57021", "http://127.0.0.1:57121", "http://127.0.0.1:57221", "http://127.0.0.1:57421", "http://127.0.0.1:57621", "http://127.0.0.1:57721", "http://127.0.0.1:58221", "http://127.0.0.1:58521"]);
+const isolatedTargets = new Set(["http://127.0.0.1:56321", "http://127.0.0.1:56621", "http://127.0.0.1:56821", "http://127.0.0.1:56921", "http://127.0.0.1:57021", "http://127.0.0.1:57121", "http://127.0.0.1:57221", "http://127.0.0.1:57421", "http://127.0.0.1:57621", "http://127.0.0.1:57721", "http://127.0.0.1:58221", "http://127.0.0.1:58521", "http://127.0.0.1:59241"]);
 
 /** A server-only deployment choice. An invalid or missing choice fails closed. */
 export function d5oCommandRuntime(): "pilot" | "rehearsal" | "production" | null {

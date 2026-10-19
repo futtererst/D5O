@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 const reply = (value: unknown, status = 200) => NextResponse.json(value, {
   status, headers: { "Cache-Control": "no-store" }
 });
-const allowed = new Set(["save-person", "bind-person", "set-active"]);
+const allowed = new Set(["save-person", "bind-person", "set-active", "correct-binding"]);
 type DbResult = { data: unknown; error: { code?: string; message: string } | null };
 
 export async function GET(request: NextRequest) {
@@ -33,10 +33,16 @@ export async function POST(request: NextRequest) {
     !Number.isInteger(input.expectedRevision)) return reply({ error: "invalid_command" }, 400);
   const client = await createRybexSupabaseServerClient();
   const call = client.rpc.bind(client) as unknown as (name: string, args: Record<string, unknown>) => Promise<DbResult>;
-  const { data, error } = await call("d5o_hosted_workforce_command_v1", {
-    p_workspace_key: input.workspace, p_action: input.action, p_input: input.data,
-    p_command_id: input.commandId, p_expected_revision: input.expectedRevision
-  });
+  const { data, error } = input.action === "correct-binding"
+    ? await call("d5o_hosted_correct_worker_binding_v1", {
+      p_workspace_key: input.workspace, p_person_id: input.data.id,
+      p_new_email: input.data.email, p_reason: input.data.reason,
+      p_command_id: input.commandId, p_expected_revision: input.expectedRevision
+    })
+    : await call("d5o_hosted_workforce_command_v1", {
+      p_workspace_key: input.workspace, p_action: input.action, p_input: input.data,
+      p_command_id: input.commandId, p_expected_revision: input.expectedRevision
+    });
   if (error) return reply({ error: error.message },
     error.code === "42501" ? 403 : error.code === "23505" || error.code === "23514" ? 409 : 400);
   return reply(data);

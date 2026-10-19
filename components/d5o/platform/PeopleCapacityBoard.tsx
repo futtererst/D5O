@@ -1,15 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { assignmentAssessment, personHours, shiftHours, weekdays, type Assignment, type AvailabilityBlock, type PackageCrewDemand, type PersonProfile, type ScheduleWork, type WorkspaceKey } from "./schedule-model";
 import { AvailabilityEditor } from "./AvailabilityEditor";
-import { CrewAccessPanel } from "./CrewAccessPanel";
 
 type Filter = "all" | "scheduled" | "open" | "conflict" | "held";
 
 export function PeopleCapacityBoard({ workspaceKey, work, profiles, assignments, weekIndex, anchorDate, availabilityBlocks, packageDemands, canManageAvailability, canManagePeople, onAvailabilityChange, onSchedule }: { workspaceKey: WorkspaceKey; work: ScheduleWork[]; profiles: PersonProfile[]; assignments: Assignment[]; weekIndex: number; anchorDate: string; availabilityBlocks: AvailabilityBlock[]; packageDemands: PackageCrewDemand[]; canManageAvailability: boolean; canManagePeople: boolean; onAvailabilityChange: (blocks: AvailabilityBlock[]) => Promise<void>; onSchedule: () => void }) {
   const [search, setSearch] = useState("");
-  const [manageOpen, setManageOpen] = useState(false);
   const [filter, setFilter] = useState<Filter>("all");
   const [selectedName, setSelectedName] = useState("");
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -33,8 +32,7 @@ export function PeopleCapacityBoard({ workspaceKey, work, profiles, assignments,
   const selectedAssignments = week.filter((assignment) => assignment.people.includes(selectedName)).sort((left, right) => left.day - right.day || left.shift.localeCompare(right.shift));
 
   return <section className="d5o-capacity-board">
-    <header className="d5o-ops-heading"><div><p>PEOPLE & CAPACITY · {workspaceKey.toUpperCase()}</p><h1>Qualifications and workload</h1><span>See named capabilities, planned hours, scheduling conflicts, and release conditions together.</span></div><div className="d5o-schedule-head-actions">{canManagePeople ? <button type="button" aria-expanded={manageOpen} onClick={() => setManageOpen((open) => !open)}>{manageOpen ? "Close people management" : "Manage people"}</button> : null}<button className="d5o-primary" onClick={onSchedule}>View crew schedule →</button></div></header>
-    {manageOpen && canManagePeople ? <CrewAccessPanel /> : null}
+    <header className="d5o-ops-heading"><div><p>PEOPLE & CAPACITY · {workspaceKey.toUpperCase()}</p><h1>Qualifications and workload</h1><span>See named capabilities, planned hours, scheduling conflicts, and release conditions together.</span></div><div className="d5o-schedule-head-actions">{canManagePeople ? <Link href={`/work/admin/workforce?workspace=${workspaceKey}`}>Manage people →</Link> : null}<button className="d5o-primary" onClick={onSchedule}>View crew schedule →</button></div></header>
     <section className="d5o-ops-metrics" aria-label="People and capacity status"><article><strong>{scheduled.size}<small> / {profiles.length}</small></strong><span>People scheduled this week</span></article><article><strong>{plannedHours}<small> / {totalCapacity}h</small></strong><span>Planned person-hours</span></article><article><strong>{conflictedPeople.size}</strong><span>People needing conflict or skill review</span></article><article><strong>{heldPeople.size}</strong><span>People on held work</span></article></section>
     <section className="d5o-capacity-days" aria-label="Daily assignment coverage"><div><p>THIS WEEK</p><h2>Daily workload</h2><span>Planned hours against the recorded workforce. Assignment does not release controlled work.</span></div>{weekdays.map((day, index) => { const dayAssignments = week.filter((assignment) => assignment.day === index); const count = new Set(dayAssignments.flatMap((assignment) => assignment.people)).size; return <article key={day}><b>{day}</b><strong>{dayAssignments.reduce((sum, assignment) => sum + assignment.people.length * shiftHours(assignment.shift), 0)}h</strong><span>{count} people scheduled</span></article>; })}</section>
     <AvailabilityEditor profiles={profiles} blocks={availabilityBlocks} assignments={assignments} weekIndex={weekIndex} anchorDate={anchorDate} canEdit={canManageAvailability} onChange={onAvailabilityChange} />

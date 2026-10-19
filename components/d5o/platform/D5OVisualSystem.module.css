@@ -669,8 +669,8 @@
 .root :global(.d5o-nav-rail .d5o-full-brand .d5o-wordmark) { font-size:25px; }
 .root :global(.d5o-rail-links), .root :global(.d5o-rail-bottom) { display:grid; width:100%; gap:5px; }
 .root :global(.d5o-rail-bottom) { margin-top:auto; padding-top:10px; border-top:1px solid rgb(255 255 255 / 13%); }
-.root :global(.d5o-rail-links button), .root :global(.d5o-rail-bottom button) { display:grid; justify-items:center; align-content:center; gap:4px; width:100%; min-height:58px; border:0; border-radius:9px; background:transparent; color:#d7e5ed; cursor:pointer; font-size:10px; font-weight:700; line-height:1.1; padding:7px 3px; }
-.root :global(.d5o-rail-links button:hover), .root :global(.d5o-rail-bottom button:hover) { background:rgb(255 255 255 / 10%); }
+.root :global(.d5o-rail-links button), .root :global(.d5o-rail-bottom button), .root :global(.d5o-rail-bottom a) { display:grid; justify-items:center; align-content:center; gap:4px; width:100%; min-height:58px; border:0; border-radius:9px; background:transparent; color:#d7e5ed; cursor:pointer; font-size:10px; font-weight:700; line-height:1.1; padding:7px 3px; text-decoration:none; }
+.root :global(.d5o-rail-links button:hover), .root :global(.d5o-rail-bottom button:hover), .root :global(.d5o-rail-bottom a:hover) { background:rgb(255 255 255 / 10%); }
 .root :global(.d5o-rail-links button.is-active), .root :global(.d5o-rail-links button[aria-current=page]), .root :global(.d5o-rail-bottom button[aria-current=page]) { background:#29465b; color:#fff; box-shadow:inset 3px 0 var(--d5o-accent); }
 .root :global(.d5o-rail-links svg), .root :global(.d5o-rail-bottom svg) { width:21px; height:21px; }
 .root :global(.d5o-rail-build) { color:#9db1bf; font-size:9px; line-height:1.2; padding:10px 2px 0; text-align:center; overflow-wrap:anywhere; }
@@ -720,8 +720,8 @@
   .root :global(.d5o-nav-rail .d5o-full-brand) { margin:0 10px 0 0; padding:4px; min-height:42px; width:55px; border:0; }
   .root :global(.d5o-rail-links) { display:flex; flex:1; justify-content:space-around; min-width:0; width:auto; overflow:auto; }
   .root :global(.d5o-rail-links button:nth-child(n+4)) { display:none; }
-  .root :global(.d5o-rail-links button), .root :global(.d5o-rail-bottom button) { min-width:52px; min-height:46px; }
-  .root :global(.d5o-rail-links button span), .root :global(.d5o-rail-bottom button span), .root :global(.d5o-rail-build) { display:none; }
+  .root :global(.d5o-rail-links button), .root :global(.d5o-rail-bottom button), .root :global(.d5o-rail-bottom a) { min-width:52px; min-height:46px; }
+  .root :global(.d5o-rail-links button span), .root :global(.d5o-rail-bottom button span), .root :global(.d5o-rail-bottom a span), .root :global(.d5o-rail-build) { display:none; }
   .root :global(.d5o-rail-bottom) { display:flex; flex:0 0 auto; width:auto; margin:0; border:0; padding:0; }
   .root :global(.d5o-nav-drawer) { left:0; width:min(340px, 90vw); }
   .root :global(.d5o-task-inbox-rail) { position:static; height:auto; max-height:330px; border-right:0; border-bottom:1px solid var(--d5o-border); }

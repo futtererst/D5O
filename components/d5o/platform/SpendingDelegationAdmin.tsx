@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import type { WorkspaceKey } from "./work-types";
+import { useAdminCommand } from "@/components/d5o/admin/useAdminCommand";
 
 type Member = { actorId: string; role: string; email: string };
 type Rule = { id: string; category: string; kind: string; actor_user_id: string; role_name: string;
@@ -20,8 +21,6 @@ export function SpendingDelegationAdmin({ workspace }: { workspace: WorkspaceKey
   const [position, setPosition] = useState<Position | null>(null);
   const [category, setCategory] = useState<keyof typeof categories>("work_authority");
   const [role, setRole] = useState("admin");
-  const [message, setMessage] = useState("");
-  const [busy, setBusy] = useState(false);
   const endpoint = `/api/d5o-hosted/spending-delegation?workspace=${encodeURIComponent(workspace)}`;
   const refresh = useCallback(async () => {
     const response = await fetch(endpoint, { cache: "no-store" });
@@ -29,24 +28,17 @@ export function SpendingDelegationAdmin({ workspace }: { workspace: WorkspaceKey
     if (!response.ok) throw new Error(body.error ?? "Spending delegation unavailable.");
     setPosition(body);
   }, [endpoint]);
+  const { pending, busy, canRetry, message, setMessage, execute, reconcile, retry } = useAdminCommand(workspace, refresh);
   useEffect(() => {
     const timer = window.setTimeout(() => {
       void refresh().catch((error) => setMessage(error instanceof Error ? error.message : "Configuration unavailable."));
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [refresh]);
-  async function command(action: "add" | "revoke", input: Record<string, unknown>) {
+  }, [refresh, setMessage]);
+  function command(action: "add" | "revoke", input: Record<string, unknown>) {
     if (!position) return;
-    setBusy(true); setMessage("");
-    try {
-      const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, input, commandId: crypto.randomUUID(), expectedRevision: position.revision }) });
-      const body = await response.json() as { error?: string };
-      if (!response.ok) throw new Error(body.error ?? "Configuration rejected.");
-      await refresh();
-      setMessage(action === "add" ? "Rule saved. Current eligible reviews now use system selection." : "Rule revoked. Reviews without another eligible rule are held.");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Configuration unavailable."); }
-    finally { setBusy(false); }
+    execute(endpoint, { action, input, expectedRevision: position.revision },
+      action === "add" ? "Rule saved. Current eligible reviews now use system selection." : "Rule revoked. Reviews without another eligible rule are held.");
   }
   function add(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -67,6 +59,7 @@ export function SpendingDelegationAdmin({ workspace }: { workspace: WorkspaceKey
         <span>Configure a named delegate by category and Work Type, with a sponsor fallback. Monetary decisions also use a maximum amount. The system selects one eligible independent reviewer; routing never grants a command role.</span></div>
         <strong>Revision {position?.revision ?? "—"}</strong></header>
       {message && <p role="status">{message}</p>}
+      {pending && <p>Command {pending.commandId} awaits reconciliation. <button type="button" disabled={busy} onClick={() => void reconcile()}>Check receipt</button> <button type="button" disabled={busy || !canRetry} onClick={retry}>Retry this command</button></p>}
       <p>Categories without a configured rule retain their existing role checks. Once configured, a decision with no eligible delegate or sponsor is held. Earlier prepared decisions keep their original review contract.</p>
       <div className="d5o-publication-fields">{Object.entries(categories).map(([key, label]) => <div key={key}>
         <strong>{label}</strong><p>{position?.categories.includes(key) ? "Configured" : "Existing role routing"}</p>
@@ -75,9 +68,9 @@ export function SpendingDelegationAdmin({ workspace }: { workspace: WorkspaceKey
         <strong>{categories[rule.category as keyof typeof categories]} · {rule.kind}</strong>
         <p>{position.members.find((member) => member.actorId === rule.actor_user_id)?.email ?? "Former member"} · {rule.role_name} · {rule.currency} {rule.category === "outlook_assessment" ? `non-monetary review · ${rule.work_type_key ?? "all Work Types"}` : `${((rule.max_minor ?? 0) / 100).toLocaleString()} ${rule.category === "internal_design_rate" ? "maximum fully burdened per person-hour · workspace-wide" : `maximum · ${rule.work_type_key ?? "all Work Types"}`}`} · {rule.valid_from} to {rule.valid_until}</p>
         <small>Priority {rule.priority} · source {rule.source_reference}</small>
-        <button type="button" disabled={busy} onClick={() => {
+        <button type="button" disabled={busy || Boolean(pending)} onClick={() => {
           const reason = window.prompt("Record why this delegation is being revoked. Active decisions without another eligible reviewer will be held.");
-          if (reason?.trim() && reason.trim().length >= 10) void command("revoke", { ruleId: rule.id, reason: reason.trim() });
+          if (reason?.trim() && reason.trim().length >= 10) command("revoke", { ruleId: rule.id, reason: reason.trim() });
         }}>Revoke rule</button></article>)}
       <form className="d5o-publication-editor" onSubmit={add}><h3>Add an eligible reviewer rule</h3>
         <div className="d5o-publication-fields"><label>Decision category<select value={category} onChange={(event) => {
@@ -95,7 +88,7 @@ export function SpendingDelegationAdmin({ workspace }: { workspace: WorkspaceKey
         <label>Effective from<input name="from" type="date" defaultValue={today()} required /></label>
         <label>Valid until<input name="until" type="date" required /></label>
         <label>Approved policy source<input name="source" minLength={8} required /></label></div>
-        <button disabled={busy || !eligible.length || !position}>Save reviewer rule</button>
+        <button disabled={busy || Boolean(pending) || !eligible.length || !position}>Save reviewer rule</button>
         <small>Only an administrator can change this configuration. The spending command still checks role, independent review, source, revision and available authority.</small>
       </form>
     </section></details>;
