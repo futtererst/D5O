@@ -6,12 +6,13 @@ import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 const roles = new Set(["executive", "operations_leader", "business_development_lead", "project_manager", "billing_commercial_lead", "field_supervisor", "closeout_lead", "read_only_auditor"]);
-type RpcError = { code?: string } | null;
+type RpcError = { code?: string; message?: string } | null;
 type RpcResult = { data: unknown; error: RpcError };
-type MembershipRpc = "d5o_hosted_membership_access_v1" | "d5o_hosted_assign_member_v1";
+type MembershipRpc = "d5o_hosted_membership_access_v1" | "d5o_hosted_assign_member_v1" | "d5o_hosted_suspend_member_v1";
 const callMembership = (client: ReturnType<typeof createRybexSupabaseAdminClient>, name: MembershipRpc, args: Record<string, unknown>) =>
   (client.rpc.bind(client) as unknown as (name: MembershipRpc, args: Record<string, unknown>) => Promise<RpcResult>)(name, args);
-const failure = (error: RpcError) => error?.code === "42501" ? reply({ error: "admin_membership_required" }, 403)
+const failure = (error: RpcError) => error?.message === "protected_membership" ? reply({ error: "protected_membership", message: "Administrator and worker access use separate protected controls." }, 403)
+  : error?.code === "42501" ? reply({ error: "admin_membership_required" }, 403)
   : error?.code === "23503" ? reply({ error: "confirmed_member_missing", message: "Create and confirm the sign-in account before assigning a role." }, 409)
   : error?.code === "23505" ? reply({ error: "stale_or_conflicting_assignment" }, 409)
   : error?.code === "22023" ? reply({ error: "invalid_assignment" }, 400)
@@ -44,15 +45,21 @@ export async function POST(request: NextRequest) {
     const context = await admin(workspace);
     const raw = await request.text();
     if (raw.length > 1500) return reply({ error: "request_too_large" }, 413);
-    const input = JSON.parse(raw) as { email?: string; role?: string; expectedRole?: string | null; commandId?: string };
+    const input = JSON.parse(raw) as { action?: string; email?: string; role?: string; expectedRole?: string | null; commandId?: string };
     const email = input.email?.trim().toLowerCase() ?? "";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !roles.has(input.role ?? "") || !input.commandId || input.commandId.length < 8 || input.commandId.length > 120)
+    const suspend = input.action === "suspend";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+      (suspend ? !roles.has(input.expectedRole ?? "") : !roles.has(input.role ?? "")) ||
+      (input.action && input.action !== "assign" && !suspend) ||
+      !input.commandId || input.commandId.length < 8 || input.commandId.length > 120)
       return reply({ error: "invalid_assignment" }, 400);
     const client = createRybexSupabaseAdminClient();
-    const result = await callMembership(client, "d5o_hosted_assign_member_v1", {
-      p_workspace_key: workspace, p_admin_user_id: context.actor.id, p_admin_membership_id: context.actor.membershipId,
-      p_member_email: email, p_role: input.role, p_expected_role: input.expectedRole ?? null, p_command_id: input.commandId
-    });
+    const basis = { p_workspace_key: workspace, p_admin_user_id: context.actor.id,
+      p_admin_membership_id: context.actor.membershipId, p_member_email: email,
+      p_expected_role: input.expectedRole ?? null, p_command_id: input.commandId };
+    const result = suspend
+      ? await callMembership(client, "d5o_hosted_suspend_member_v1", basis)
+      : await callMembership(client, "d5o_hosted_assign_member_v1", { ...basis, p_role: input.role });
     if (result.error) return failure(result.error);
     return reply({ assignment: result.data, synthetic: true });
   } catch (error) { return error instanceof HostedStateError ? reply({ error: error.code }, error.status) : error instanceof SyntaxError ? reply({ error: "invalid_request" }, 400) : reply({ error: "membership_access_unavailable" }, 503); }

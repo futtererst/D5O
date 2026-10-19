@@ -152,3 +152,4 @@
 "151","20261019030000_hosted_initial_configuration_sha256_correction.sql","8998e1ed62da29509dff7f98bac7175b2f20fc77eb9eb5eb7820d8eef0d06697","pending",""
 "152","20261019040000_hosted_initial_configuration_empty_queue.sql","06208205065696e8e0dee69f6011c579bc022718511dce45c55836dc536b734e","pending",""
 "153","20261019050000_hosted_initial_configuration_empty_read.sql","5bf4cdceb899ad688cb64d63d794a8df2e1eb2c4acaf6f6cbf4c59e127ec4a6d","pending",""
+"154","20261019131510_d5o_suspend_synthetic_membership.sql","56d07251c8f795ae59a80a719ef71032e01346566d1dcd339558326723e235c2","pending",""

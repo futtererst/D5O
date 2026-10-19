@@ -49,6 +49,23 @@ export function MemberAccessPanel({ workspace }: { workspace: WorkspaceKey }) {
     } catch (error) { setMessage(error instanceof Error ? error.message : "Role assignment failed."); }
     finally { setBusy(false); }
   }
+  async function changeAccess(member: Member, action: "suspend" | "assign") {
+    setBusy(true); setMessage("");
+    try {
+      const response = await fetch(`/api/d5o-hosted/membership-access?workspace=${encodeURIComponent(workspace)}`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, email: member.email, role: member.role,
+          expectedRole: member.role, commandId: crypto.randomUUID() })
+      });
+      const data = await response.json() as { error?: string; message?: string };
+      if (!response.ok) throw new Error(data.message ?? data.error ?? "Access change failed.");
+      await refresh();
+      setMessage(action === "suspend"
+        ? "Workspace access suspended. Existing decisions remain in history; this account cannot open the workspace until restored."
+        : "Workspace access restored for this confirmed account.");
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Access change failed."); }
+    finally { setBusy(false); }
+  }
   return <section className={styles.panel} aria-label="Workspace role assignments">
     <div className={styles.heading}><div><p>WORKSPACE ACCESS · SYSTEM ADMINISTRATOR</p><h2>Assign pilot roles</h2><span>Connect an existing confirmed sign-in account to one workspace role. Worker roster binding remains a separate assignment.</span></div></div>
     <form onSubmit={(event) => void assign(event)} className={styles.form}>
@@ -57,7 +74,7 @@ export function MemberAccessPanel({ workspace }: { workspace: WorkspaceKey }) {
       <button type="submit" disabled={busy}>{busy ? "Saving…" : "Assign role"}</button>
     </form>
     <p role="status" aria-live="polite">{message}</p>
-    <div className={styles.members}>{members.map((member) => <div key={member.userId}><strong>{member.email}</strong><span>{member.role.replaceAll("_", " ")} · {member.status}</span></div>)}</div>
-    <small>These memberships govern the synthetic D5O pilot. Assignment does not approve a business decision.</small>
+    <div className={styles.members}>{members.map((member) => <div key={member.userId}><strong>{member.email}</strong><span>{member.role.replaceAll("_", " ")} · {member.status}</span>{member.role !== "admin" && member.role !== "field_worker" ? <button type="button" disabled={busy} onClick={() => void changeAccess(member, member.status === "active" ? "suspend" : "assign")}>{member.status === "active" ? "Suspend access" : "Restore access"}</button> : null}</div>)}</div>
+    <small>A sign-in account, workspace membership and worker roster person are separate. Creating a roster person does not create a login or send an invitation. These memberships govern the synthetic D5O pilot; assignment does not approve a business decision.</small>
   </section>;
 }
