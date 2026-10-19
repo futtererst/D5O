@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { hostedPrototypeContext } from "@/lib/d5o/hosted/prototype-context";
+import { notFound, redirect } from "next/navigation";
+import { HostedStateError, hostedPrototypeContext } from "@/lib/d5o/hosted/prototype-context";
 import { MemberAccessPanel } from "@/components/d5o/platform/MemberAccessPanel";
 import { CrewAccessPanel } from "@/components/d5o/platform/CrewAccessPanel";
 import { HandoffRoutingAdmin } from "@/components/d5o/platform/HandoffRoutingAdmin";
@@ -32,7 +32,16 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
   if (section?.length === 2 && !["users", "workforce"].includes(active)) notFound();
   const selectedId = section?.[1];
   if (selectedId && !/^[0-9a-f-]{36}$/i.test(selectedId)) notFound();
-  const context = await hostedPrototypeContext(workspace);
+  let context: Awaited<ReturnType<typeof hostedPrototypeContext>>;
+  try { context = await hostedPrototypeContext(workspace); }
+  catch (error) {
+    if (error instanceof HostedStateError && error.status === 401) {
+      const path = `/work/admin${section?.length ? `/${section.join("/")}` : ""}?workspace=${workspace}`;
+      redirect(`/auth/sign-in?next=${encodeURIComponent(path)}`);
+    }
+    if (error instanceof HostedStateError && error.status === 403) notFound();
+    throw error;
+  }
   if (context.actor.role !== "admin") notFound();
   const href = (key: string) => `/work/admin/${key}?workspace=${workspace}`;
   return <AdminIdentityBoundary userId={context.actor.id}><main className={styles.shell}>
