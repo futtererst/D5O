@@ -15,6 +15,7 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
   const [assignmentDates, setAssignmentDates] = useState<string[]>([]);
   const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
   const [pending, setPending] = useState<{ commandId: string; action: string; data: Record<string, unknown>; expectedRevision: number } | null>(null);
+  const [retryReady, setRetryReady] = useState(false);
   const load = useCallback(async () => {
     const response = await fetch("/api/d5o-hosted/workforce?workspace=rybex", { cache: "no-store" });
     const body = await response.json() as State & { error?: string };
@@ -50,16 +51,46 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
       const response = await fetch(`/api/d5o-hosted/admin-receipt?workspace=rybex&commandId=${encodeURIComponent(pending.commandId)}`, { cache: "no-store" });
       if (!response.ok) throw new Error("Receipt check failed. Keep the current form and command identity.");
       const body = await response.json() as { found: boolean };
-      if (body.found) { await load(); setPending(null); setError("The original change committed; no second command was sent."); }
-      else setError("No receipt yet. Outcome remains uncertain; check again before retrying the same command.");
-    } catch (failure) { setError(failure instanceof Error ? failure.message : "Receipt unavailable"); }
+      if (body.found) { await load(); setPending(null); setRetryReady(false); setError("The original change committed; no second command was sent."); }
+      else { setRetryReady(true); setError("No receipt exists yet. You may retry the original command with its retained revision and input."); }
+    } catch (failure) { setRetryReady(false); setError(failure instanceof Error ? failure.message : "Receipt unavailable"); }
     finally { setBusy(false); }
+  }
+  async function retryOriginal() {
+    if (!pending || !retryReady) return;
+    setBusy(true); setRetryReady(false);
+    try {
+      const check = await fetch(`/api/d5o-hosted/admin-receipt?workspace=rybex&commandId=${encodeURIComponent(pending.commandId)}`, { cache: "no-store" });
+      if (!check.ok) throw new Error("Receipt unavailable");
+      if ((await check.json() as { found: boolean }).found) {
+        await load(); setPending(null); setError("The original change committed; no second command was sent."); return;
+      }
+      const response = await fetch("/api/d5o-hosted/workforce", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workspace: "rybex", action: pending.action, data: pending.data,
+          commandId: pending.commandId, expectedRevision: pending.expectedRevision }) });
+      const result = await response.json() as { error?: string };
+      if (!response.ok) {
+        if (response.status === 503) throw new Error("Retry outcome uncertain");
+        setPending(null); await load();
+        setError(`${result.error ?? "Workforce change rejected"}. Your input remains available; compare the current revision.`);
+        return;
+      }
+      await load(); setPending(null); setSelected(null); setError("The original workforce command was saved once.");
+      window.dispatchEvent(new Event("d5o-workforce-updated"));
+    } catch {
+      try {
+        const check = await fetch(`/api/d5o-hosted/admin-receipt?workspace=rybex&commandId=${encodeURIComponent(pending.commandId)}`, { cache: "no-store" });
+        if (check.ok && (await check.json() as { found: boolean }).found) {
+          await load(); setPending(null); setError("The original change committed despite the lost response; no duplicate was sent.");
+        } else setError("The retry outcome remains uncertain. Keep the retained command and check its receipt again.");
+      } catch { setError("The retry and receipt checks are unavailable. Keep the retained command before another attempt."); }
+    } finally { setBusy(false); }
   }
   async function command(action: string, data: Record<string, unknown>) {
     if (!state) return;
     if (pending) { setError("Resolve the pending command before starting another workforce change."); return; }
     const current = { commandId: crypto.randomUUID(), action, data, expectedRevision: state.revision };
-    setPending(current);
+    setPending(current); setRetryReady(false);
     setBusy(true); setError("");
     try {
       const response = await fetch("/api/d5o-hosted/workforce", {
@@ -96,7 +127,7 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
   return <section className={styles.panel} aria-label="Workforce administration">
     <div className={styles.heading}><div><p>WORKFORCE · SYSTEM ADMINISTRATOR</p><h2>People and qualifications</h2><span>Create a fictional roster person, record skills and weekly capacity, then connect an existing confirmed account. Only active, qualified, bound people can be booked. Account creation remains in the isolated Auth administrator flow.</span></div></div>
     {error ? <p role="alert" className={styles.message}>{error}</p> : null}
-    {pending ? <p role="status">Command {pending.commandId} is pending. <button type="button" disabled={busy} onClick={() => void reconcile()}>Check receipt</button></p> : null}
+    {pending ? <p role="status">Command {pending.commandId} is pending. <button type="button" disabled={busy} onClick={() => void reconcile()}>Check receipt</button>{retryReady ? <button type="button" disabled={busy} onClick={() => void retryOriginal()}>Retry original command</button> : null}</p> : null}
     {!state ? <p role="status">Loading committed workforce…</p> : <>
       <div className={styles.list}>{state.people.map((item) => <div key={item.id}>
         <strong>{item.displayName}</strong><span>{item.qualifications.join(" · ")} · {item.weeklyCapacityHours}h/week</span>
