@@ -1,6 +1,6 @@
 # D5O synthetic field trial
 
-Use [the hosted D5O site](https://d5o-system-of-work.vercel.app). Every company, Work Record, person, shift, hour, photo, document, price and decision in this trial is fictional. Do not enter real employee, customer, site or financial information. The application retains normal authentication, independent review and time-window controls.
+Use [the hosted D5O site](https://d5o-system-of-work.vercel.app), displayed **Build 320a02bb419a**. Every company, Work Record, person, shift, hour, photo, document, price and decision in this trial is fictional. Do not enter real employee, customer, site or financial information. The application retains normal authentication, independent review and time-window controls.
 
 The trial operator gives each participant **only their assigned fictional account** through the restricted local account handoff, never through this repository. Sign out using **Account → Sign out** before changing roles; use a separate browser profile for simultaneous roles. Do not share passwords in feedback. If sign-in or account recovery fails, ask the trial operator; no invitation or recovery email delivery is qualified.
 
