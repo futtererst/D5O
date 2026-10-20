@@ -158,5 +158,5 @@
 "157","20261019183127_d5o_admin_backend.sql","32a41446832950f6200f94450197e2467c29e43e3b912987ed1fc2e658a3edde","applied_mapped_version","20261019211112"
 "158","20261019213000_d5o_hosted_configuration_management.sql","c84a3bea6ea3e73d24d9f001159977ec18ca2fe0d62045cafe924aee1a5bc12a","applied_mapped_version","20261019221852"
 "159","20261020085414_d5o_design_same_day_schedule_hold.sql","b63fa59ec06b70895f0d3dd268c6eff07d455186b1e3df2727bca3c0ac9be89c","applied_mapped_version","20261020085806"
-"160","20261020115849_d5o_admin_invitation_setup.sql","c921dfb8d18f2215584beef92801d4f362f098a4e9d67a53454526dfec114c48","pending_hosted",""
-"161","20261020135000_d5o_admin_invitation_role_retry_guard.sql","c4ada0e6fff6365a64b0fabfb6ccedab329e4d705a689ab79a98beeefa59516e","pending_hosted",""
+"160","20261020115849_d5o_admin_invitation_setup.sql","c921dfb8d18f2215584beef92801d4f362f098a4e9d67a53454526dfec114c48","applied_mapped_version","20261020131219"
+"161","20261020135000_d5o_admin_invitation_role_retry_guard.sql","c4ada0e6fff6365a64b0fabfb6ccedab329e4d705a689ab79a98beeefa59516e","applied_mapped_version","20261020131240"
