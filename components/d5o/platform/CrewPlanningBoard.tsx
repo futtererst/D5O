@@ -25,7 +25,7 @@ function ScheduleIssueDetail({ candidate, work, assessment, onReviewWork }: {
   </section>;
 }
 
-export function CrewPlanningBoard({ workspaceKey, work, workReady, profiles, onOpen, onOpenDecision, shared, entryFocus = null, focusWorkId = null }: { workspaceKey: WorkspaceKey; work: ScheduleWork[]; workReady: boolean; profiles: PersonProfile[]; onOpen: (item: ScheduleWork) => void; onOpenDecision: (item: ScheduleWork) => void; shared: ReturnType<typeof useSharedSchedule>; entryFocus?: "coverage" | "attendance" | null; focusWorkId?: string | null }) {
+export function CrewPlanningBoard({ workspaceKey, actorId, timezoneByWorkId, work, workReady, profiles, onOpen, onOpenDecision, shared, entryFocus = null, focusWorkId = null }: { workspaceKey: WorkspaceKey; actorId: string; timezoneByWorkId: Record<string, string>; work: ScheduleWork[]; workReady: boolean; profiles: PersonProfile[]; onOpen: (item: ScheduleWork) => void; onOpenDecision: (item: ScheduleWork) => void; shared: ReturnType<typeof useSharedSchedule>; entryFocus?: "coverage" | "attendance" | null; focusWorkId?: string | null }) {
   const assignments = shared.schedule?.assignments ?? [];
   const packageDemands = shared.schedule?.packageDemands ?? [];
   const anchor = shared.schedule?.anchorDate ?? "";
@@ -53,6 +53,8 @@ export function CrewPlanningBoard({ workspaceKey, work, workReady, profiles, onO
   const [draggingId, setDraggingId] = useState("");
   const [dropTarget, setDropTarget] = useState("");
   const [pendingMove, setPendingMove] = useState<Assignment | null>(null);
+  const [moveDateError, setMoveDateError] = useState("");
+  const [crossWeekMove, setCrossWeekMove] = useState<{ assignmentId: string; sourceWeek: number; destinationWeek: number; sourceWasPublished: boolean } | null>(null);
   const moveDialogRef = useRef<HTMLElement>(null);
   const moveOpen = Boolean(pendingMove);
   const focusedAssignment = useRef<string | null>(null);
@@ -82,6 +84,10 @@ export function CrewPlanningBoard({ workspaceKey, work, workReady, profiles, onO
     return () => cancelAnimationFrame(frame);
   }, [entryFocus, shared.schedule]);
   useEffect(() => { if (moveOpen) moveDialogRef.current?.focus({ preventScroll: true }); }, [moveOpen]);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => { setPendingMove(null); setCrossWeekMove(null); setMoveDateError(""); });
+    return () => cancelAnimationFrame(frame);
+  }, [workspaceKey, actorId]);
   useEffect(() => {
     if (!detailsOpen) return;
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -121,6 +127,9 @@ export function CrewPlanningBoard({ workspaceKey, work, workReady, profiles, onO
     ? reconcileBookingDemand(pendingRequirement, { date: pendingSource.date ?? "", shift: pendingSource.shift }, pendingMove, assignments.filter((item) => item.id !== pendingMove.id)) : null;
   const pendingDemands = pendingRevisedDemand ? [...packageDemands.filter((item) => item.packageId !== pendingRevisedDemand.packageId), pendingRevisedDemand] : packageDemands;
   const pendingAssessment = pendingMove ? assignmentAssessment(pendingMove, assignments, workspaceKey, work, profiles, pendingDemands) : null;
+  const pendingApprovedSlot = Boolean(pendingMove && pendingRequirement?.requiredSlots.some((slot) => slot.date === pendingMove.date && slot.shift === pendingMove.shift));
+  const pendingSourcePublished = Boolean(pendingSource && shared.schedule?.publications.some((publication) => publication.week === pendingSource.week && publication.assignments.some((item) => item.id === pendingSource.id)));
+  const pendingTimezone = pendingMove ? timezoneByWorkId[pendingMove.workId] ?? "Work time zone unavailable" : "";
   const unchanged = Boolean(pendingMove && pendingSource && pendingMove.week === pendingSource.week && pendingMove.day === pendingSource.day && pendingMove.crew === pendingSource.crew && pendingMove.shift === pendingSource.shift && pendingMove.people.join("|") === pendingSource.people.join("|") && pendingMove.personHoursPerWorker === pendingSource.personHoursPerWorker);
   const chosenDemand = packageDemands.find((item) => `${item.workId}|${item.packageId}` === selectedPackage);
   const chosenDate = anchor ? dateKeyForSchedule(anchor, visibleWeek, selectedDay) : "";
@@ -213,6 +222,23 @@ export function CrewPlanningBoard({ workspaceKey, work, workReady, profiles, onO
     setDetailsOpen(false);
   }
 
+  function chooseMoveDate(value: string) {
+    if (!pendingMove || !anchor) return;
+    const target = Date.parse(value + "T00:00:00Z");
+    const base = Date.parse(anchor + "T00:00:00Z");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || !Number.isFinite(target) || !Number.isFinite(base)) {
+      setMoveDateError("Choose a valid destination calendar date."); return;
+    }
+    const offset = Math.round((target - base) / 86_400_000);
+    const weekIndex = Math.floor(offset / 7);
+    const dayIndex = offset - weekIndex * 7;
+    if (weekIndex < -260 || weekIndex > 260 || dayIndex > 4 || dateKeyForSchedule(anchor, weekIndex, dayIndex) !== value) {
+      setMoveDateError("Choose a Monday–Friday date within the supported planning horizon."); return;
+    }
+    setMoveDateError("");
+    setPendingMove((current) => current ? { ...current, date: value, week: weekIndex, day: dayIndex } : null);
+  }
+
   function proposeMove(assignment: Assignment, crew: string, day: number) {
     if (!shared.canEdit) return;
     const record = work.find((item) => item.id === assignment.workId);
@@ -222,6 +248,7 @@ export function CrewPlanningBoard({ workspaceKey, work, workReady, profiles, onO
     }
     if (assignment.week === visibleWeek && assignment.crew === crew && assignment.day === day) return;
     setPendingMove({ ...assignment, crew, day, week: visibleWeek, date: dateKeyForSchedule(anchor, visibleWeek, day) });
+    setMoveDateError("");
     setMessage("");
   }
 
@@ -241,20 +268,45 @@ export function CrewPlanningBoard({ workspaceKey, work, workReady, profiles, onO
     if (assignment) proposeMove(assignment, crew, day);
   }
 
+  function finishMove(moved: Assignment, source: Assignment) {
+    setMessage("Draft booking moved from " + (source.date ?? dateKeyForSchedule(anchor, source.week, source.day)) + " to " + (moved.date ?? dateKeyForSchedule(anchor, moved.week, moved.day)) + " (" + (timezoneByWorkId[moved.workId] ?? "Work time zone unavailable") + "). Publish affected weeks separately; no acknowledgment or reservation transferred.");
+    setSelectedId(moved.id);
+    if (moved.week !== source.week) {
+      setCrossWeekMove({ assignmentId: moved.id, sourceWeek: source.week, destinationWeek: moved.week, sourceWasPublished: pendingSourcePublished });
+      setWeek(pendingSourcePublished ? source.week : moved.week);
+      setDetailsTab("publication");
+      setDetailsOpen(true);
+    }
+    setPendingMove(null);
+  }
+
+  async function reconcileMove() {
+    if (!pendingMove || !pendingSource) return;
+    const moved = pendingMove, source = pendingSource;
+    try {
+      const schedule = await shared.reconcilePending();
+      const retained = schedule?.assignments.find((item) => item.id === moved.id);
+      if (!retained || retained.workId !== moved.workId || retained.packageId !== moved.packageId || retained.week !== moved.week || retained.day !== moved.day || retained.date !== moved.date || retained.shift !== moved.shift || retained.crew !== moved.crew || retained.personHoursPerWorker !== moved.personHoursPerWorker || retained.people.join("|") !== moved.people.join("|")) {
+        setMessage("The original command resolved, but this booking differs from the retained draft. Compare the current schedule before making another change.");
+        return;
+      }
+      finishMove(retained, source);
+    } catch (error) { setMessage(error instanceof Error ? error.message : "The original schedule command remains unresolved."); }
+  }
+
   async function acknowledgeMove() {
     if (!pendingMove || !pendingSource) return;
     if (!pendingMove.personHoursPerWorker || pendingMove.personHoursPerWorker <= 0 || pendingMove.personHoursPerWorker > 24) {
       setMessage("Record the revised person-hours per worker before saving this assignment change."); return;
     }
     const assessment = assignmentAssessment(pendingMove, assignments, workspaceKey, work, profiles, pendingDemands);
-    if (assessment.errors.length || unchanged) { setMessage(assessment.errors.join(" ") || "Choose a different crew or day."); return; }
+    if (moveDateError || assessment.errors.length || unchanged) { setMessage(moveDateError || assessment.errors.join(" ") || "Choose a different date, crew or person."); return; }
     const placementChanged = pendingMove.week !== pendingSource.week || pendingMove.day !== pendingSource.day || pendingMove.crew !== pendingSource.crew;
     const peopleChanged = pendingMove.people.join("|") !== pendingSource.people.join("|");
     const timeChanged = pendingMove.shift !== pendingSource.shift;
     const hoursChanged = pendingMove.personHoursPerWorker !== pendingSource.personHoursPerWorker;
     if (!await saveBooking(pendingMove, `${pendingMove.crew}: ${placementChanged ? `moved from ${weekdays[pendingSource.day]} to ${weekdays[pendingMove.day]}` : "same day retained"}${timeChanged ? `; shift changed to ${pendingMove.shift}` : ""}${peopleChanged ? "; crew membership updated" : ""}${hoursChanged ? `; estimated effort changed to ${pendingMove.personHoursPerWorker} person-hours per worker` : ""}. Saved as a draft; publish the week before workers see the change and reserve the revised cost. ${assessment.release === "Release held" ? "Work release remains held pending the Work Record decision." : "This schedule change does not itself release work."}`)) return;
-    setSelectedId(pendingMove.id);
-    setPendingMove(null);
+    finishMove(pendingMove, pendingSource);
   }
 
   function closeDetails() {
@@ -283,6 +335,7 @@ export function CrewPlanningBoard({ workspaceKey, work, workReady, profiles, onO
 
     {firstIssue ? <section className="d5o-schedule-action-strip" aria-label="Schedule actions"><button type="button" onClick={() => { setSelectedId(firstIssue.item.id); setDetailsTab("booking"); setDetailsOpen(true); }}><strong>{assessed.filter(({ assessment }) => assessment.issues.length > 0).length} booking{assessed.filter(({ assessment }) => assessment.issues.length > 0).length === 1 ? "" : "s"} need resolution</strong><span>Review people, skills, or shift conflicts →</span></button></section> : null}
 
+    {crossWeekMove ? <section className="d5o-crew-message" role="status"><strong>Cross-week draft saved.</strong> {crossWeekMove.sourceWasPublished ? "The source-week publication remains visible to workers until you publish its revised or empty plan. Its prior acknowledgment remains historical." : "The source week has no published booking to withdraw."} The destination stays a draft until its own publication and fresh worker response. <button type="button" onClick={() => { setWeek(crossWeekMove.sourceWeek); setDetailsTab("publication"); setDetailsOpen(true); }}>Source week · {shortDate(dateFor(crossWeekMove.sourceWeek, 0))}</button> <button type="button" onClick={() => { setWeek(crossWeekMove.destinationWeek); setDetailsTab("publication"); setDetailsOpen(true); }}>Destination week · {shortDate(dateFor(crossWeekMove.destinationWeek, 0))}</button></section> : null}
     {message && !detailsOpen ? <p className="d5o-crew-message" role="status">{message}</p> : null}
 
     {currentCannotAttend.length ? <section className="d5o-attendance-queue" id="d5o-crew-attendance" aria-label="Crew attendance actions">
@@ -339,15 +392,18 @@ export function CrewPlanningBoard({ workspaceKey, work, workReady, profiles, onO
       <section ref={moveDialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="schedule-change-title" aria-describedby="schedule-change-description" className="d5o-schedule-dialog">
         <p>ACKNOWLEDGE SCHEDULE CHANGE</p>
         <h2 id="schedule-change-title">Move {pendingSource.crew}</h2>
-        <span id="schedule-change-description">Adjust the date, time, crew, or named people here. Saving revises the draft booking. Publish the week before workers see the change; publication does not release controlled work.</span>
-        <div className="d5o-schedule-change-route"><div><small>FROM</small><strong>{weekdays[pendingSource.day]} {pendingSource.shift} · {pendingSource.crew}</strong></div><div aria-hidden="true">→</div><div><small>TO</small><strong>{weekdays[pendingMove.day]} {pendingMove.shift} · {pendingMove.crew}</strong></div></div>
+        <span id="schedule-change-description">Choose a destination date, time, crew and named people. Saving changes only the draft. Publish each affected week to update workers; publication does not release controlled work.</span>
+        <div className="d5o-schedule-change-route"><div><small>FROM · {pendingTimezone}</small><strong>{pendingSource.date ?? dateKeyForSchedule(anchor, pendingSource.week, pendingSource.day)} · {pendingSource.shift}</strong><span>{pendingSource.crew} · week of {dateKeyForSchedule(anchor, pendingSource.week, 0)}</span></div><div aria-hidden="true">→</div><div><small>TO · {pendingTimezone}</small><strong>{pendingMove.date ?? dateKeyForSchedule(anchor, pendingMove.week, pendingMove.day)} · {pendingMove.shift}</strong><span>{pendingMove.crew} · week of {dateKeyForSchedule(anchor, pendingMove.week, 0)}</span></div></div>
+        <p>Named people: {pendingMove.people.join(", ")} · estimated {pendingMove.people.length * (pendingMove.personHoursPerWorker ?? 0)} person-hours. {pendingApprovedSlot ? "Destination matches the current Design demand slot." : "Destination does not match current Design demand. Use the Work Record for governed correction and fresh release/receipt."}</p>
         <div className="d5o-schedule-dialog-fields">
           <label>Estimated person-hours per worker<input type="number" min="0.01" max="24" step="0.01" required value={pendingMove.personHoursPerWorker ?? ""} onChange={(event) => setPendingMove({ ...pendingMove, personHoursPerWorker: Number(event.target.value) })} /></label>
-          <label>Day<select value={pendingMove.day} onChange={(event) => setPendingMove({ ...pendingMove, day: Number(event.target.value), date: dateKeyForSchedule(anchor, visibleWeek, Number(event.target.value)) })}>{weekdays.map((day, index) => <option key={day} value={index}>{day} · {shortDate(dateFor(visibleWeek, index))}</option>)}</select></label>
+          <label>Destination date<input type="date" value={pendingMove.date ?? dateKeyForSchedule(anchor, pendingMove.week, pendingMove.day)} onChange={(event) => chooseMoveDate(event.target.value)} /></label>
+          <label>Day in destination week<select value={pendingMove.day} onChange={(event) => { const day = Number(event.target.value); setMoveDateError(""); setPendingMove({ ...pendingMove, day, date: dateKeyForSchedule(anchor, pendingMove.week, day) }); }}>{weekdays.map((day, index) => <option key={day} value={index}>{day} · {shortDate(dateFor(pendingMove.week, index))}</option>)}</select></label>
           <label>Crew<select value={pendingMove.crew} onChange={(event) => setPendingMove({ ...pendingMove, crew: event.target.value })}>{crews.map((crew) => <option key={crew}>{crew}</option>)}</select></label>
           <label>Start time<input type="time" value={shiftTimes(pendingMove.shift).start} onChange={(event) => setPendingMove({ ...pendingMove, shift: `${event.target.value}–${shiftTimes(pendingMove.shift).end}` })} /></label>
           <label>End time<input type="time" value={shiftTimes(pendingMove.shift).end} onChange={(event) => setPendingMove({ ...pendingMove, shift: `${shiftTimes(pendingMove.shift).start}–${event.target.value}` })} /></label>
         </div>
+        {pendingMove.week !== pendingSource.week ? <p className="d5o-schedule-demand-change">This crosses calendar weeks. The old publication and acknowledgment remain historical. Publish the source week again to withdraw the old worker-visible booking, then publish the destination week to create its own worker response and labor reservation.</p> : null}
         {pendingRevisedDemand && pendingRequirement && JSON.stringify(pendingRevisedDemand.requiredSlots) !== JSON.stringify(pendingRequirement.requiredSlots) ? <p className="d5o-schedule-demand-change">This move also updates the Work Package required date/shift. Other bookings on the original slot keep that slot in the plan.</p> : null}
         <fieldset className="d5o-schedule-move-people"><legend>Named people · {pendingMove.people.length} selected</legend><div>{profiles.filter((person) => person.qualifications.includes(pendingAssessment.requiredQualification ?? "") || pendingMove.people.includes(person.name)).map((person) => {
           const selectedPerson = pendingMove.people.includes(person.name);
@@ -358,9 +414,9 @@ export function CrewPlanningBoard({ workspaceKey, work, workReady, profiles, onO
         })}</div></fieldset>
         <dl><div><dt>Qualifications</dt><dd>{pendingAssessment.unqualified.length ? `Missing for ${pendingAssessment.unqualified.join(", ")}` : `${pendingMove.people.length} people meet ${pendingAssessment.requiredQualification ?? "the configured requirement"}`}</dd></div><div><dt>Workload / conflicts</dt><dd>{pendingAssessment.overlappingPeople.length || pendingAssessment.overCapacity.length || pendingAssessment.unavailablePeople.length ? pendingAssessment.errors.join(" ") : "No person-day overlap or weekly capacity breach"}</dd></div><div><dt>Release decision</dt><dd><strong>{pendingAssessment.release}</strong> · {pendingAssessment.releaseDetail}</dd></div></dl>
         <ScheduleIssueDetail candidate={pendingMove} work={work} assessment={pendingAssessment} onReviewWork={() => { const record = work.find((item) => item.id === pendingMove.workId); if (record) { setPendingMove(null); onOpenDecision(record); } }} />
-        {pendingAssessment.errors.length || unchanged ? <p className="d5o-schedule-dialog-error" role="alert">{pendingAssessment.errors.join(" ") || "Choose a different day, time, crew, or person before saving."}</p> : null}
-        {shared.pending ? <p className="d5o-schedule-dialog-error" role="status">The schedule change may have committed. Keep these values and check the original command before another change. <button type="button" disabled={shared.busy} onClick={() => void shared.reconcilePending().catch(() => undefined)}>Check/retry original command</button></p> : null}
-        <footer><button disabled={Boolean(shared.pending)} onClick={() => setPendingMove(null)}>Cancel</button><button className="d5o-primary" disabled={Boolean(shared.pending || shared.busy || pendingAssessment.errors.length || unchanged || !pendingMove.personHoursPerWorker)} onClick={acknowledgeMove}>Acknowledge & save schedule</button></footer>
+        {moveDateError || pendingAssessment.errors.length || unchanged ? <p className="d5o-schedule-dialog-error" role="alert">{moveDateError || pendingAssessment.errors.join(" ") || "Choose a different date, time, crew, or person before saving."} {!pendingApprovedSlot && !moveDateError ? <button type="button" onClick={() => { const record = work.find((item) => item.id === pendingMove.workId); if (record) { setPendingMove(null); onOpenDecision(record); } }}>Open Work Record for Design correction →</button> : null}</p> : null}
+        {shared.pending ? <p className="d5o-schedule-dialog-error" role="status">The schedule change may have committed. Keep these values and check the original command before another change. <button type="button" disabled={shared.busy} onClick={() => void reconcileMove()}>Check/retry original command</button></p> : null}
+        <footer><button disabled={Boolean(shared.pending)} onClick={() => setPendingMove(null)}>Cancel</button><button className="d5o-primary" disabled={Boolean(shared.pending || shared.busy || moveDateError || pendingAssessment.errors.length || unchanged || !pendingMove.personHoursPerWorker)} onClick={acknowledgeMove}>Save draft move</button></footer>
       </section>
     </div> : null}
   </section>;
