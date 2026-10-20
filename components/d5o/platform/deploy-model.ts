@@ -85,9 +85,10 @@ export type DeployFinding = { key: string; severity: "blocker" | "unknown" | "wa
 export type DeployReadiness = { recommendation: "Ready for authorized start" | "Hold for information" | "Hold for resolution" | "Return for Design review"; releaseId: string | null; publicationId: string | null; findings: DeployFinding[] };
 
 /** Display the same pinned-calendar shift gate that the command enforces. */
-function scheduledStartPosition(date: string, shift: string, timezone: string, now: Date): "Current" | "Outside" | "Unknown" {
+function scheduledStartPosition(date: string, shift: string, timezone: string, leadMinutes: number, now: Date): "Current" | "Outside" | "Unknown" {
   const match = /^([0-2]\d):([0-5]\d)[\u2013-]([0-2]\d):([0-5]\d)$/.exec(shift);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !match || Number(match[1]) > 23 || Number(match[3]) > 23) return "Unknown";
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !match || Number(match[1]) > 23 || Number(match[3]) > 23
+    || !Number.isInteger(leadMinutes) || leadMinutes < 0 || leadMinutes > 60) return "Unknown";
   try {
     const parts = new Intl.DateTimeFormat("en-US", { timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(now);
     const value = (type: string) => Number(parts.find((part) => part.type === type)?.value);
@@ -95,7 +96,7 @@ function scheduledStartPosition(date: string, shift: string, timezone: string, n
     const [year, month, day] = date.split("-").map(Number);
     const start = Date.UTC(year, month - 1, day, Number(match[1]), Number(match[2]));
     const end = Date.UTC(year, month - 1, day + (match[3] + match[4] <= match[1] + match[2] ? 1 : 0), Number(match[3]), Number(match[4]));
-    return localNow >= start - 60 * 60_000 && localNow <= end ? "Current" : "Outside";
+    return localNow >= start - leadMinutes * 60_000 && localNow <= end ? "Current" : "Outside";
   } catch { return "Unknown"; }
 }
 
@@ -130,8 +131,9 @@ export function assessDeployReadiness(work: WorkRecord, packageId: string, sched
       add("released-slot", "blocker", "The published booking does not match the released crew-demand slot.", `Release ${release.id}`, "Return the changed shift for Design review and republish its crew plan.");
     if (detail && booking.date && (detail.windowStart && booking.date < detail.windowStart || detail.windowEnd && booking.date > detail.windowEnd))
       add("released-window", "blocker", "The published booking falls outside the released deployment window.", `Release ${release?.id ?? "unknown"}`, "Replan within the released window or return to Design.");
-    const shiftPosition = booking.date ? scheduledStartPosition(booking.date, booking.shift, timezone, now) : "Unknown";
-    if (shiftPosition === "Outside") add("shift-time", "blocker", `The published ${booking.date} ${booking.shift} shift is not current in ${timezone}.`, `Publication ${publication.id}`, "Authorize start during the published shift, no earlier than one hour before it begins.");
+    const leadMinutes = policy.fieldStartLeadMinutes ?? 60;
+    const shiftPosition = booking.date ? scheduledStartPosition(booking.date, booking.shift, timezone, leadMinutes, now) : "Unknown";
+    if (shiftPosition === "Outside") add("shift-time", "blocker", `The published ${booking.date} ${booking.shift} shift is not current in ${timezone}.`, `Publication ${publication.id}`, `Authorize start during the published shift, no earlier than ${leadMinutes} minutes before it begins.`);
     if (shiftPosition === "Unknown") add("shift-time", "unknown", "The published shift or pinned time zone cannot be assessed.", `Publication ${publication.id}`, "Confirm the shift format and pinned time zone before start.");
     const minimum = release?.crewDemandSnapshot?.minimumPeople ?? 1;
     if (booking.people.length < minimum) add("staffing", "blocker", `${booking.people.length} booked; ${minimum} required.`, "Released crew demand", "Cover the remaining positions.");
