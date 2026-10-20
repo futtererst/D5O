@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import type { WorkspaceKey } from "./work-types";
 import { assignableWorkspaceRoles } from "./role-presentation";
+import { WorkforceBookingImpact } from "@/components/d5o/admin/WorkforceBookingImpact";
 import styles from "./MemberAccessPanel.module.css";
 
 type Member = { membershipId: string; userId: string; email: string; confirmed: boolean;
@@ -204,6 +205,7 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
       <p><b>Roster:</b> {selected.person ? `${selected.displayName} (${selected.person}) · ${selected.personActive ? "active" : "inactive"} · ${selected.weeklyCapacityHours}h/week` : "No linked roster person"}</p>
       {selected.qualifications?.length ? <p>Recorded qualifications: {selected.qualifications.join(", ")}</p> : null}
       <p><b>Future assignment dependencies:</b> {selected.futureAssignments} current schedule assignment(s). Review these in Crew before changing access; history is retained.</p>
+      {selected.personId && <WorkforceBookingImpact personId={selected.personId} />}
       {selected.role !== "admin" && selected.role !== "field_worker" && <div>
         <label>Reason for this change<input value={reason} onChange={(event) => setReason(event.target.value)} minLength={8} maxLength={500} /></label>
         <button type="button" disabled={busy || Boolean(pending) || reason.trim().length < 8} onClick={() => void change({ action: selected.status === "active" ? "suspend" : "assign", email: selected.email, role: selected.role, expectedRole: selected.role, expectedStatus: selected.status, reason: reason.trim() })}>

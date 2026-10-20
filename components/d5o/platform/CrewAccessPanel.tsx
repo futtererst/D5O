@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import styles from "./CrewAccessPanel.module.css";
 import type { WorkforcePerson } from "./useWorkforce";
+import { WorkforceBookingImpact, type ProposedWorkforce } from "@/components/d5o/admin/WorkforceBookingImpact";
 
 type State = { revision: number; people: WorkforcePerson[] };
 export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: string }) {
@@ -14,14 +15,26 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
   const [futureAssignments, setFutureAssignments] = useState<number | null>(null);
   const [assignmentDates, setAssignmentDates] = useState<string[]>([]);
   const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
-  const [pending, setPending] = useState<{ commandId: string; action: string; data: Record<string, unknown>; expectedRevision: number } | null>(null);
+  const [pending, setPending] = useState<{ commandId: string; action: string; data: Record<string, unknown>; expectedRevision: number; expectedScheduleRevision: number | null } | null>(null);
   const [retryReady, setRetryReady] = useState(false);
+  const [impactBasis, setImpactBasis] = useState<{ personId: string; scheduleRevision: number; workforceRevision: number } | null>(null);
+  const [impactRefresh, setImpactRefresh] = useState(0);
+  const [proposed, setProposed] = useState<{ personId: string; profileRevision: number; value: ProposedWorkforce } | null>(null);
+  const [statusReviewId, setStatusReviewId] = useState<string | null>(null);
+  const receiveImpactBasis = useCallback((basis: { personId: string; scheduleRevision: number; workforceRevision: number } | null) => setImpactBasis(basis), []);
+  const currentProposal = selected && proposed?.personId === selected.id && proposed.profileRevision === selected.profileRevision
+    ? proposed.value : selected ? { active: selected.active, bound: selected.bound,
+      qualifications: selected.qualifications, weeklyCapacityHours: selected.weeklyCapacityHours } : undefined;
   const load = useCallback(async () => {
     const response = await fetch("/api/d5o-hosted/workforce?workspace=rybex", { cache: "no-store" });
     const body = await response.json() as State & { error?: string };
     if (!response.ok) throw new Error(body.error ?? "Workforce unavailable");
     setState(body);
-    if (selectedPersonId) setSelected(body.people.find((person) => person.id === selectedPersonId) ?? null);
+    setSelected((current) => {
+      const personId = selectedPersonId ?? current?.id;
+      return personId ? body.people.find((person) => person.id === personId) ?? null : null;
+    });
+    setImpactRefresh((value) => value + 1);
   }, [selectedPersonId]);
   useEffect(() => { void Promise.resolve().then(load).catch((failure) => setError(failure instanceof Error ? failure.message : "Workforce unavailable")); }, [load]);
   useEffect(() => {
@@ -67,7 +80,8 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
       }
       const response = await fetch("/api/d5o-hosted/workforce", { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ workspace: "rybex", action: pending.action, data: pending.data,
-          commandId: pending.commandId, expectedRevision: pending.expectedRevision }) });
+          commandId: pending.commandId, expectedRevision: pending.expectedRevision,
+          expectedScheduleRevision: pending.expectedScheduleRevision }) });
       const result = await response.json() as { error?: string };
       if (!response.ok) {
         if (response.status === 503) throw new Error("Retry outcome uncertain");
@@ -75,7 +89,7 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
         setError(`${result.error ?? "Workforce change rejected"}. Your input remains available; compare the current revision.`);
         return;
       }
-      await load(); setPending(null); setSelected(null); setError("The original workforce command was saved once.");
+      await load(); setPending(null); setError("The original workforce command was saved once.");
       window.dispatchEvent(new Event("d5o-workforce-updated"));
     } catch {
       try {
@@ -89,19 +103,26 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
   async function command(action: string, data: Record<string, unknown>) {
     if (!state) return;
     if (pending) { setError("Resolve the pending command before starting another workforce change."); return; }
-    const current = { commandId: crypto.randomUUID(), action, data, expectedRevision: state.revision };
+    const changesExistingPerson = Boolean(data.id);
+    const urgentDeactivation = action === "set-active" && data.active === false;
+    if (changesExistingPerson && !urgentDeactivation && (!impactBasis || impactBasis.personId !== data.id || impactBasis.workforceRevision !== state.revision)) {
+      setError("Refresh the current Crew impact before saving this workforce change. Your entries remain in the form."); return;
+    }
+    const current = { commandId: crypto.randomUUID(), action, data, expectedRevision: state.revision,
+      expectedScheduleRevision: changesExistingPerson && impactBasis && impactBasis.personId === data.id ? impactBasis.scheduleRevision : null };
     setPending(current); setRetryReady(false);
     setBusy(true); setError("");
     try {
       const response = await fetch("/api/d5o-hosted/workforce", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ workspace: "rybex", action, data,
-          commandId: current.commandId, expectedRevision: current.expectedRevision })
+          commandId: current.commandId, expectedRevision: current.expectedRevision,
+          expectedScheduleRevision: current.expectedScheduleRevision })
       });
       const result = await response.json() as { error?: string };
       if (!response.ok && response.status !== 503) { setPending(null); await load(); throw new Error(`${result.error ?? "Workforce change rejected"}. Your form remains available; compare the current revision.`); }
       if (!response.ok) throw new Error("Outcome uncertain");
-      await load(); setPending(null); setSelected(null);
+      await load(); setPending(null);
       window.dispatchEvent(new Event("d5o-workforce-updated"));
     } catch (failure) {
       if (pending === null) {
@@ -132,12 +153,30 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
       <div className={styles.list}>{state.people.map((item) => <div key={item.id}>
         <strong>{item.displayName}</strong><span>{item.qualifications.join(" · ")} · {item.weeklyCapacityHours}h/week</span>
         <small>{!item.active ? "Inactive" : item.bound ? `Account bound: ${item.email ?? item.workerUserId ?? "confirmed"}` : "Unbound — planning only"}</small>
-        <button type="button" disabled={busy} onClick={() => setSelected(item)}>Edit</button>
+        <button type="button" disabled={busy} onClick={() => { setStatusReviewId(null); setSelected(item); }}>Edit</button>
         <Link href={`/work/admin/workforce/${item.id}?workspace=rybex`}>Person details</Link>
-        <button type="button" disabled={busy || Boolean(pending)} onClick={() => { setSelected(item);
-          if (window.confirm(`${item.active ? "Deactivate" : "Reactivate"} ${item.displayName}? Review future assignments in Crew. Historical records will remain.`)) void command("set-active", { id: item.id, active: !item.active }); }}>{item.active ? "Deactivate" : "Reactivate"}</button>
+        <button type="button" disabled={busy || Boolean(pending)} onClick={() => {
+          setSelected(item); setStatusReviewId(item.id);
+        }}>Review {item.active ? "deactivation" : "reactivation"}</button>
       </div>)}{!state.people.length ? <p>No committed workforce records yet.</p> : null}</div>
-      <form className={styles.form} key={selected?.id ?? "new"} onSubmit={save}>
+      {selected && <WorkforceBookingImpact personId={selected.id} proposed={statusReviewId === selected.id && currentProposal
+        ? { ...currentProposal, active: !selected.active } : currentProposal} refreshKey={impactRefresh} onBasis={receiveImpactBasis} />}
+      {selected && statusReviewId === selected.id && <p>
+        <button type="button" disabled={busy || Boolean(pending) || Boolean(selected.active === false && !impactBasis)}
+          onClick={() => {
+            if (window.confirm(`${selected.active ? "Deactivate" : "Reactivate"} ${selected.displayName}? Current bookings remain unchanged; Crew must resolve any issue.`))
+              void command("set-active", { id: selected.id, active: !selected.active });
+          }}>Confirm {selected.active ? "deactivation" : "reactivation"}</button>
+        {selected.active && !impactBasis ? " Security deactivation remains available while booking impact is unavailable." : null}
+      </p>}
+      <form className={styles.form} key={selected?.id ?? "new"} onInput={(event) => {
+        if (!selected) return;
+        const values = new FormData(event.currentTarget);
+        setProposed({ personId: selected.id, profileRevision: selected.profileRevision,
+          value: { active: selected.active, bound: selected.bound,
+            qualifications: String(values.get("qualifications") ?? "").split(",").map((item) => item.trim()).filter(Boolean),
+            weeklyCapacityHours: Number(values.get("capacity")) } });
+      }} onSubmit={save}>
         {selected && <p>Roster ID {selected.id} · revision {selected.profileRevision} · {selected.bound ? "account-bound" : "planning only"}.
           {futureAssignments !== null ? ` ${futureAssignments} future assignment(s) require review before an access change.` : " Review Crew for assignment impact."}</p>}
         {selected && <p>Current assignment dates: {assignmentDates.join(", ") || "none shown"}. Unavailable dates: {unavailableDates.join(", ") || "none shown"}. Detailed booking amendments remain in Crew.</p>}
@@ -145,7 +184,7 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
         <label>Display name<input name="displayName" required defaultValue={selected?.displayName ?? ""} /></label>
         <label>Qualifications, comma separated<input name="qualifications" required defaultValue={selected?.qualifications.join(", ") ?? ""} /></label>
         <label>Weekly capacity (hours)<input name="capacity" required type="number" min="1" max="80" step="0.5" defaultValue={selected?.weeklyCapacityHours ?? 40} /></label>
-        <button className="d5o-primary" disabled={busy || Boolean(pending)}>{selected ? "Save person" : "Add person"}</button>
+        <button className="d5o-primary" disabled={busy || Boolean(pending) || Boolean(selected && !impactBasis)}>{selected ? "Save person" : "Add person"}</button>
         {selected ? <button type="button" onClick={() => setSelected(null)}>Cancel</button> : null}
       </form>
       {selected?.bound && <form className={styles.form} onSubmit={(event) => {

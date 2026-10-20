@@ -55,6 +55,26 @@ export function CrewPlanningBoard({ workspaceKey, work, workReady, profiles, onO
   const [pendingMove, setPendingMove] = useState<Assignment | null>(null);
   const moveDialogRef = useRef<HTMLElement>(null);
   const moveOpen = Boolean(pendingMove);
+  const focusedAssignment = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!shared.schedule || typeof window === "undefined") return;
+    const id = new URLSearchParams(window.location.search).get("assignment");
+    if (!id || focusedAssignment.current === id) return;
+    const booking = shared.schedule.assignments.find((item) => item.id === id)
+      ?? shared.schedule.publications.flatMap((item) => item.assignments).find((item) => item.id === id);
+    if (!booking) return;
+    const current = shared.schedule.assignments.some((item) => item.id === id);
+    const publishedSnapshot = new URLSearchParams(window.location.search).has("publication");
+    const frame = requestAnimationFrame(() => {
+      focusedAssignment.current = id;
+      setWeek(booking.week);
+      setSelectedId(id);
+      setDetailsTab(current && !publishedSnapshot ? "booking" : "publication");
+      setDetailsOpen(true);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [shared.schedule]);
 
   useEffect(() => {
     if (!shared.schedule || !entryFocus) return;

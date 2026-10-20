@@ -26,23 +26,20 @@ export async function POST(request: NextRequest) {
   if (!authoritativeD5OCommandsReady()) return reply({ error: "workforce_unavailable" }, 503);
   const raw = await request.text();
   if (raw.length > 12000) return reply({ error: "request_too_large" }, 413);
-  let input: { workspace?: string; action?: string; data?: Record<string, unknown>; commandId?: string; expectedRevision?: number };
+  let input: { workspace?: string; action?: string; data?: Record<string, unknown>; commandId?: string; expectedRevision?: number; expectedScheduleRevision?: number | null };
   try { input = JSON.parse(raw); } catch { return reply({ error: "invalid_request" }, 400); }
   if (input.workspace !== "rybex" || !allowed.has(input.action ?? "") ||
     !input.data || typeof input.commandId !== "string" ||
     !Number.isInteger(input.expectedRevision)) return reply({ error: "invalid_command" }, 400);
   const client = await createRybexSupabaseServerClient();
   const call = client.rpc.bind(client) as unknown as (name: string, args: Record<string, unknown>) => Promise<DbResult>;
-  const { data, error } = input.action === "correct-binding"
-    ? await call("d5o_hosted_correct_worker_binding_v1", {
-      p_workspace_key: input.workspace, p_person_id: input.data.id,
-      p_new_email: input.data.email, p_reason: input.data.reason,
-      p_command_id: input.commandId, p_expected_revision: input.expectedRevision
-    })
-    : await call("d5o_hosted_workforce_command_v1", {
-      p_workspace_key: input.workspace, p_action: input.action, p_input: input.data,
-      p_command_id: input.commandId, p_expected_revision: input.expectedRevision
-    });
+  if (input.expectedScheduleRevision != null && !Number.isInteger(input.expectedScheduleRevision))
+    return reply({ error: "invalid_schedule_revision" }, 400);
+  const { data, error } = await call("d5o_hosted_workforce_impact_command_v1", {
+    p_workspace_key: input.workspace, p_action: input.action, p_input: input.data,
+    p_command_id: input.commandId, p_expected_revision: input.expectedRevision,
+    p_expected_schedule_revision: input.expectedScheduleRevision ?? null
+  });
   if (error) return reply({ error: error.message },
     error.code === "42501" ? 403 : error.code === "23505" || error.code === "23514" ? 409 : 400);
   return reply(data);
