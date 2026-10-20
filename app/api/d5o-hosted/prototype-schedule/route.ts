@@ -34,11 +34,13 @@ export async function GET(request: NextRequest) {
   if (!workspaces.has(workspace)) return reply({ error: "invalid_target" }, 400);
   try {
     const context = await hostedPrototypeContext(workspace);
+    if (request.nextUrl.searchParams.get("identity") === "1")
+      return reply({ actorId: context.actor.id, workspace });
     const loaded = await context.read("schedule");
     const schedule = loaded.state
       ? { ...loaded.state, revision: loaded.revision }
       : initialHostedSchedule(workspace as WorkspaceKey);
-    return reply({ schedule: await withLaborHours(workspace, schedule, context.actor.role), canEdit: authoritativeD5OCommandsReady()
+    return reply({ schedule: await withLaborHours(workspace, schedule, context.actor.role), actorId: context.actor.id, canEdit: authoritativeD5OCommandsReady()
       ? ["admin", "project_manager", "operations_leader"].includes(context.actor.role) : context.canEdit,
       canManageAvailability: authoritativeD5OCommandsReady() && context.actor.role === "admin",
       delivery, requiresPublication: authoritativeD5OCommandsReady(), synthetic: true });
@@ -84,12 +86,16 @@ export async function POST(request: NextRequest) {
         error.code === "42501" ? 403 : error.code === "23505" || error.code === "23514" ? 409 : 400);
       const result = data as { state?: Record<string, unknown>; revision?: number } | null;
       if (!result?.state || !Number.isInteger(result.revision)) return reply({ error: "invalid_response" }, 502);
-      return reply({ schedule: await withLaborHours(workspace, { ...result.state, revision: result.revision }, context.actor.role), delivery,
+      let enriched: Record<string, unknown> = { ...result.state, revision: result.revision };
+      let enrichmentWarning = "";
+      try { enriched = await withLaborHours(workspace, enriched, context.actor.role); }
+      catch { enrichmentWarning = "The decision was committed, but labor hours could not be loaded. Refresh before using the cost view."; }
+      return reply({ schedule: enriched, actorId: context.actor.id, delivery,
         requiresPublication: true,
-        deliveryWarning: availabilityAction ? "Availability recorded. Existing bookings remain in place; scheduling conflicts need review."
+        deliveryWarning: enrichmentWarning || (availabilityAction ? "Availability recorded. Existing bookings remain in place; scheduling conflicts need review."
           : input.action === "publish"
           ? "The published booking is available in-app. External notification is not configured for this hosted pilot."
-          : "Booking saved as a draft. Publish this week before workers can see it. External notification is not configured.",
+          : "Booking saved as a draft. Publish this week before workers can see it. External notification is not configured."),
         synthetic: false });
     }
     if (!context.canEdit) return reply({ error: "workspace_forbidden" }, 403);
