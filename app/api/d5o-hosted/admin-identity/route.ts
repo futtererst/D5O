@@ -41,9 +41,9 @@ export async function POST(request: NextRequest) {
       || input.approvedRecipient !== true) return reply({ error: "invalid_identity_request" }, 400);
     const context = await hostedPrototypeContext(input.workspace);
     if (context.actor.role !== "admin") return reply({ error: "admin_membership_required" }, 403);
-    const allowedDomain = process.env.D5O_APPROVED_TEST_EMAIL_DOMAIN?.trim().toLowerCase();
-    if (!allowedDomain || input.email.trim().toLowerCase().split("@")[1] !== allowedDomain)
-      return reply({ error: "approved_test_mailbox_required", message: "Email delivery is disabled until an approved synthetic recipient domain is configured." }, 409);
+    const allowedAddress = process.env.D5O_APPROVED_TEST_EMAIL_ADDRESS?.trim().toLowerCase();
+    if (!allowedAddress || input.email.trim().toLowerCase() !== allowedAddress)
+      return reply({ error: "approved_test_mailbox_required", message: "Email delivery is limited to the configured test recipient." }, 409);
     // Next can reconstruct nextUrl with localhost even when the browser used
     // 127.0.0.1. The origin header was already checked against the Host header.
     const browserOrigin = request.headers.get("origin") ?? "";

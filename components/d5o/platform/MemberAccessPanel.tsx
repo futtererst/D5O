@@ -175,12 +175,12 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
     {!selectedUserId && <details><summary>Invite a synthetic sign-in account</summary>
       <p>Select the proposed workspace role. The Auth provider sends the setup email; an administrator makes a separate membership decision after recipient verification. Existing confirmed accounts use that membership decision without another Auth account or invitation email.</p>
       <form className={styles.form} onSubmit={(event) => { event.preventDefault(); void identity("invite", identityEmail.trim()); }}>
-        <label>Approved synthetic mailbox<input type="email" required value={identityEmail} onChange={(event) => setIdentityEmail(event.target.value)} /></label>
+        <label>Approved test recipient<input type="email" required value={identityEmail} onChange={(event) => setIdentityEmail(event.target.value)} /></label>
         <label>Proposed workspace role<select value={inviteRole} onChange={(event) => setInviteRole(event.target.value)}>
           {assignableWorkspaceRoles.map(([key, label]) => <option key={key} value={key}>{label}</option>)}
         </select></label>
         <label>Reason<input required minLength={8} value={identityReason} onChange={(event) => setIdentityReason(event.target.value)} /></label>
-        <label><input type="checkbox" checked={approvedRecipient} onChange={(event) => setApprovedRecipient(event.target.checked)} required /> I confirm this is an approved synthetic test recipient.</label>
+        <label><input type="checkbox" checked={approvedRecipient} onChange={(event) => setApprovedRecipient(event.target.checked)} required /> I confirm this recipient authorized a test email.</label>
         <button disabled={busy || Boolean(identityPending)}>Request invitation</button>
       </form><small>Provider acceptance is not proof of email delivery. Invitation tokens are never shown here or retained in the audit.</small>
     </details>}
@@ -214,7 +214,7 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
       <details><summary>Initiate account recovery</summary>
         <p>This sends a provider recovery request to the account email. It does not change workspace role, roster status or password directly.</p>
         <label>Reason<input required minLength={8} value={identityReason} onChange={(event) => setIdentityReason(event.target.value)} /></label>
-        <label><input type="checkbox" checked={approvedRecipient} onChange={(event) => setApprovedRecipient(event.target.checked)} /> Approved synthetic mailbox</label>
+        <label><input type="checkbox" checked={approvedRecipient} onChange={(event) => setApprovedRecipient(event.target.checked)} /> Approved test recipient</label>
         <button type="button" disabled={busy || Boolean(identityPending) || !approvedRecipient || identityReason.trim().length < 8}
           onClick={() => void identity("recovery", selected.email)}>Request recovery email</button>
         <small>Provider acceptance and delivery are separate. An uncertain response is never automatically resent.</small>
