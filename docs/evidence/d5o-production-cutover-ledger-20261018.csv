@@ -157,3 +157,4 @@
 "156","20261019170000_d5o_field_labor_source_text_precedence.sql","94dc07fa0ab1415cec4749285ebf09b3f20bd51de011f17abb575b047d24cbad","applied_mapped_version","20261019164403"
 "157","20261019183127_d5o_admin_backend.sql","32a41446832950f6200f94450197e2467c29e43e3b912987ed1fc2e658a3edde","applied_mapped_version","20261019211112"
 "158","20261019213000_d5o_hosted_configuration_management.sql","c84a3bea6ea3e73d24d9f001159977ec18ca2fe0d62045cafe924aee1a5bc12a","applied_mapped_version","20261019221852"
+"159","20261020085414_d5o_design_same_day_schedule_hold.sql","b63fa59ec06b70895f0d3dd268c6eff07d455186b1e3df2727bca3c0ac9be89c","applied_mapped_version","20261020085806"
