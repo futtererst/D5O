@@ -12,6 +12,9 @@ type Member = { membershipId: string; userId: string; email: string; confirmed: 
   personActive: boolean | null; qualifications: string[] | null;
   weeklyCapacityHours: number | null; futureAssignments: number };
 type Directory = { items: Member[]; total: number; offset: number };
+type Invitation = { commandId: string; email: string; requestedRole: string | null;
+  status: string; confirmed: boolean; membershipRole: string | null;
+  membershipStatus: string | null; createdAt: string; setupCompletedAt: string | null };
 type Pending = { commandId: string; payload: Record<string, unknown> };
 
 export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: WorkspaceKey; selectedUserId?: string }) {
@@ -23,6 +26,8 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
   const [role, setRole] = useState("project_manager");
   const [reason, setReason] = useState("");
   const [identityEmail, setIdentityEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState("project_manager");
+  const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [identityReason, setIdentityReason] = useState("");
   const [approvedRecipient, setApprovedRecipient] = useState(false);
   const [identityPending, setIdentityPending] = useState("");
@@ -39,8 +44,17 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
     if (!response.ok) throw new Error(body.error ?? "Directory unavailable");
     setDirectory(body);
   }, [workspace, submittedSearch, offset, selectedUserId]);
+  const refreshInvitations = useCallback(async () => {
+    const response = await fetch(`/api/d5o-hosted/admin-identity?workspace=${encodeURIComponent(workspace)}`,
+      { cache: "no-store" });
+    const body = await response.json() as { items?: Invitation[]; error?: string };
+    if (!response.ok) throw new Error(body.error ?? "Invitations unavailable");
+    setInvitations(body.items ?? []);
+  }, [workspace]);
   useEffect(() => { const timer = window.setTimeout(() => { void refresh().catch((error) => setMessage(error instanceof Error ? error.message : "Directory unavailable")); }, 0);
     return () => window.clearTimeout(timer); }, [refresh]);
+  useEffect(() => { const timer = window.setTimeout(() => { void refreshInvitations().catch(() => {}); }, 0);
+    return () => window.clearTimeout(timer); }, [refreshInvitations]);
 
   async function receipt(commandId: string) {
     const response = await fetch(`/api/d5o-hosted/admin-receipt?workspace=${encodeURIComponent(workspace)}&commandId=${encodeURIComponent(commandId)}`, { cache: "no-store" });
@@ -121,13 +135,16 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
     try {
       const response = await fetch("/api/d5o-hosted/admin-identity", { method: "POST",
         headers: { "Content-Type": "application/json" }, body: JSON.stringify({
-          workspace, action, email: address, reason: identityReason.trim(), approvedRecipient,
+          workspace, action, email: address, role: action === "invite" ? inviteRole : null,
+          reason: identityReason.trim(), approvedRecipient,
           commandId,
         }) });
       const body = await response.json() as { status?: string; message?: string; error?: string };
       if (!response.ok && response.status !== 503) { setIdentityPending(""); setMessage(body.message ?? body.error ?? "Request rejected"); return; }
       setMessage(body.message ?? "Provider outcome unresolved. Do not send another request.");
       if (body.status && body.status !== "uncertain") setIdentityPending("");
+      if (body.status === "existing_confirmed") { setEmail(address); setRole(inviteRole); }
+      void refreshInvitations().catch(() => setMessage("Request result retained, but the invitation list could not be refreshed. Reload or inspect Audit before another request."));
     } catch { setMessage("Provider response was lost. Check this command in Audit or with the administrator before any new request."); }
     finally { setBusy(false); }
   }
@@ -155,15 +172,32 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
         <label>Reason for access change<input value={reason} onChange={(event) => setReason(event.target.value)} minLength={8} maxLength={500} required /></label>
         <button type="submit" disabled={busy || Boolean(pending)}>{busy ? "Saving…" : "Assign or change role"}</button>
       </form></>}
-    {!selectedUserId && <details><summary>Invite a new synthetic sign-in account</summary>
-      <p>The Auth provider sends an invitation email; acceptance confirms the account. Assign workspace membership only after confirmation. No email is sent without an approved synthetic recipient domain configured on the server.</p>
+    {!selectedUserId && <details><summary>Invite a synthetic sign-in account</summary>
+      <p>Select the proposed workspace role. The Auth provider sends the setup email; an administrator makes a separate membership decision after recipient verification. Existing confirmed accounts use that membership decision without another Auth account or invitation email.</p>
       <form className={styles.form} onSubmit={(event) => { event.preventDefault(); void identity("invite", identityEmail.trim()); }}>
         <label>Approved synthetic mailbox<input type="email" required value={identityEmail} onChange={(event) => setIdentityEmail(event.target.value)} /></label>
+        <label>Proposed workspace role<select value={inviteRole} onChange={(event) => setInviteRole(event.target.value)}>
+          {assignableWorkspaceRoles.map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+        </select></label>
         <label>Reason<input required minLength={8} value={identityReason} onChange={(event) => setIdentityReason(event.target.value)} /></label>
         <label><input type="checkbox" checked={approvedRecipient} onChange={(event) => setApprovedRecipient(event.target.checked)} required /> I confirm this is an approved synthetic test recipient.</label>
         <button disabled={busy || Boolean(identityPending)}>Request invitation</button>
       </form><small>Provider acceptance is not proof of email delivery. Invitation tokens are never shown here or retained in the audit.</small>
     </details>}
+    {!selectedUserId && <section aria-label="Recent invitation requests">
+      <h3>Recent invitations</h3>
+      <button type="button" disabled={busy} onClick={() => void refreshInvitations().catch(() => setMessage("Invitation status could not be refreshed."))}>Refresh status</button>
+      {invitations.length === 0 && <p>No invitation requests recorded.</p>}
+      {invitations.map((item) => <div key={item.commandId}>
+        <strong>{item.email}</strong> · proposed {item.requestedRole?.replaceAll("_", " ") ?? "unknown"} · {item.status.replaceAll("_", " ")}
+        {item.membershipStatus ? ` · current access: ${item.membershipRole?.replaceAll("_", " ")} (${item.membershipStatus})` : " · no workspace membership"}
+        {(item.status === "setup_completed" || item.status === "existing_confirmed") && item.requestedRole
+          && !item.membershipStatus && <button type="button" onClick={() => {
+            setEmail(item.email); setRole(item.requestedRole!);
+            setMessage("Recipient identity is confirmed. Review the role and reason, then submit the separate membership decision.");
+          }}>Prepare membership decision</button>}
+      </div>)}
+    </section>}
     {selected ? <article><p><b>Sign-in:</b> {selected.confirmed ? "Confirmed" : "Unconfirmed"} · created {new Date(selected.createdAt).toLocaleString()}
       {selected.lastSignInAt ? ` · last sign-in ${new Date(selected.lastSignInAt).toLocaleString()}` : " · no recorded sign-in"}</p>
       <p><b>Membership:</b> {selected.role.replaceAll("_", " ")} · {selected.status}</p>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { safeInternalRedirectPath } from "@/lib/d5o/auth/redirects";
 import { signInAction } from "./actions";
 
@@ -60,6 +61,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
         ) : null}
         <button className="button button-primary" type="submit">Continue to your work</button>
       </form>
+      <p><Link href="/auth/forgot-password">Forgot password?</Link></p>
       </section>
     </main>
   );
