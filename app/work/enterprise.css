@@ -757,6 +757,29 @@
 @media (max-width:480px) { .d5o-full-app .d5o-schedule-inspector-grid,.d5o-full-app .d5o-crew-editor fieldset>div,.d5o-full-app .d5o-schedule-dialog-fields { grid-template-columns:1fr; }.d5o-full-app .d5o-schedule-change-route { grid-template-columns:1fr; }.d5o-full-app .d5o-schedule-change-route>div[aria-hidden=true] { display:none; }.d5o-full-app .d5o-schedule-inspector-actions { flex-wrap:wrap; } }
 
 .d5o-full-app .d5o-demand-board { background:#fff; border:1px solid #d7e2e8; border-radius:9px; overflow:hidden; }
+.d5o-full-app .d5o-demand-board { scroll-margin-top:90px; }
+.d5o-full-app .d5o-demand-ready summary { align-items:center; cursor:pointer; display:flex; flex-wrap:wrap; gap:10px; list-style:none; min-height:48px; padding:11px 18px; }
+.d5o-full-app .d5o-demand-ready summary::-webkit-details-marker { display:none; }
+.d5o-full-app .d5o-demand-ready summary::before { color:#8a681f; content:"▸"; font-size:13px; }
+.d5o-full-app .d5o-demand-ready[open] summary::before { content:"▾"; }
+.d5o-full-app .d5o-demand-ready summary strong { color:#193a49; font-size:14px; }
+.d5o-full-app .d5o-demand-ready summary span { color:#5b7683; font-size:12px; }
+.d5o-full-app .d5o-demand-ready .d5o-demand-list { border-top:1px solid #e1e9ed; }
+.d5o-full-app .d5o-demand-conflicts { background:#fff8ec; border-bottom:1px solid #ead4a8; display:flex; flex-wrap:wrap; gap:8px 16px; padding:10px 18px; }
+.d5o-full-app .d5o-demand-conflicts strong { color:#754b13; font-size:12px; }
+.d5o-full-app .d5o-demand-conflicts button { background:none; border:0; color:#744910; cursor:pointer; font:700 12px Arial,Helvetica,sans-serif; padding:0; text-align:left; text-decoration:underline; }
+.d5o-full-app .d5o-demand-prerequisite-count { border-top:1px solid #e1e9ed; color:#5b7683; font-size:12px; margin:0; padding:9px 18px; }
+.d5o-full-app .d5o-demand-prerequisites { background:#fff; border:1px solid #d9e4e9; border-radius:8px; }
+.d5o-full-app .d5o-demand-prerequisites summary { align-items:center; color:#244654; cursor:pointer; display:flex; font-size:13px; font-weight:800; gap:8px; min-height:44px; padding:11px 14px; }
+.d5o-full-app .d5o-demand-prerequisites summary strong { background:#fff2dc; border-radius:10px; color:#754b13; font-size:11px; padding:2px 7px; }
+.d5o-full-app .d5o-demand-prerequisites article { align-items:start; border-top:1px solid #e5ecef; display:flex; gap:12px; justify-content:space-between; padding:12px 14px; }
+.d5o-full-app .d5o-demand-prerequisites article>div { display:grid; gap:3px; min-width:0; }
+.d5o-full-app .d5o-demand-prerequisites article strong { color:#244654; font-size:12px; }
+.d5o-full-app .d5o-demand-prerequisites article span { color:#5b7480; font-size:12px; line-height:1.4; }
+.d5o-full-app .d5o-demand-prerequisites article button { background:#fff; border:1px solid #cbd9df; border-radius:5px; color:#295263; cursor:pointer; flex:none; font-size:12px; font-weight:800; min-height:40px; padding:8px 10px; }
+.d5o-full-app .d5o-demand-prerequisites>p { color:#5b7480; font-size:12px; margin:0; padding:12px 14px; }
+.d5o-full-app .d5o-package-demand-card[id] { scroll-margin-top:110px; }
+.d5o-full-app .d5o-package-demand-return { background:#fff; border:1px solid #cbd9df; border-radius:5px; color:#295263; cursor:pointer; font:800 12px Arial,Helvetica,sans-serif; min-height:40px; padding:8px 12px; text-align:left; }
 .d5o-full-app .d5o-crew-load-state { background:#fff; border:1px solid #d7e2e8; border-radius:8px; display:grid; gap:6px; padding:22px; }
 .d5o-full-app .d5o-crew-load-state strong { color:#234452; font-size:15px; }
 .d5o-full-app .d5o-crew-load-state span { color:#5c7683; font-size:12px; }
@@ -812,6 +835,7 @@
 .d5o-full-app .d5o-schedule-staffing-blocker button { background:#fff; border:1px solid #d9b877; border-radius:5px; color:#745018; cursor:pointer; font:inherit; font-size:11px; font-weight:800; justify-self:start; margin-top:3px; padding:7px 10px; }
 @media (max-width:1000px) { .d5o-full-app .d5o-demand-row { grid-template-columns:minmax(210px,1.6fr) minmax(165px,1fr); }.d5o-full-app .d5o-demand-row.is-missing { grid-template-columns:minmax(210px,1.6fr) minmax(165px,1fr); }.d5o-full-app .d5o-demand-actions { justify-content:flex-start; } }
 @media (max-width:650px) { .d5o-full-app .d5o-demand-board>header { align-items:flex-start; flex-direction:column; }.d5o-full-app .d5o-demand-row,.d5o-full-app .d5o-demand-row.is-missing { grid-template-columns:1fr; gap:10px; }.d5o-full-app .d5o-demand-actions { flex-wrap:wrap; }.d5o-full-app .d5o-demand-review article { align-items:flex-start; flex-direction:column; } }
+@media (max-width:650px) { .d5o-full-app .d5o-demand-prerequisites article { flex-direction:column; }.d5o-full-app .d5o-demand-prerequisites article button { align-self:flex-start; }.d5o-full-app .d5o-demand-conflicts { flex-direction:column; } }
 
 /* Keep the scheduler's main surface actionable; supporting context lives in a drawer. */
 .d5o-full-app .d5o-schedule-head-actions { align-items:center; display:flex; flex-wrap:wrap; gap:9px; }
