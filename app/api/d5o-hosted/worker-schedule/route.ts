@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
     if (authoritativeD5OCommandsReady()) {
       const input = await request.json() as CrewResponseMutation & { commandId?: string };
       if (!input.commandId || !Number.isInteger(input.expectedRevision)) return reply({ error: "command_identity_required" }, 400);
+      const inventory = await hostedConfigurationInventory(workspace);
       const client = await createRybexSupabaseServerClient();
       const call = client.rpc.bind(client) as unknown as (name: string, args: Record<string, unknown>) => Promise<{
         data: unknown; error: { code?: string; message: string } | null
@@ -73,18 +74,18 @@ export async function POST(request: NextRequest) {
       const scoped = data as { person?: string; state?: SharedSchedule; revision?: number } | null;
       if (error || !scoped?.person || !scoped.state) return reply({ error: error?.message ?? "worker_response_unavailable" }, error?.code === "42501" ? 403 : error?.code === "23505" || error?.code === "23514" ? 409 : 503);
       const worker = await hostedWorkerContext(workspace);
-      const [work, inventory] = await Promise.all([worker.read("work"), hostedConfigurationInventory(workspace)]);
+      const work = await worker.read("work");
       return reply(view({ ...scoped.state, revision: scoped.revision ?? 0 }, scoped.person,
         (work.state?.records as WorkRecord[] | undefined) ?? [], inventory));
     }
     const context = await hostedWorkerContext(workspace);
     const input = await request.json() as CrewResponseMutation;
-    const loaded = await context.read("schedule");
+    const [loaded, inventory] = await Promise.all([context.read("schedule"), hostedConfigurationInventory(workspace)]);
     if (!loaded.state) return reply({ error: "schedule_unavailable" }, 404);
     const schedule = { ...loaded.state, revision: loaded.revision } as SharedSchedule;
     applyCrewResponse(schedule, context.actor, context.person, input);
     const saved = await context.save("schedule", loaded.revision, schedule as unknown as Record<string, unknown>);
-    const [work, inventory] = await Promise.all([context.read("work"), hostedConfigurationInventory(workspace)]);
+    const work = await context.read("work");
     return reply(view({ ...saved.state, revision: saved.revision } as SharedSchedule, context.person,
       (work.state?.records as WorkRecord[] | undefined) ?? [], inventory));
   } catch (error) {
