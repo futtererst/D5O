@@ -20,6 +20,8 @@ function confirmationDestination(next: string) {
   return `${origin}/auth/confirm?next=${encodeURIComponent(next)}`;
 }
 
+const neutralRequestMessage = "Request submitted. If this address is eligible, check its mailbox for a confirmation link. Delivery is not yet verified.";
+
 export function CreateAccountForm({ next, initialResend }: { next: string; initialResend: boolean }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -54,15 +56,17 @@ export function CreateAccountForm({ next, initialResend }: { next: string; initi
         else if (/password|weak/i.test(error.message))
           setMessage("The password did not meet the email provider’s requirements. Choose a stronger password and try again.");
         else if (/already.registered|already exists/i.test(error.message)) {
+          setPassword("");
+          setConfirmation("");
           setSent(true);
-          setMessage("If this address is eligible, check its mailbox. You can also sign in or recover an existing account.");
+          setMessage(neutralRequestMessage);
         } else setMessage("The request could not be completed. Check your entries and try again; they are preserved.");
         return;
       }
       setPassword("");
       setConfirmation("");
       setSent(true);
-      setMessage("Request accepted by the email provider. Check your mailbox for a confirmation link. Delivery is not yet verified.");
+      setMessage(neutralRequestMessage);
     } catch {
       setMessage("The request could not be completed. Check your connection and try again; your entries are preserved.");
     } finally {
