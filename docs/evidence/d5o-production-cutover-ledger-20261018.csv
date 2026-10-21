@@ -165,4 +165,4 @@
 "164","20261020200000_d5o_worker_binding_publication_attribution.sql","e9a0b09d5ae2beaabf54899b01132b9db4596f036b52775a20a2faad1d81d5d7","applied_mapped_version","20261020205350"
 "165","20261020223652_d5o_cross_week_empty_publication.sql","e95788dcd9a1595017517226c6ae95c2c8266fd62012ccaec187a7b5f2fda79c","applied_mapped_version","20261020235720"
 "166","20261020231536_d5o_worker_empty_publication_projection.sql","1cdd15a5eb9b860db0d84c3827988d4c2abf39d08f297ab855dc7de0e414cd2b","applied_mapped_version","20261020235730"
-"167","20261021114905_d5o_field_worker_invitation_proposal.sql","07d41d61d32b85b030ce9625057fe68c53bfb345308db32b7020b89cb5e8a7a1","pending",""
+"167","20261021114905_d5o_field_worker_invitation_proposal.sql","07d41d61d32b85b030ce9625057fe68c53bfb345308db32b7020b89cb5e8a7a1","applied_mapped_version","20261021123923"
