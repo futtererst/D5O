@@ -8,3 +8,5 @@
 .top a{color:#16415c;font-size:13px}
 .top small{color:#607985}
 .top :is(a,button):focus-visible{outline:3px solid #bf9625;outline-offset:2px}
+.footer { overflow-wrap: anywhere; }
+.heading p,.status { overflow-wrap: anywhere; }

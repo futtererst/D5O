@@ -62,8 +62,23 @@ export default async function WorkHomePage({ searchParams }: {
     </main>;
     const permitted = entries.find((entry) => entry.workspaceKey === selected);
     if (!permitted || selected !== "rybex" && selected !== "rotork")
-      return <main className={styles.entry}><h1>Workspace unavailable</h1>
-        <p>This account cannot open the requested D5O workspace.</p><Link href="/work">Choose a workspace</Link></main>;
+      return <main className={styles.entry}>
+        <div className={styles.brand}>D5O <span>System of work</span></div>
+        <section className={styles.intro} role="status">
+          <p>WORKSPACE ACCESS</p>
+          <h1>Workspace unavailable</h1>
+          <span>This account cannot open the requested D5O workspace. Your current membership controls which workspace you can enter.</span>
+        </section>
+        <section className={styles.setup}>
+          <h2>What to do next</h2>
+          <p>Choose an available workspace, or sign out to use another account.</p>
+          <div className={styles.entryActions}>
+            <Link href="/work">Choose a workspace</Link>
+            <Link href="/auth/sign-out" prefetch={false}>Sign out</Link>
+          </div>
+        </section>
+        <p className={styles.notice}>Workspace access is managed separately from sign-in. Build {sourceVersion.slice(0, 12)}.</p>
+      </main>;
     if (permitted.role === "field_worker")
       redirect(`/work/my-schedule?workspace=${encodeURIComponent(permitted.workspaceKey)}`);
     const workspace = selected as WorkspaceKey;
