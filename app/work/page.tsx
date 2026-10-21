@@ -34,6 +34,7 @@ export default async function WorkHomePage({ searchParams }: {
     const entries = result.data as Array<{ workspaceKey: string; workspaceName: string; role: string }>;
     const params = await searchParams;
     const selected = params?.workspace;
+    if (selected && entries.length === 0) redirect("/work");
     if (!selected && entries.length === 1 && entries[0].role === "field_worker")
       redirect(`/work/my-schedule?workspace=${encodeURIComponent(entries[0].workspaceKey)}`);
     if (!selected) return <main className={styles.entry}>
@@ -54,7 +55,7 @@ export default async function WorkHomePage({ searchParams }: {
       </Link>)}</div>
       {!entries.length ? <section role="status" className={styles.setup}>
         <h2>Account ready · workspace access pending</h2>
-        <p>Your sign-in account is active, but a workspace administrator has not granted access. Ask your trial operator to review the pending invitation and make a separate access decision. Field workers also need a fictional roster person and account binding before My Schedule opens.</p>
+        <p>Your sign-in account is active, but a workspace administrator has not granted access. Ask your trial operator to review your account and make a separate access decision. Field workers also need a fictional roster person and account binding before My Schedule opens.</p>
         <p>Signing in does not grant Work, roster, financial or private-document access.</p>
       </section> : null}
       <p className={styles.notice}>{isolatedPilot ? "Isolated pilot database. Decision authority remains under qualification." : "Authenticated commands govern canonical Work Records. Historical prototype records retain their recorded provenance."} Build {sourceVersion.slice(0, 12)}.</p>

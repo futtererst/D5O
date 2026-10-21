@@ -61,7 +61,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
         ) : null}
         <button className="button button-primary" type="submit">Continue to your work</button>
       </form>
-      <p><Link href="/auth/forgot-password">Forgot password?</Link></p>
+      <p><Link href="/auth/forgot-password">Forgot password?</Link> · <Link href={`/auth/create-account?next=${encodeURIComponent(next)}`}>Create account</Link></p>
       </section>
     </main>
   );

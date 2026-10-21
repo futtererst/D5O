@@ -8197,6 +8197,9 @@ section:target {
 .d5o-signin-form label { color: #284351; display: grid; font-size: .86rem; font-weight: 800; gap: 7px; }
 .d5o-signin-form input { background: #fff; border: 1px solid #c7d4db; border-radius: 8px; color: #17313e; font: inherit; font-size: 1rem; min-height: 46px; padding: 10px 12px; }
 .d5o-signin-form .button { justify-content: center; margin-top: 4px; min-height: 48px; }
+.d5o-auth-help { color:#526e7b; font-size:.875rem; line-height:1.45; margin:-7px 0 0; }
+.d5o-auth-toggle, .d5o-auth-link { background:none; border:0; color:#174967; cursor:pointer; font:inherit; font-weight:700; padding:4px 0; text-align:left; text-decoration:underline; text-underline-offset:3px; }
+.d5o-signin-page :is(.d5o-auth-toggle, .d5o-auth-link):focus-visible { outline:3px solid #bf9625; outline-offset:2px; }
 .d5o-record-pulse { background: #fff; border: 0 !important; border-radius: 0 !important; border-bottom: 1px solid #dce5ea !important; border-top: 1px solid #dce5ea !important; padding: 18px 0 !important; }
 .d5o-record-pulse > p { color: #667b87; font-size: .72rem !important; }
 .d5o-record-pulse > div > div { border: 0 !important; border-left: 1px solid #e3eaee !important; border-radius: 0 !important; padding: 8px 16px !important; }

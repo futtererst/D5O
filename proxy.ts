@@ -124,6 +124,8 @@ function isPublicRoute(pathname: string) {
     pathname === SIGN_OUT_PATH ||
     pathname.startsWith(`${SIGN_OUT_PATH}/`) ||
     pathname === "/auth/set-password" ||
+    pathname === "/auth/create-account" ||
+    pathname === "/auth/confirm" ||
     pathname === "/auth/forgot-password" ||
     pathname === "/api/auth/password-recovery" ||
     pathname === "/api/health" ||
