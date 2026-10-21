@@ -7,6 +7,7 @@ import { scheduleBookingContext, type SharedSchedule } from "@/components/d5o/pl
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
+import { workerPackageProgress } from "@/lib/d5o/prototype-work/deploy-worker-projection";
 import type { ConfigurationInventory } from "@/lib/d5o/configuration/version-inventory";
 import { hostedConfigurationInventory } from "@/lib/d5o/hosted/configuration-inventory";
 import { resolvePublishedPhaseConfiguration } from "@/components/d5o/platform/published-phase-configuration";
@@ -25,7 +26,7 @@ function view(state: SharedSchedule, person: string, records: WorkRecord[], inve
       return { publicationId: publication.id, publishedAt: publication.publishedAt,
       assignmentId: assignment.id, crew: assignment.crew, date: assignment.date, shift: assignment.shift, timeZone: zones.get(assignment.workId),
       ...scheduleBookingContext(assignment), ...(record ? { workTitle: record.title, site: record.site,
-        packageName: workPackage?.name ?? "Package details unavailable" } : {}), workId: assignment.workId, packageId: assignment.packageId,
+        packageName: workPackage?.name ?? "Package details unavailable", progress: workerPackageProgress(record, assignment.packageId) } : {}), workId: assignment.workId, packageId: assignment.packageId,
       response: state.receipts.find((receipt) => receipt.publicationId === publication.id && receipt.assignmentId === assignment.id && receipt.recipient === person) ?? null }; })) };
 }
 export async function GET() {

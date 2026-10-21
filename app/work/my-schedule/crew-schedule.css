@@ -32,6 +32,7 @@
 .d5o-crew-self-date span,.d5o-crew-self-booking small,.d5o-crew-self-response small { color:#64808c; font-size:11px; }
 .d5o-crew-self-booking h2 { font-size:17px; margin:5px 0 2px; }
 .d5o-crew-self-booking p { color:#4d6875; font-size:12px; margin:0 0 6px; }
+.d5o-crew-self-booking .d5o-crew-self-progress{background:#edf4f7;border-radius:7px;color:#173b51;font-weight:700;line-height:1.5;overflow-wrap:anywhere;padding:7px 9px}
 .d5o-crew-self-response { align-items:start; display:grid; gap:7px; }
 .d5o-crew-self-work-link { border:1px solid #c3d2da; border-radius:6px; color:#214554; display:block; font-size:12px; font-weight:700; padding:11px 13px; text-align:center; text-decoration:none; }
 .d5o-crew-self-work-link.is-primary { background:var(--accent); border-color:var(--accent); color:#111d24; }
