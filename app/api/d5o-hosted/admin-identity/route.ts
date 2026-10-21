@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRybexSupabaseAdminClient } from "@/lib/d5o/auth/supabase-server";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
+import { isApprovedTestRecipient } from "@/lib/d5o/auth/approved-test-recipient";
 
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 type Rpc = { data: { fresh?: boolean; status?: string; providerRequired?: boolean } | null; error: { code?: string } | null };
 const invitationRoles = new Set(["executive","operations_leader","business_development_lead",
-  "project_manager","billing_commercial_lead","field_supervisor","closeout_lead","read_only_auditor"]);
+  "project_manager","billing_commercial_lead","field_supervisor","closeout_lead","read_only_auditor","field_worker"]);
 export async function GET(request: NextRequest) {
   try {
     const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
@@ -41,8 +42,7 @@ export async function POST(request: NextRequest) {
       || input.approvedRecipient !== true) return reply({ error: "invalid_identity_request" }, 400);
     const context = await hostedPrototypeContext(input.workspace);
     if (context.actor.role !== "admin") return reply({ error: "admin_membership_required" }, 403);
-    const allowedAddress = process.env.D5O_APPROVED_TEST_EMAIL_ADDRESS?.trim().toLowerCase();
-    if (!allowedAddress || input.email.trim().toLowerCase() !== allowedAddress)
+    if (!isApprovedTestRecipient(input.email))
       return reply({ error: "approved_test_mailbox_required", message: "Email delivery is limited to the configured test recipient." }, 409);
     // Next can reconstruct nextUrl with localhost even when the browser used
     // 127.0.0.1. The origin header was already checked against the Host header.
@@ -60,7 +60,9 @@ export async function POST(request: NextRequest) {
     if (intent.error) return reply({ error: intent.error.code === "42501" ? "admin_membership_required" : "identity_intent_rejected" }, intent.error.code === "42501" ? 403 : 409);
     if (intent.data?.fresh !== true) return reply({ status: intent.data?.status ?? "uncertain", message: "Existing request retained; the provider action was not repeated." });
     if (intent.data?.providerRequired === false) return reply({ status: "existing_confirmed",
-      message: "This sign-in account is already confirmed. Review its current workspace access and assign the selected role through the separate membership decision. No invitation email was sent." });
+      message: input.role === "field_worker"
+        ? "This sign-in account is already confirmed. Use Workforce to create or select a fictional roster person, record qualifications and capacity, and bind the account. No invitation email or worker membership was created."
+        : "This sign-in account is already confirmed. Review its current workspace access and assign the selected role through the separate membership decision. No invitation email was sent." });
     let outcome: "provider_accepted" | "provider_rejected" | "uncertain" = "uncertain";
     let providerUserId: string | null = null;
     try {

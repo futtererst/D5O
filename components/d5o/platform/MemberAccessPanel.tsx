@@ -144,7 +144,9 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
       if (!response.ok && response.status !== 503) { setIdentityPending(""); setMessage(body.message ?? body.error ?? "Request rejected"); return; }
       setMessage(body.message ?? "Provider outcome unresolved. Do not send another request.");
       if (body.status && body.status !== "uncertain") setIdentityPending("");
-      if (body.status === "existing_confirmed") { setEmail(address); setRole(inviteRole); }
+      if (body.status === "existing_confirmed" && inviteRole !== "field_worker") {
+        setEmail(address); setRole(inviteRole);
+      }
       void refreshInvitations().catch(() => setMessage("Request result retained, but the invitation list could not be refreshed. Reload or inspect Audit before another request."));
     } catch { setMessage("Provider response was lost. Check this command in Audit or with the administrator before any new request."); }
     finally { setBusy(false); }
@@ -179,6 +181,7 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
         <label>Approved test recipient<input type="email" required value={identityEmail} onChange={(event) => setIdentityEmail(event.target.value)} /></label>
         <label>Proposed workspace role<select value={inviteRole} onChange={(event) => setInviteRole(event.target.value)}>
           {assignableWorkspaceRoles.map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+          <option value="field_worker">Field worker · roster binding required</option>
         </select></label>
         <label>Reason<input required minLength={8} value={identityReason} onChange={(event) => setIdentityReason(event.target.value)} /></label>
         <label><input type="checkbox" checked={approvedRecipient} onChange={(event) => setApprovedRecipient(event.target.checked)} required /> I confirm this recipient authorized a test email.</label>
@@ -192,8 +195,10 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
       {invitations.map((item) => <div key={item.commandId}>
         <strong>{item.email}</strong> · proposed {item.requestedRole?.replaceAll("_", " ") ?? "unknown"} · {item.status.replaceAll("_", " ")}
         {item.membershipStatus ? ` · current access: ${item.membershipRole?.replaceAll("_", " ")} (${item.membershipStatus})` : " · no workspace membership"}
+        {(item.status === "setup_completed" || item.status === "existing_confirmed") && item.requestedRole === "field_worker"
+          && !item.membershipStatus && <p>Account setup is confirmed. Create or select a fictional roster person in Workforce, record qualifications and capacity, then bind this confirmed account. The invitation alone grants no worker access.</p>}
         {(item.status === "setup_completed" || item.status === "existing_confirmed") && item.requestedRole
-          && !item.membershipStatus && <button type="button" onClick={() => {
+          && item.requestedRole !== "field_worker" && !item.membershipStatus && <button type="button" onClick={() => {
             setEmail(item.email); setRole(item.requestedRole!);
             setMessage("Recipient identity is confirmed. Review the role and reason, then submit the separate membership decision.");
           }}>Prepare membership decision</button>}
