@@ -48,3 +48,12 @@ This is one operator walkthrough with ordinary fictional role sessions, not part
 Use the existing feedback table above for actual participant observations. Record the exact role, Work, task, device width, expected and actual result, without credentials or private bytes. The operator exercise does not establish participant acceptance.
 
 \n
+
+## Operator preparation — Wednesday 21 October 2026 (not participant feedback)
+
+| Time (EDT) | Role | Work | Exercise / step | Expected | Observed | Build | Status / owner |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 5:15 PM | PM and separate fictional worker | Benefactor Rehearsal · Bay L | Publish one new Thursday booking and acknowledge it | New worker can see and accept the assignment; previously acknowledged Bay H stays intact | Shared week publication `8796963e-2b73-4985-a26e-2cb8f8a98966` added booking `crew-rybex-16`; the worker accepted it at 5:16 PM. Bay H `crew-rybex-15` was unchanged and its response carried. The existing $75 Bay H labor reservation retained ID `ab6475aa-1058-4f98-9276-d291b35245c7`; a distinct $75 Bay L reservation was created. No external alert provider is configured. | `396c837fb0cb` | Preparation passed; time-valid start and report rehearsal due Thursday. |
+| During preparation | PM | Benefactor Rehearsal · Bay L | Read and save the fictional proposal | Retained revision and clear outcome | The authenticated Work-state read intermittently returned HTTP 503; a PM save made no request while the Work view was still loading. After exact-state reconciliation, the retained proposal was reviewed, the synthetic award recorded and the Design handoff independently received. | `396c837fb0cb` | Reliability watch: check current Work/receipt after an uncertain response; assess during connected rehearsal. |
+
+These are operator observations only. The Friday participant Work remains unbooked and unacknowledged. No participant feedback or acceptance is inferred.
