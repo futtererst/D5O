@@ -238,6 +238,11 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
   const [stalePreparationLink, setStalePreparationLink] = useState(false);
   const [work, setWork] = useState<Work[]>(() => hostedPreview ? [] : seed.map(hydrate));
   const [workLoaded, setWorkLoaded] = useState(false);
+  const [workReadStatus, setWorkReadStatus] = useState<"loading" | "ready" | "failed">("loading");
+  const [workReadAttempt, setWorkReadAttempt] = useState(0);
+  const [workRefreshFailed, setWorkRefreshFailed] = useState(false);
+  const [loadedWorkScope, setLoadedWorkScope] = useState<string | null>(null);
+  const workScopeRef = useRef<string | null>(null);
   const [canEditWork, setCanEditWork] = useState(false);
   const [sharedWorkRevision, setSharedWorkRevision] = useState<number | null>(null);
   const lastSharedWork = useRef("");
@@ -346,11 +351,23 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
   useEffect(() => {
     let active = true;
     const restore = async () => {
+      const scope = `${initialWorkspace}:${actorId}`;
+      if (workScopeRef.current !== scope) {
+        workScopeRef.current = scope;
+        setWork([]);
+        lastSharedWork.current = "";
+        sharedWorkRevisionRef.current = null;
+        setSharedWorkRevision(null);
+        setLoadedWorkScope(null);
+      }
+      setWorkReadStatus("loading");
+      setWorkLoaded(false);
       let restored = hostedPreview ? [] : seed.filter((record) => record.workspace === initialWorkspace).map(hydrate);
       let revision: number | null = null;
       let fromShared = false;
       try {
         const response = await fetch(workStateEndpoint, { cache: "no-store" });
+        if (hostedPreview && !response.ok) throw new Error("hosted_work_read_failed");
         if (response.ok) {
           const payload = await response.json() as { state?: { revision: number; records: Work[] }; canEdit?: boolean };
           if (active) setCanEditWork(payload.canEdit === true);
@@ -358,9 +375,17 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
             revision = payload.state.revision;
             restored = payload.state.records.map(hydrate);
             fromShared = true;
-          } else if (hostedPreview && response.ok) revision = 0;
+          } else if (hostedPreview && !payload.state) revision = 0;
+          else if (hostedPreview) throw new Error("hosted_work_response_invalid");
         }
-      } catch { /* The browser-local copy remains a usable offline fallback. */ }
+      } catch {
+        if (hostedPreview && active) {
+          setCanEditWork(false);
+          setWorkReadStatus("failed");
+          return;
+        }
+        // The browser-local copy remains a usable offline fallback.
+      }
       if (!fromShared && !hostedPreview) {
         try {
           const saved = localStorage.getItem(`d5o.full-prototype.v3:${initialWorkspace}`);
@@ -379,10 +404,13 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       setSharedWorkRevision(revision);
       setWork(restored);
       setWorkLoaded(true);
+      setWorkRefreshFailed(false);
+      setLoadedWorkScope(scope);
+      setWorkReadStatus("ready");
     };
     void restore();
     return () => { active = false; };
-  }, [initialWorkspace, hostedPreview, workStateEndpoint]);
+  }, [initialWorkspace, hostedPreview, workStateEndpoint, actorId, workReadAttempt]);
 
   useEffect(() => {
     let savedAccent: string = workspace[initialWorkspace].color;
@@ -475,13 +503,21 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
 
   useEffect(() => {
     if (!workLoaded || sharedWorkRevision === null) return;
-    const timer = window.setInterval(async () => {
+    let inFlight = false;
+    let active = true;
+    const refresh = async () => {
+      if (!active || document.visibilityState !== "visible" || inFlight) return;
+      inFlight = true;
       try {
         const response = await fetch(workStateEndpoint, { cache: "no-store" });
-        if (!response.ok) return;
-        const payload = await response.json() as { state?: { revision: number; records: Work[] } };
+        if (!active) return;
+        if (!response.ok) { setWorkRefreshFailed(true); return; }
+        const payload = await response.json() as { revision?: number; state?: { revision: number; records: Work[] } | null };
+        if (!payload.state && payload.revision === 0 && sharedWorkRevisionRef.current === 0) { setWorkRefreshFailed(false); return; }
+        if (!payload.state || !Array.isArray(payload.state.records)) { setWorkRefreshFailed(true); return; }
+        setWorkRefreshFailed(false);
         const remote = payload.state;
-        if (!remote || remote.revision <= (sharedWorkRevisionRef.current ?? 0)) return;
+        if (remote.revision <= (sharedWorkRevisionRef.current ?? 0)) return;
         const localSerialized = JSON.stringify(work);
         if (localSerialized !== lastSharedWork.current) {
           setNotice("Another browser has a newer shared Work Record state. Your local edits are preserved; refresh after saving or copying them.");
@@ -493,10 +529,14 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
         sharedWorkRevisionRef.current = remote.revision;
         setSharedWorkRevision(remote.revision);
         setWork(records);
-      } catch { /* Shared refresh is opportunistic; local work stays available. */ }
-    }, 4000);
-    return () => window.clearInterval(timer);
-  }, [work, workLoaded, sharedWorkRevision, workStateEndpoint]);
+      } catch { if (active) setWorkRefreshFailed(true); }
+      finally { inFlight = false; }
+    };
+    const timer = window.setInterval(() => { void refresh(); }, 30_000);
+    const onVisible = () => { if (document.visibilityState === "visible") void refresh(); };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => { active = false; window.clearInterval(timer); document.removeEventListener("visibilitychange", onVisible); };
+  }, [work, workLoaded, sharedWorkRevision, workStateEndpoint, actorId]);
 
   useEffect(() => {
     if (!workLoaded || !sharedWork.catalog || hostedPreview) return;
@@ -1174,6 +1214,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
     </aside>
       <section className="d5o-full-content"><div className="d5o-app-topbar"><div><span>WORKSPACE</span><strong>{palette.name}</strong><i style={{ background: palette.color }} /></div><div className="d5o-top-actions">{hostedPreview ? <Link href="/work">Switch workspace</Link> : null}<AccountMenu hostedPreview={hostedPreview} workspace={activeWorkspace} snapshotReady={workLoaded && preferencesLoaded} onExportSnapshot={() => { void exportSnapshot(); }} />{presentation.canStart ? <button onClick={() => go("start")}>+ Start work</button> : null}</div></div>
       {notice ? <div className="d5o-platform-notice" role="status">{notice}<button onClick={() => setNotice("")}>×</button></div> : null}
+      {hostedPreview && workLoaded && workRefreshFailed ? <div className="d5o-platform-notice" role="alert">The latest Work refresh failed. This view may be out of date; current revisions are checked before decisions. Keep any unsaved entries here and open a fresh view in another tab to compare.<button type="button" onClick={() => window.open(window.location.href, "_blank", "noopener")}>Check current Work in a new tab</button></div> : null}
       {screen === "define" && defineRecoveryScope === defineRecoveryKey(activeWorkspace, actorId) && defineRecovery.some((entry) => entry.workId === selectedId) ? <section className="d5o-panel d5o-define-recovery" role="alert" aria-label="Unsaved Define draft recovery">
         <h2>Unsaved Define draft retained</h2>
         <p>A save failed or its outcome is uncertain. Check the current shared revision before retrying. Your draft remains in this browser tab through reload; it has not been merged into approved requirements.</p>
@@ -1197,6 +1238,11 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       <div className={`d5o-surface-host${hostedPreview && taskFocus && screen !== "my-work" ? " d5o-has-task-inbox" : ""}`}>
       {hostedPreview && taskFocus && screen !== "my-work" ? <TaskInboxRail workspace={activeWorkspace} currentRecordId={selected?.id} currentFocus={taskFocus} currentPackageId={taskPackageId} /> : null}
       <div className="d5o-task-main">
+      {hostedPreview && (workReadStatus !== "ready" || loadedWorkScope !== `${initialWorkspace}:${actorId}`) ? <section className="d5o-panel" role={workReadStatus === "failed" ? "alert" : "status"}>
+        <h1>{workReadStatus === "failed" ? "Work could not be loaded" : "Loading current Work"}</h1>
+        <p>{workReadStatus === "failed" ? "The shared Work read did not complete. No empty or current Work state has been assumed, and Work actions are unavailable until the read succeeds." : "Checking the current shared Work and your workspace access."}</p>
+        {workReadStatus === "failed" ? <button type="button" onClick={() => setWorkReadAttempt((attempt) => attempt + 1)}>Retry current Work read</button> : null}
+      </section> : <>
       {screen === "discover" && !stalePhaseTask && !unavailableRecordId ? <DiscoverWorkspace workspaceKey={activeWorkspace} workspaceName={palette.name} hosted={hostedPreview} configurationInventory={configurationInventory} work={visibleWork as WorkRecord[]} commercialProfiles={commercialProfiles} actor={currentUserLabel} actorId={actorId ?? undefined} actorRole={actorRole} canEdit={canEditWork && sharedWorkRevision !== null} focusRecordId={selected?.id} reviewFocus={discoverEntry} onPhase={openJourneyPhase} onControl={(item, control) => { setSelectedId(item.id); setTab(control); go("record"); }} onBack={() => taskFocus ? go("my-work") : go("home")} onSelect={setSelectedId} onOpen={(item) => openRecord(item as Work)} onDefine={(item) => openWorkspacePhase("define", item as Work)} onPricingQueued={() => { pendingReviewQueue.current = "pricing"; setNotice("Saving the pricing review before opening its role queue."); }} onProposalQueued={() => { pendingReviewQueue.current = "proposal"; setNotice("Saving the proposal review before opening its role queue."); }} onCommercialCommand={executeCommercialCommand} onPursuitCommand={authoritativeCommands ? executePursuitCommand : undefined} onUpdate={(id, transform) => { pendingDiscoverSave.current = id; updateWork(id, (current) => transform(current as WorkRecord) as Work); }} onCreate={createDiscoverWork} onNotice={setNotice} /> : null}
       {screen === "define" && !stalePhaseTask && !unavailableRecordId ? <DefineWorkspace key={`${activeWorkspace}:${selected?.id ?? ""}:${defineRecoveryLoadEpoch}`} workspaceKey={activeWorkspace} workspaceName={palette.name} configurationInventory={configurationInventory} work={visibleWork as WorkRecord[]} focusRecordId={selected?.id} reviewFocus={defineReviewEntry} actorLabel={currentUserLabel} onReviewQueued={() => { pendingReviewQueue.current = "definition"; setNotice("Saving the definition review before opening its role queue."); }} onCommand={executeDefineCommand} onPhase={openJourneyPhase} onControl={(item, control) => { setSelectedId(item.id); setTab(control); go("record"); }} onBack={() => taskFocus ? go("my-work") : openWorkspacePhase("discover")} onSelect={setSelectedId} onOpen={(item) => openRecord(item as Work)} onUpdate={(id, transform) => updateWork(id, (current) => transform(current as WorkRecord) as Work)} onNotice={setNotice} /> : null}
       {screen === "develop" && !stalePhaseTask && !unavailableRecordId ? <DiscoverWorkspace
@@ -1235,6 +1281,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       {screen === "record" && selected ? <WorkRecord key={`${selected.id}:${taskFocus ?? "full"}`} taskFocus={taskFocus} taskPackageId={taskPackageId} taskRequestId={taskRequestId} onFullRecord={() => { setTaskFocus(null); setTaskPackageId(null); setTaskRequestId(null); const url = new URL(window.location.href); for (const key of ["focus", "decision", "sourceRevision", "decisionRevision", "package", "designTab", "release", "turnover", "documentKind", "deployRevision", "request"]) url.searchParams.delete(key); window.history.replaceState(window.history.state, "", url); }} profiles={schedulingProfiles} actorId={actorId ?? "unknown-user"} actorRole={actorRole} work={selected} allWork={visibleWork} configurationInventory={configurationInventory} onSelectDesignWork={(id) => { setSelectedId(id); setTab("Design"); }} tab={tab} setTab={setTab} phaseConfig={selectedPhaseConfig} phaseDemandCount={(sharedSchedule.schedule?.packageDemands ?? []).filter((item) => item.workId === selected.id).length} phaseAssignmentCount={scheduleAssignments.filter((item) => item.workId === selected.id).length} onPhaseRowSave={(key, row, index) => savePhaseRow(selected, key, row, index)} onPhaseRowRemove={(key, index) => removePhaseRow(selected, key, index)} backLabel={operatingNavigation.find((item) => item.screen === recordReturn)?.label ?? designNavigation.find((item) => item.screen === recordReturn)?.label ?? "Work hub"} onBack={() => { if (taskFocus) { go("my-work"); return; } if (recordReturn === "crew") setCrewFocusWorkId(selected.id); go(recordReturn, { myWork: myWorkEntry, crew: crewEntry ?? undefined }); }} onOpenDiscovery={() => openWorkspacePhase("discover", selected)} onOpenDefinition={() => openWorkspacePhase("define", selected)} onOpenDevelop={() => { setDiscoverEntry(null); go("develop"); }} onOpenPeople={() => go("people")} onOpenCrew={() => { go("crew"); setCrewFocusWorkId(selected.id); }} onActionPriority={(event) => saveActionPriority(selected, event)} onEvidence={(event) => addEvidence(selected, event)} onReviewEvidence={(event) => reviewEvidence(selected, event)} onPackage={(event) => addPackage(selected, event)} onPackageDemand={(event) => savePackageDemand(selected, event)} packageDemands={sharedSchedule.schedule?.packageDemands ?? []} canEditDemand={sharedSchedule.canEdit} onPackageFacts={(event) => recordPackageFacts(selected, event)} onAdvancePackage={(id) => advancePackage(selected, id)} onIssue={(event) => createIssue(selected, event)} onResolveIssue={(event) => resolveIssue(selected, event)} onException={(event) => recordException(selected, event)} onCommercial={(event) => saveCommercial(selected, event)} onLifecycle={(event) => addLifecycle(selected, event)} onDesignCommand={(command) => executeDesignCommand({ ...command, workId: selected.id })} schedule={sharedSchedule.schedule ?? null} onDeployCommand={(command) => executeDeployCommand({ ...command, workId: selected.id })} onDeployUpload={(packageId, data) => uploadDeployEvidence(selected.id, packageId, data)} hosted={hostedPreview} onOperateCommand={(command) => executeOperateCommand({ ...command, workId: selected.id })} operateFocus={operateFocus?.workId === selected.id ? operateFocus.section : "Overview"} onOpenOperateWork={(id, section) => { const target = visibleWork.find((item) => item.id === id); setSelectedId(id); setOperateFocus(section && target?.operate ? { workId: id, section } : null); if (target?.discovery && !target?.serviceSource && !target?.operate) { go("discover"); return; } setTab(target?.serviceSource ? "Design" : target?.operate ? "Operate" : "Overview"); }} onDesignHandoff={(decision, note) => executeCommercialCommand({ workId: selected.id, action: decision, packageRevision: selected.discovery?.proposal.package?.revision ?? 0, handoffRevision: selected.discovery?.designHandoff?.revision, note })} /> : null}
       {stalePhaseTask && !unavailableRecordId ? <section className="d5o-panel" role="alert"><h2>This task changed or was decided</h2><p>The exact source revision is no longer available for this action. No other Work Record or revision was selected.</p><button onClick={() => go("my-work")}>Return to refreshed My Work</button></section> : null}
       {(["record", "define", "develop"] as Screen[]).includes(screen) && unavailableRecordId ? <section className="d5o-panel" role="alert"><h2>Work Record unavailable</h2><p>The requested record {unavailableRecordId} is unavailable in this workspace. Refresh the queue to find the current decision.</p><button onClick={() => go("my-work")}>Return to My Work</button></section> : null}
+      </>}
       </div>
       </div>
     </section>
