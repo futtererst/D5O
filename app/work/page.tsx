@@ -58,7 +58,7 @@ export default async function WorkHomePage({ searchParams }: {
         <p>Signing in does not grant Work, roster, financial or private-document access.</p>
       </section> : null}
       <p className={styles.notice}>{isolatedPilot ? "Isolated pilot database. Decision authority remains under qualification." : "Authenticated commands govern canonical Work Records. Historical prototype records retain their recorded provenance."} Build {sourceVersion.slice(0, 12)}.</p>
-      <Link className={styles.signout} href="/auth/sign-out" prefetch={false}>Switch account</Link>
+      <Link className={styles.signout} href="/auth/sign-out" prefetch={false}>Sign out</Link>
     </main>;
     const permitted = entries.find((entry) => entry.workspaceKey === selected);
     if (!permitted || selected !== "rybex" && selected !== "rotork")
