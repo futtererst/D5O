@@ -17,10 +17,12 @@ const cases = [
   { role: "admin", name: "admin-authority", href: "/work/admin/authority?workspace=rybex" },
   { role: "admin", name: "admin-audit", href: "/work/admin/audit?workspace=rybex" },
   { role: "pm", name: "my-work", href: "/work?workspace=rybex&view=my-work" },
+  { role: "finance", name: "finance-my-work", href: "/work?workspace=rybex&view=my-work" },
+  { role: "operations", name: "operations-my-work", href: "/work?workspace=rybex&view=my-work" },
+  { role: "supervisor", name: "supervisor-my-work", href: "/work?workspace=rybex&view=my-work" },
   { role: "pm", name: "crew-calendar", href: "/work?workspace=rybex&view=crew" },
   { role: "worker1", name: "my-schedule", href: "/work/my-schedule?workspace=rybex" },
   { role: "worker1", name: "field-assignment", href: "/work/my-schedule?workspace=rybex", follow: /Open assigned work/ },
-  { role: "finance", name: "finance", href: "/work?workspace=rybex&view=finance" },
   { role: "pm", name: "procurement", href: "/work/procurement?workspace=rybex&workId=rybex-ab85e3563fa54579b3c8fed7ab2785ff" },
   { role: "pm", name: "labor-authority", href: "/work/labor?workspace=rybex&workId=rybex-ab85e3563fa54579b3c8fed7ab2785ff" },
 ].filter((entry) => !process.env.D5O_CAPTURE_ONLY || process.env.D5O_CAPTURE_ONLY.split(",").includes(entry.name));
