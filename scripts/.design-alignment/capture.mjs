@@ -19,6 +19,7 @@ const cases = [
   { role: "pm", name: "my-work", href: "/work?workspace=rybex&view=my-work" },
   { role: "pm", name: "crew-calendar", href: "/work?workspace=rybex&view=crew" },
   { role: "worker1", name: "my-schedule", href: "/work/my-schedule?workspace=rybex" },
+  { role: "worker1", name: "field-assignment", href: "/work/my-schedule?workspace=rybex", follow: /Open assigned work/ },
   { role: "finance", name: "finance", href: "/work?workspace=rybex&view=finance" },
   { role: "pm", name: "procurement", href: "/work/procurement?workspace=rybex&workId=rybex-ab85e3563fa54579b3c8fed7ab2785ff" },
   { role: "pm", name: "labor-authority", href: "/work/labor?workspace=rybex&workId=rybex-ab85e3563fa54579b3c8fed7ab2785ff" },
@@ -49,17 +50,22 @@ try {
       const page = await context.newPage();
       await page.setViewportSize({ width, height: 900 });
       const response = await page.goto(new URL(entry.href, origin).href, { waitUntil: "domcontentloaded" });
-      await page.getByText("Loading workspace actions...").first().waitFor({ state: "hidden", timeout: 20000 }).catch(() => {});
-      await page.getByText("Loading your schedule...").first().waitFor({ state: "hidden", timeout: 20000 }).catch(() => {});
+      await page.getByText(/Loading workspace actions|Loading your schedule/).first().waitFor({ state: "hidden", timeout: 20000 }).catch(() => {});
+      if (entry.follow) {
+        await page.getByRole("link", { name: entry.follow }).first().click();
+        await page.waitForURL((url) => url.pathname.endsWith("/field"), { timeout: 20000 });
+      }
       await page.waitForTimeout(750);
       const measurement = await page.evaluate(() => ({
         width: document.documentElement.clientWidth,
         scrollWidth: document.documentElement.scrollWidth,
         title: document.title,
         headings: [...document.querySelectorAll("h1")].slice(0, 2).map((item) => item.textContent?.trim()),
+        pending: /Loading workspace actions|Loading your schedule/.test(document.body.innerText),
+        build: document.body.innerText.match(/Build\s+([0-9a-f]{12,40})/)?.[1] ?? null,
       }));
       const status = response?.status() ?? 0;
-      const okay = status === 200 && (entry.role === "public" || !page.url().includes("/auth/sign-in")) && measurement.scrollWidth <= measurement.width + 1;
+      const okay = status === 200 && !measurement.pending && (entry.role === "public" || !page.url().includes("/auth/sign-in")) && measurement.scrollWidth <= measurement.width + 1;
       if (!okay) failures += 1;
       const destination = path.join(outRoot, phase);
       fs.mkdirSync(destination, { recursive: true });
