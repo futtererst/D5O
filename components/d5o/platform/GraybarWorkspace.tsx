@@ -163,7 +163,7 @@ export function GraybarWorkspace({ workspace, workId, role, build, task, initial
   const canFinance = ["admin", "billing_commercial_lead"].includes(role);
   const readyBomLines = useMemo(() => bomLines.filter((line) => line.materialId && line.quoteId), [bomLines]);
   return <div className={styles.shell}>
-    <header className={styles.top}><Link href={`/work?workspace=${workspace}`}>D5O / Rybex</Link><span>Graybar procurement · {role.replaceAll("_", " ")}</span><small>Build {build.slice(0, 12)}</small></header>
+    <header className={styles.top}><Link href={`/work?workspace=${workspace}`}>← Return to Work</Link><span>Procurement · {role.replaceAll("_", " ")}</span><small>Build {build.slice(0, 12)}</small></header>
     <main className={styles.main}>
       <div className={styles.heading}><div><p className={styles.eyebrow}>Connected work · document channel</p><h1>Source, buy and receive materials</h1>
         <p>{work?.title ?? workId} · {work?.customer ?? "Customer not stated"} · {work?.site ?? "Site not stated"}</p></div>

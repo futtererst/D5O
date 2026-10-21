@@ -3,6 +3,7 @@
 
 /* The crew workspace shares the application's readable task scale on phones. */
 .d5o-field{font-family:Arial,Helvetica,sans-serif;padding-bottom:72px}
+.d5o-field{min-height:calc(100vh - 68px)}
 .d5o-field>header{align-items:center;font-size:13px;padding:18px 0 14px}
 .d5o-field-hero{border-radius:12px;padding:20px 22px}
 .d5o-field-hero p{font-size:11px;letter-spacing:.09em;margin:0 0 8px}

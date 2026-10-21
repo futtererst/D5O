@@ -76,7 +76,7 @@ export function LaborAuthorityWorkspace({ workspace, workId, role, build, task }
     finally { setBusy(false); }
   };
   return <div className={styles.shell}>
-    <header className={styles.top}><Link href={`/work?workspace=${workspace}&view=my-work`}>D5O · My Work</Link><small>Build {build.slice(0, 12)}</small></header>
+    <header className={styles.top}><Link href={`/work?workspace=${workspace}&view=my-work`}>← Return to My Work</Link><small>Build {build.slice(0, 12)}</small></header>
     <main className={styles.main}>
       <div className={styles.heading}><div><p className={styles.eyebrow}>FIELD LABOR · ECONOMIC AUTHORITY</p>
         <h1>Authorize a labor commitment</h1><p>{work?.title ?? "Loading Work"} · {work?.customer ?? ""} · {work?.site ?? ""}</p></div>

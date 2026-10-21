@@ -2,3 +2,9 @@
 @media print{.top,.heading>a,.notice,.status,.steps,.inline,.grid,.footer{display:none!important}.main{padding:0}.content{margin:0}.card{box-shadow:none;border:0}.record{break-inside:avoid}}
 .sourceReview{display:grid;grid-template-columns:minmax(220px,1fr) minmax(280px,1.2fr);gap:12px;margin:18px 0;padding:14px;border:1px solid #d7e3e9;border-radius:8px;background:#f8fafb}.sourceReview label{display:grid;gap:5px;font-weight:700}.sourceReview select{padding:9px;border:1px solid #bfcfd9;border-radius:6px;background:#fff}.sourceReview a{align-self:start;color:#0a638b}.sourceReview iframe{grid-column:1;min-height:360px;width:100%;border:1px solid #cfdde4;background:#fff}.sourceReview>div{grid-column:2;grid-row:1 / span 3;min-width:0}.sourceReview pre{max-height:420px}.sourceReview p{margin:6px 0!important}@media(max-width:780px){.sourceReview{grid-template-columns:1fr}.sourceReview iframe,.sourceReview>div{grid-column:1;grid-row:auto}}
 .heading>.inline{margin:0}.heading>.inline a{display:inline-block;background:#fff;border:1px solid #bfd0da;border-radius:7px;padding:10px 14px;color:#143955;text-decoration:none;font-weight:700}
+/* Procurement and labor retain their task layout beneath the shared D5O identity bar. */
+.shell{min-height:calc(100vh - 68px)}
+.top{background:#fff;border-bottom:1px solid #d7e3e9;color:#315365;height:auto;min-height:48px}
+.top a{color:#16415c;font-size:13px}
+.top small{color:#607985}
+.top :is(a,button):focus-visible{outline:3px solid #bf9625;outline-offset:2px}

@@ -90,16 +90,18 @@ export default function SetPasswordPage() {
       : "Password saved, but invitation completion could not be recorded. Sign in normally and ask your administrator to reconcile the pending invitation.");
     setBusy(false);
   }
-  return <main style={{ maxWidth: "29rem", margin: "5vh auto", padding: "2rem", fontFamily: "system-ui" }}>
+  return <main className="d5o-signin-page d5o-auth-single"><section className="d5o-signin-card">
+    <div className="d5o-signin-mark" aria-hidden="true">D</div>
+    <p className="d5o-eyebrow">WORKSPACE ACCESS</p>
     <h1>Set your D5O password</h1>
     <p>Use the invitation or recovery link sent to your approved mailbox. Workspace membership and roster binding remain separate.</p>
     {otherSession && <button type="button" disabled={busy} onClick={() => void leaveOtherSession()}>
       Sign out of the other account and continue</button>}
-    {ready && <form onSubmit={(event) => void save(event)} style={{ display: "grid", gap: 12 }}>
+    {ready && <form onSubmit={(event) => void save(event)} className="d5o-signin-form">
       <label>New password<input type="password" autoComplete="new-password" minLength={12} required value={password} onChange={(event) => setPassword(event.target.value)} /></label>
       <label>Confirm password<input type="password" autoComplete="new-password" minLength={12} required value={confirm} onChange={(event) => setConfirm(event.target.value)} /></label>
-      <button disabled={busy}>{busy ? "Saving…" : "Save password"}</button></form>}
+      <button className="button button-primary" disabled={busy}>{busy ? "Saving…" : "Save password"}</button></form>}
     <p role="status">{message}</p>
     <p><Link href="/auth/forgot-password">Request a new recovery link</Link> · <Link href="/auth/sign-in">Go to sign-in</Link></p>
-  </main>;
+  </section></main>;
 }

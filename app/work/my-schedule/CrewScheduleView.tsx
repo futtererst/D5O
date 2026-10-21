@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { AccountMenu } from "@/components/d5o/platform/AccountMenu";
+import { D5OProductHeader } from "@/components/d5o/platform/D5OProductHeader";
 import type { CrewReceipt, WorkspaceKey } from "@/components/d5o/platform/schedule-model";
 import { bookingLocalDate, bookingShiftEnded } from "./booking-position";
 import type { WorkerPackageProgress } from "@/lib/d5o/prototype-work/deploy-worker-projection";
@@ -77,7 +77,7 @@ export function CrewScheduleView({ workspace, person, hosted = false }: { worksp
   const nextBooking = bookings.filter((booking) => booking.date && booking.date >= todayFor(booking) && !bookingShiftEnded(booking.date, booking.shift, now, booking.timeZone)).sort((a, b) => String(a.date).localeCompare(String(b.date)))[0];
   const todayCount = bookings.filter((booking) => booking.date === todayFor(booking)).length;
   return <main className={`d5o-crew-self d5o-crew-self-${workspace}`}>
-    <header className="d5o-crew-self-top"><Link href="/work/my-schedule" className="d5o-crew-self-brand">D5O <span>System of work</span></Link><div><strong>{workspace === "rybex" ? "Rybex Delivery" : "Rotork Service"}</strong><AccountMenu workspace={workspace} /></div></header>
+    <D5OProductHeader workspace={workspace} homeHref={`/work/my-schedule?workspace=${workspace}`} area="My schedule" hostedPreview={hosted} />
     <div className="d5o-crew-self-content"><nav className="d5o-crew-self-nav" aria-label="Worker navigation"><span aria-current="page">My schedule</span>{bookings.length ? <a href="#assigned-bookings">My assigned work</a> : null}</nav><div className="d5o-crew-self-intro"><p className="d5o-crew-self-kicker">MY CREW SCHEDULE · {workspace.toUpperCase()}</p><h1>My schedule and assigned work</h1><p>{person}, review each shared booking and respond. Open its assigned work to read current instructions, report an issue, or record activity when authorized. Your response does not authorize a field start.</p><div className="d5o-crew-self-actions"><button onClick={() => void refresh().catch((failure) => setError(failure instanceof Error ? failure.message : "Refresh failed."))}>Refresh schedule</button><span>{awaiting} awaiting your response{pastWithoutResponse ? ` · ${pastWithoutResponse} past shift${pastWithoutResponse === 1 ? "" : "s"} without a response` : ""}{cannotAttend ? ` · ${cannotAttend} attendance issue${cannotAttend === 1 ? "" : "s"}` : ""}</span></div></div>
       {awaiting > 0 ? <section className="d5o-crew-self-notice" role="status"><strong>{awaiting} shared booking{awaiting === 1 ? "" : "s"} need your response</strong><span>Review the date, shift, site and package below, then accept or decline each booking. Your scheduler will see your response.</span></section> : null}
       {view ? <section className="d5o-crew-self-notice" aria-label="Next assignment"><strong>{todayCount ? `${todayCount} assignment${todayCount === 1 ? "" : "s"} dated today` : "No assignment dated today"}</strong><span>{nextBooking ? <>Next scheduled: {nextBooking.date} · {nextBooking.shift}{nextBooking.timeZone ? ` (${nextBooking.timeZone})` : ""} · {nextBooking.site} · {nextBooking.packageName}. {nextBooking.response ? "Open its issued instructions and reporting page." : "Review and respond to the booking before attending."} <Link href={assignedWorkHref(nextBooking)}>Open assignment →</Link></> : "Your scheduler has not published an upcoming assignment. Past bookings remain below for history."}</span></section> : null}

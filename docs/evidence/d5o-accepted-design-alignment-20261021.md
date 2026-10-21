@@ -1,0 +1,33 @@
+# D5O accepted-design alignment — 21 October 2026
+
+## Governing visual reference
+
+Shawn retained the **existing hosted D5O application** and explicitly retained Crew's weekly drag-and-drop calendar. The source reference inspected for this slice was application `0381e3ebb2edd43ea0d9d172acd47800c16743d1`, displayed as `0381e3ebb2ed` at `https://d5o-system-of-work.vercel.app`, with the shared main shell in `D5OPlatform`, `enterprise.css` and `D5OVisualSystem.module.css`. The accepted language is the D5O wordmark, navy workspace navigation (`#112b42`), gold primary/action accent (about `#d4aa2a`), light gray canvas, white bordered task cards, compact sans-serif task typography, explicit status words and a role-filtered destination set. A worker can have fewer destinations without becoming a different product. The earlier interactive A/B prototype directions are rejected references; their navigation and CSS are not used here.
+
+The accepted Crew screen was inspected in an ordinary hosted session. It had an actual week grid, named crew rows and draggable booking cards, with a current-location rail, Plan details and Schedule crew actions. No scheduling interaction or calendar layout is changed by this slice.
+
+## Route and role coverage
+
+“Source” means the route and component composition was inspected. “Browser” means an ordinary synthetic account opened it. A shared-shell classification does not assert every embedded business form was retested.
+
+| Active route / experience | Accepted baseline and alignment | Inspection |
+| --- | --- | --- |
+| `/auth/sign-in`, `/auth/forgot-password`, `/auth/set-password` | Keep the existing sign-in layout and recovery sequence; use the accepted navy/gold accents, common form scale and a centered single-card layout for recovery/setup. The inline password-setup page was the main outlier. | Source; read-only local visual captures at 390, 768 and 1440 px. |
+| `/work` chooser, access-pending and first-configuration states | Keep the existing workspace choice and governed first publication; align heading typography and primary button. No membership or configuration command changed. | Source; hosted chooser/access-pending previously qualified; visual recheck pending. |
+| `/work?workspace=rybex` — My Work, Work hub, Jobs/portfolio, Insights, Library, Support, People & capacity, Finance and Operate | Already use the accepted `D5OPlatform` rail/topbar, `D5OVisualSystem` content grid and permission-filtered destinations. No navigation replacement. | Source; main shell and Crew browser inspected. Automated snapshots of some deep links caught loading state, so they are **not** counted as completed-content captures. |
+| Work Record and Discover → Define → Develop ROM → Design → Deploy → Operate | Shared Work Record shell and pinned phase context retained. No phase forms, decisions, evidence or recovery actions changed. | Source; existing connected-journey qualification reused. |
+| Crew calendar and People & capacity | Keep the existing weekly drag-and-drop planning canvas and related readiness links. | Source; Crew hosted browser observed; calendar interaction unchanged. |
+| `/work/my-schedule` and `/work/my-schedule/field` | Preserve focused worker content and commands. Replace the one-off brand strip with the shared D5O identity/account bar; use it for assigned-work error states as well. | Source; existing hosted worker schedule observed before; final worker-content visual check pending. |
+| `/work/procurement` and `/work/labor` | Keep specialist forms and task steps. Add the shared identity/account bar and make the old top line a contextual return path. Existing horizontally scrollable detailed tables remain intentional on phones. | Browser before/after at 390, 768 and 1440 px; no document overflow. |
+| `/work/admin` and its Overview, Users & access, Workforce, Configuration, Authority and rates, Audit direct links | Preserve the separate Admin section structure and rights. Add the shared D5O identity/account bar, align title scale/content grid; show all six section links on narrow screens. Align workforce/member headings and actual workforce controls with shared task typography and touch sizing. Audit filters and pagination now match these controls and a failed read offers a retry without claiming it is still loading. | All six Admin sections were read-only opened in the ordinary synthetic Admin browser at 390, 768 and 1440 px; HTTP 200, correct section heading and no document overflow. Local Audit data access returned `audit_unavailable`; this is not a passed audit-data read. Final hosted inspection remains required. |
+| Legacy `/admin` and non-D5O route families such as `/billing`, `/quality`, `/safety` | The hosted D5O proxy deliberately returns unavailable for these older modules. They are not alternate live D5O pages and must not be exposed to make a coverage count. | Route guard/source only. |
+
+## Interaction and responsive boundary
+
+The shared header reuses `PlatformWordmark` and `AccountMenu`; it does not create a second menu implementation. Account/sign-out language remains “Account” and “Sign out”. Buttons, forms and links retain existing command handlers, stale-state and uncertain-outcome recovery. Admin’s narrow navigation now wraps so all sections and the active one remain visible. Procurement and labor retain their detailed task layout and explicit return path. Worker schedule and assignment retain their focused content; no worker action is performed for the comparison.
+
+Read-only browser captures were made at 390, 768 and 1440 CSS px, including before/after Admin overview, procurement and labor authority, in the task-local capture directory under `%TEMP%\d5o-accepted-design-captures`. A safe selection of before/after public Auth, Admin overview and fictional Procurement captures is retained in [d5o-accepted-design-images](./d5o-accepted-design-images). Workforce screenshots are **not** committed because that screen can show a real approved recipient address among synthetic records. The local preview is loopback-only and reads the verified D5O hosted target for visual comparison; no business command was submitted. Its protected configuration predates the current worker binding service credential, so its worker-unavailable state is an environment limitation, not evidence that the changed worker content passed. The final hosted build must be checked with an ordinary worker session.
+
+## Release validation
+
+Typecheck, scoped lint and local production build passed after the Audit visual correction. Final exact candidate SHA, deployment and hosted result are recorded after release. No schema, migration, business-policy or configuration change is part of this slice.

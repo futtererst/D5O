@@ -21,8 +21,9 @@ export default function ForgotPasswordPage() {
     } catch { setMessage("Recovery is temporarily unavailable. Your input is retained; try again later."); }
     finally { setBusy(false); }
   }
-  return <main className="d5o-signin-page">
-    <section className="d5o-signin-card" style={{ width: "min(100%, 30rem)" }}>
+  return <main className="d5o-signin-page d5o-auth-single">
+    <section className="d5o-signin-card">
+      <div className="d5o-signin-mark" aria-hidden="true">D</div>
       <p className="d5o-eyebrow">ACCOUNT RECOVERY</p>
       <h1>Reset your password</h1>
       <p>Enter your synthetic trial account email. If it is eligible, you will receive a recovery link. Workspace access and role will not change.</p>

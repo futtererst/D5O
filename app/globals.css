@@ -8172,6 +8172,15 @@ section:target {
 .d5o-lifecycle-map { display:grid; gap:10px; }.d5o-lifecycle-map article { align-items:center; background:#f3f7f8; border:1px solid #dbe6ea; border-radius:9px; display:grid; gap:13px; grid-template-columns:34px 1fr; padding:13px; }.d5o-lifecycle-map article.current { background:#eef7f6; border-color:var(--d5o-accent); box-shadow:0 6px 18px rgba(16,42,67,.07); }.d5o-lifecycle-map article.complete { background:#f7fafb; }.d5o-lifecycle-map b { align-items:center; background:#dce8ed; border-radius:50%; color:#3a5664; display:flex; font-size:.74rem; height:28px; justify-content:center; width:28px; }.d5o-lifecycle-map .complete b { background:#e2f4e9; color:#207047; }.d5o-lifecycle-map .current b { background:var(--d5o-accent); color:#fff; }.d5o-lifecycle-map strong { color:#1d3b49; display:block; font-size:.88rem; }.d5o-lifecycle-map span { color:#647b86; display:block; font-size:.74rem; margin-top:4px; }
 @media (max-width:800px) { .d5o-decision-explainer { grid-template-columns:1fr; }.d5o-next-card { grid-template-columns:1fr; }.d5o-decision-composer { margin-top:8px; } }
 .d5o-signin-page { align-items: stretch; display: grid; gap: 0; grid-template-columns: minmax(0, 1.1fr) minmax(360px, .9fr); min-height: 100vh; }
+.d5o-signin-page { --brand-accent: #d4aa2a; --brand-on-accent: #102a43; }
+.d5o-signin-page .button-primary { background:#d4aa2a; border-color:#c69e25; color:#102a43; }
+.d5o-signin-page :is(a, button, input):focus-visible { outline:3px solid #bf9625; outline-offset:2px; }
+.d5o-auth-single { align-items:center; grid-template-columns:minmax(0, 1fr); justify-items:center; padding:clamp(16px,4vw,48px); }
+.d5o-auth-single .d5o-signin-card { border:1px solid #d9e2e7; border-radius:10px; max-width:540px; padding:clamp(24px,5vw,44px); width:100%; }
+.d5o-auth-single .d5o-signin-card h1 { color:#172f3e; font-size:clamp(1.7rem,3vw,2rem); line-height:1.2; margin:0; }
+.d5o-auth-single .d5o-signin-card>p { color:#526e7b; line-height:1.5; }
+.d5o-auth-single .d5o-signin-card>p[role="status"] { color:#173441; overflow-wrap:anywhere; }
+.d5o-auth-single .d5o-signin-form button { min-height:48px; }
 .d5o-signin-intro { background: linear-gradient(135deg, #0d2331, #183b49); color: #fff; display: grid; align-content: center; overflow: hidden; padding: clamp(38px, 8vw, 110px); position: relative; }
 .d5o-signin-intro::after { background: var(--brand-accent, #16b8a6); border-radius: 999px; content: ""; height: 420px; opacity: .15; position: absolute; right: -160px; top: -120px; width: 420px; }
 .d5o-signin-intro > * { position: relative; z-index: 1; }

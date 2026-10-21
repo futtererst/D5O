@@ -8,8 +8,10 @@ import { SpendingDelegationAdmin } from "@/components/d5o/platform/SpendingDeleg
 import { DesignInternalRateControl } from "@/components/d5o/platform/DesignInternalRateControl";
 import { AdminAudit } from "@/components/d5o/admin/AdminAudit";
 import { AdminIdentityBoundary } from "@/components/d5o/admin/AdminIdentityBoundary";
+import { D5OProductHeader } from "@/components/d5o/platform/D5OProductHeader";
 import styles from "./admin.module.css";
 import "../../enterprise.css";
+import "../../settings/notification-settings.css";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Workspace administration | D5O" };
@@ -44,7 +46,7 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
   }
   if (context.actor.role !== "admin") notFound();
   const href = (key: string) => `/work/admin/${key}?workspace=${workspace}`;
-  return <AdminIdentityBoundary userId={context.actor.id}><main className={styles.shell}>
+  return <AdminIdentityBoundary userId={context.actor.id}><><D5OProductHeader workspace="rybex" homeHref="/work?workspace=rybex" area="Administration" hostedPreview /><main className={styles.shell}>
     <header className={styles.header}>
       <div><p>D5O / RYBEX / ADMINISTRATION</p><h1>{sections.find(([key]) => key === active)?.[1]}</h1>
         <span>Workspace administration for the synthetic beta. Decisions and Work remain governed by their own commands.</span></div>
@@ -70,5 +72,5 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
         <p>Finance prepares internal Design rates; an independent configured administrator approves their exact version. This page does not grant spending authority.</p></>}
       {active === "audit" && <AdminAudit workspace="rybex" initialSubject={query.subject ?? ""} />}
     </section>
-  </main></AdminIdentityBoundary>;
+  </main></></AdminIdentityBoundary>;
 }
