@@ -32,7 +32,7 @@ export default async function FieldPage({ searchParams }: { searchParams: Promis
     const assignment = latest?.id === publication?.id ? publication?.assignments.find((item) => item.id === query.booking && item.people.includes(worker.person)) : null;
     const work = (workResult.state?.records as WorkRecord[] | undefined)?.find((item) => item.id === assignment?.workId && item.workspace === "rybex");
     if (!assignment || !work || !publication) return <main style={{ maxWidth: 720, margin: "3rem auto", padding: "1rem" }}><h1>Assigned work changed</h1><p>Review the current booking before entering field work.</p><Link href="/work/my-schedule">Back to my crew schedule</Link></main>;
-    return <CrewFieldWork initialWork={deployWorkerProjection(work, assignment.packageId, assignment.id, worker.actor.id)} initialRevision={workResult.revision} initialScheduleRevision={scheduleResult.revision} assignment={assignment} publicationId={publication.id} actorId={worker.actor.id} person={worker.person} acceptedScope={work.deploy?.workAcceptance?.receipt === "Accepted" && currentWorkAcceptanceScope(work)} hosted />;
+    return <CrewFieldWork initialWork={deployWorkerProjection(work, assignment.packageId, assignment.id, worker.actor.id)} initialRevision={workResult.revision} initialScheduleRevision={scheduleResult.revision} assignment={assignment} publicationId={publication.id} actorId={worker.actor.id} person={worker.person} packageName={work.packages?.find((item) => item.id === assignment.packageId)?.name ?? assignment.crew} acceptedScope={work.deploy?.workAcceptance?.receipt === "Accepted" && currentWorkAcceptanceScope(work)} hosted />;
   }
   assertProofEnvironment();
   const context = await getRequestContext();
@@ -49,5 +49,5 @@ export default async function FieldPage({ searchParams }: { searchParams: Promis
   const work = loaded.records.find((item) => item.id === assignment.workId) as WorkRecord | undefined;
   if (!work) return <main style={{ maxWidth: 720, margin: "3rem auto", padding: "1rem" }}><h1>Work Record unavailable</h1><Link href="/work/my-schedule">Back to my crew schedule</Link></main>;
   const fieldWork = deployWorkerProjection(work, assignment.packageId, assignment.id, context.user.id);
-  return <CrewFieldWork initialWork={fieldWork} initialRevision={loaded.revision} initialScheduleRevision={schedule.revision} assignment={assignment} publicationId={latest.id} actorId={context.user.id} person={person} acceptedScope={work.deploy?.workAcceptance?.receipt === "Accepted" && currentWorkAcceptanceScope(work)} />;
+  return <CrewFieldWork initialWork={fieldWork} initialRevision={loaded.revision} initialScheduleRevision={schedule.revision} assignment={assignment} publicationId={latest.id} actorId={context.user.id} person={person} packageName={work.packages?.find((item) => item.id === assignment.packageId)?.name ?? assignment.crew} acceptedScope={work.deploy?.workAcceptance?.receipt === "Accepted" && currentWorkAcceptanceScope(work)} />;
 }

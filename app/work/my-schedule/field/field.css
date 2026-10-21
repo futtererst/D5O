@@ -23,3 +23,5 @@
 @media(max-width:620px){.d5o-field-card{padding:18px}.d5o-field>header{align-items:start;gap:4px}.d5o-field-hero{padding:18px}.d5o-field-hero h1{font-size:23px}}
 .d5o-field-card progress{width:100%;height:14px;accent-color:#bb8f1e}
 .d5o-field-card article p{overflow-wrap:anywhere}
+
+@media(max-width:620px){.d5o-field-jump{flex-wrap:wrap;overflow-x:visible}.d5o-field-jump a{flex:1 1 calc(50% - 7px);text-align:center}}
