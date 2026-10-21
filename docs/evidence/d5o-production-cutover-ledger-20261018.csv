@@ -163,5 +163,5 @@
 "162","20261020180000_d5o_workforce_field_readiness.sql","7b94fa3d05b711ace6e89047169e1ad8736e319cdfde2859b512c1cb3e5fd7af","applied_mapped_version","20261020203138"
 "163","20261020193000_d5o_binding_current_publication.sql","b48522e313d65e6f67390920590f05f4a93ae9fbe30cf86e5f82cb30348d2315","applied_mapped_version","20261020205337"
 "164","20261020200000_d5o_worker_binding_publication_attribution.sql","e9a0b09d5ae2beaabf54899b01132b9db4596f036b52775a20a2faad1d81d5d7","applied_mapped_version","20261020205350"
-"165","20261020223652_d5o_cross_week_empty_publication.sql","e95788dcd9a1595017517226c6ae95c2c8266fd62012ccaec187a7b5f2fda79c","pending",""
-"166","20261020231536_d5o_worker_empty_publication_projection.sql","1cdd15a5eb9b860db0d84c3827988d4c2abf39d08f297ab855dc7de0e414cd2b","pending",""
+"165","20261020223652_d5o_cross_week_empty_publication.sql","e95788dcd9a1595017517226c6ae95c2c8266fd62012ccaec187a7b5f2fda79c","applied_mapped_version","20261020235720"
+"166","20261020231536_d5o_worker_empty_publication_projection.sql","1cdd15a5eb9b860db0d84c3827988d4c2abf39d08f297ab855dc7de0e414cd2b","applied_mapped_version","20261020235730"
