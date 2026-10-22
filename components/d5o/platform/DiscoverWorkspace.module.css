@@ -122,6 +122,24 @@
 @media(max-width:600px) { .pipelineHeader { align-items:start; flex-direction:column; }.pipelineRollup { align-self:stretch; justify-content:center; }.pipelineStats { grid-template-columns:repeat(2,minmax(0,1fr)); }.pipelineStats>div:nth-child(2) { border-right:0; }.pipelineStats>div:nth-child(n+3) { border-top:1px solid var(--d5o-line); }.bidRow { gap:10px; padding:12px; } }
 @media(max-width:520px) { .changeList li { grid-template-columns:1fr; } }
 @media(max-width:700px) { .commercialAssessment { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:820px) {
+  .filters { flex-wrap:wrap; overflow:visible; }
+  .workflow { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,135px),1fr)); gap:6px; overflow:visible; padding:10px 12px; }
+  .workflow>span { min-width:0; padding:6px 8px; background:#f5f8fa; border-radius:6px; overflow-wrap:anywhere; }
+  .workflow>span:after { display:none; }
+  .workflow b { white-space:normal; }
+  .pipelineRollup { white-space:normal; }
+}
+@media(max-width:600px) {
+  .workflow { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .bidRow { grid-template-columns:minmax(0,1fr); }
+  .bidIdentity { grid-column:1; }
+  .bidRow>button { white-space:normal; }
+  .pricingState { min-width:0; }
+  .pricingStateHeader { align-items:start; flex-wrap:wrap; }
+  .pricingStateHeader>span { min-width:0; max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+  .pricingState :is(p,small,strong) { overflow-wrap:anywhere; }
+}
 
 /* Pursuit and commercial facts share the workbench type and control scale. */
 .header h1{font-family:Arial,Helvetica,sans-serif;font-size:clamp(1.55rem,2.2vw,2rem);line-height:1.15}.kicker,.metric small,.identity small,.row>div>small,.facts small{font-size:.72rem}.workspaceTag,.sourceAlert span{font-size:.82rem}.commercialAssessment small,.reviewBasis small,.changeList li strong{font-size:.72rem}.commercialAssessment strong,.reviewBasis span,.commercialRoute span,.changeList li span{font-size:.82rem}

@@ -30,7 +30,7 @@
 .appliedFilters{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 18px 13px;color:#526e7b;font-size:.8rem}
 .appliedFilters button{background:#fff;border:1px solid #b9cbd5;border-radius:6px;color:#16415a;font:inherit;font-weight:700;min-height:36px;padding:6px 10px}
 @media(max-width:900px){
-  .page{min-width:0;overflow-x:clip}
+  .page{min-width:0}
   .desktopJourney,.page .surfaceNav,.summary,.pipelineHeader .segment,.tableWrap,.board,.tabs,.workspaceHeader,.context,.desktopTimeline{display:none!important}
   .hero .desktopTitle{display:none!important}
   .hero .mobileTitle{display:inline!important}

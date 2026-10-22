@@ -3,3 +3,15 @@
 .review{display:grid;grid-template-columns:minmax(220px,1.5fr) minmax(150px,.5fr) minmax(230px,1fr);gap:12px;align-items:end;padding:16px 24px;border-bottom:1px solid #d3e0e7;background:#f7fafb}.review small{display:block;color:#7c6717;font-weight:800;letter-spacing:.08em}.review strong{display:block;font-size:17px;margin:4px 0}.review p{margin:0;color:#536f7d}.review span{font-size:12px;color:#536f7d}.review label{display:grid;gap:5px;font-size:12px;font-weight:700}.review input{width:100%;box-sizing:border-box;padding:9px;border:1px solid #b9ccd6;border-radius:5px}.reviewActions{display:flex;gap:8px;grid-column:1/-1}.reviewActions button{cursor:pointer}@media(max-width:850px){.review{display:block}.review label{margin:10px 0}}
 .policyRole{display:grid;gap:5px;padding:12px 24px;background:#f7fafb;font-size:12px;font-weight:700}.policyRole select{max-width:260px;padding:9px;border:1px solid #b9ccd6;border-radius:5px}
 .forecastAction{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:13px 24px;border-bottom:1px solid #d3e0e7;background:#f7fafb}.forecastAction strong,.forecastAction span{display:block}.forecastAction span{font-size:12px;color:#55717f;margin-top:4px}
+.workspace{container-type:inline-size;min-width:0}
+.workspace :is(p,li,small,strong,span,h2,h3,h4){overflow-wrap:anywhere}
+@container (max-width:650px){
+  .header{display:grid;gap:10px;padding:14px}
+  .header>span{white-space:normal}
+  .content{padding:14px}
+  .columns,.review{display:grid;grid-template-columns:minmax(0,1fr)}
+  .facts{grid-template-columns:minmax(0,1fr)}
+  .lines article,.forecastAction{align-items:start;flex-direction:column}
+  .reviewActions{flex-wrap:wrap}
+  .content :is(button,input,select,textarea){max-width:100%}
+}

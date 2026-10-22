@@ -647,10 +647,10 @@
   .root { grid-template-columns: 216px minmax(0, 1fr); }
 }
 @media (max-width: 700px) {
-  .root { display: block; overflow-x: clip; }
+  .root { display: block; }
   .root :global(.d5o-full-sidebar) { padding: 8px 14px; }
   .root :global(.d5o-full-content) { padding: 0 14px 36px; }
-  .root :global(.d5o-surface-host) { min-width: 0; overflow-x: clip; }
+  .root :global(.d5o-surface-host) { min-width: 0; }
   .root :global(.d5o-app-topbar) { margin: 0 -14px 12px; padding: 8px 14px; }
   .root :global(.d5o-task-frame) { margin: 8px auto; padding: 16px; }
   .root :global(.d5o-task-frame-header) { display: grid; gap: 12px; }
@@ -688,7 +688,14 @@
 .root :global(.d5o-app-topbar) { margin:0 calc(-1 * clamp(14px, 1.5vw, 26px)) 12px; padding:0 clamp(14px, 1.5vw, 26px); }
 .root :global(.d5o-surface-host) { max-width:none; }
 .root :global(.d5o-has-task-inbox) { display:grid; grid-template-columns: minmax(255px, 300px) minmax(0, 1fr); align-items:start; gap:0; min-height:calc(100vh - 75px); background:#fff; border:1px solid var(--d5o-border); border-radius:11px; overflow:clip; }
-.root :global(.d5o-task-main) { min-width:0; }
+.root :global(.d5o-task-main) {
+  box-sizing:border-box;
+  container-type:inline-size;
+  margin-inline:auto;
+  max-width:var(--d5o-content-max);
+  min-width:0;
+  width:100%;
+}
 .root :global(.d5o-has-task-inbox .d5o-task-main) { padding:12px clamp(16px, 2vw, 32px) 32px; }
 .root :global(.d5o-has-task-inbox .d5o-task-frame), .root :global(.d5o-has-task-inbox .d5o-focused-record-header), .root :global(.d5o-has-task-inbox .d5o-asset-task) { max-width:100%; }
 .root :global(.d5o-task-inbox-rail) { position:sticky; top:62px; align-self:start; display:flex; flex-direction:column; min-width:0; height:calc(100vh - 63px); border-right:1px solid var(--d5o-border); background:#fbfcfd; }
@@ -853,8 +860,14 @@
 }
 
 .root :global(.d5o-header-menu) { display:none; }
+.root :global(.d5o-responsive-section-select) { display:none; }
 .root :global(.d5o-menu-workspace) { display:flex; align-items:center; min-height:44px; color:#fff; font-size:13px; font-weight:800; padding:8px 12px; }
 .root :global(.d5o-menu-account) { padding:12px 8px; }
+@container (max-width:1100px) {
+  .root :global(.d5o-responsive-section-select) { display:grid; gap:5px; min-width:0; padding:10px 12px; color:#36576a; font-size:12px; font-weight:800; }
+  .root :global(.d5o-responsive-section-select select) { box-sizing:border-box; min-height:44px; min-width:0; width:100%; border:1px solid #b9cbd5; border-radius:7px; background:#fff; color:#163749; font:inherit; font-size:16px; padding:8px 12px; }
+  .root :global([data-responsive-sections]) { display:none !important; }
+}
 @media (max-width:1049px) {
   .root :global(.d5o-header-menu) { display:inline-flex; align-items:center; justify-content:center; min-height:44px; }
 }
