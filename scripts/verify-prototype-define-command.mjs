@@ -9,7 +9,7 @@ const errors = {};
 vm.runInNewContext(ts.transpileModule(readFileSync("lib/d5o/prototype-work/store-error.ts", "utf8"), {
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 }
 }).outputText, { exports: errors });
-const module = {};
+const defineModule = {};
 const deps = {
   "@/components/d5o/platform/define-readiness": { assessDefine: () => ({ status: "Ready for review", next: null }) },
   "@/components/d5o/platform/phase-configuration": { evaluateRule: () => true },
@@ -18,8 +18,8 @@ const deps = {
 };
 vm.runInNewContext(ts.transpileModule(readFileSync("lib/d5o/prototype-work/define-command.ts", "utf8"), {
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 }
-}).outputText, { exports: module, require: (name) => deps[name] ?? assert.fail(`Unexpected dependency: ${name}`), structuredClone, Date, Set, Map });
-const { applyDefineCommand, assertSnapshotDefineIntegrity } = module;
+}).outputText, { exports: defineModule, require: (name) => deps[name] ?? assert.fail(`Unexpected dependency: ${name}`), structuredClone, Date, Set, Map });
+const { applyDefineCommand, assertSnapshotDefineIntegrity } = defineModule;
 const actor = {
   owner: { id: "owner", membershipId: "m-owner", name: "Owner", role: "project_manager" },
   commercial: { id: "commercial", membershipId: "m-commercial", name: "Commercial", role: "billing_commercial_lead" },

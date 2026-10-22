@@ -286,7 +286,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       sessionStorage.setItem(defineRecoveryKey(activeWorkspace, actorId), JSON.stringify(changed));
       return true;
     } catch { return false; }
-  }, [activeWorkspace, actorId, hostedPreview]);
+  }, [activeWorkspace, actorId, hostedPreview, setDefineRecovery, setDefineRecoveryScope, setRecoveryBasisChecked]);
   async function loadCurrentForDefineRecovery() {
     // Keep the unsaved copy in session storage while fetching the authoritative
     // revision. No protected or approved field is merged into that revision.

@@ -2,12 +2,12 @@ import { readFileSync } from "node:fs";
 import ts from "typescript";
 const source=readFileSync(new URL("../components/d5o/platform/job-finance-model.ts",import.meta.url),"utf8");
 const js=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
-const module={exports:{}};
+const commonJsModule={exports:{}};
 new Function("require","module","exports",js)((name)=>{
   if(name==="./deploy-model")return {currentAcceptedRelease:()=>null,deployState:()=>({reports:[],turnovers:[],completions:[],evidence:[]})};
   throw new Error(`unexpected_dependency:${name}`);
-},module,module.exports);
-const {assessJobFinance,dollarsToMinor,moneyMinor}=module.exports;
+},commonJsModule,commonJsModule.exports);
+const {assessJobFinance,dollarsToMinor,moneyMinor}=commonJsModule.exports;
 const read={currency:"USD",baseline:{pricingBasis:{priceMinor:10000000,currency:"USD"}},
   changes:[{id:"authorized-1",packageId:"package-1",priceAmount:"2600.00",currency:"USD",customerAuthorization:{evidenceId:"doc-1"},revisedReleaseId:"release-2"}],
   costs:[{id:"commit-1",kind:"Committed",amount_minor:50000,reconciles_id:null},{id:"actual-1",kind:"Incurred",amount_minor:30000,reconciles_id:"commit-1"},{id:"actual-2",kind:"Incurred",amount_minor:100000,reconciles_id:null}],
