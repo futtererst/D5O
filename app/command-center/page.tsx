@@ -135,6 +135,9 @@ export default async function CommandCenterPage() {
                 First action: {topPriority.ctaLabel}. {topPriority.impactLabel}.
               </p>
             ) : null}
+            <p className="command-c-plus-lead">
+              Internal guided demo: <Link href="/pilot">Open Pilot Mode</Link>.
+            </p>
           </div>
           <dl className="command-c-plus-summary" aria-label="Operating queue summary">
             <div>
