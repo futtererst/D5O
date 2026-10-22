@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { chromium } from "playwright";
+import { chooseDesignSection } from "./d5o-design-browser-nav.mjs";
 
 if (process.env.D5O_ISOLATED_PILOT !== "1" || !process.env.D5O_PILOT_CREDENTIALS_FILE)
   throw new Error("disposable_pilot_only");
@@ -31,13 +32,13 @@ async function signIn(key) {
 try {
   const pm = await signIn("pm");
   const page = pm.page;
-  await page.getByRole("button", { name: "Documents", exact: true }).click();
+  await chooseDesignSection(page, "Design documents");
   const document = page.locator("article").filter({ hasText: documentTitle });
   if (await document.getByRole("button", { name: "Submit review" }).count()) {
     await document.getByRole("button", { name: "Submit review" }).click();
     await document.getByRole("button", { name: "Approve revision" }).waitFor({ timeout: 30000 });
   }
-  await page.getByRole("button", { name: "Packages", exact: true }).click();
+  await chooseDesignSection(page, "Work packages");
   const demand = page.locator('form:has(button:has-text("Make schedulable"))');
   if (await demand.count()) {
     await demand.locator('input[name="requiredDate"]').fill(date(3));
@@ -48,7 +49,7 @@ try {
     await page.getByText("Schedulable").waitFor({ timeout: 30000 });
   }
   await page.reload();
-  await page.getByRole("button", { name: "Reviews", exact: true }).click();
+  await chooseDesignSection(page, "Reviews & approvals");
   const requestForm = page.locator('form:has(button:has-text("Request exact-revision review"))');
   for (const discipline of ["Engineering", "Delivery", "Safety", "Quality"]) {
     if ((await page.locator("body").innerText()).includes(`${discipline} · rev 1 · Requested`) ||
@@ -66,14 +67,14 @@ try {
   await pm.context.close();
 
   const ops = await signIn("operations");
-  await ops.page.getByRole("button", { name: "Documents", exact: true }).click();
+  await chooseDesignSection(ops.page, "Design documents");
   const opsDocument = ops.page.locator("article").filter({ hasText: documentTitle });
   if (await opsDocument.getByRole("button", { name: "Approve revision" }).count()) {
     await opsDocument.getByLabel("Document review rationale").fill("Reviewed the covered method and alarm test against the accepted service scope.");
     await opsDocument.getByRole("button", { name: "Approve revision" }).click();
     await opsDocument.getByRole("button", { name: "Issue for use" }).waitFor({ timeout: 30000 });
   }
-  await ops.page.getByRole("button", { name: "Reviews", exact: true }).click();
+  await chooseDesignSection(ops.page, "Reviews & approvals");
   for (const discipline of ["Engineering", "Delivery", "Safety", "Quality"]) {
     const review = ops.page.locator(`article:has(strong:text-is("${discipline} · rev 1 · Requested"))`);
     if (!(await review.count())) continue;
@@ -84,13 +85,13 @@ try {
   await ops.context.close();
 
   const issuing = await signIn("pm");
-  await issuing.page.getByRole("button", { name: "Documents", exact: true }).click();
+  await chooseDesignSection(issuing.page, "Design documents");
   const issuedDocument = issuing.page.locator("article").filter({ hasText: documentTitle });
   if (await issuedDocument.getByRole("button", { name: "Issue for use" }).count()) {
     await issuedDocument.getByRole("button", { name: "Issue for use" }).click();
     await issuedDocument.getByRole("button", { name: "Use in package" }).waitFor({ timeout: 30000 });
   }
-  await issuing.page.getByRole("button", { name: "Readiness & release" }).click();
+  await chooseDesignSection(issuing.page, "Release");
   const body = await issuing.page.locator("body").innerText();
   if (!body.includes("Ready for release")) {
     console.log(JSON.stringify({ status: "blocked", findings: body.slice(body.indexOf("Deployment readiness"), body.indexOf("Release manifest")) }));

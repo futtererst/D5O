@@ -6,8 +6,6 @@ import type { PackageCrewDemand } from "./schedule-model";
 import { assessDesignPackage, designRequirementRefs, designState, documentRef, type DesignMaterial, type DesignPackage, type DesignReview } from "./design-model";
 import type { DesignCommand } from "@/lib/d5o/prototype-work/design-command";
 import { legacyDesignControlPolicy, type DesignControlPolicy } from "./design-policy";
-import type { ConfigurationInventory } from "@/lib/d5o/configuration/version-inventory";
-import { DesignPipeline } from "./DesignPipeline";
 import { FocusedTaskFrame } from "./FocusedTaskFrame";
 import { DesignDocumentEvidence } from "./DesignDocumentEvidence";
 import { FieldChangeDesignSummary } from "./FieldChangeDesignSummary";
@@ -19,15 +17,23 @@ type Props = {
   taskFocus?: string | null; onFullRecord?: () => void;
   work: WorkRecord; packages: PackageRef[]; packageDemands: PackageCrewDemand[];
   actorRole?: string; actorId?: string;
-  allWork: WorkRecord[]; configurationInventory: ConfigurationInventory; onSelectWork: (id: string) => void;
+  allWork: WorkRecord[];
   policy?: DesignControlPolicy;
   onCommand: (command: Omit<DesignCommand, "workId" | "expectedRevision" | "commandId">) => Promise<boolean>;
   onHandoff: (decision: "accept-design-handoff" | "return-design-handoff", note: string) => Promise<boolean>;
   onCreatePackage: (event: FormEvent<HTMLFormElement>) => void;
   demand: ReactNode; resources: ReactNode;
 };
-const tabs = ["Pipeline", "Basis", "Documents", "Packages", "Reviews", "Changes", "Readiness & release"] as const;
+const tabs = ["Basis", "Documents", "Packages", "Reviews", "Changes", "Readiness & release"] as const;
 type Tab = typeof tabs[number];
+const tabLabels: Record<Tab, string> = {
+  Basis: "Scope & handoff",
+  Documents: "Design documents",
+  Packages: "Work packages",
+  Reviews: "Reviews & approvals",
+  Changes: "Design changes",
+  "Readiness & release": "Release",
+};
 const disciplines: DesignReview["discipline"][] = ["Engineering", "Delivery", "Safety", "Quality", "Procurement"];
 const field = (form: FormData, key: string) => String(form.get(key) ?? "").trim();
 const csv = (form: FormData, key: string) => field(form, key).split(",").map((item) => item.trim()).filter(Boolean);
@@ -55,17 +61,48 @@ function MaterialLinesField({ initial }: { initial: DesignMaterial[] }) {
   </div>)}<button type="button" onClick={() => setRows((current) => [...current, { id: crypto.randomUUID(), item: "", quantity: 0, unit: "", source: "", status: "Unknown", requiredDate: "", forecastDate: "", alternative: "" }])}>+ Add material item</button></fieldset>;
 }
 
-export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packageDemands, allWork, configurationInventory, onSelectWork, actorRole, actorId, policy = legacyDesignControlPolicy, onCommand, onHandoff, onCreatePackage, demand, resources }: Props) {
+export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packageDemands, allWork, actorRole, actorId, policy = legacyDesignControlPolicy, onCommand, onHandoff, onCreatePackage, demand, resources }: Props) {
   const [tab, setTab] = useState<Tab>("Basis");
   const [selectedId, setSelectedId] = useState(packages[0]?.id ?? "");
+  const [legacyPipelineLink, setLegacyPipelineLink] = useState(false);
+  const [unsavedEntry, setUnsavedEntry] = useState(false);
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const target = params.get("package");
-    const destination = params.get("focus") === "reviews" ? "Reviews" : params.get("designTab");
-    if (target && packages.some((item) => item.id === target) && tabs.includes(destination as Tab)) {
-      queueMicrotask(() => { setSelectedId(target); setTab(destination as Tab); });
-    }
+    const restore = () => {
+      const params = new URLSearchParams(window.location.search);
+      const target = params.get("package");
+      const destination = params.get("focus") === "reviews" ? "Reviews" : params.get("designTab");
+      queueMicrotask(() => {
+        setSelectedId(target ?? packages[0]?.id ?? "");
+        setTab(tabs.includes(destination as Tab) ? destination as Tab : "Basis");
+        setLegacyPipelineLink(destination === "Pipeline");
+      });
+    };
+    restore();
+    window.addEventListener("popstate", restore);
+    return () => window.removeEventListener("popstate", restore);
   }, [work.id, packages]);
+  function selectSection(next: Tab) {
+    if (next === tab && !legacyPipelineLink) return;
+    if (unsavedEntry && !window.confirm("Unsaved Design entries on this section will be lost. Continue?")) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("designTab", next);
+    url.searchParams.delete("focus");
+    window.history.pushState(window.history.state, "", url);
+    setLegacyPipelineLink(false);
+    setUnsavedEntry(false);
+    setTab(next);
+  }
+  function selectPackage(nextId: string): boolean {
+    if (nextId === selectedId) return true;
+    if (unsavedEntry && !window.confirm("Unsaved Design entries for this package will be lost. Switch package?")) return false;
+    const url = new URL(window.location.href);
+    url.searchParams.set("package", nextId);
+    window.history.pushState(window.history.state, "", url);
+    setSelectedId(nextId);
+    setChangeSource("");
+    setUnsavedEntry(false);
+    return true;
+  }
   const [handoffNote, setHandoffNote] = useState("");
   const [decisionNote, setDecisionNote] = useState("");
   const [changeSource, setChangeSource] = useState("");
@@ -79,7 +116,7 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
   const [busy, setBusy] = useState(false);
   const state = designState(work);
   const requirementRefs = designRequirementRefs(work);
-  const selected = packages.find((item) => item.id === selectedId) ?? packages[0];
+  const selected = packages.find((item) => item.id === selectedId) ?? (selectedId ? undefined : packages[0]);
   const detail = state.packages.find((item) => item.packageId === selected?.id);
   const assessment = selected ? assessDesignPackage(work, selected.id, undefined, packageDemands.find((item) => item.workId === work.id && item.packageId === selected.id) ?? null, policy) : null;
   const serviceIssue = serviceExecutionBasisIssue(work, allWork)
@@ -96,10 +133,10 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
     ? serviceBasis?.status === "accepted"
     : !work.discovery?.pursuitControl || (work.discovery.outcome === "Won" && handoff?.status === "accepted" && handoff.brief.definitionRevision === work.definition?.revision && handoff.brief.configurationVersionId === work.phaseConfigurationVersionId));
   async function send(command: Omit<DesignCommand, "workId" | "expectedRevision" | "commandId">) {
-    setBusy(true); try { return await onCommand(command); } finally { setBusy(false); }
+    setBusy(true); try { const saved = await onCommand(command); if (saved) setUnsavedEntry(false); return saved; } finally { setBusy(false); }
   }
   async function respondHandoff(decision: "accept-design-handoff" | "return-design-handoff") {
-    setBusy(true); try { if (await onHandoff(decision, handoffNote)) setHandoffNote(""); } finally { setBusy(false); }
+    setBusy(true); try { if (await onHandoff(decision, handoffNote)) { setHandoffNote(""); setUnsavedEntry(false); } } finally { setBusy(false); }
   }
   async function saveDocument(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const element = event.currentTarget, form = new FormData(element);
@@ -382,12 +419,13 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
       </section>
     </FocusedTaskFrame>;
   }
-  return <section className={styles.workspace} aria-label="Design workspace">
-    <header className={styles.header}><div><p>DESIGN · CONTROLLED ENGINEERING</p><h2>Prepare executable work for release</h2><span>{work.customer} · {work.site} · {work.type}</span></div><strong>{state.releases.filter((item) => item.status === "Accepted").length} received / {packages.length} packages</strong></header>
+  return <section className={styles.workspace} aria-label="Design workspace" onInputCapture={(event) => { if (!(event.target as HTMLElement).closest(`.${styles.sectionSelect}, .${styles.packageContext}`)) setUnsavedEntry(true); }}>
+    <header className={styles.header}><div><p>DESIGN · SELECTED WORK</p><h2>Prepare executable work for release</h2></div><strong>{state.releases.filter((item) => item.status === "Accepted").length} received / {packages.length} packages</strong></header>
     <div className={styles.position}><span><b>Received basis</b>{handoff ? `Develop handoff ${handoff.revision} · ${handoff.status}` : work.serviceSource ? `Service request ${work.serviceSource.requestId ?? "maintenance"}` : work.discovery?.pursuitControl ? "Awaiting awarded Develop handoff" : "Legacy work · source unverified"}</span><span><b>Design next action</b>{serviceIssue ?? (received ? state.packages.length ? "Complete reviews and resolve release findings" : "Create an executable Work Package" : "Receive the exact approved Develop basis")}</span></div>
     <details className={styles.provenance}><summary>Ownership and configuration</summary><p>Engineering owner: {work.develop?.designOwner || work.owner}. Published configuration: {work.phaseConfigurationVersionId ?? "Unpinned"}</p></details>
-    <label className={styles.sectionSelect}>Design section<select value={tab} onChange={(event) => setTab(event.target.value as Tab)}>{tabs.map((item) => <option key={item} value={item}>{item}</option>)}</select></label><nav className={styles.tabs} aria-label="Design sections">{tabs.map((item) => <button key={item} type="button" aria-current={tab === item ? "page" : undefined} onClick={() => setTab(item)}>{item}</button>)}</nav>
-    {tab === "Pipeline" ? <div className={styles.stack}><DesignPipeline work={allWork} inventory={configurationInventory} demands={packageDemands} onSelect={onSelectWork} /></div> : null}
+    {legacyPipelineLink ? <p className={styles.legacyLink} role="status">Pipeline is now a workspace-wide Design work queue. This Work Record remains selected. <a href={`/work?workspace=${encodeURIComponent(work.workspace)}&view=design-queue`}>Open Design work queue →</a></p> : null}
+    <label className={styles.sectionSelect}>Design section<select value={tab} onChange={(event) => selectSection(event.target.value as Tab)}>{tabs.map((item) => <option key={item} value={item}>{tabLabels[item]}</option>)}</select></label><nav className={styles.tabs} aria-label="Design sections">{tabs.map((item) => <button key={item} type="button" aria-current={tab === item ? "page" : undefined} onClick={() => selectSection(item)}>{tabLabels[item]}</button>)}</nav>
+    {tab !== "Basis" ? <div className={styles.packageContext}><div><b>{tab === "Documents" ? "Work-wide document register · selected-package draft" : tab === "Readiness & release" && !policy.allowPartialRelease ? "Selected-package readiness · whole-release-set authorization" : "Selected-package information and actions"}</b><span>{selected ? `${selected.name} · ${detail ? `engineering revision ${detail.revision}` : "engineering basis not recorded"}` : selectedId ? "Requested package unavailable — no other package selected" : "Choose a package to see its controls"}</span></div><label>Design package<select aria-label="Design package" value={selected?.id ?? ""} onChange={(event) => selectPackage(event.target.value)}><option value="" disabled>Choose a package</option>{packages.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label></div> : <div className={styles.workContext}>Work-wide approved scope and source references · {work.title}</div>}
     {tab === "Basis" ? <div className={styles.stack}>
       {work.serviceSource ? <section className={styles.card}>
         <h3>Receive the service execution basis</h3>
@@ -420,9 +458,9 @@ export function DesignWorkspace({ taskFocus, onFullRecord, work, packages, packa
     {tab === "Documents" ? <div className={styles.stack}><section className={styles.card}><h3>Engineering document index</h3><p>A new draft retains the issued revision until the new revision is reviewed and explicitly issued.</p><div className={styles.list}>{state.documents.map((item) => <article key={documentRef(item)}><div><strong>{item.title} · rev {item.revision}</strong><small>{item.type} · {item.status} · {item.source}</small><small>Packages: {item.packageIds.map((id) => packages.find((entry) => entry.id === id)?.name ?? id).join(", ") || "None"}</small></div>{requiresDocumentCustody ? <DesignDocumentEvidence workspace={work.workspace} workId={work.id}
           documentId={item.id} revision={item.revision} canUpload={item.status === "Draft" && actorRole === "project_manager"}
           onEvidence={(id) => rememberDocumentEvidence(documentRef(item), id)} /> : null}
-        <div className={styles.actions}>{item.status === "Draft" ? <button disabled={busy || (requiresDocumentCustody && !documentEvidence[documentRef(item)])} onClick={() => void send({ action: "submit-document", documentId: item.id, documentRevision: item.revision, evidenceId: documentEvidence[documentRef(item)] })}>Submit review</button> : null}{item.status === "In review" ? <><input aria-label={`Document review rationale for ${item.title}`} value={documentReviewNote} onChange={(event) => setDocumentReviewNote(event.target.value)} placeholder="Independent review rationale" /><button disabled={busy || (requiresDocumentCustody && !item.evidenceId) || documentReviewNote.trim().length < 15} onClick={() => void send({ action: "approve-document", documentId: item.id, documentRevision: item.revision, note: documentReviewNote })}>Approve revision</button><button disabled={busy || documentReviewNote.trim().length < 15} onClick={() => void send({ action: "return-document", documentId: item.id, documentRevision: item.revision, note: documentReviewNote })}>Return for correction</button></> : null}{item.status === "Returned" ? <span>Returned: {item.returnNote || "A corrected revision is required."} Use Document identity below to create a new revision.</span> : null}{item.status === "Approved" ? <button disabled={busy || (requiresDocumentCustody && !item.evidenceId)} onClick={() => void send({ action: "issue-document", documentId: item.id, documentRevision: item.revision })}>Issue for use</button> : null}{item.status === "Issued for use" ? <button type="button" onClick={() => { setTab("Packages"); setSelectedId(item.packageIds[0] ?? selected?.id ?? ""); setChangeSource(""); }}>Use in package →</button> : null}</div></article>)}{!state.documents.length ? <p>No engineering deliverable recorded.</p> : null}</div></section>
-      <section className={styles.card}><h3>Draft a deliverable</h3><form className={styles.form} onSubmit={saveDocument}><label>Document identity<select name="id"><option value="">New deliverable</option>{[...new Map(state.documents.map((item) => [item.id, item])).values()].map((item) => <option value={item.id} key={item.id}>New revision of {item.title}</option>)}</select></label><label>Type<select name="type"><option>IFC drawing</option><option>Specification</option><option>Cable schedule</option><option>Material submittal</option><option>Method of procedure</option><option>Safety plan</option><option>Quality plan</option><option>Service engineering</option></select></label><label>Title<input name="title" required /></label><label>Source or file reference<input name="source" required placeholder="Evidence ID or controlled document link" /></label><label>Owner<input name="owner" defaultValue={work.owner} /></label><label>Approved requirements<select name="requirements" multiple>{requirementRefs.map((item) => <option key={item.id} value={item.id}>{item.id} · {item.label}</option>)}</select></label><label>Review due<input name="due" type="date" /></label><button disabled={busy || !received}>Save draft for selected package</button></form></section></div> : null}
-    {tab === "Packages" ? <div className={styles.stack}><section className={styles.card}><h3>Shared Work Packages</h3><p>Design records the executable method and crew demand. Installed, tested, and accepted quantities are recorded in Deploy.</p><div className={styles.packageStrip}>{packages.map((item) => <button type="button" className={selected?.id === item.id ? styles.selected : ""} key={item.id} onClick={() => { setSelectedId(item.id); setChangeSource(""); }}>{item.name}<small>{state.packages.find((entry) => entry.packageId === item.id)?.status ?? "Needs design"}</small></button>)}</div><form className={styles.form} onSubmit={onCreatePackage}><label>New Work Package<input name="package" required placeholder="e.g. Fiber trunks and termination" /></label><label>Owner<input name="owner" defaultValue={work.owner} /></label><button disabled={!received}>Create shared package</button></form></section>
+        <div className={styles.actions}>{item.status === "Draft" ? <button disabled={busy || (requiresDocumentCustody && !documentEvidence[documentRef(item)])} onClick={() => void send({ action: "submit-document", documentId: item.id, documentRevision: item.revision, evidenceId: documentEvidence[documentRef(item)] })}>Submit review</button> : null}{item.status === "In review" ? <><input aria-label={`Document review rationale for ${item.title}`} value={documentReviewNote} onChange={(event) => setDocumentReviewNote(event.target.value)} placeholder="Independent review rationale" /><button disabled={busy || (requiresDocumentCustody && !item.evidenceId) || documentReviewNote.trim().length < 15} onClick={() => void send({ action: "approve-document", documentId: item.id, documentRevision: item.revision, note: documentReviewNote })}>Approve revision</button><button disabled={busy || documentReviewNote.trim().length < 15} onClick={() => void send({ action: "return-document", documentId: item.id, documentRevision: item.revision, note: documentReviewNote })}>Return for correction</button></> : null}{item.status === "Returned" ? <span>Returned: {item.returnNote || "A corrected revision is required."} Use Document identity below to create a new revision.</span> : null}{item.status === "Approved" ? <button disabled={busy || (requiresDocumentCustody && !item.evidenceId)} onClick={() => void send({ action: "issue-document", documentId: item.id, documentRevision: item.revision })}>Issue for use</button> : null}{item.status === "Issued for use" ? <button type="button" onClick={() => { const packageId = item.packageIds[0] ?? selected?.id; if (packageId && !selectPackage(packageId)) return; selectSection("Packages"); }}>Use in package →</button> : null}</div></article>)}{!state.documents.length ? <p>No engineering deliverable recorded.</p> : null}</div></section>
+      <section className={styles.card}><h3>Draft a deliverable</h3><form className={styles.form} onSubmit={saveDocument}><label>Document identity<select name="id"><option value="">New deliverable</option>{[...new Map(state.documents.map((item) => [item.id, item])).values()].map((item) => <option value={item.id} key={item.id}>New revision of {item.title}</option>)}</select></label><label>Type<select name="type"><option>IFC drawing</option><option>Specification</option><option>Cable schedule</option><option>Material submittal</option><option>Method of procedure</option><option>Safety plan</option><option>Quality plan</option><option>Service engineering</option></select></label><label>Title<input name="title" required /></label><label>Source or file reference<input name="source" required placeholder="Evidence ID or controlled document link" /></label><label>Owner<input name="owner" defaultValue={work.owner} /></label><label>Approved requirements<select name="requirements" multiple>{requirementRefs.map((item) => <option key={item.id} value={item.id}>{item.id} · {item.label}</option>)}</select></label><label>Review due<input name="due" type="date" /></label><button disabled={busy || !received || !selected}>Save draft for selected package</button></form></section></div> : null}
+    {tab === "Packages" ? <div className={styles.stack}><section className={styles.card}><h3>Shared Work Packages</h3><p>Design records the executable method and crew demand. Installed, tested, and accepted quantities are recorded in Deploy.</p><form className={styles.form} onSubmit={onCreatePackage}><label>New Work Package<input name="package" required placeholder="e.g. Fiber trunks and termination" /></label><label>Owner<input name="owner" defaultValue={work.owner} /></label><button disabled={!received}>Create shared package</button></form></section>
       {selected ? <section className={styles.card}><h3>{selected.name} · engineering revision {detail?.revision ?? "new"}</h3><form key={`${selected.id}:${detail?.revision ?? 0}`} className={styles.form} onSubmit={savePackage}>
         <label>Scope<textarea name="scope" defaultValue={detail?.scope} /></label><label>Location<input name="location" defaultValue={detail?.location} /></label><label>Affected systems<input name="systems" defaultValue={detail?.systems} /></label><label>Approved requirements<select name="requirementIds" multiple defaultValue={detail?.requirementIds ?? []}>{requirementRefs.map((item) => <option key={item.id} value={item.id}>{item.id} · {item.label}</option>)}</select></label><label>Predecessor packages<select name="predecessorIds" multiple defaultValue={detail?.predecessorIds ?? []}>{packages.filter((item) => item.id !== selected.id).map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label>Governing document revisions<select name="documentRefs" multiple defaultValue={detail?.documentRefs ?? []}>{state.documents.filter((item) => item.packageIds.includes(selected.id)).map((item) => <option key={documentRef(item)} value={documentRef(item)}>{item.title} · rev {item.revision} · {item.status}</option>)}</select></label>
         <label>Completion basis<select name="completionKind" defaultValue={detail?.completionBasis?.kind ?? "Measured"}><option>Measured</option><option>Qualitative</option></select></label><label>Planned quantity<input name="plannedQuantity" type="number" min="0" step="any" defaultValue={detail?.completionBasis?.kind === "Measured" ? detail.completionBasis.plannedQuantity : ""} /></label><label>Quantity unit<input name="plannedUnit" defaultValue={detail?.completionBasis?.kind === "Measured" ? detail.completionBasis.unit : ""} /></label><label>Qualitative completion criterion<input name="completionCriterion" defaultValue={detail?.completionBasis?.kind === "Qualitative" ? detail.completionBasis.criterion : ""} /></label>

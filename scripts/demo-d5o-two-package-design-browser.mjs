@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { chromium } from "playwright";
+import { chooseDesignPackage, chooseDesignSection } from "./d5o-design-browser-nav.mjs";
 
 if (process.env.D5O_ISOLATED_PILOT !== "1" || process.env.NEXT_PUBLIC_SUPABASE_URL !== "http://127.0.0.1:56621" || !process.env.D5O_PILOT_CREDENTIALS_FILE) throw new Error("fresh_disposable_pilot_only");
 const users = JSON.parse(readFileSync(process.env.D5O_PILOT_CREDENTIALS_FILE, "utf8")).users;
@@ -19,8 +20,8 @@ async function signIn(key) {
   await page.getByRole("heading", { name: "Prepare executable work for release" }).waitFor({ timeout: 30000 });
   return { context, page };
 }
-async function tab(page, name) { await page.getByRole("button", { name, exact: true }).click(); }
-async function select(page, name) { await tab(page, "Packages"); await page.getByRole("button", { name: new RegExp(name) }).click(); }
+async function tab(page, name) { await chooseDesignSection(page, { Documents: "Design documents", Packages: "Work packages" }[name] ?? name); }
+async function select(page, name) { await tab(page, "Packages"); await chooseDesignPackage(page, name); }
 try {
   const pm = await signIn("pm"), page = pm.page;
   for (const name of names) {
@@ -28,7 +29,7 @@ try {
     if (!(await page.locator("body").innerText()).includes(name)) {
       await page.locator('input[name="package"]').fill(name);
       await page.getByRole("button", { name: "Create shared package" }).click();
-      await page.getByRole("button", { name: new RegExp(name) }).waitFor({ timeout: 30000 });
+      await page.getByRole("combobox", { name: "Design package" }).locator("option").filter({ hasText: name }).waitFor({ timeout: 30000 });
     }
   }
   for (let index = 0; index < names.length; index++) {

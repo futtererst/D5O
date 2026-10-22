@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { chromium } from "playwright";
+import { chooseDesignSection } from "./d5o-design-browser-nav.mjs";
 
 if (process.env.D5O_ISOLATED_PILOT !== "1" || !process.env.D5O_PILOT_CREDENTIALS_FILE) throw new Error("disposable_pilot_only");
 const users = JSON.parse(readFileSync(process.env.D5O_PILOT_CREDENTIALS_FILE, "utf8")).users;
@@ -29,7 +30,7 @@ async function stage(key, section, fn) {
 try {
   if (process.env.D5O_PILOT_STAGE === "change") {
     await stage("pm", "Design", async (page) => {
-      await page.getByRole("button", { name: "Changes", exact: true }).click();
+      await chooseDesignSection(page, "Design changes");
       await page.getByRole("button", { name: "Use as Design source" }).click();
       const form = page.locator('form:has(button:has-text("Record change and hold active release"))');
       if (await form.locator('input[name="source"]').inputValue() !== `field-change:${changeId}`) throw new Error("field_change_source_not_selected");
@@ -50,7 +51,7 @@ try {
   }
   if (process.env.D5O_PILOT_STAGE === "package") {
     await stage("pm", "Design", async (page) => {
-      await page.getByRole("button", { name: "Packages", exact: true }).click();
+      await chooseDesignSection(page, "Work packages");
       const form = page.locator('form:has(button:has-text("Save new design revision"))');
       await form.locator('textarea[name="scope"]').fill("Diagnose the existing monitoring route and continuity through controlled access around the obstructed tray, within the authorized four-hour service visit. No replacement or unrelated expansion.");
       await form.locator('input[name="access"]').fill("Site representative confirms access to the obstructed route entry; pause if the tray cannot be safely inspected within the approved diagnostic window.");
@@ -63,7 +64,7 @@ try {
       await form.locator('select[name="commercialDisposition"]').selectOption("None");
       await form.getByRole("button", { name: "Save new design revision" }).click();
       await page.getByRole("heading", { name: /engineering revision 2/ }).waitFor({ timeout: 30000 });
-      await page.getByRole("button", { name: "Reviews", exact: true }).click();
+      await chooseDesignSection(page, "Reviews & approvals");
       const request = page.locator('form:has(button:has-text("Request exact-revision review"))');
       for (const discipline of ["Engineering", "Delivery", "Safety", "Quality"]) {
         await request.locator('select[name="discipline"]').selectOption(discipline);
@@ -76,7 +77,7 @@ try {
   }
   if (process.env.D5O_PILOT_STAGE === "review") {
     await stage("operations", "Design", async (page) => {
-      await page.getByRole("button", { name: "Reviews", exact: true }).click();
+      await chooseDesignSection(page, "Reviews & approvals");
       for (const discipline of ["Engineering", "Delivery", "Safety", "Quality"]) {
         const review = page.locator(`article:has(strong:text-is("${discipline} · rev 2 · Requested"))`);
         await review.getByLabel("Review rationale").fill(`${discipline} independently reviewed the revised safe access, four-hour authorized scope, and continuity proof requirement.`);
@@ -85,10 +86,10 @@ try {
       }
     });
     await stage("pm", "Design", async (page) => {
-      await page.getByRole("button", { name: "Changes", exact: true }).click();
+      await chooseDesignSection(page, "Design changes");
       await page.getByRole("button", { name: "Resolve reviewed change" }).click();
       await page.getByText(/Resolved · revision 1/).waitFor({ timeout: 30000 });
-      await page.getByRole("button", { name: "Readiness & release" }).click();
+      await chooseDesignSection(page, "Release");
       const form = page.locator('form:has(button:has-text("Release this package to Deploy"))');
       await form.waitFor({ timeout: 30000 });
       await form.locator('input[name="owner"]').fill("Operations receiving queue");
@@ -100,12 +101,12 @@ try {
   }
   if (process.env.D5O_PILOT_STAGE === "release") {
     await stage("pm", "Design", async (page) => {
-      await page.getByRole("button", { name: "Packages", exact: true }).click();
+      await chooseDesignSection(page, "Work packages");
       const demand = page.locator('form:has(button:has-text("Save crew requirement"))');
       await demand.waitFor({ timeout: 30000 });
       await demand.getByRole("button", { name: "Save crew requirement" }).click();
       await page.waitForTimeout(750);
-      await page.getByRole("button", { name: "Readiness & release" }).click();
+      await chooseDesignSection(page, "Release");
       const form = page.locator('form:has(button:has-text("Release this package to Deploy"))');
       await form.waitFor({ timeout: 30000 });
       await form.locator('input[name="owner"]').fill("Operations receiving queue");

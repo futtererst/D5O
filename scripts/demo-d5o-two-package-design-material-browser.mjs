@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { chromium } from "playwright";
+import { chooseDesignPackage, chooseDesignSection } from "./d5o-design-browser-nav.mjs";
 if (process.env.D5O_ISOLATED_PILOT !== "1" || process.env.NEXT_PUBLIC_SUPABASE_URL !== "http://127.0.0.1:56621" || !process.env.D5O_PILOT_CREDENTIALS_FILE) throw new Error("fresh_disposable_pilot_only");
 const user = JSON.parse(readFileSync(process.env.D5O_PILOT_CREDENTIALS_FILE, "utf8")).users.find((item) => item.key === "pm");
 const names = ["North zone controls installation", "South zone controls installation"];
@@ -15,8 +16,8 @@ try {
   await page.getByRole("heading", { name: "Prepare executable work for release" }).waitFor({ timeout: 30000 });
   for (let index = 0; index < names.length; index++) {
     const name = names[index];
-    await page.getByRole("button", { name: "Packages", exact: true }).click();
-    await page.getByRole("button", { name: new RegExp(name) }).click();
+    await chooseDesignSection(page, "Work packages");
+    await chooseDesignPackage(page, name);
     const form = page.locator('form:has(button:has-text("Save new design revision"))');
     if (!(await form.locator('input[name="materialItem"]').count())) await form.getByRole("button", { name: "+ Add material item" }).click();
     if (await form.locator('input[name="materialForecastLine"]').inputValue() === "2026-10-09") continue;

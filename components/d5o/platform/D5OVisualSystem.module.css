@@ -747,6 +747,11 @@
 .root :global(.d5o-selected-work-main > div:first-child > span) { color:#587181; display:block; font-size:13px; overflow-wrap:anywhere; }
 .root :global(.d5o-selected-work-actions) { align-items:center; display:flex; flex:0 0 auto; gap:9px; }
 .root :global(.d5o-selected-work-actions .d5o-stage-badge) { min-height:42px; min-width:145px; padding:6px 10px; }
+@media (min-width:801px) and (max-width:1199px) {
+  .root :global(.d5o-selected-work-main) { flex-wrap:wrap; }
+  .root :global(.d5o-selected-work-main > div:first-child) { flex:1 1 100%; }
+  .root :global(.d5o-selected-work-actions) { flex-wrap:wrap; width:100%; }
+}
 .root :global(.d5o-header-record-switch) { background:#fff; border:1px solid #b9cbd5; border-radius:7px; color:#153b53; cursor:pointer; font:inherit; font-size:12px; font-weight:750; min-height:42px; padding:8px 11px; white-space:nowrap; }
 .root :global(.d5o-header-record-switch span) { margin-left:10px; }
 .root :global(.d5o-record-full > .d5o-work-phase-nav),
