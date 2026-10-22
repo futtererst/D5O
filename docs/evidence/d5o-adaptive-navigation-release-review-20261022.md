@@ -1,0 +1,35 @@
+# D5O adaptive navigation release review — 22 October 2026
+
+## Candidate and production baseline
+
+PR #4 (`codex/d5o-mobile-layout-correction`) contains the accepted phase-led adaptive navigation. The executable release-check correction is commit `dcdc152` after locally qualified navigation commit `21a2784927666e861444331153ebab0abcfe93aa`. Neither commit has been deployed to Vercel in this review.
+
+The production alias is on Vercel deployment `dpl_FNV6262To7rAYfQS7UoRP1Yz4y87`, created 22 October 2026 at 05:55 EDT. Vercel reports `source: cli` and no Git SHA metadata. The production project's `D5O_SOURCE_SHA` setting is `0936d5682f238dcee28f1781e021fd77f08803f6`, but that is a configured label, not an independently verified artifact identity. Do not treat it as proof of the deployed source. Before a production merge or promotion, identify the actual deployed artifact/source and verify its authenticated build label against that artifact.
+
+`0936d568` is an ancestor of the navigation candidate and is the best available labelled reference. The eight navigation and verification commits after it are `30cf427`, `a66d77e`, `f28f7fa`, `fadb9c9`, `e1e34b0`, `6ebeff6`, `77f711d`, and `21a2784`. They touch `components/d5o/platform/D5OPlatform.tsx`, `D5OVisualSystem.module.css`, phase/Discover/record components, the guarded interface preview, and the two shell verifiers. They add no database migration or hosted command-route change. The relevant phase/CRM and Work handlers already exist at `0936d568`; the navigation commits change how those handlers are reached and displayed. A bounded navigation release is technically plausible against that labelled source, but it must be assembled and tested against the *verified* deployed source. PR #4 itself has a larger parent branch and must not be merged as a surrogate for a bounded production navigation change.
+
+## Hosted review target
+
+The available Supabase project inventory contains one hosted D5O project, `fcawktdjoxvahhgvkebx`, used by production. The existing Vercel Preview `NEXT_PUBLIC_SUPABASE_URL` resolves to that same production project despite its old isolation comment. Deploying this candidate with those Preview variables would expose fictional review sessions to production persistence. The previously qualified local project at `127.0.0.1:59641` cannot be reached by a Vercel Function. Supabase quoted a separate project at $10 per month; the owner declined creating a paid project and requested existing infrastructure. No existing compatible, isolated hosted target was found. No Vercel preview was created and no hosted authenticated journey or screenshot is claimed.
+
+The shortest hosted review path is an existing owner-identified isolated Supabase Database/Auth/Storage target with the 166-file D5O schema and fictional memberships, plus Vercel Preview variables bound only to that target; otherwise a newly approved isolated project is necessary. Verify target identity and zero production data before deployment. Use normal `/work` and distinct PM/worker sessions, then repeat the bounded navigation and no-command-write checks. Never point the preview at `fcawktdjoxvahhgvkebx` for fictional qualification.
+
+## Release checks and dependency correction
+
+Required checks from `docs/deployment-readiness.md` pass on the current executable source: `npm run typecheck`, `npm run lint`, `npm run build` (Windows junction creation required elevated execution), `npm audit --omit=dev` (0 vulnerabilities), and `npm run demo:check`. `npm run app-shell:verify`, `npm run mobile-shell:verify`, `npm run rbac:verify`, and `npm run security:verify` also pass. No GitHub required checks were reported for draft PR #4; do not infer CI success. The full optional `npm run verify` was not run.
+
+The production audit originally reported 8 package findings. Next.js `16.2.9` and its PostCSS/Nanoid/source-map-js/Sharp descendants carried the high and critical findings; supported Next.js `16.4.2` resolves those and pulls PostCSS `8.5.23`, Nanoid `3.3.20`, source-map-js `1.2.2`, and Sharp `0.35.5`. Next's declared baseline-browser-mapping range also accepts the patched `2.11.0`, selected narrowly. ExcelJS `4.4.0` depends on vulnerable UUID `8.3.2`; ExcelJS has no patched 4.x release, so UUID `11.1.1` is overridden. The application uses ExcelJS only to load supplier XLSX cells; a workbook XLSX roundtrip, including conditional-format UUID generation, passed. The audit is clear without `--force` or advisory suppression. Development-only audit findings remain outside the repository's `--omit=dev` release gate.
+
+Official advisory references: [Next.js ImageResponse RCE](https://github.com/advisories/GHSA-vcvr-r3jv-pc5j), [Sharp/librsvg](https://github.com/advisories/GHSA-wq5f-xc86-pv6w), [baseline-browser-mapping](https://github.com/advisories/GHSA-w5vr-8v7q-w6rv), [UUID](https://github.com/advisories/GHSA-w5hq-g745-h8pq).
+
+The demo check expected `/pilot` in route smoke although the real route existed; route smoke now includes it. The old RBAC verifier searched raw role blocks and missed inherited permissions and canonical legacy-role mappings; it now executes `hasPermission` and transaction permission checks with positive and denial cases. The security verifier now permits the exact two guarded `import "server-only"` modules that legitimately read server keys, while continuing to reject client references and other unexpected key use. These check fixes do not change authorization behaviour.
+
+## Production path and rollback
+
+1. Establish the exact live source/artifact, then create a separate bounded branch from it containing only the eight navigation commits and the separately reviewed release-check correction. Exclude unrelated account, Admin, Work-read, and evidence changes from the broader parent branch unless a demonstrated dependency requires one.
+2. Provide an existing isolated hosted target, or explicitly approve a new one. Bind a protected Vercel Preview to that target, deploy an immutable source, confirm the displayed SHA and target, and repeat the authenticated PM/worker checks, matching phone/tablet screenshots, and before/after command-receipt counts.
+3. Review production policy and owner gates in the existing D5O release record, confirm production target compatibility, and promote only that exact hosted-qualified bounded artifact. Do not silently merge PR #2 or all of PR #4.
+
+For an application-only navigation release with no migration or business-command changes, retain the current deployment ID and promote it back if the new UI fails, after checking that no other concurrent application change made the old artifact incompatible. Database state and command receipts are preserved; no snapshot restore is part of this UI rollback. This rollback claim does not apply to a release that includes the larger enterprise-readiness changes.
+
+Physical devices and native mobile keyboards remain unqualified. The local browser-emulated screenshots and connected local checks belong to `21a2784`, not to a hosted build or the dependency-updated source.
