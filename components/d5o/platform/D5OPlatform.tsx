@@ -321,14 +321,15 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuTriggerRef = useRef<HTMLButtonElement>(null);
   const menuCloseRef = useRef<HTMLButtonElement>(null);
+  const menuReturnRef = useRef<HTMLButtonElement | null>(null);
   useEffect(() => {
     if (!mobileMenuOpen) return;
     menuCloseRef.current?.focus();
-    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setMobileMenuOpen(false); };
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") { setMobileMenuOpen(false); requestAnimationFrame(() => (menuReturnRef.current ?? menuTriggerRef.current)?.focus()); } };
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [mobileMenuOpen]);
-  function closeMainMenu() { setMobileMenuOpen(false); requestAnimationFrame(() => menuTriggerRef.current?.focus()); }
+  function closeMainMenu() { setMobileMenuOpen(false); requestAnimationFrame(() => (menuReturnRef.current ?? menuTriggerRef.current)?.focus()); }
   const [portfolioSearch, setPortfolioSearch] = useState("");
   const [portfolioFilter, setPortfolioFilter] = useState<"all" | "blocked" | "attention" | "moving" | "complete">("all");
   const sharedSchedule = useSharedSchedule(initialWorkspace, hostedPreview, actorId);
@@ -1215,10 +1216,10 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       <button className="d5o-full-brand" aria-label="Open My Work" title="My Work" onClick={() => go("my-work")}><PlatformWordmark /></button>
       <nav className="d5o-rail-links" aria-label="Primary work areas">
         {([{ screen: "my-work", label: "My Work", icon: "inbox" }, { screen: "portfolio", label: "Work", icon: "portfolio" }] as const).filter((item) => canPresentSurface(presentation, item.screen)).map((item) => { const active = screen === item.screen || item.screen === "portfolio" && ["record", "discover", "define", "develop"].includes(screen); return <button key={item.screen} type="button" title={item.label} aria-label={item.label} aria-current={active ? "page" : undefined} className={active ? "is-active" : ""} onClick={() => go(item.screen)}><PlatformIcon name={item.icon} /><span>{item.label}</span></button>; })}
-        {(["crew", "people", "execution", "handoff", "operate"] as Screen[]).some((item) => canPresentSurface(presentation, item)) ? <button type="button" title="Resources" aria-label="Resources" aria-expanded={mobileMenuOpen} aria-controls="d5o-sidebar-menu" className={(["crew", "people", "execution", "handoff", "operate"] as Screen[]).includes(screen) ? "is-active" : ""} onClick={() => setMobileMenuOpen(true)}><PlatformIcon name="calendar" /><span>Resources</span></button> : null}
+        {(["crew", "people", "execution", "handoff", "operate"] as Screen[]).some((item) => canPresentSurface(presentation, item)) ? <button type="button" title="Resources" aria-label="Resources" aria-expanded={mobileMenuOpen} aria-controls="d5o-sidebar-menu" className={(["crew", "people", "execution", "handoff", "operate"] as Screen[]).includes(screen) ? "is-active" : ""} onClick={(event) => { menuReturnRef.current = event.currentTarget; setMobileMenuOpen(true); }}><PlatformIcon name="calendar" /><span>Resources</span></button> : null}
         {([{ screen: "insights", label: "Insights", icon: "insight" }, { screen: "library", label: "Library", icon: "evidence" }] as const).filter((item) => canPresentSurface(presentation, item.screen)).map((item) => <button key={item.screen} type="button" title={item.label} aria-label={item.label} aria-current={screen === item.screen ? "page" : undefined} className={screen === item.screen ? "is-active" : ""} onClick={() => go(item.screen)}><PlatformIcon name={item.icon} /><span>{item.label}</span></button>)}
       </nav>
-      <div className="d5o-rail-bottom">{hostedPreview && actorRole === "admin" && activeWorkspace === "rybex" ? <Link href="/work/admin?workspace=rybex" title="Administration" aria-label="Administration"><PlatformIcon name="settings" /><span>Admin</span></Link> : !hostedPreview && canPresentSurface(presentation, "configuration") ? <button type="button" title="Administration" aria-label="Administration" aria-current={screen === "configuration" ? "page" : undefined} onClick={() => go("configuration")}><PlatformIcon name="settings" /><span>Admin</span></button> : null}<button ref={menuTriggerRef} type="button" title="More navigation" aria-label="More navigation" aria-expanded={mobileMenuOpen} aria-controls="d5o-sidebar-menu" onClick={() => setMobileMenuOpen((open) => !open)}><PlatformIcon name="model" /><span>More</span></button></div>
+      <div className="d5o-rail-bottom">{hostedPreview && actorRole === "admin" && activeWorkspace === "rybex" ? <Link href="/work/admin?workspace=rybex" title="Administration" aria-label="Administration"><PlatformIcon name="settings" /><span>Admin</span></Link> : !hostedPreview && canPresentSurface(presentation, "configuration") ? <button type="button" title="Administration" aria-label="Administration" aria-current={screen === "configuration" ? "page" : undefined} onClick={() => go("configuration")}><PlatformIcon name="settings" /><span>Admin</span></button> : null}<button ref={menuTriggerRef} type="button" title="More navigation" aria-label="More navigation" aria-expanded={mobileMenuOpen} aria-controls="d5o-sidebar-menu" onClick={(event) => { menuReturnRef.current = event.currentTarget; setMobileMenuOpen((open) => !open); }}><PlatformIcon name="model" /><span>More</span></button></div>
       <small className="d5o-rail-build" title={sourceVersion}>Build {sourceVersion.slice(0, 12)}</small>
     </aside>
     {mobileMenuOpen ? <button type="button" className="d5o-nav-scrim" aria-label="Close navigation" onClick={closeMainMenu} /> : null}
