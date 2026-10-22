@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "./AdminOverview.module.css";
+import { adminActionLabel } from "./admin-action-label";
 
 type Summary = { members: number; people: number; activePeople: number; activeVersion: string; recent: Array<{ at: string; action: string; actor: string }> };
 
@@ -44,7 +45,7 @@ export function AdminOverview({ workspace }: { workspace: string }) {
     </div><div className={styles.lower}>
       <section><h2>Common actions</h2><Link href={href("users")}>Invite or assign access →</Link><Link href={href("workforce")}>Add a roster person →</Link><Link href={href("authority")}>Review delegation and rates →</Link></section>
       <section><h2>Recent administrative changes</h2>{summary.recent.length ? summary.recent.map((item, index) =>
-        <p key={`${item.at}:${index}`}><strong>{item.action.replaceAll("_", " ")}</strong><span>{new Date(item.at).toLocaleString()} · {item.actor}</span></p>) : <p>No retained administrative changes in this page of history.</p>}
+        <p key={`${item.at}:${index}`}><strong>{adminActionLabel(item.action)}</strong><span>{new Date(item.at).toLocaleString()} · {item.actor}</span></p>) : <p>No retained administrative changes in this page of history.</p>}
         <Link href={href("audit")}>Open audit history →</Link></section>
     </div></>}
   </div>;

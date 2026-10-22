@@ -2,21 +2,11 @@
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import styles from "./AdminAudit.module.css";
+import { adminActionLabel } from "./admin-action-label";
 
 type Event = { at: string; actor: string; action: string; subject: string;
   reference: string; detail: string };
 type Page = { items: Event[]; total: number; offset: number };
-const actionNames: Record<string, string> = {
-  assigned: "Workspace access assigned", suspended: "Workspace access suspended",
-  restored: "Workspace access restored", "membership.succession": "Administrator added",
-  "workforce.save-person": "Roster profile changed", "workforce.set-active": "Roster status changed",
-  "workforce.bind-person": "Account binding requested", "binding.bound": "Account bound to roster person",
-  "binding.corrected": "Account binding corrected", "identity.invite": "Invitation requested",
-  "identity.recovery": "Account recovery requested", "delegation.add": "Decision delegate added",
-  "delegation.revoke": "Decision delegate revoked", "configuration.activate": "Configuration activated",
-  "configuration.validate-publish": "Configuration published", "configuration.create-draft": "Configuration draft created",
-};
-function actionLabel(action: string) { return actionNames[action] ?? action.replaceAll(/[._-]/g, " "); }
 
 export function AdminAudit({ workspace, initialSubject = "" }: { workspace: string; initialSubject?: string }) {
   const [page, setPage] = useState<Page | null>(null);
@@ -54,7 +44,7 @@ export function AdminAudit({ workspace, initialSubject = "" }: { workspace: stri
     <div className={styles.events}><div className={styles.eventHead}><span>When (local time)</span><span>Actor</span><span>Action</span><span>Subject</span><span>Details</span></div>{page?.items.map((item) =>
       <article key={`${item.action}:${item.reference}`}>
         <time dateTime={item.at}>{new Date(item.at).toLocaleString(undefined, { timeZoneName: "short" })}</time>
-        <span>{item.actor}</span><strong>{actionLabel(item.action)}</strong><span>{item.subject || "Workspace"}</span>
+        <span>{item.actor}</span><strong>{adminActionLabel(item.action)}</strong><span>{item.subject || "Workspace"}</span>
         <details><summary>View event</summary><p>{item.detail || "No further detail was retained."}</p><dl><dt>Original command</dt><dd>{item.action}</dd><dt>Event / command reference</dt><dd>{item.reference}</dd><dt>Subject reference</dt><dd>{item.subject || "Workspace"}</dd></dl></details>
       </article>)}{page && page.items.length === 0 && <p>No events match these filters.</p>}</div>
     <div className={styles.pagination}>
