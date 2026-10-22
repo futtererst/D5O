@@ -1,12 +1,10 @@
 # RybexOS
 
-## Authoritative Product Build Plan
+## Current D5O and legacy demo guidance
 
-The authoritative product build plan is:
+Start with [the repository guide](docs/d5o-repository-guide.md) for the authenticated hosted D5O route, isolated local setup, verification, release evidence, and existing product-plan material. The previously cited `docs/rybexos-master-build-plan.md` is absent from this repository and its history; the guide identifies the available product-plan material without replacing or changing it.
 
-- `docs/rybexos-master-build-plan.md`
-
-Older demo, pilot, readiness, implementation, visual QA, and route reports are supporting or historical documents. They do not override the master build plan. A route, component, seed record, local workflow, screenshot, or passing verification script does not by itself establish that a capability is implemented, demo-ready, or production-ready.
+The remainder of this README describes the older seed/demo RybexOS routes. Its defaults and demo checklist do not describe the hosted `/work` application's authenticated persistence or release gate.
 
 RybexOS is a seed-backed prototype for running subcontracted infrastructure
 work through the Rybex D5O operating model. It is designed for Rybex
@@ -166,7 +164,7 @@ database runtime, auth, or deployment behavior.
 
 ## Demo Route
 
-Historical demo docs remain in the repository for context. They do not mean the app is currently demo-ready, and they do not override `docs/rybexos-master-build-plan.md`.
+Historical demo docs remain in the repository for context. They do not establish hosted D5O readiness; see [the repository guide](docs/d5o-repository-guide.md).
 
 Start the executive demo at:
 
