@@ -11,6 +11,7 @@ import { AdminOverview } from "@/components/d5o/admin/AdminOverview";
 import { AdminMobileNav } from "@/components/d5o/admin/AdminMobileNav";
 import { AdminIdentityBoundary } from "@/components/d5o/admin/AdminIdentityBoundary";
 import { D5OProductHeader } from "@/components/d5o/platform/D5OProductHeader";
+import { invitationDeliveryPolicy } from "@/lib/d5o/auth/approved-test-recipient";
 import styles from "./admin.module.css";
 import "../../enterprise.css";
 import "../../settings/notification-settings.css";
@@ -68,7 +69,8 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
     <section className={styles.content}>
       {active === "overview" && <AdminOverview workspace="rybex" />}
       {active === "users" && <MemberAccessPanel workspace="rybex" selectedUserId={selectedId}
-        initialSearch={(query.search ?? "").slice(0, 120)} initialOffset={offset} />}
+        initialSearch={(query.search ?? "").slice(0, 120)} initialOffset={offset}
+        invitationPolicy={invitationDeliveryPolicy()} />}
       {active === "workforce" && <CrewAccessPanel selectedPersonId={selectedId} />}
       {active === "configuration" && <AdminConfigurationEditor workspace="rybex" />}
       {active === "authority" && <div className={styles.authority}><SpendingDelegationAdmin workspace="rybex" />
