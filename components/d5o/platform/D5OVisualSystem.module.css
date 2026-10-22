@@ -1013,3 +1013,45 @@
   .root :global(.d5o-rail-links .d5o-mobile-more-trigger) { display:grid !important; }
   .root :global(.d5o-rail-links button[aria-expanded=true]) { background:#29465b; color:#fff; }
 }
+
+/* Supporting Work information is opened on demand, separate from phase navigation. */
+.root :global(.d5o-work-details-trigger) { background:#fff; border:1px solid #9fb8c7; border-radius:7px; color:#123950; cursor:pointer; font:inherit; font-size:13px; font-weight:800; min-height:44px; padding:8px 14px; }
+.root :global(.d5o-work-details-trigger:focus-visible),
+.root :global(.d5o-work-details-panel button:focus-visible),
+.root :global(.d5o-work-details-panel summary:focus-visible) { outline:3px solid var(--d5o-accent); outline-offset:2px; }
+.root :global(.d5o-work-details-overlay) { position:fixed; inset:0; z-index:100; }
+.root :global(.d5o-work-details-overlay[hidden]),
+.root :global(.d5o-work-details-content > [hidden]) { display:none !important; }
+.root :global(.d5o-work-details-scrim) { position:absolute; inset:0; background:rgb(9 29 43 / 55%); border:0; cursor:default; width:100%; }
+.root :global(.d5o-work-details-panel) { background:#f6f8f9; box-shadow:-12px 0 36px rgb(7 28 43 / 24%); color:#102b42; display:flex; flex-direction:column; height:100dvh; max-height:100dvh; overflow:hidden; position:absolute; right:0; top:0; width:min(640px, 48vw); }
+.root :global(.d5o-work-details-heading) { align-items:start; background:#fff; border-bottom:1px solid #d8e2e8; display:flex; flex:none; gap:12px; justify-content:space-between; padding:calc(16px + env(safe-area-inset-top)) 18px 13px; }
+.root :global(.d5o-work-details-heading span) { color:#617c8a; font-size:11px; font-weight:850; letter-spacing:.08em; }
+.root :global(.d5o-work-details-heading h2) { font-size:22px; line-height:1.15; margin:4px 0; }
+.root :global(.d5o-work-details-heading p) { font-size:13px; line-height:1.35; margin:0; overflow-wrap:anywhere; }
+.root :global(.d5o-work-details-heading button) { background:#f2f6f8; border:1px solid #bdced8; border-radius:7px; color:#173a50; flex:none; font:inherit; font-weight:800; min-height:44px; padding:8px 12px; }
+.root :global(.d5o-work-details-groups) { background:#fff; border-bottom:1px solid #d8e2e8; display:grid; flex:none; grid-template-columns:repeat(4,minmax(0,1fr)); padding:4px 10px; }
+.root :global(.d5o-work-details-groups button) { background:transparent; border:0; border-bottom:3px solid transparent; color:#415e70; cursor:pointer; font:inherit; font-size:12px; font-weight:750; min-height:48px; padding:6px; }
+.root :global(.d5o-work-details-groups button[aria-current=page]) { border-bottom-color:var(--d5o-accent); color:#102b42; }
+.root :global(.d5o-work-details-content) { flex:1; min-height:0; overflow:auto; overscroll-behavior:contain; padding:16px 18px calc(28px + env(safe-area-inset-bottom)); }
+.root :global(.d5o-work-details-content > div) { min-width:0; }
+.root :global(.d5o-work-details-summary > p) { color:#526f80; font-size:13px; line-height:1.45; margin:0 0 12px; }
+.root :global(.d5o-work-details-summary > details) { background:#fff; border:1px solid #d7e2e8; border-radius:8px; margin-bottom:9px; min-width:0; }
+.root :global(.d5o-work-details-summary > details > summary) { align-items:center; cursor:pointer; display:flex; font-size:14px; font-weight:800; min-height:48px; padding:10px 14px; }
+.root :global(.d5o-work-details-summary > details > :not(summary)) { margin:0 12px 14px; }
+.root :global(.d5o-work-details-content .d5o-gate-grid),
+.root :global(.d5o-work-details-content .d5o-gate-bottom),
+.root :global(.d5o-work-details-content .d5o-inline-form) { grid-template-columns:minmax(0,1fr); }
+.root :global(.d5o-work-details-content input),
+.root :global(.d5o-work-details-content select),
+.root :global(.d5o-work-details-content textarea) { max-width:100%; min-width:0; }
+@media (max-width:1100px) { .root :global(.d5o-work-details-panel) { width:min(560px, 70vw); } }
+@media (max-width:600px) {
+  .root :global(.d5o-work-details-panel) { left:0; width:100vw; }
+  .root :global(.d5o-work-details-heading) { padding-inline:12px; }
+  .root :global(.d5o-work-details-heading h2) { font-size:19px; }
+  .root :global(.d5o-work-details-groups) { gap:2px; grid-template-columns:repeat(2,minmax(0,1fr)); padding:4px 8px; }
+  .root :global(.d5o-work-details-groups button) { min-height:44px; }
+  .root :global(.d5o-work-details-content) { padding:12px 10px calc(32px + env(safe-area-inset-bottom)); }
+  .root :global(.d5o-selected-work-actions) { display:grid; grid-template-columns:minmax(0,1fr) auto; }
+  .root :global(.d5o-work-details-trigger) { white-space:nowrap; }
+}
