@@ -146,7 +146,9 @@ export function MemberAccessPanel({ workspace, selectedUserId, initialSearch = "
       if (!response.ok) {
         if (response.status === 503) throw new Error("The response is uncertain; check the command receipt before retrying.");
         setPending(null); await refresh();
-        setMessage(body.message ?? `${body.error ?? "Change rejected"}. Your input remains available; compare current access before submitting again.`);
+        setMessage(body.message ?? (body.error === "stale_or_conflicting_assignment"
+          ? "This account already has access or its membership changed. Search the workspace directory and review the current role before trying again; your input remains available."
+          : `${body.error ?? "Change rejected"}. Your input remains available; compare current access before submitting again.`));
         return;
       }
       await refresh(); setPending(null); setMessage(body.assignment?.action === "already_assigned"
@@ -217,7 +219,7 @@ export function MemberAccessPanel({ workspace, selectedUserId, initialSearch = "
         <label>Existing confirmed sign-in email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required /></label>
         <label>Workspace role<select value={role} onChange={(event) => setRole(event.target.value)}>{assignableWorkspaceRoles.map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
         <label>Reason for access change<input value={reason} onChange={(event) => setReason(event.target.value)} minLength={8} maxLength={500} required /></label>
-        <button type="submit" disabled={busy || Boolean(pending)}>{busy ? "Saving…" : "Assign workspace access"}</button>
+        <button type="submit" disabled={busy || Boolean(pending) || !directory}>{busy ? "Saving…" : "Assign workspace access"}</button>
       </form>{message && <p role="status" aria-live="polite">{message}</p>}
       {assignedUserId && <p><Link href={`/work/admin/users/${assignedUserId}?workspace=${encodeURIComponent(workspace)}`}>Open assigned membership →</Link> <span>Use this link if the current search hides the account.</span></p>}
     </section>}
