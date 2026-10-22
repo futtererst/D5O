@@ -55,7 +55,7 @@ import { decisionCheckPhase, decisionCheckResults, type DecisionCheck, type Phas
 import { currentPrototypeTransition, transitionBlockers, transitionPolicies } from "./work-condition";
 import { WorkPhaseActions } from "./WorkPhaseActions";
 import { PhaseResourceBridge } from "./PhaseResourceBridge";
-import { WorkPhaseJourney, type WorkPhase, type WorkControl } from "./WorkPhaseJourney";
+import { WorkPhaseJourney, workPhases, type WorkPhase, type WorkControl } from "./WorkPhaseJourney";
 import { canPresentSurface, presentationForRole } from "./role-presentation";
 import { retainedEditsPresent } from "./define-save-recovery";
 
@@ -148,13 +148,11 @@ const operatingNavigation: { screen: Screen; label: string; icon: PlatformIconNa
   { screen: "library", label: "Evidence library", icon: "evidence" },
   { screen: "insights", label: "Operating insight", icon: "insight" }
 ];
-const primaryDestinations: { label: string; icon: PlatformIconName; screens: readonly Screen[] }[] = [
-  { label: "My Work", icon: "inbox", screens: ["my-work"] },
-  { label: "Work", icon: "portfolio", screens: ["portfolio", "record", "discover", "define", "develop", "home"] },
-  { label: "Resources", icon: "calendar", screens: ["crew", "people", "execution", "handoff", "operate"] },
-  { label: "Insights", icon: "insight", screens: ["insights"] },
-  { label: "Library", icon: "evidence", screens: ["library"] }
-];
+const phaseIcons: Record<WorkPhase, PlatformIconName> = {
+  Discover: "discover", Define: "model", Develop: "hub",
+  Design: "portfolio", Deploy: "execution", Operate: "handoff"
+};
+const phaseDestinations = workPhases.map((phase) => ({ phase, icon: phaseIcons[phase] }));
 const designNavigation: { screen: Screen; label: string; icon: PlatformIconName }[] = [
   { screen: "operating", label: "Operating model", icon: "model" },
   { screen: "configuration", label: "Workspace configuration", icon: "settings" },
@@ -326,6 +324,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
   }
   const [appearanceOpen, setAppearanceOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuSection, setMenuSection] = useState<"phases" | "more">("more");
   const menuTriggerRef = useRef<HTMLButtonElement>(null);
   const menuCloseRef = useRef<HTMLButtonElement>(null);
   const menuDialogRef = useRef<HTMLElement>(null);
@@ -770,6 +769,13 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
     if (phase === "Develop" && item.discovery) { setDiscoverEntry(null); go("develop"); return; }
     setTab(phase);
     go("record");
+  }
+  function openPrimaryPhase(phase: WorkPhase) {
+    if (!permittedPhases.includes(phase)) { setNotice("This phase is outside your role workspace."); return; }
+    if (phase === "Discover") { setDiscoverEntry(null); go("discover"); return; }
+    if (selected) { openJourneyPhase(selected as WorkRecord, phase); return; }
+    go("portfolio");
+    setNotice(`Select a Work Record to view ${phase}.`);
   }
   function returnFromSelectedWork() {
     if (screen === "define") { openWorkspacePhase("discover", selected); return; }
@@ -1239,32 +1245,39 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
     } catch (error) { setNotice(error instanceof Error ? error.message : "The prototype snapshot could not be downloaded."); }
   }
   const showSelectedWorkHeader = (!hostedPreview || workReadStatus === "ready" && loadedWorkScope === `${initialWorkspace}:${actorId}`) &&
-    Boolean(selected && !taskFocus && (screen === "record" || screen === "discover" && !discoverEntry || screen === "define" && !defineReviewEntry || screen === "develop" && !discoverEntry));
+    Boolean(selected && !taskFocus && (screen === "record" || screen === "discover" && selected.discovery && !discoverEntry || screen === "define" && !defineReviewEntry || screen === "develop" && !discoverEntry));
 
   return <main className={`d5o-full-app ${visualSystem.root}`} onFocusCapture={() => requestAnimationFrame(keepFocusedFieldVisible)} style={{ "--d5o-accent": accent, "--d5o-dark": workspaceDark, "--d5o-on-accent": contrastText(accent), "--d5o-on-dark": contrastText(workspaceDark), "--d5o-accent-light": contrastText(workspaceDark) === "#ffffff" ? "color-mix(in srgb, var(--d5o-accent) 54%, #fff)" : previewAccent(accent, workspaceDark) } as CSSProperties}>
     <aside className="d5o-full-sidebar d5o-nav-rail" aria-label="Primary navigation" inert={mobileMenuOpen}>
       <button className="d5o-full-brand" aria-label="Open My Work" title="My Work" onClick={() => go("my-work")}><PlatformWordmark /></button>
-      <nav className="d5o-rail-links" aria-label="Primary work areas">
-        {primaryDestinations.map((item) => {
-          const target = item.screens.find((candidate) => candidate !== "record" && canPresentSurface(presentation, candidate));
-          const active = item.screens.includes(screen);
-          return <button key={item.label} type="button" title={item.label} aria-label={item.label} aria-current={active ? "page" : undefined} className={active ? "is-active" : ""} disabled={!target} onClick={() => { if (target) go(target); }}><PlatformIcon name={item.icon} /><span>{item.label}</span></button>;
+      <nav className="d5o-rail-links" aria-label="My Work and work phases">
+        <button type="button" aria-current={screen === "my-work" ? "page" : undefined} className={screen === "my-work" ? "is-active" : ""} onClick={() => go("my-work")}><PlatformIcon name="inbox" /><span>My Work</span></button>
+        {phaseDestinations.map(({ phase, icon }) => {
+          const active = phase === "Discover" ? screen === "discover" : phase === "Define" ? screen === "define" : phase === "Develop" ? screen === "develop" || screen === "record" && tab === "Develop" : screen === "record" && tab === phase;
+          return <button key={phase} type="button" title={phase} aria-current={active ? "page" : undefined} className={`d5o-rail-phase${active ? " is-active" : ""}`} disabled={!permittedPhases.includes(phase)} onClick={() => openPrimaryPhase(phase)}><PlatformIcon name={icon} /><span>{phase}</span></button>;
         })}
+        <button type="button" className="d5o-mobile-phase-trigger" aria-current={screen === "discover" || screen === "define" || screen === "develop" || screen === "record" && phaseDestinations.some(({ phase }) => phase === tab) ? "page" : undefined} aria-expanded={mobileMenuOpen && menuSection === "phases"} aria-controls="d5o-sidebar-menu" onClick={(event) => { menuReturnRef.current = event.currentTarget; setMenuSection("phases"); setMobileMenuOpen(true); }}><PlatformIcon name="hub" /><span>Phases</span></button>
+        <button type="button" className="d5o-mobile-work-trigger" aria-current={screen === "portfolio" ? "page" : undefined} onClick={() => go("portfolio")}><PlatformIcon name="portfolio" /><span>Work</span></button>
+        <button type="button" className="d5o-mobile-more-trigger" aria-expanded={mobileMenuOpen && menuSection === "more"} aria-controls="d5o-sidebar-menu" onClick={(event) => { menuReturnRef.current = event.currentTarget; setMenuSection("more"); setMobileMenuOpen(true); }}><PlatformIcon name="model" /><span>More</span></button>
       </nav>
-      <div className="d5o-rail-bottom">{hostedPreview && actorRole === "admin" && activeWorkspace === "rybex" ? <Link href="/work/admin?workspace=rybex" title="Administration" aria-label="Administration"><PlatformIcon name="settings" /><span>Admin</span></Link> : !hostedPreview && canPresentSurface(presentation, "configuration") ? <button type="button" title="Administration" aria-label="Administration" aria-current={screen === "configuration" ? "page" : undefined} onClick={() => go("configuration")}><PlatformIcon name="settings" /><span>Admin</span></button> : null}<button type="button" title="More navigation" aria-label="More navigation" aria-expanded={mobileMenuOpen} aria-controls="d5o-sidebar-menu" onClick={(event) => { menuReturnRef.current = event.currentTarget; setMobileMenuOpen((open) => !open); }}><PlatformIcon name="model" /><span>More</span></button></div>
+      <div className="d5o-rail-bottom">{hostedPreview && actorRole === "admin" && activeWorkspace === "rybex" ? <Link href="/work/admin?workspace=rybex" title="Administration" aria-label="Administration"><PlatformIcon name="settings" /><span>Admin</span></Link> : !hostedPreview && canPresentSurface(presentation, "configuration") ? <button type="button" title="Administration" aria-label="Administration" aria-current={screen === "configuration" ? "page" : undefined} onClick={() => go("configuration")}><PlatformIcon name="settings" /><span>Admin</span></button> : null}<button type="button" title="More navigation" aria-label="More navigation" aria-expanded={mobileMenuOpen} aria-controls="d5o-sidebar-menu" onClick={(event) => { menuReturnRef.current = event.currentTarget; setMenuSection("more"); setMobileMenuOpen((open) => !open); }}><PlatformIcon name="model" /><span>More</span></button></div>
       <small className="d5o-rail-build" title={sourceVersion}>Build {sourceVersion.slice(0, 12)}</small>
     </aside>
     {mobileMenuOpen ? <button type="button" className="d5o-nav-scrim" aria-label="Close navigation" onClick={closeMainMenu} /> : null}
-    <aside ref={menuDialogRef} className={`d5o-nav-drawer${mobileMenuOpen ? " is-open" : ""}`} id="d5o-sidebar-menu" role="dialog" aria-modal={mobileMenuOpen} aria-label="Browse work and context" aria-hidden={!mobileMenuOpen} inert={!mobileMenuOpen}>
-      <div className="d5o-nav-drawer-heading"><div><strong>Navigate D5O</strong><small>{palette.name}</small></div><button ref={menuCloseRef} type="button" aria-label="Close navigation" onClick={closeMainMenu}>×</button></div>
-      <div className="d5o-sidebar-menu">
+    <aside ref={menuDialogRef} className={`d5o-nav-drawer${mobileMenuOpen ? " is-open" : ""}`} id="d5o-sidebar-menu" role="dialog" aria-modal={mobileMenuOpen} aria-label={menuSection === "phases" ? "Choose a work phase" : "Browse work and context"} aria-hidden={!mobileMenuOpen} inert={!mobileMenuOpen}>
+      <div className="d5o-nav-drawer-heading"><div><strong>{menuSection === "phases" ? "Work phases" : "Navigate D5O"}</strong><small>{menuSection === "phases" ? "Viewing a phase does not change governed position" : palette.name}</small></div><button ref={menuCloseRef} type="button" aria-label="Close navigation" onClick={closeMainMenu}>×</button></div>
+      {menuSection === "phases" ? <nav className="d5o-phase-menu" aria-label="Six work phases">{phaseDestinations.map(({ phase, icon }) => {
+        const active = phase === "Discover" ? screen === "discover" : phase === "Define" ? screen === "define" : phase === "Develop" ? screen === "develop" || screen === "record" && tab === "Develop" : screen === "record" && tab === phase;
+        return <button key={phase} type="button" aria-current={active ? "page" : undefined} disabled={!permittedPhases.includes(phase)} onClick={() => openPrimaryPhase(phase)}><PlatformIcon name={icon} /><span><strong>{phase}</strong>{phase === "Discover" ? <small>CRM pursuits and customer opportunities</small> : null}</span></button>;
+      })}</nav> : <div className="d5o-sidebar-menu">
       {hostedPreview ? <Link className="d5o-menu-workspace" href="/work">Select workspace</Link> : null}
       {presentation.canStart ? <button type="button" className="d5o-menu-start" onClick={() => go("start")}>Start work</button> : null}
-      <details className="d5o-nav-disclosure"><summary>Work tools</summary><nav className="d5o-full-nav" aria-label="Work tools">{(["home", "decisions"] as Screen[]).filter((surface) => canPresentSurface(presentation, surface)).map((surface) => { const item = operatingNavigation.find((entry) => entry.screen === surface); return item ? <button key={surface} type="button" aria-current={screen === surface ? "page" : undefined} className={screen === surface ? "is-active" : ""} onClick={() => go(surface)}><PlatformIcon name={item.icon} /><span>{item.label}</span></button> : null; })}</nav></details>
+      <details className="d5o-nav-disclosure" open><summary>Work and records</summary><nav className="d5o-full-nav" aria-label="Work and records">{(["portfolio", "home", "decisions"] as Screen[]).filter((surface) => canPresentSurface(presentation, surface)).map((surface) => { const item = operatingNavigation.find((entry) => entry.screen === surface); return item ? <button key={surface} type="button" aria-current={screen === surface ? "page" : undefined} className={screen === surface ? "is-active" : ""} onClick={() => go(surface)}><PlatformIcon name={item.icon} /><span>{surface === "portfolio" ? "Work register" : item.label}</span></button> : null; })}</nav></details>
+      <details className="d5o-nav-disclosure"><summary>Insights and library</summary><nav className="d5o-full-nav" aria-label="Insights and library">{(["insights", "library"] as Screen[]).filter((surface) => canPresentSurface(presentation, surface)).map((surface) => { const item = operatingNavigation.find((entry) => entry.screen === surface); return item ? <button key={surface} type="button" aria-current={screen === surface ? "page" : undefined} onClick={() => go(surface)}><PlatformIcon name={item.icon} /><span>{item.label}</span></button> : null; })}</nav></details>
       <details className="d5o-nav-disclosure"><summary>Resource tools</summary><nav className="d5o-full-nav" aria-label="Resource tools">{(["crew", "people", "execution", "handoff", "operate"] as Screen[]).filter((surface) => canPresentSurface(presentation, surface)).map((surface) => { const item = operatingNavigation.find((entry) => entry.screen === surface); return <button key={surface} type="button" aria-current={screen === surface ? "page" : undefined} className={screen === surface ? "is-active" : ""} onClick={() => go(surface)}><PlatformIcon name={item?.icon ?? "handoff"} /><span>{item?.label ?? "Support & Operate"}</span></button>; })}</nav></details>
       {actorRole === "admin" || !hostedPreview ? <details className="d5o-nav-disclosure"><summary>Administration</summary><nav className="d5o-full-nav" aria-label="Administration">{hostedPreview && actorRole === "admin" && activeWorkspace === "rybex" ? <Link href="/work/admin?workspace=rybex"><PlatformIcon name="settings" /><span>Admin workspace</span></Link> : null}{designNavigation.filter((item) => item.screen !== "start" && canPresentSurface(presentation, item.screen)).map((item) => <button key={item.screen} type="button" onClick={() => go(item.screen)}><PlatformIcon name={item.icon} /><span>{item.label}</span></button>)}</nav><div className="d5o-appearance"><button onClick={() => setAppearanceOpen((open) => !open)}>Appearance {appearanceOpen ? "−" : "+"}</button>{appearanceOpen ? <div><p>These appearance choices stay in this browser; they do not publish workspace policy.</p><label>Accent<input aria-label="Workspace accent color" type="color" value={accent} onChange={(event) => setAccent(event.target.value)} /></label><label>Foundation<input aria-label="Workspace foundation color" type="color" value={workspaceDark} onChange={(event) => setWorkspaceDark(event.target.value)} /></label><button className="d5o-reset" onClick={() => { setAccent(palette.color); setWorkspaceDark(palette.dark); }}>Restore {palette.short} theme</button>{!hostedPreview ? <button className="d5o-reset" onClick={resetDemo}>Restore sample workspace</button> : null}</div> : null}</div></details> : null}
       <div className="d5o-menu-account"><AccountMenu hostedPreview={hostedPreview} workspace={activeWorkspace} snapshotReady={workLoaded && preferencesLoaded} onExportSnapshot={() => { void exportSnapshot(); }} /></div><div className="d5o-user-card"><span>SIGNED IN</span><strong>{currentUserLabel.split(" · ")[1] ?? currentUserLabel}</strong><small>{currentUserLabel.split(" · ")[0]}</small></div>
-      </div>
+      </div>}
     </aside>
       <section className="d5o-full-content" tabIndex={-1} inert={mobileMenuOpen}><div className="d5o-app-topbar"><div><b className="d5o-mobile-wordmark">D5O</b><span>WORKSPACE</span><strong>{palette.name}</strong><i style={{ background: palette.color }} /></div><div className="d5o-top-actions"><button ref={menuTriggerRef} type="button" className="d5o-header-menu" aria-label="Open menu" aria-expanded={mobileMenuOpen} aria-controls="d5o-sidebar-menu" onClick={(event) => { menuReturnRef.current = event.currentTarget; setMobileMenuOpen(true); }}>Menu</button>{hostedPreview ? <Link href="/work">Switch workspace</Link> : null}<AccountMenu hostedPreview={hostedPreview} workspace={activeWorkspace} snapshotReady={workLoaded && preferencesLoaded} onExportSnapshot={() => { void exportSnapshot(); }} />{presentation.canStart ? <button onClick={() => go("start")}>+ Start work</button> : null}</div></div>
       {notice ? <div className="d5o-platform-notice" role="status">{notice}<button onClick={() => setNotice("")}>×</button></div> : null}
@@ -1298,7 +1311,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
         <p>{workReadStatus === "failed" ? "The shared Work read did not complete. No empty or current Work state has been assumed, and Work actions are unavailable until the read succeeds." : "Checking the current shared Work and your workspace access."}</p>
         {workReadStatus === "failed" ? <button type="button" onClick={() => setWorkReadAttempt((attempt) => attempt + 1)}>Retry current Work read</button> : null}
       </section> : <>
-      {screen === "discover" && !stalePhaseTask && !unavailableRecordId ? <DiscoverWorkspace visiblePhases={permittedPhases} workspaceKey={activeWorkspace} workspaceName={palette.name} hosted={hostedPreview} configurationInventory={configurationInventory} work={visibleWork as WorkRecord[]} commercialProfiles={commercialProfiles} actor={currentUserLabel} actorId={actorId ?? undefined} actorRole={actorRole} canEdit={canEditWork && sharedWorkRevision !== null} focusRecordId={selected?.id} reviewFocus={discoverEntry} onPhase={openJourneyPhase} onControl={(item, control) => { setSelectedId(item.id); setTab(control); go("record"); }} onBack={() => taskFocus ? go("my-work") : go("home")} onSelect={setSelectedId} onOpen={(item) => openRecord(item as Work)} onDefine={(item) => openWorkspacePhase("define", item as Work)} onPricingQueued={() => { pendingReviewQueue.current = "pricing"; setNotice("Saving the pricing review before opening its role queue."); }} onProposalQueued={() => { pendingReviewQueue.current = "proposal"; setNotice("Saving the proposal review before opening its role queue."); }} onCommercialCommand={executeCommercialCommand} onPursuitCommand={authoritativeCommands ? executePursuitCommand : undefined} onUpdate={(id, transform) => { pendingDiscoverSave.current = id; updateWork(id, (current) => transform(current as WorkRecord) as Work); }} onCreate={createDiscoverWork} onNotice={setNotice} /> : null}
+      {screen === "discover" && !stalePhaseTask && !unavailableRecordId ? <DiscoverWorkspace visiblePhases={permittedPhases} workspaceKey={activeWorkspace} workspaceName={palette.name} hosted={hostedPreview} configurationInventory={configurationInventory} work={visibleWork as WorkRecord[]} commercialProfiles={commercialProfiles} actor={currentUserLabel} actorId={actorId ?? undefined} actorRole={actorRole} canEdit={canEditWork && sharedWorkRevision !== null} focusRecordId={selected?.discovery ? selected.id : undefined} reviewFocus={discoverEntry} onPhase={openJourneyPhase} onControl={(item, control) => { setSelectedId(item.id); setTab(control); go("record"); }} onBack={() => taskFocus ? go("my-work") : go("home")} onSelect={setSelectedId} onOpen={(item) => openRecord(item as Work)} onDefine={(item) => openWorkspacePhase("define", item as Work)} onPricingQueued={() => { pendingReviewQueue.current = "pricing"; setNotice("Saving the pricing review before opening its role queue."); }} onProposalQueued={() => { pendingReviewQueue.current = "proposal"; setNotice("Saving the proposal review before opening its role queue."); }} onCommercialCommand={executeCommercialCommand} onPursuitCommand={authoritativeCommands ? executePursuitCommand : undefined} onUpdate={(id, transform) => { pendingDiscoverSave.current = id; updateWork(id, (current) => transform(current as WorkRecord) as Work); }} onCreate={createDiscoverWork} onNotice={setNotice} /> : null}
       {screen === "define" && !stalePhaseTask && !unavailableRecordId ? <DefineWorkspace visiblePhases={permittedPhases} key={`${activeWorkspace}:${selected?.id ?? ""}:${defineRecoveryLoadEpoch}`} workspaceKey={activeWorkspace} workspaceName={palette.name} configurationInventory={configurationInventory} work={visibleWork as WorkRecord[]} focusRecordId={selected?.id} reviewFocus={defineReviewEntry} actorLabel={currentUserLabel} onReviewQueued={() => { pendingReviewQueue.current = "definition"; setNotice("Saving the definition review before opening its role queue."); }} onCommand={executeDefineCommand} onPhase={openJourneyPhase} onControl={(item, control) => { setSelectedId(item.id); setTab(control); go("record"); }} onBack={() => taskFocus ? go("my-work") : openWorkspacePhase("discover")} onSelect={setSelectedId} onOpen={(item) => openRecord(item as Work)} onUpdate={(id, transform) => updateWork(id, (current) => transform(current as WorkRecord) as Work)} onNotice={setNotice} /> : null}
       {screen === "develop" && !stalePhaseTask && !unavailableRecordId ? <DiscoverWorkspace
         mode="develop" visiblePhases={permittedPhases} workspaceKey={activeWorkspace} workspaceName={palette.name} hosted={hostedPreview}

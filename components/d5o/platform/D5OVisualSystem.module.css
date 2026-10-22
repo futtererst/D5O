@@ -974,3 +974,31 @@
   .root :global(.d5o-selected-work-actions .d5o-stage-badge) { gap:2px; padding:5px 8px; }
   .root :global(.d5o-selected-work-details summary) { min-height:44px; }
 }
+
+/* My Work and the six governed phases share one destination model at every width. */
+.root :global(.d5o-mobile-phase-trigger),
+.root :global(.d5o-mobile-work-trigger),
+.root :global(.d5o-mobile-more-trigger) { display:none; }
+.root :global(.d5o-rail-links .d5o-mobile-phase-trigger),
+.root :global(.d5o-rail-links .d5o-mobile-work-trigger),
+.root :global(.d5o-rail-links .d5o-mobile-more-trigger) { display:none !important; }
+.root :global(.d5o-app-topbar .d5o-header-menu) { display:none !important; }
+.root :global(.d5o-work-phase-nav) { display:none !important; }
+.root :global(.d5o-journey-selectors label:first-child) { display:none; }
+.root :global(.d5o-journey-selectors) { grid-template-columns:minmax(0,1fr); }
+.root :global(.d5o-phase-menu) { display:grid; gap:4px; padding:12px 0; }
+.root :global(.d5o-phase-menu button) { align-items:center; background:transparent; border:0; border-radius:8px; color:#d7e5ed; cursor:pointer; display:flex; gap:12px; min-height:52px; padding:9px 12px; text-align:left; }
+.root :global(.d5o-phase-menu button[aria-current=page]) { background:#29465b; box-shadow:inset 3px 0 var(--d5o-accent); color:#fff; }
+.root :global(.d5o-phase-menu button:disabled) { cursor:not-allowed; opacity:.45; }
+.root :global(.d5o-phase-menu button svg) { flex:none; height:22px; width:22px; }
+.root :global(.d5o-phase-menu button span) { display:grid; gap:2px; }
+.root :global(.d5o-phase-menu button strong) { font-size:14px; }
+.root :global(.d5o-phase-menu button small) { color:#b8cad4; font-size:11px; }
+@media (max-width:600px) {
+  .root :global(.d5o-rail-links) { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .root :global(.d5o-rail-links .d5o-rail-phase) { display:none !important; }
+  .root :global(.d5o-rail-links .d5o-mobile-phase-trigger),
+  .root :global(.d5o-rail-links .d5o-mobile-work-trigger),
+  .root :global(.d5o-rail-links .d5o-mobile-more-trigger) { display:grid !important; }
+  .root :global(.d5o-rail-links button[aria-expanded=true]) { background:#29465b; color:#fff; }
+}
