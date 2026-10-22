@@ -18,11 +18,13 @@ type Invitation = { commandId: string; email: string; requestedRole: string | nu
   membershipStatus: string | null; createdAt: string; setupCompletedAt: string | null };
 type Pending = { commandId: string; payload: Record<string, unknown> };
 
-export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: WorkspaceKey; selectedUserId?: string }) {
+export function MemberAccessPanel({ workspace, selectedUserId, initialSearch = "", initialOffset = 0 }: {
+  workspace: WorkspaceKey; selectedUserId?: string; initialSearch?: string; initialOffset?: number;
+}) {
   const [directory, setDirectory] = useState<Directory | null>(null);
-  const [search, setSearch] = useState("");
-  const [submittedSearch, setSubmittedSearch] = useState("");
-  const [offset, setOffset] = useState(0);
+  const [search, setSearch] = useState(initialSearch);
+  const [submittedSearch, setSubmittedSearch] = useState(initialSearch);
+  const [offset, setOffset] = useState(initialOffset);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("project_manager");
   const [reason, setReason] = useState("");
@@ -37,9 +39,17 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
   const [pending, setPending] = useState<Pending | null>(null);
   const [retryReady, setRetryReady] = useState(false);
   const [flow, setFlow] = useState<"invite" | "assign" | null>(null);
+  const listHref = `/work/admin/users?workspace=${encodeURIComponent(workspace)}${submittedSearch ? `&search=${encodeURIComponent(submittedSearch)}` : ""}${offset ? `&offset=${offset}` : ""}`;
+  const syncListUrl = (nextSearch: string, nextOffset: number) => {
+    const url = new URL(window.location.href);
+    if (nextSearch) url.searchParams.set("search", nextSearch); else url.searchParams.delete("search");
+    if (nextOffset) url.searchParams.set("offset", String(nextOffset)); else url.searchParams.delete("offset");
+    window.history.replaceState(window.history.state, "", url);
+  };
   const endpoint = `/api/d5o-hosted/membership-access?workspace=${encodeURIComponent(workspace)}`;
   const refresh = useCallback(async () => {
-    const query = new URLSearchParams({ workspace, search: submittedSearch, offset: String(offset), limit: "25" });
+    const query = new URLSearchParams({ workspace, search: selectedUserId ? "" : submittedSearch,
+      offset: selectedUserId ? "0" : String(offset), limit: "25" });
     if (selectedUserId) query.set("userId", selectedUserId);
     const response = await fetch(`/api/d5o-hosted/admin-directory?${query}`, { cache: "no-store" });
     const body = await response.json() as Directory & { error?: string };
@@ -155,10 +165,10 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
   const selected = selectedUserId ? directory?.items.find((item) => item.userId === selectedUserId) : null;
   return <section className={styles.panel} aria-label="Workspace users and access">
     <div className={styles.heading}><div><h2>{selected ? (selected.displayName || selected.email) : "Workspace accounts"}</h2>
-      <span>{selected ? selected.email : "Search the workspace directory, then open a person to manage their access."}</span></div>
+      <span>{selected ? selected.displayName && selected.displayName !== selected.email ? selected.email : "Account access and sign-in" : "Search the workspace directory, then open a person to manage their access."}</span></div>
       {!selectedUserId && <div className={styles.actions}><button type="button" onClick={() => setFlow(flow === "invite" ? null : "invite")}>Invite user</button><button type="button" onClick={() => setFlow(flow === "assign" ? null : "assign")}>Assign existing account</button></div>}</div>
-    {selectedUserId && <p><Link href={`/work/admin/users?workspace=${workspace}`}>← All users</Link></p>}
-    <p role="status" aria-live="polite">{message}</p>
+    {selectedUserId && <p><Link href={listHref}>← All users</Link></p>}
+    {(message || !directory) && <p role="status" aria-live="polite">{message || "Loading workspace accounts…"}</p>}
     {pending && <div><p>Pending command {pending.commandId}. Its original input remains retained in this tab.</p>
       <button type="button" disabled={busy} onClick={() => void reconcile()}>Check original command receipt</button>
       {retryReady && <button type="button" disabled={busy} onClick={() => void retryOriginal()}>Retry original command</button>}</div>}
@@ -168,7 +178,7 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
           setMessage("The provider outcome remains unresolved. Check the approved mailbox or Auth provider before initiating another request.");
         else { setMessage(`Retained provider status: ${current.result?.status}. Delivery is not proven by this status.`); setIdentityPending(""); }
       }).catch(() => setMessage("Receipt unavailable. Do not repeat the email request."))}>Check identity request</button></div>}
-    {!selectedUserId && <><form onSubmit={(event) => { event.preventDefault(); setOffset(0); setSubmittedSearch(search); }} className={styles.toolbar}>
+    {!selectedUserId && <><form onSubmit={(event) => { event.preventDefault(); setOffset(0); setSubmittedSearch(search); syncListUrl(search, 0); }} className={styles.toolbar}>
       <label>Search workspace accounts<input value={search} onChange={(event) => setSearch(event.target.value)} maxLength={120} placeholder="Email or roster name" /></label>
       <button type="submit">Search</button><span>Searches workspace accounts; 25 results per page.</span></form>
       {flow === "assign" && <div className={styles.actionPanel}><h3>Assign access to a confirmed account</h3><p>The sign-in account must already exist and be confirmed. A roster person is managed separately in Workforce.</p><form onSubmit={assign} className={styles.form}>
@@ -235,14 +245,15 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
           onClick={() => { if (window.confirm(`Grant administrator access to ${selected.email}?`)) void change({ action: "succession", email: selected.email, reason: reason.trim() }); }}>
           Add administrator</button></details>}
       <p><Link href={`/work/admin/audit?workspace=${workspace}&subject=${selected.userId}`}>Inspect retained changes →</Link></p>
-    </article> : selectedUserId ? <p role="status">No member with this identity is visible in this workspace.</p> : <>
-      <div className={styles.members}><div className={styles.memberHead}><span>Account</span><span>Workspace role</span><span>Access / sign-in</span><span>Workforce</span><span>Details</span></div>{directory?.items.map((member) => <div key={member.userId}>
-        <strong>{member.displayName || member.email}<small>{member.displayName ? member.email : ""}</small></strong><span>{member.role.replaceAll("_", " ")}</span>
-        <span>{member.status} · {member.confirmed ? "confirmed" : "unconfirmed"}</span><span>{member.displayName ? `Bound: ${member.displayName}` : "Not bound"}</span>
-        <Link href={`/work/admin/users/${member.userId}?workspace=${workspace}`}>Details →</Link>
-      </div>)}{directory?.items.length === 0 && <p>No matching workspace members.</p>}</div>
-      <div><button type="button" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - 25))}>Previous</button>
-        <span> {directory?.total ?? 0} members </span><button type="button" disabled={!directory || offset + 25 >= directory.total} onClick={() => setOffset(offset + 25)}>Next</button></div>
+    </article> : selectedUserId ? directory ? <p role="status">No member with this identity is visible in this workspace.</p> : null : <>
+      {directory && <div className={styles.members}><div className={styles.memberHead}><span>Account</span><span>Workspace role</span><span>Access / sign-in</span><span>Workforce</span><span>Details</span></div>{directory.items.map((member) => <div key={member.userId}>
+        <strong data-label="Account">{member.displayName || member.email}<small>{member.displayName ? member.email : ""}</small></strong><span data-label="Workspace role">{member.role.replaceAll("_", " ")}</span>
+        <span data-label="Access / sign-in">{member.status} · {member.confirmed ? "confirmed" : "unconfirmed"}</span><span data-label="Workforce">{member.displayName ? `Bound: ${member.displayName}` : "Not bound"}</span>
+        <Link data-label="Details" href={`/work/admin/users/${member.userId}?workspace=${workspace}${submittedSearch ? `&search=${encodeURIComponent(submittedSearch)}` : ""}${offset ? `&offset=${offset}` : ""}`}>Details →</Link>
+      </div>)}{directory.items.length === 0 && <p>No matching workspace members.</p>}</div>}
+      {directory && <div><button type="button" disabled={offset === 0} onClick={() => { const next=Math.max(0,offset-25); setOffset(next); syncListUrl(submittedSearch,next); }}>Previous</button>
+        <span> {directory.total} members </span><button type="button" disabled={offset + 25 >= directory.total} onClick={() => { const next=offset+25; setOffset(next); syncListUrl(submittedSearch,next); }}>Next</button></div>
+      }
     </>}
     <small>Member assignment requires an existing confirmed account. Business Development can work in Discover; Closeout currently has a read-only hosted view. Neither gains administrative rights.</small>
   </section>;

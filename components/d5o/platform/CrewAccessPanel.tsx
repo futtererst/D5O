@@ -157,8 +157,8 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
     {pending ? <p role="status">Command {pending.commandId} is pending. <button type="button" disabled={busy} onClick={() => void reconcile()}>Check receipt</button>{retryReady ? <button type="button" disabled={busy} onClick={() => void retryOriginal()}>Retry original command</button> : null}</p> : null}
     {!state ? <p role="status">Loading committed workforce…</p> : <>
       {!selected && !creating && <div className={styles.list}><div className={styles.listHead}><span>Person</span><span>Status</span><span>Qualifications</span><span>Capacity</span><span>Account</span><span>Details</span></div>{state.people.map((item) => <div key={item.id}>
-        <strong>{item.displayName}</strong><span>{item.active ? "Active" : "Inactive"}</span><span>{item.qualifications.join(", ") || "None recorded"}</span><span>{item.weeklyCapacityHours}h/week</span>
-        <span>{item.bound ? "Bound" : "Unbound"}</span><Link href={`/work/admin/workforce/${item.id}?workspace=rybex`}>Details →</Link>
+        <strong data-label="Person">{item.displayName}</strong><span data-label="Status">{item.active ? "Active" : "Inactive"}</span><span data-label="Qualifications">{item.qualifications.join(", ") || "None recorded"}</span><span data-label="Capacity">{item.weeklyCapacityHours}h/week</span>
+        <span data-label="Account">{item.bound ? "Bound" : "Unbound"}</span><Link data-label="Details" href={`/work/admin/workforce/${item.id}?workspace=rybex`}>Details →</Link>
       </div>)}{!state.people.length ? <p>No roster people yet. Add a fictional person to begin.</p> : null}</div>}
       {selected && <section className={styles.detail}><h3>Crew booking impact</h3><WorkforceBookingImpact personId={selected.id} proposed={statusReviewId === selected.id && currentProposal
         ? { ...currentProposal, active: !selected.active } : currentProposal} refreshKey={impactRefresh} onBasis={receiveImpactBasis} /></section>}
