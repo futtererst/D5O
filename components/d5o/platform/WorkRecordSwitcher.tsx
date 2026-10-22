@@ -22,7 +22,7 @@ type Filter = "all" | "mine" | "attention" | "recent";
 const limit = 25;
 type SearchPage = { records: SwitchableRecord[]; nextCursor: string | null; total: number };
 
-export function WorkRecordSwitcher<T extends SwitchableRecord>({ records, selected, workspaceName, currentUser, accent, onSelect, onOverview, hostedWorkspace }: {
+export function WorkRecordSwitcher<T extends SwitchableRecord>({ records, selected, workspaceName, currentUser, accent, onSelect, onOverview, hostedWorkspace, placement = "sidebar" }: {
   records: T[];
   selected?: T;
   workspaceName: string;
@@ -31,6 +31,7 @@ export function WorkRecordSwitcher<T extends SwitchableRecord>({ records, select
   onSelect: (record: T) => void;
   onOverview: () => void;
   hostedWorkspace?: string;
+  placement?: "sidebar" | "header";
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -131,12 +132,12 @@ export function WorkRecordSwitcher<T extends SwitchableRecord>({ records, select
   const total = filter === "recent" ? recent.length : page?.total ?? 0;
 
   return <>
-    <div className="d5o-sidebar-record-context">
+    {placement === "header" ? <button ref={triggerRef} type="button" className="d5o-header-record-switch" aria-label={`Switch Work Record${selected ? `, current: ${selected.title}` : ""}`} onClick={() => { setQuery(""); setFilter("all"); setPage(null); setError(""); setLoading(true); setOpen(true); }}>Switch work <span aria-hidden="true">⌄</span></button> : <div className="d5o-sidebar-record-context">
       <span className="d5o-sidebar-record-label">CURRENT WORK RECORD</span>
       {selected ? <><strong className="d5o-sidebar-record-title" title={selected.title}>{selected.title}</strong><small className="d5o-sidebar-record-meta" title={`${selected.customer} · ${displayedStage(selected)}`}>{selected.customer} · {displayedStage(selected)}</small></> : <span className="d5o-sidebar-record-empty">No Work Record selected</span>}
       <button ref={triggerRef} type="button" className="d5o-sidebar-record-switch" onClick={() => { setQuery(""); setFilter("all"); setPage(null); setError(""); setLoading(true); setOpen(true); }}>Find or switch work <span aria-hidden="true">⌕</span></button>
       {selected ? <button type="button" className="d5o-sidebar-record-overview" onClick={onOverview}>Open record overview <span aria-hidden="true">→</span></button> : null}
-    </div>
+    </div>}
     {open && createPortal(<div className="d5o-work-switch-scrim" style={{ "--d5o-accent": accent } as CSSProperties} onMouseDown={(event) => { if (event.target === event.currentTarget) close(); }}>
       <section ref={dialogRef} className="d5o-work-switch-dialog" role="dialog" aria-modal="true" aria-labelledby="d5o-work-switch-title" onKeyDown={handleKeyDown}>
         <header><div><small>{workspaceName.toUpperCase()} · WORK RECORDS</small><h2 id="d5o-work-switch-title">Find work</h2><p>Search by title, customer, site, type, stage, or record ID.</p></div><button type="button" className="d5o-work-switch-close" aria-label="Close Work Record switcher" onClick={close}>×</button></header>

@@ -51,7 +51,7 @@ const newDiscovery = (): DiscoveryRecord => ({
   proposal: { status: "Not started", dueDate: "", method: "Customer portal", recipient: "", response: "" },
 });
 
-export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceName, configurationInventory, work, commercialProfiles, actor, actorId, actorRole, canEdit, hosted = false, focusRecordId, reviewFocus, onOpen, onDefine, onOpenDevelopControls, onPhase, onControl, onBack, onSelect, onPricingQueued, onProposalQueued, onCommercialCommand, onPursuitCommand, onUpdate, onCreate, onNotice, onPolicyUpdated, onPeople }: {
+export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceName, configurationInventory, work, commercialProfiles, actor, actorId, actorRole, canEdit, hosted = false, focusRecordId, reviewFocus, onOpen, onDefine, onOpenDevelopControls, onPhase, onControl, onBack, onSelect, onPricingQueued, onProposalQueued, onCommercialCommand, onPursuitCommand, onUpdate, onCreate, onNotice, onPolicyUpdated, onPeople, visiblePhases }: {
   mode?: "discover" | "develop";
   workspaceKey: WorkspaceKey;
   workspaceName: string;
@@ -78,6 +78,7 @@ export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceNa
   onNotice: (message: string) => void;
   onPolicyUpdated?: () => Promise<void>;
   onPeople?: () => void;
+  visiblePhases?: readonly WorkPhase[];
 }) {
   const isDevelop = mode === "develop";
   const [captureType, setCaptureType] = useState(workspaceKey === "rybex" ? "Technical delivery" : "Modernization service");
@@ -447,9 +448,9 @@ export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceNa
     {discovery?.designHandoffHistory?.length ? <details><summary>Handoff history · {discovery.designHandoffHistory.length} events</summary><ol>{discovery.designHandoffHistory.map((event, index) => <li key={`${event.revision}-${index}`}>Revision {event.revision} · {event.state} · {event.note} · {event.at}</li>)}</ol></details> : null}
   </div>;
 
-  if (!isDevelop) return <DiscoverCRMWorkspace workspaceKey={workspaceKey} workspaceName={workspaceName} configurationInventory={configurationInventory} work={work} actor={actor} actorId={actorId} actorRole={actorRole} canEdit={canEdit} focusRecordId={focusRecordId} taskFocus={reviewFocus === "pursuit-prep" || reviewFocus === "pursuit-review" || reviewFocus === "define-handoff-prep" || reviewFocus === "define-handoff-receive" ? reviewFocus : null} onOpen={onOpen} onDefine={onDefine} onPhase={onPhase} onControl={onControl} onBack={onBack} onSelect={onSelect} onPursuitCommand={onPursuitCommand} onUpdate={onUpdate} onCreate={onCreate} onNotice={onNotice} />;
+  if (!isDevelop) return <DiscoverCRMWorkspace workspaceKey={workspaceKey} workspaceName={workspaceName} configurationInventory={configurationInventory} work={work} actor={actor} actorId={actorId} actorRole={actorRole} canEdit={canEdit} focusRecordId={focusRecordId} taskFocus={reviewFocus === "pursuit-prep" || reviewFocus === "pursuit-review" || reviewFocus === "define-handoff-prep" || reviewFocus === "define-handoff-receive" ? reviewFocus : null} onOpen={onOpen} onDefine={onDefine} onPhase={onPhase} onControl={onControl} onBack={onBack} onSelect={onSelect} onPursuitCommand={onPursuitCommand} onUpdate={onUpdate} onCreate={onCreate} onNotice={onNotice} visiblePhases={visiblePhases} />;
   return <main className="d5o-page d5o-record-full d5o-early-phase d5o-discover-phase">
-    {!reviewFocus ? <WorkPhaseJourney active={isDevelop ? "Develop" : "Discover"} record={phaseRecord} backLabel={isDevelop ? "Define" : "Work hub"} onBack={onBack} onChoose={(phase) => { if (phaseRecord) onPhase(phaseRecord, phase); }} onControl={(control) => { if (phaseRecord) onControl(phaseRecord, control); }} /> : null}
+    {!reviewFocus ? <WorkPhaseJourney active={isDevelop ? "Develop" : "Discover"} record={phaseRecord} backLabel={isDevelop ? "Define" : "Work hub"} onBack={onBack} visiblePhases={visiblePhases} onChoose={(phase) => { if (phaseRecord) onPhase(phaseRecord, phase); }} onControl={(control) => { if (phaseRecord) onControl(phaseRecord, control); }} /> : null}
     {reviewFocus && selected && estimate && proposal ? <FocusedTaskFrame title={({ pricing: "Pricing review", proposal: "Proposal approval", "solution-prep": "Prepare solution", "solution-review": "Independent solution review", "pricing-prep": "Prepare detailed estimate", "proposal-prep": "Prepare customer proposal", "customer-submission-prep": "Record customer submission", "rom-budget-ack": "Record ROM budget acknowledgment", "rom-design-authorization": "Authorize detailed Design", "design-handoff-receive": "Receive Design handoff", "design-handoff-correction": "Correct Design handoff" } as Record<string, string>)[reviewFocus] ?? "Develop task"}
       work={selected.title} customer={selected.customer} site={selected.site} workspace={workspaceKey}
       scope={["design-handoff-receive", "design-handoff-correction"].includes(reviewFocus) ? `Awarded offer revision ${proposal.submission?.revision ?? "unavailable"} · handoff revision ${handoff?.revision ?? 0}` : reviewFocus.startsWith("solution") ? `Selected option: ${selected.develop?.options.find((item) => item.id === selected.develop?.selectedOptionId)?.name ?? "Not selected"}. ${selected.develop?.selectionRationale ?? "Selection rationale needed"}` : reviewFocus.startsWith("pricing") ? `Estimate revision ${estimate.revision} · ${estimate.status}` : `Offer revision ${proposal.package?.revision ?? "unavailable"} · ${proposal.status}`}

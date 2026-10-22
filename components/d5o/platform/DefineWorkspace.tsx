@@ -37,7 +37,7 @@ const initial = (work: WorkRecord): DefinitionRecord => ({
   } : {}),
 });
 
-export function DefineWorkspace({ workspaceKey, configurationInventory, work, focusRecordId, reviewFocus, actorLabel, onReviewQueued, onCommand, onOpen, onPhase, onControl, onBack, onSelect, onUpdate, onNotice }: {
+export function DefineWorkspace({ workspaceKey, configurationInventory, work, focusRecordId, reviewFocus, actorLabel, onReviewQueued, onCommand, onOpen, onPhase, onControl, onBack, onSelect, onUpdate, onNotice, visiblePhases }: {
   workspaceKey: WorkspaceKey;
   workspaceName: string;
   configurationInventory: ConfigurationInventory;
@@ -54,6 +54,7 @@ export function DefineWorkspace({ workspaceKey, configurationInventory, work, fo
   onSelect: (id: string) => void;
   onUpdate: (id: string, transform: (work: WorkRecord) => WorkRecord) => void;
   onNotice: (notice: string) => void;
+  visiblePhases?: readonly WorkPhase[];
 }) {
   const candidates = work.filter((item) => item.discovery?.pursuitControl
     ? item.discovery.pursuitControl.handoff?.status === "accepted"
@@ -230,6 +231,7 @@ export function DefineWorkspace({ workspaceKey, configurationInventory, work, fo
   const editableFields: Partial<Record<keyof DefinitionRecord, string>> = { outcome: "Promised outcome", excludedScope: "Exclusions and customer responsibilities", deliveryApproach: "Delivery approach" };
 
   if (focusRecordId && !selected) return <main className="d5o-page d5o-define-phase">
+    {requestedWork && !reviewFocus ? <WorkPhaseJourney active="Define" record={requestedWork} backLabel="Discover" onBack={onBack} visiblePhases={visiblePhases} onChoose={(phase) => onPhase(requestedWork, phase)} onControl={(control) => onControl(requestedWork, control)} /> : null}
     <FocusedTaskFrame title="Define is not ready for this work" work={requestedWork?.title ?? "Work Record unavailable"}
       customer={requestedWork?.customer ?? ""} site={requestedWork?.site} workspace={workspaceKey}
       scope={requestedWork?.discovery?.need ?? "The requested Work Record is not available in this workspace."}
@@ -289,7 +291,7 @@ export function DefineWorkspace({ workspaceKey, configurationInventory, work, fo
       blocker={verdict?.next?.detail ?? null} nextOwner="Independent Commercial and Delivery reviewers"
       onFullRecord={() => onOpen(selected)} context={<p>Customer need: {selected.discovery?.need}. Configuration: {config?.version ?? "Unavailable"}.</p>}>
       <p>Use the definition sections below. Save each source before requesting review.</p>
-    </FocusedTaskFrame> : <WorkPhaseJourney active="Define" record={selected} backLabel="Discover" onBack={onBack} onChoose={(phase) => { if (selected) onPhase(selected, phase); }} onControl={(control) => { if (selected) onControl(selected, control); }} />}
+    </FocusedTaskFrame> : <WorkPhaseJourney active="Define" record={selected} backLabel="Discover" onBack={onBack} visiblePhases={visiblePhases} onChoose={(phase) => { if (selected) onPhase(selected, phase); }} onControl={(control) => { if (selected) onControl(selected, control); }} />}
     <div className={`${styles.layout} d5o-early-phase-layout`} style={reviewFocus === "define-prep" ? { gridTemplateColumns: "minmax(0, 1fr)" } : undefined}>
       {reviewFocus !== "define-prep" && !selected ? <details className={`${styles.queue} d5o-early-phase-rail`} open aria-label="Work ready for definition">
         <summary className={styles.queueSummary}><span><b>CHOOSE WORK TO DEFINE</b><strong>{candidates.length ? "Select a Work Record" : "No work ready for Define"}</strong></span><small>{candidates.length} available · {inReview} in review · {ready} approved</small></summary>

@@ -1,7 +1,6 @@
 "use client";
 
 import type { WorkRecord } from "./work-types";
-import { connectedWorkPosition } from "./connected-work-position";
 
 export type WorkPhase = "Discover" | "Define" | "Develop" | "Design" | "Deploy" | "Operate";
 export type WorkControl = "Overview" | "Lifecycle" | "Readiness" | "Issues & changes" | "Evidence" | "Commercial" | "Lifecycle Value" | "History";
@@ -9,7 +8,7 @@ export type WorkControl = "Overview" | "Lifecycle" | "Readiness" | "Issues & cha
 const phases: WorkPhase[] = ["Discover", "Define", "Develop", "Design", "Deploy", "Operate"];
 export const workControls: WorkControl[] = ["Overview", "Lifecycle", "Readiness", "Issues & changes", "Evidence", "Commercial", "Lifecycle Value", "History"];
 
-export function WorkPhaseJourney({ active, record, backLabel, onBack, onChoose, onControl, activeControl, visiblePhases = phases }: {
+export function WorkPhaseJourney({ active, record, onChoose, onControl, activeControl, visiblePhases = phases }: {
   active?: WorkPhase;
   record?: WorkRecord;
   backLabel: string;
@@ -19,10 +18,8 @@ export function WorkPhaseJourney({ active, record, backLabel, onBack, onChoose, 
   activeControl?: WorkControl;
   visiblePhases?: readonly WorkPhase[];
 }) {
-  const currentPosition = record ? connectedWorkPosition(record) : null;
   return <>
-    <button className="d5o-back" type="button" onClick={onBack}>← {backLabel}</button>
-    <header className="d5o-phase-record-header"><div><p>WORK RECORD · {(active ?? activeControl ?? "Phase").toUpperCase()}</p><h1>{record?.title ?? "Select a Work Record"}</h1><span>{record ? `${record.type} · ${record.customer} · ${record.site}` : "Choose work in this workspace to continue."}</span></div><div className="d5o-phase-header-actions"><div className={`d5o-stage-badge ${record?.status ?? ""}`}><small>Current position</small><strong>{currentPosition?.label ?? record?.stage ?? "No work selected"}</strong></div><details className="d5o-record-menu"><summary>More record views</summary><nav aria-label="Work Record views">{workControls.map((control) => <button key={control} type="button" className={activeControl === control ? "is-active" : ""} aria-current={activeControl === control ? "page" : undefined} onClick={(event) => { onControl(control); event.currentTarget.closest("details")?.removeAttribute("open"); }} disabled={!record}>{control}</button>)}</nav></details></div></header>
-    {visiblePhases.length ? <nav className="d5o-work-phase-nav" aria-label="Relevant work phases">{visiblePhases.map((phase) => <button key={phase} type="button" className={active === phase ? "is-active" : ""} aria-current={active === phase ? "page" : undefined} onClick={() => onChoose(phase)} disabled={!record}>{phase}</button>)}</nav> : null}
+    <nav className="d5o-work-phase-nav" aria-label="Work phases">{phases.map((phase) => <button key={phase} type="button" className={active === phase ? "is-active" : ""} aria-current={active === phase ? "page" : undefined} onClick={() => onChoose(phase)} disabled={!record || !visiblePhases.includes(phase)} title={!visiblePhases.includes(phase) ? "This phase is outside your role workspace" : undefined}>{phase}</button>)}</nav>
+    <nav className="d5o-record-surface-nav" aria-label="Work Record views">{workControls.map((control) => <button key={control} type="button" className={activeControl === control ? "is-active" : ""} aria-current={activeControl === control ? "page" : undefined} onClick={() => onControl(control)} disabled={!record}>{control}</button>)}</nav>
   </>;
 }

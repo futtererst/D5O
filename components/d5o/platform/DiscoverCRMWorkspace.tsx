@@ -27,11 +27,12 @@ const blankCRM = (): DiscoverCRM => ({ customerResolved: false, siteResolved: fa
 const blankDiscovery = (): DiscoveryRecord => ({ source: "Direct customer", need: "", procurement: "Direct award", phase: "Qualification", fit: "Unassessed", closeDate: "", pursuitControl: blankPursuit(), crm: blankCRM(), estimate: { revision: 0, labor: 0, materials: 0, subcontract: 0, travel: 0, contingency: 0, targetMargin: 25, sellPrice: 0, status: "Not started", assumption: "" }, proposal: { status: "Not started", dueDate: "", method: "Customer portal", recipient: "", response: "" } });
 const num = (value: string) => value === "" ? null : Number(value);
 
-export function DiscoverCRMWorkspace({ workspaceKey, workspaceName, configurationInventory, work, actor, actorId, actorRole, canEdit, focusRecordId, taskFocus, onOpen, onDefine, onPhase, onControl, onBack, onSelect, onPursuitCommand, onUpdate, onCreate, onNotice }: {
+export function DiscoverCRMWorkspace({ workspaceKey, workspaceName, configurationInventory, work, actor, actorId, actorRole, canEdit, focusRecordId, taskFocus, onOpen, onDefine, onPhase, onControl, onBack, onSelect, onPursuitCommand, onUpdate, onCreate, onNotice, visiblePhases }: {
   workspaceKey: WorkspaceKey; workspaceName: string; configurationInventory: ConfigurationInventory; work: WorkRecord[]; actor: string; actorId?: string; actorRole?: string; canEdit: boolean; focusRecordId?: string; taskFocus?: "pursuit-prep" | "pursuit-review" | "define-handoff-prep" | "define-handoff-receive" | null;
   onOpen: (record: WorkRecord) => void; onDefine: (record: WorkRecord) => void; onPhase: (record: WorkRecord, phase: WorkPhase) => void; onControl: (record: WorkRecord, control: WorkControl) => void; onBack: () => void; onSelect: (id: string) => void;
   onPursuitCommand?: (workId: string, command: PursuitCommand) => Promise<boolean>;
   onUpdate: (id: string, transform: (current: WorkRecord) => WorkRecord) => void; onCreate: (record: WorkRecord) => Promise<string> | string; onNotice: (message: string) => void;
+  visiblePhases?: readonly WorkPhase[];
 }) {
   const [view, setView] = useState<View>("All opportunities");
   const [surface, setSurface] = useState<"Pipeline" | "Forecast">("Pipeline");
@@ -156,7 +157,7 @@ export function DiscoverCRMWorkspace({ workspaceKey, workspaceName, configuratio
     </FocusedTaskFrame></main>;
   }
   return <main className={`d5o-page d5o-record-full d5o-early-phase ${styles.page}`}>
-    <WorkPhaseJourney active="Discover" record={selected} backLabel="Work hub" onBack={onBack} onChoose={(phase) => { if (selected) onPhase(selected, phase); }} onControl={(control) => { if (selected) onControl(selected, control); }} />
+    <WorkPhaseJourney active="Discover" record={selected} backLabel="Work hub" onBack={onBack} visiblePhases={visiblePhases} onChoose={(phase) => { if (selected) onPhase(selected, phase); }} onControl={(control) => { if (selected) onControl(selected, control); }} />
     <header className={`${styles.hero} d5o-page-band`}><div><p className={styles.eyebrow}>D1 DISCOVER · {workspaceName.toUpperCase()}</p><h1>Customers and opportunities</h1><p>Develop the relationship, qualify the need, and decide what to pursue. Decisions and spend remain separate.</p></div><button className="d5o-primary" disabled={!canEdit} onClick={() => setCaptureOpen(true)}>+ Capture opportunity</button></header>
     <nav className={`${styles.surfaceNav} d5o-page-band`} aria-label="Discover views"><button type="button" className={surface === "Pipeline" ? styles.active : ""} aria-current={surface === "Pipeline" ? "page" : undefined} onClick={() => setSurface("Pipeline")}>Opportunity pipeline</button><button type="button" className={surface === "Forecast" ? styles.active : ""} aria-current={surface === "Forecast" ? "page" : undefined} onClick={() => setSurface("Forecast")}>Indicative order forecast</button></nav>
     {surface === "Pipeline" ? <>

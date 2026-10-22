@@ -729,3 +729,44 @@
   .root :global(.d5o-has-task-inbox .d5o-task-main) { padding:10px 14px 24px; }
   .root :global(.d5o-workbench-shell) { grid-template-columns:1fr; }
 }
+
+/* Selected Work provides one context header for the existing phase screens. */
+.root :global(.d5o-selected-work-header) {
+  background:#fff;
+  border:1px solid var(--d5o-border);
+  border-radius:10px;
+  margin:8px 0 0;
+  padding:15px 18px;
+}
+.root :global(.d5o-selected-work-crumb) { align-items:center; color:#617787; display:flex; gap:9px; font-size:12px; font-weight:700; margin-bottom:10px; }
+.root :global(.d5o-selected-work-crumb button) { background:none; border:0; color:#245775; cursor:pointer; font:inherit; padding:2px 0; }
+.root :global(.d5o-selected-work-main) { align-items:center; display:flex; gap:18px; justify-content:space-between; min-width:0; }
+.root :global(.d5o-selected-work-main > div:first-child) { min-width:0; }
+.root :global(.d5o-selected-work-main p) { color:#6a8090; font-size:10px; font-weight:800; letter-spacing:.1em; margin:0 0 3px; }
+.root :global(.d5o-selected-work-main h1) { color:var(--d5o-ink); font-size:clamp(21px,2vw,29px); line-height:1.2; margin:0 0 4px; overflow-wrap:anywhere; }
+.root :global(.d5o-selected-work-main > div:first-child > span) { color:#587181; display:block; font-size:13px; overflow-wrap:anywhere; }
+.root :global(.d5o-selected-work-actions) { align-items:center; display:flex; flex:0 0 auto; gap:9px; }
+.root :global(.d5o-selected-work-actions .d5o-stage-badge) { min-height:42px; min-width:145px; padding:6px 10px; }
+.root :global(.d5o-header-record-switch) { background:#fff; border:1px solid #b9cbd5; border-radius:7px; color:#153b53; cursor:pointer; font:inherit; font-size:12px; font-weight:750; min-height:42px; padding:8px 11px; white-space:nowrap; }
+.root :global(.d5o-header-record-switch span) { margin-left:10px; }
+.root :global(.d5o-record-full > .d5o-work-phase-nav),
+.root :global(.d5o-early-phase > .d5o-work-phase-nav) { background:transparent; border:0; border-bottom:1px solid var(--d5o-border); border-radius:0; display:flex; gap:7px; margin:0; overflow-x:auto; padding:0 4px; scrollbar-width:thin; }
+.root :global(.d5o-work-phase-nav button),
+.root :global(.d5o-record-full > .d5o-work-phase-nav button),
+.root :global(.d5o-early-phase > .d5o-work-phase-nav button) { background:transparent; border:0; border-bottom:3px solid transparent; border-radius:0; color:#415e70; flex:0 0 auto; font-size:13px; font-weight:750; min-height:46px; min-width:90px; padding:11px 15px; }
+.root :global(.d5o-work-phase-nav button.is-active),
+.root :global(.d5o-record-full > .d5o-work-phase-nav button.is-active),
+.root :global(.d5o-early-phase > .d5o-work-phase-nav button.is-active) { background:transparent; border-bottom-color:var(--d5o-accent); color:#102b42; }
+.root :global(.d5o-work-phase-nav button:disabled) { color:#8a9aa4; cursor:not-allowed; opacity:.75; }
+.root :global(.d5o-record-surface-nav) { border-bottom:1px solid var(--d5o-border); display:flex; gap:3px; margin:0 0 15px; overflow-x:auto; padding:0 4px; scrollbar-width:thin; }
+.root :global(.d5o-record-surface-nav button) { background:transparent; border:0; border-bottom:2px solid transparent; color:#526f80; cursor:pointer; flex:0 0 auto; font:inherit; font-size:11px; font-weight:650; min-height:38px; padding:8px 10px; white-space:nowrap; }
+.root :global(.d5o-record-surface-nav button.is-active) { border-bottom-color:#70899a; color:#173a51; font-weight:800; }
+.root :global(.d5o-selected-work-header button:focus-visible),
+.root :global(.d5o-work-phase-nav button:focus-visible),
+.root :global(.d5o-record-surface-nav button:focus-visible) { outline:3px solid var(--d5o-accent); outline-offset:2px; }
+@media (max-width:800px) {
+  .root :global(.d5o-selected-work-header) { margin-top:8px; padding:12px; }
+  .root :global(.d5o-selected-work-main) { align-items:flex-start; flex-direction:column; gap:10px; }
+  .root :global(.d5o-selected-work-actions) { flex-wrap:wrap; width:100%; }
+  .root :global(.d5o-work-phase-nav button) { min-width:94px; }
+}
