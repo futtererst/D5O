@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isAuthRetryableFetchError } from "@supabase/supabase-js";
 import { createRybexSupabaseAdminClient } from "@/lib/d5o/auth/supabase-server";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
@@ -6,6 +7,8 @@ import { invitationDeliveryPolicy, isApprovedTestRecipient } from "@/lib/d5o/aut
 
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
+const providerOutcome = (error: unknown): "provider_accepted" | "provider_rejected" | "uncertain" =>
+  !error ? "provider_accepted" : isAuthRetryableFetchError(error) ? "uncertain" : "provider_rejected";
 type Rpc = { data: { fresh?: boolean; status?: string; providerRequired?: boolean } | null; error: { code?: string } | null };
 const invitationRoles = new Set(["executive","operations_leader","business_development_lead",
   "project_manager","billing_commercial_lead","field_supervisor","closeout_lead","read_only_auditor","field_worker"]);
@@ -78,12 +81,12 @@ export async function POST(request: NextRequest) {
       if (input.action === "invite") {
         const sent = await admin.auth.admin.inviteUserByEmail(input.email.trim().toLowerCase(),
           { redirectTo });
-        outcome = sent.error ? "provider_rejected" : "provider_accepted";
+        outcome = providerOutcome(sent.error);
         providerUserId = sent.data.user?.id ?? null;
       } else {
         const sent = await admin.auth.resetPasswordForEmail(input.email.trim().toLowerCase(),
           { redirectTo });
-        outcome = sent.error ? "provider_rejected" : "provider_accepted";
+        outcome = providerOutcome(sent.error);
       }
     } catch { outcome = "uncertain"; }
     const finished = await rpc("d5o_hosted_admin_identity_finish_v1", { ...basis,
