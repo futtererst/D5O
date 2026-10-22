@@ -1,101 +1,86 @@
 import fs from "node:fs";
+import Module from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import ts from "typescript";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const root = path.resolve(__dirname, "..");
-const rbacSource = fs.readFileSync(path.join(root, "lib", "d5o", "rbac.ts"), "utf8");
-const permissionSource = fs.readFileSync(path.join(root, "lib", "d5o", "auth", "workflow-transaction-permissions.ts"), "utf8");
-const transactionSource = fs.readFileSync(path.join(root, "lib", "d5o", "workflow", "transactions.ts"), "utf8");
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const loaded = new Map();
 
-const transactionTypes = [
-  "approve_go_no_go",
-  "hold_go_no_go",
-  "approve_d2_gate",
-  "hold_d2_gate",
-  "approve_d3_field_start",
-  "hold_d3_field_start",
-  "submit_daily_report",
-  "create_rfi_from_signal",
-  "create_change_event_from_signal",
-  "resolve_workflow_action"
-];
+function loadTypescript(relativePath) {
+  const filename = path.resolve(root, relativePath);
+  if (loaded.has(filename)) return loaded.get(filename).exports;
+  const source = fs.readFileSync(filename, "utf8");
+  const compiled = ts.transpileModule(source, {
+    fileName: filename,
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 }
+  }).outputText;
+  const loadedModule = new Module(filename);
+  loadedModule.filename = filename;
+  loadedModule.paths = Module._nodeModulePaths(path.dirname(filename));
+  loaded.set(filename, loadedModule);
+  const nativeRequire = loadedModule.require.bind(loadedModule);
+  loadedModule.require = (specifier) => specifier.startsWith(".")
+    ? loadTypescript(path.relative(root, path.resolve(path.dirname(filename), `${specifier}.ts`)))
+    : nativeRequire(specifier);
+  loadedModule._compile(compiled, filename);
+  return loadedModule.exports;
+}
 
-const mappedPermissions = [
-  "approve_go_no_go",
-  "edit_pipeline",
-  "approve_d2_gate",
-  "edit_project_setup",
-  "approve_d3_gate",
-  "edit_mobilization",
-  "submit_daily_report",
-  "approve_daily_report",
-  "edit_rfis_submittals",
-  "edit_changes",
-  "edit_billing",
-  "edit_safety",
-  "edit_quality",
-  "edit_closeout",
-  "edit_lessons_learned",
-  "manage_admin"
-];
-
+const { allRybexPermissions, hasPermission, normalizeWorkspaceRole } = loadTypescript("lib/d5o/rbac.ts");
+const { workflowTransactionPermissionRules, checkWorkflowTransactionPermission } =
+  loadTypescript("lib/d5o/auth/workflow-transaction-permissions.ts");
 const failures = [];
+const expectedTransactions = [
+  "approve_go_no_go", "hold_go_no_go", "approve_d2_gate", "hold_d2_gate",
+  "approve_d3_field_start", "hold_d3_field_start", "submit_daily_report",
+  "create_rfi_from_signal", "create_change_event_from_signal", "resolve_workflow_action"
+];
 
-for (const type of transactionTypes) {
-  if (!transactionSource.includes(type)) {
-    failures.push(`Missing workflow transaction type in transactions.ts: ${type}`);
+for (const type of expectedTransactions) {
+  const rule = workflowTransactionPermissionRules.find((item) => item.transactionType === type);
+  if (!rule || rule.requiredPermissions.length === 0) {
+    failures.push(`Missing permission rule for workflow transaction: ${type}`);
+    continue;
   }
-
-  if (!permissionSource.includes(type)) {
-    failures.push(`Missing RBAC mapping for workflow transaction type: ${type}`);
+  for (const permission of rule.requiredPermissions) {
+    if (!allRybexPermissions.includes(permission)) failures.push(`Unknown mapped permission: ${permission}`);
   }
 }
 
-for (const permission of mappedPermissions) {
-  if (!rbacSource.includes(`"${permission}"`)) {
-    failures.push(`Mapped permission is not declared in RBAC config: ${permission}`);
+for (const [role, permission, expected] of [
+  ["operations_leader", "approve_go_no_go", true],
+  ["operations_leader", "approve_d2_gate", true],
+  ["operations_leader", "approve_d3_gate", true],
+  ["operations_leader", "edit_changes", true],
+  ["operations_leader", "edit_rfis_submittals", true],
+  ["field_supervisor", "submit_daily_report", true],
+  ["estimator", "approve_d2_gate", false],
+  ["finance_admin", "edit_safety", false],
+  ["read_only_auditor", "edit_changes", false]
+]) {
+  if (hasPermission(role, permission) !== expected) failures.push(`${role} permission ${permission} should be ${expected}.`);
+}
+
+if (normalizeWorkspaceRole("finance_admin") !== "billing_commercial_lead") {
+  failures.push("Legacy finance role no longer maps to its canonical billing role.");
+}
+for (const [role, type, workflow, expected] of [
+  ["operations_leader", "approve_go_no_go", "pursuit_control", true],
+  ["estimator", "approve_go_no_go", "pursuit_control", false],
+  ["field_supervisor", "submit_daily_report", "field_execution", true],
+  ["finance_admin", "submit_daily_report", "field_execution", false],
+  ["field_supervisor", "create_rfi_from_signal", "information_control", true],
+  ["read_only_auditor", "create_change_event_from_signal", "change_recovery", false]
+]) {
+  if (checkWorkflowTransactionPermission(role, type, workflow).allowed !== expected) {
+    failures.push(`${role} transaction ${type} should be ${expected ? "allowed" : "denied"}.`);
   }
 }
 
-assertRolePermission("operations_leader", "approve_go_no_go", true);
-assertRolePermission("operations_leader", "approve_d2_gate", true);
-assertRolePermission("operations_leader", "approve_d3_gate", true);
-assertRolePermission("operations_leader", "edit_changes", true);
-assertRolePermission("operations_leader", "edit_rfis_submittals", true);
-assertRolePermission("field_supervisor", "submit_daily_report", true);
-assertRolePermission("estimator", "approve_d2_gate", false);
-assertRolePermission("finance_admin", "edit_safety", false);
-
-if (failures.length > 0) {
+if (failures.length) {
   console.error("RBAC verification failed:");
-  for (const failure of failures) {
-    console.error(`- ${failure}`);
-  }
+  for (const failure of failures) console.error(`- ${failure}`);
   process.exit(1);
 }
-
-console.log("RBAC verification passed: transaction mappings, permission names, and allowed/denied role scenarios are consistent.");
-
-function assertRolePermission(role, permission, expected) {
-  const roleBlock = getRoleBlock(role);
-  const actual = roleBlock.includes(`"${permission}"`);
-
-  if (actual !== expected) {
-    failures.push(
-      `${role} ${expected ? "should have" : "should not have"} permission ${permission}.`
-    );
-  }
-}
-
-function getRoleBlock(role) {
-  const pattern = new RegExp(`${role}: \\[([\\s\\S]*?)\\n\\s*\\]`, "m");
-  const match = rbacSource.match(pattern);
-
-  if (!match) {
-    failures.push(`Role block not found: ${role}`);
-    return "";
-  }
-
-  return match[1];
-}
+console.log("RBAC verification passed: live role inheritance, mappings, and allow/deny scenarios.");

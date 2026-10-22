@@ -2,6 +2,7 @@ const baseUrl = process.env.RYBEX_SMOKE_BASE_URL ?? "http://127.0.0.1:3000";
 
 const routes = [
   "/command-center",
+  "/pilot",
   "/pipeline",
   "/pipeline/new",
   "/projects",
