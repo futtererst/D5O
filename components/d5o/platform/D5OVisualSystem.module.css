@@ -973,7 +973,9 @@
   .root :global(.d5o-selected-work-header) { margin-top:2px; padding:7px 10px; }
   .root :global(.d5o-selected-work-main > div:first-child > p) { display:none; }
   .root :global(.d5o-selected-work-main) { gap:2px; }
+  .root :global(.d5o-selected-work-actions) { display:block; }
   .root :global(.d5o-selected-work-actions .d5o-stage-badge) { gap:2px; padding:5px 8px; }
+  .root :global(.d5o-selected-work-actions .d5o-header-record-switch) { display:none; }
   .root :global(.d5o-selected-work-details summary) { min-height:44px; }
 }
 
