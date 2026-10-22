@@ -155,6 +155,7 @@ try {
   await run(npmCommand, ["run", "workflow-execution:verify"]);
   await run(npmCommand, ["run", "workflow-outcomes:verify"]);
   await run(npmCommand, ["run", "runtime:verify"]);
+  await run(npmCommand, ["run", "d5o-develop-route:qa"]);
   await run(npmCommand, ["run", "workflow-state:verify"]);
   await run(npmCommand, ["run", "simplify:verify"]);
   await runSmokeWithServer();

@@ -115,6 +115,7 @@
     "changes:verify-mobile-created": "node scripts/verify-changes-mobile-created-simplification.mjs",
     "journey-state:captures": "node scripts/capture-journey-state-screenshots.mjs",
     "mobile-shell:verify": "node scripts/verify-mobile-shell-and-journey-state.mjs",
+    "d5o-develop-route:qa": "node scripts/qa-d5o-develop-route.mjs",
     "visual-remediation:verify": "node scripts/verify-visual-remediation-batch-1.mjs",
     "visual-remediation:verify-batch-2": "node scripts/verify-visual-remediation-batch-2.mjs",
     "visual-remediation:verify-batch-3": "node scripts/verify-visual-remediation-batch-3.mjs",
