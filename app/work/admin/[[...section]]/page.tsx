@@ -7,11 +7,13 @@ import { AdminConfigurationEditor } from "@/components/d5o/admin/AdminConfigurat
 import { SpendingDelegationAdmin } from "@/components/d5o/platform/SpendingDelegationAdmin";
 import { DesignInternalRateControl } from "@/components/d5o/platform/DesignInternalRateControl";
 import { AdminAudit } from "@/components/d5o/admin/AdminAudit";
+import { AdminOverview } from "@/components/d5o/admin/AdminOverview";
 import { AdminIdentityBoundary } from "@/components/d5o/admin/AdminIdentityBoundary";
 import { D5OProductHeader } from "@/components/d5o/platform/D5OProductHeader";
 import styles from "./admin.module.css";
 import "../../enterprise.css";
 import "../../settings/notification-settings.css";
+import "./admin-console.css";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Workspace administration | D5O" };
@@ -46,31 +48,34 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
   }
   if (context.actor.role !== "admin") notFound();
   const href = (key: string) => `/work/admin/${key}?workspace=${workspace}`;
-  return <AdminIdentityBoundary userId={context.actor.id}><><D5OProductHeader workspace="rybex" homeHref="/work?workspace=rybex" area="Administration" hostedPreview /><main className={styles.shell}>
-    <header className={styles.header}>
-      <div><p>D5O / RYBEX / ADMINISTRATION</p><h1>{sections.find(([key]) => key === active)?.[1]}</h1>
-        <span>Workspace administration for the synthetic beta. Decisions and Work remain governed by their own commands.</span></div>
-      <Link href={`/work?workspace=${workspace}`}>Return to Work →</Link>
-    </header>
-    <nav className={styles.nav} aria-label="Administrator sections">{sections.map(([key, label]) =>
-      <Link key={key} href={href(key)} aria-current={active === key ? "page" : undefined}>{label}</Link>)}</nav>
-    <div className={styles.breadcrumb}><Link href={href("overview")}>Admin</Link><span>/</span><strong>{sections.find(([key]) => key === active)?.[1]}</strong></div>
+  return <AdminIdentityBoundary userId={context.actor.id}><><D5OProductHeader workspace="rybex" homeHref="/work?workspace=rybex" area="Administration" hostedPreview /><main className={`${styles.shell} d5o-admin-console`}>
+    <div className={styles.frame}>
+      <aside className={styles.rail} aria-label="Administration navigation">
+        <p className={styles.railLabel}>Rybex · Administration</p>
+        <nav className={styles.nav} aria-label="Administrator sections">{sections.map(([key, label]) =>
+          <Link key={key} href={href(key)} aria-current={active === key ? "page" : undefined}>{label}</Link>)}</nav>
+        <Link className={styles.returnLink} href={`/work?workspace=${workspace}`}>← Return to Work</Link>
+      </aside>
+      <div className={styles.mainColumn}>
+        <details className={styles.mobileNav}><summary>Admin sections · {sections.find(([key]) => key === active)?.[1]}</summary>
+          <nav aria-label="Administrator sections on small screens">{sections.map(([key, label]) =>
+            <Link key={key} href={href(key)} aria-current={active === key ? "page" : undefined}>{label}</Link>)}</nav>
+          <Link href={`/work?workspace=${workspace}`}>← Return to Work</Link>
+        </details>
+        <header className={styles.header}>
+          <div><p>RYBEX / ADMINISTRATION</p><h1>{sections.find(([key]) => key === active)?.[1]}</h1></div>
+        </header>
+        <p className={styles.notice}>Synthetic beta workspace · Administrative changes retain their governed decision history. Build {(process.env.D5O_SOURCE_SHA ?? "source-unidentified").slice(0, 12)}.</p>
     <section className={styles.content}>
-      {active === "overview" && <div className={styles.cards}>
-        <article><h2>Users & access</h2><p>Assign confirmed accounts to one workspace role, manage access, and inspect identity history.</p><Link href={href("users")}>Manage users →</Link></article>
-        <article><h2>Workforce</h2><p>Maintain roster people, qualifications, capacity and worker-account bindings.</p><Link href={href("workforce")}>Manage people →</Link></article>
-        <article><h2>Configuration</h2><p>Review published Work Types and set receiving roles for future Work.</p><Link href={href("configuration")}>Open configuration →</Link></article>
-        <article><h2>Authority and rates</h2><p>Manage eligible decision delegates and independently reviewed internal Design rates.</p><Link href={href("authority")}>Open controls →</Link></article>
-        <article><h2>Audit</h2><p>Inspect retained administrative commands and decisions in this workspace.</p><Link href={href("audit")}>Inspect audit →</Link></article>
-      </div>}
+      {active === "overview" && <AdminOverview workspace="rybex" />}
       {active === "users" && <MemberAccessPanel workspace="rybex" selectedUserId={selectedId} />}
       {active === "workforce" && <CrewAccessPanel selectedPersonId={selectedId} />}
-      {active === "configuration" && <><AdminConfigurationEditor workspace="rybex" />
-        <p>Appearance settings in the Work workspace are browser-local preferences, not published operating policy.</p></>}
-      {active === "authority" && <><SpendingDelegationAdmin workspace="rybex" />
-        <DesignInternalRateControl workspace="rybex" role="admin" />
-        <p>Finance prepares internal Design rates; an independent configured administrator approves their exact version. This page does not grant spending authority.</p></>}
+      {active === "configuration" && <AdminConfigurationEditor workspace="rybex" />}
+      {active === "authority" && <div className={styles.authority}><SpendingDelegationAdmin workspace="rybex" />
+        <DesignInternalRateControl workspace="rybex" role="admin" /></div>}
       {active === "audit" && <AdminAudit workspace="rybex" initialSubject={query.subject ?? ""} />}
     </section>
+      </div>
+    </div>
   </main></></AdminIdentityBoundary>;
 }

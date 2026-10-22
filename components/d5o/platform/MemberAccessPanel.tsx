@@ -36,6 +36,7 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState<Pending | null>(null);
   const [retryReady, setRetryReady] = useState(false);
+  const [flow, setFlow] = useState<"invite" | "assign" | null>(null);
   const endpoint = `/api/d5o-hosted/membership-access?workspace=${encodeURIComponent(workspace)}`;
   const refresh = useCallback(async () => {
     const query = new URLSearchParams({ workspace, search: submittedSearch, offset: String(offset), limit: "25" });
@@ -145,7 +146,7 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
       setMessage(body.message ?? "Provider outcome unresolved. Do not send another request.");
       if (body.status && body.status !== "uncertain") setIdentityPending("");
       if (body.status === "existing_confirmed" && inviteRole !== "field_worker") {
-        setEmail(address); setRole(inviteRole);
+        setEmail(address); setRole(inviteRole); setFlow("assign");
       }
       void refreshInvitations().catch(() => setMessage("Request result retained, but the invitation list could not be refreshed. Reload or inspect Audit before another request."));
     } catch { setMessage("Provider response was lost. Check this command in Audit or with the administrator before any new request."); }
@@ -153,8 +154,9 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
   }
   const selected = selectedUserId ? directory?.items.find((item) => item.userId === selectedUserId) : null;
   return <section className={styles.panel} aria-label="Workspace users and access">
-    <div className={styles.heading}><div><p>USERS & ACCESS · WORKSPACE ADMINISTRATOR</p><h2>{selected ? selected.email : "Workspace user directory"}</h2>
-      <span>A sign-in account, workspace membership and roster person are separate. A roster record never creates a login or sends an invitation.</span></div></div>
+    <div className={styles.heading}><div><h2>{selected ? (selected.displayName || selected.email) : "Workspace accounts"}</h2>
+      <span>{selected ? selected.email : "Search the workspace directory, then open a person to manage their access."}</span></div>
+      {!selectedUserId && <div className={styles.actions}><button type="button" onClick={() => setFlow(flow === "invite" ? null : "invite")}>Invite user</button><button type="button" onClick={() => setFlow(flow === "assign" ? null : "assign")}>Assign existing account</button></div>}</div>
     {selectedUserId && <p><Link href={`/work/admin/users?workspace=${workspace}`}>← All users</Link></p>}
     <p role="status" aria-live="polite">{message}</p>
     {pending && <div><p>Pending command {pending.commandId}. Its original input remains retained in this tab.</p>
@@ -166,16 +168,16 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
           setMessage("The provider outcome remains unresolved. Check the approved mailbox or Auth provider before initiating another request.");
         else { setMessage(`Retained provider status: ${current.result?.status}. Delivery is not proven by this status.`); setIdentityPending(""); }
       }).catch(() => setMessage("Receipt unavailable. Do not repeat the email request."))}>Check identity request</button></div>}
-    {!selectedUserId && <><form onSubmit={(event) => { event.preventDefault(); setOffset(0); setSubmittedSearch(search); }} className={styles.form}>
+    {!selectedUserId && <><form onSubmit={(event) => { event.preventDefault(); setOffset(0); setSubmittedSearch(search); }} className={styles.toolbar}>
       <label>Search workspace accounts<input value={search} onChange={(event) => setSearch(event.target.value)} maxLength={120} placeholder="Email or roster name" /></label>
-      <button type="submit">Search</button></form>
-      <form onSubmit={assign} className={styles.form}>
+      <button type="submit">Search</button><span>Searches workspace accounts; 25 results per page.</span></form>
+      {flow === "assign" && <div className={styles.actionPanel}><h3>Assign access to a confirmed account</h3><p>The sign-in account must already exist and be confirmed. A roster person is managed separately in Workforce.</p><form onSubmit={assign} className={styles.form}>
         <label>Existing confirmed sign-in email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required /></label>
         <label>Workspace role<select value={role} onChange={(event) => setRole(event.target.value)}>{assignableWorkspaceRoles.map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
         <label>Reason for access change<input value={reason} onChange={(event) => setReason(event.target.value)} minLength={8} maxLength={500} required /></label>
         <button type="submit" disabled={busy || Boolean(pending)}>{busy ? "Saving…" : "Assign or change role"}</button>
-      </form></>}
-    {!selectedUserId && <details><summary>Invite a synthetic sign-in account</summary>
+      </form></div>}</>}
+    {!selectedUserId && flow === "invite" && <section className={styles.actionPanel} aria-label="Invite a user"><h3>Invite a user</h3>
       <p>Select the proposed workspace role. The Auth provider sends the setup email; an administrator makes a separate membership decision after recipient verification. Existing confirmed accounts use that membership decision without another Auth account or invitation email.</p>
       <form className={styles.form} onSubmit={(event) => { event.preventDefault(); void identity("invite", identityEmail.trim()); }}>
         <label>Approved test recipient<input type="email" required value={identityEmail} onChange={(event) => setIdentityEmail(event.target.value)} /></label>
@@ -187,8 +189,8 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
         <label><input type="checkbox" checked={approvedRecipient} onChange={(event) => setApprovedRecipient(event.target.checked)} required /> I confirm this recipient authorized a test email.</label>
         <button disabled={busy || Boolean(identityPending)}>Request invitation</button>
       </form><small>Provider acceptance is not proof of email delivery. Invitation tokens are never shown here or retained in the audit.</small>
-    </details>}
-    {!selectedUserId && <section aria-label="Recent invitation requests">
+    </section>}
+    {!selectedUserId && <details className={styles.history}><summary>Invitation history ({invitations.length})</summary><section aria-label="Recent invitation requests">
       <h3>Recent invitations</h3>
       <button type="button" disabled={busy} onClick={() => void refreshInvitations().catch(() => setMessage("Invitation status could not be refreshed."))}>Refresh status</button>
       {invitations.length === 0 && <p>No invitation requests recorded.</p>}
@@ -199,11 +201,11 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
           && !item.membershipStatus && <p>Account setup is confirmed. Create or select a fictional roster person in Workforce, record qualifications and capacity, then bind this confirmed account. The invitation alone grants no worker access.</p>}
         {(item.status === "setup_completed" || item.status === "existing_confirmed") && item.requestedRole
           && item.requestedRole !== "field_worker" && !item.membershipStatus && <button type="button" onClick={() => {
-            setEmail(item.email); setRole(item.requestedRole!);
+            setEmail(item.email); setRole(item.requestedRole!); setFlow("assign");
             setMessage("Recipient identity is confirmed. Review the role and reason, then submit the separate membership decision.");
           }}>Prepare membership decision</button>}
       </div>)}
-    </section>}
+    </section></details>}
     {selected ? <article><p><b>Sign-in:</b> {selected.confirmed ? "Confirmed" : "Unconfirmed"} · created {new Date(selected.createdAt).toLocaleString()}
       {selected.lastSignInAt ? ` · last sign-in ${new Date(selected.lastSignInAt).toLocaleString()}` : " · no recorded sign-in"}</p>
       <p><b>Membership:</b> {selected.role.replaceAll("_", " ")} · {selected.status}</p>
@@ -234,10 +236,10 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
           Add administrator</button></details>}
       <p><Link href={`/work/admin/audit?workspace=${workspace}&subject=${selected.userId}`}>Inspect retained changes →</Link></p>
     </article> : selectedUserId ? <p role="status">No member with this identity is visible in this workspace.</p> : <>
-      <div className={styles.members}>{directory?.items.map((member) => <div key={member.userId}>
-        <strong>{member.email}</strong><span>{member.role.replaceAll("_", " ")} · {member.status} · {member.confirmed ? "confirmed" : "unconfirmed"}</span>
-        <small>{member.displayName ? `Roster: ${member.displayName}` : "No roster binding"}</small>
-        <Link href={`/work/admin/users/${member.userId}?workspace=${workspace}`}>View details →</Link>
+      <div className={styles.members}><div className={styles.memberHead}><span>Account</span><span>Workspace role</span><span>Access / sign-in</span><span>Workforce</span><span>Details</span></div>{directory?.items.map((member) => <div key={member.userId}>
+        <strong>{member.displayName || member.email}<small>{member.displayName ? member.email : ""}</small></strong><span>{member.role.replaceAll("_", " ")}</span>
+        <span>{member.status} · {member.confirmed ? "confirmed" : "unconfirmed"}</span><span>{member.displayName ? `Bound: ${member.displayName}` : "Not bound"}</span>
+        <Link href={`/work/admin/users/${member.userId}?workspace=${workspace}`}>Details →</Link>
       </div>)}{directory?.items.length === 0 && <p>No matching workspace members.</p>}</div>
       <div><button type="button" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - 25))}>Previous</button>
         <span> {directory?.total ?? 0} members </span><button type="button" disabled={!directory || offset + 25 >= directory.total} onClick={() => setOffset(offset + 25)}>Next</button></div>

@@ -1,0 +1,26 @@
+.d5o-admin-console .d5o-publication { display:grid; gap:1rem; min-width:0; }
+.d5o-admin-console .d5o-publication > header { display:flex; justify-content:space-between; align-items:start; gap:1rem; }
+.d5o-admin-console .d5o-publication > header h2 { margin:0 0 .3rem; font-size:1.2rem; }
+.d5o-admin-console .d5o-publication > header span { color:#526577; }
+.d5o-admin-console .d5o-publication > header strong { white-space:nowrap; color:#173441; background:#fef3d2; border-radius:.4rem; padding:.4rem .65rem; }
+.d5o-admin-console .d5o-publication > p { margin:.2rem 0; }
+.d5o-admin-console .d5o-publication > section,.d5o-admin-console .d5o-publication > article,.d5o-admin-console .d5o-admin-config-grid > article,.d5o-admin-console .d5o-admin-history,.d5o-admin-console .d5o-admin-config-decision { min-width:0; padding:1rem; background:#fff; border:1px solid #d5e0e7; border-radius:.6rem; }
+.d5o-admin-console .d5o-admin-config-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; }
+.d5o-admin-console .d5o-admin-config-grid h3 { margin:0 0 .5rem; }
+.d5o-admin-console .d5o-admin-config-grid p { padding:.55rem 0; margin:0; border-top:1px solid #e5ebef; }
+.d5o-admin-console .d5o-admin-config-grid details,.d5o-admin-console .d5o-admin-history details { margin-top:.25rem; }
+.d5o-admin-console .d5o-admin-history summary { cursor:pointer; font-weight:700; }
+.d5o-admin-console .d5o-admin-history p { padding:.5rem 0; border-bottom:1px solid #e5ebef; overflow-wrap:anywhere; }
+.d5o-admin-console .d5o-admin-config-decision { display:flex; align-items:end; gap:.75rem; }
+.d5o-admin-console .d5o-admin-config-decision label { flex:1; }
+.d5o-admin-console .d5o-publication h3,.d5o-admin-console .d5o-publication h4 { margin:.15rem 0 .5rem; }
+.d5o-admin-console .d5o-publication form { display:flex; flex-wrap:wrap; align-items:end; gap:.75rem; }
+.d5o-admin-console .d5o-publication label { display:grid; gap:.3rem; min-width:min(100%,13rem); font-weight:700; font-size:.85rem; }
+.d5o-admin-console .d5o-publication input,.d5o-admin-console .d5o-publication select { min-height:44px; max-width:100%; padding:.5rem .7rem; border:1px solid #bdcfda; border-radius:.4rem; font:inherit; background:#fff; color:#173441; }
+.d5o-admin-console .d5o-publication button { min-height:44px; border:1px solid #b8cbd7; border-radius:.4rem; padding:.5rem .8rem; background:#fff; color:#112b42; font:700 .9rem Arial,Helvetica,sans-serif; cursor:pointer; }
+.d5o-admin-console .d5o-publication button:disabled { opacity:.55; cursor:not-allowed; }
+.d5o-admin-console .d5o-publication > button,.d5o-admin-console .d5o-admin-config-decision button { background:#d4aa2a; border-color:#b68c19; }
+.d5o-admin-console .d5o-publication article { padding:.65rem 0; border-bottom:1px solid #e5ebef; overflow-wrap:anywhere; }
+.d5o-admin-console .d5o-publication section > div { min-width:0; }
+.d5o-admin-console .d5o-publication :is(input,button,select,summary):focus-visible { outline:3px solid #bf9625; outline-offset:2px; }
+@media(max-width:700px) { .d5o-admin-console .d5o-admin-config-grid { grid-template-columns:1fr; } .d5o-admin-console .d5o-admin-config-decision { display:grid; } .d5o-admin-console .d5o-publication > header { display:grid; } .d5o-admin-console .d5o-publication form label,.d5o-admin-console .d5o-publication form button { width:100%; } }

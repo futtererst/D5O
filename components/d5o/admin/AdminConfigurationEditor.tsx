@@ -96,21 +96,21 @@ export function AdminConfigurationEditor({ workspace }: { workspace: string }) {
             : "Draft change saved. Validate before publication.");
   }
   return <section aria-label="Hosted configuration management" className="d5o-publication">
-    <header><div><p>HOSTED CONFIGURATION · SYSTEM ADMINISTRATOR</p><h2>Operating policy and Work Types</h2>
-      <span>One versioned draft controls future Work. Existing Work retains its original pin and decisions.</span></div>
+    <header><div><h2>Published policy</h2>
+      <span>New Work uses the active version. Existing Work keeps its recorded configuration.</span></div>
       <strong>{active ? `Active v${active.version}` : "Loading active version"}</strong></header>
     {loadError && <p role="alert">{loadError}</p>}
     <p role="status" aria-live="polite">{message}</p>
     {pending && <p>Command {pending.commandId} awaits reconciliation. <button type="button" disabled={busy} onClick={() => void reconcile()}>Check receipt</button> <button type="button" disabled={busy || !canRetry} onClick={retry}>Retry same command</button></p>}
     {active && <>
-      <p>Effective {active.effectiveFrom ? new Date(active.effectiveFrom).toLocaleString() : "not dated"} · Source {active.sourceSha256.slice(0, 12)} · {active.workCount} Work Record(s) pinned here.</p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 18rem), 1fr))", gap: "1rem" }}>
-        <article><h3>Active Work Type registry</h3>{active.workTypes.map((item) => <p key={item.key}><strong>{item.label}</strong> · {item.status}<br /><small>{item.key} · creators {item.roles.join(", ") || "none"}</small></p>)}</article>
-        <article><h3>Receiving roles</h3>{active.routes.map((route) => <p key={route.key}>{routeNames[route.key]}: {roleNames[route.role] ?? route.role} · {route.eligibleCount} active member(s)</p>)}</article>
-        <article><h3>Publication history</h3>{inventory?.versions.map((version) => <p key={version.id}>v{version.version} · {version.status} · {version.workCount} pinned Work · {version.id.slice(0, 8)}</p>)}</article>
+      <p>Effective {active.effectiveFrom ? new Date(active.effectiveFrom).toLocaleString() : "not dated"} · {active.workCount} Work Record(s) pinned here. {draft ? `Draft v${draft.version} is being edited.` : candidate ? `Published candidate v${candidate.version} awaits activation.` : "No open draft."}</p>
+      <div className="d5o-admin-config-grid">
+        <article><h3>Work Types</h3>{active.workTypes.map((item) => <p key={item.key}><strong>{item.label}</strong> · {item.status}<br /><small>Creators: {item.roles.map((role) => roleNames[role] ?? role.replaceAll("_", " ")).join(", ") || "none"}</small><details><summary>Technical details</summary><small>Key: {item.key}</small></details></p>)}</article>
+        <article><h3>Receiving roles</h3>{active.routes.map((route) => <p key={route.key}>{routeNames[route.key]}: <strong>{roleNames[route.role] ?? route.role}</strong> · {route.eligibleCount} active member(s)</p>)}</article>
       </div>
-      <label>Reason for the next configuration decision<input value={reason} maxLength={500} onChange={(event) => setReason(event.target.value)} placeholder="Explain this fictional beta change" /></label>
-      {!draft && !candidate && <button type="button" disabled={busy || reason.trim().length < 8} onClick={() => run("create-draft", active)}>Create draft from active v{active.version}</button>}
+      <details className="d5o-admin-history"><summary>Version history ({inventory?.versions.length ?? 0})</summary>{inventory?.versions.map((version) => <p key={version.id}>v{version.version} · {version.status} · {version.workCount} pinned Work <details><summary>Technical details</summary><small>Version ID: {version.id} · Source: {version.sourceSha256}</small></details></p>)}</details>
+      <div className="d5o-admin-config-decision"><label>Reason for the next configuration decision<input value={reason} maxLength={500} onChange={(event) => setReason(event.target.value)} placeholder="Why is this policy change needed?" /></label>
+      {!draft && !candidate && <button type="button" disabled={busy || reason.trim().length < 8} onClick={() => run("create-draft", active)}>Create draft from active v{active.version}</button>}</div>
     </>}
     {draft && active && <>
       <h3>Draft v{draft.version} · revision {draft.revision}</h3><p>Saved edits are not effective. This draft started from v{active.version}. Publication validates the combined policy and freezes the candidate.</p>

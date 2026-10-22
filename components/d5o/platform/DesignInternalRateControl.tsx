@@ -63,7 +63,7 @@ export function DesignInternalRateControl({ workspace, role, onRevision }: {
       sourceReference: input(data, "source"), basisNote: input(data, "basis") });
   }
   return <section aria-label="Internal Design cost rates">
-    <h3>Internal Design cost rates</h3>
+    <h2>Internal Design cost rates</h2>
     <p>Finance prepares a dated base cost per person-hour and burden percentage. The configured independent administrator reviews the exact version. These internal values do not set the customer ROM selling price or prove employee work.</p>
     <p role={message ? "status" : undefined}>{message || `Rate schedule revision ${position?.revision ?? "loading"}`}</p>
     {pending && <p>Command {pending.commandId} awaits reconciliation. <button type="button" disabled={busy} onClick={() => void reconcile()}>Check receipt</button> <button type="button" disabled={busy || !canRetry} onClick={retry}>Retry this command</button></p>}

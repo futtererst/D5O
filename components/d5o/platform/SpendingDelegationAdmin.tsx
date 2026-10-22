@@ -53,10 +53,10 @@ export function SpendingDelegationAdmin({ workspace }: { workspace: WorkspaceKey
       sourceReference: data.get("source") });
   }
   const eligible = position?.members.filter((member) => member.role === role) ?? [];
-  return <details className="d5o-studio-section"><summary>Spending decision delegates</summary>
+  return <details className="d5o-studio-section" open><summary>Decision delegation</summary>
     <section className="d5o-publication" aria-label="Spending decision delegation">
-      <header><div><p>WORKSPACE ADMINISTRATOR · GOVERNED DECISION ROUTING</p><h2>Assign eligible spending reviewers</h2>
-        <span>Configure a named delegate by category and Work Type, with a sponsor fallback. Monetary decisions also use a maximum amount. The system selects one eligible independent reviewer; routing never grants a command role.</span></div>
+      <header><div><h2>Eligible decision reviewers</h2>
+        <span>Set a delegate or sponsor fallback for a decision category. This routing does not grant spending authority.</span></div>
         <strong>Revision {position?.revision ?? "—"}</strong></header>
       {message && <p role="status">{message}</p>}
       {pending && <p>Command {pending.commandId} awaits reconciliation. <button type="button" disabled={busy} onClick={() => void reconcile()}>Check receipt</button> <button type="button" disabled={busy || !canRetry} onClick={retry}>Retry this command</button></p>}

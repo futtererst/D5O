@@ -10,8 +10,10 @@ type State = { revision: number; people: WorkforcePerson[] };
 export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: string }) {
   const [state, setState] = useState<State | null>(null);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [selected, setSelected] = useState<WorkforcePerson | null>(null);
+  const [creating, setCreating] = useState(false);
   const [futureAssignments, setFutureAssignments] = useState<number | null>(null);
   const [assignmentDates, setAssignmentDates] = useState<string[]>([]);
   const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
@@ -111,7 +113,7 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
     const current = { commandId: crypto.randomUUID(), action, data, expectedRevision: state.revision,
       expectedScheduleRevision: changesExistingPerson && impactBasis && impactBasis.personId === data.id ? impactBasis.scheduleRevision : null };
     setPending(current); setRetryReady(false);
-    setBusy(true); setError("");
+    setBusy(true); setError(""); setNotice("");
     try {
       const response = await fetch("/api/d5o-hosted/workforce", {
         method: "POST", headers: { "Content-Type": "application/json" },
@@ -122,7 +124,8 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
       const result = await response.json() as { error?: string };
       if (!response.ok && response.status !== 503) { setPending(null); await load(); throw new Error(`${result.error ?? "Workforce change rejected"}. Your form remains available; compare the current revision.`); }
       if (!response.ok) throw new Error("Outcome uncertain");
-      await load(); setPending(null);
+      await load(); setPending(null); setNotice("Workforce change saved. Review current Crew impact before another change.");
+      if (action === "save-person" && !changesExistingPerson) setCreating(false);
       window.dispatchEvent(new Event("d5o-workforce-updated"));
     } catch (failure) {
       if (pending === null) {
@@ -146,21 +149,20 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
       person, displayName, qualifications, weeklyCapacityHours: Number(values.get("capacity")), active: selected?.active ?? true });
   }
   return <section className={styles.panel} aria-label="Workforce administration">
-    <div className={styles.heading}><div><p>WORKFORCE · SYSTEM ADMINISTRATOR</p><h2>People and qualifications</h2><span>Create a fictional roster person, record skills and weekly capacity, then connect an existing confirmed account. Only active, qualified, bound people can be booked. Account creation remains in the isolated Auth administrator flow.</span></div></div>
+    <div className={styles.heading}><div><h2>{selected ? selected.displayName : creating ? "Add roster person" : "People directory"}</h2><span>{selected ? "Profile, account binding and affected Crew bookings" : "Qualifications, capacity and account binding for fictional roster people."}</span></div>
+      {!selectedPersonId && !selected && <button type="button" className={styles.primary} onClick={() => setCreating((value) => !value)}>{creating ? "Close form" : "Add person"}</button>}</div>
+    {selectedPersonId && <p><Link href="/work/admin/workforce?workspace=rybex">← All people</Link></p>}
     {error ? <p role="alert" className={styles.message}>{error}</p> : null}
+    {notice ? <p role="status" className={styles.message}>{notice}</p> : null}
     {pending ? <p role="status">Command {pending.commandId} is pending. <button type="button" disabled={busy} onClick={() => void reconcile()}>Check receipt</button>{retryReady ? <button type="button" disabled={busy} onClick={() => void retryOriginal()}>Retry original command</button> : null}</p> : null}
     {!state ? <p role="status">Loading committed workforce…</p> : <>
-      <div className={styles.list}>{state.people.map((item) => <div key={item.id}>
-        <strong>{item.displayName}</strong><span>{item.qualifications.join(" · ")} · {item.weeklyCapacityHours}h/week</span>
-        <small>{!item.active ? "Inactive" : item.bound ? `Account bound: ${item.email ?? item.workerUserId ?? "confirmed"}` : "Unbound — planning only"}</small>
-        <button type="button" disabled={busy} onClick={() => { setStatusReviewId(null); setSelected(item); }}>Edit</button>
-        <Link href={`/work/admin/workforce/${item.id}?workspace=rybex`}>Person details</Link>
-        <button type="button" disabled={busy || Boolean(pending)} onClick={() => {
-          setSelected(item); setStatusReviewId(item.id);
-        }}>Review {item.active ? "deactivation" : "reactivation"}</button>
-      </div>)}{!state.people.length ? <p>No committed workforce records yet.</p> : null}</div>
-      {selected && <WorkforceBookingImpact personId={selected.id} proposed={statusReviewId === selected.id && currentProposal
-        ? { ...currentProposal, active: !selected.active } : currentProposal} refreshKey={impactRefresh} onBasis={receiveImpactBasis} />}
+      {!selected && !creating && <div className={styles.list}><div className={styles.listHead}><span>Person</span><span>Status</span><span>Qualifications</span><span>Capacity</span><span>Account</span><span>Details</span></div>{state.people.map((item) => <div key={item.id}>
+        <strong>{item.displayName}</strong><span>{item.active ? "Active" : "Inactive"}</span><span>{item.qualifications.join(", ") || "None recorded"}</span><span>{item.weeklyCapacityHours}h/week</span>
+        <span>{item.bound ? "Bound" : "Unbound"}</span><Link href={`/work/admin/workforce/${item.id}?workspace=rybex`}>Details →</Link>
+      </div>)}{!state.people.length ? <p>No roster people yet. Add a fictional person to begin.</p> : null}</div>}
+      {selected && <section className={styles.detail}><h3>Crew booking impact</h3><WorkforceBookingImpact personId={selected.id} proposed={statusReviewId === selected.id && currentProposal
+        ? { ...currentProposal, active: !selected.active } : currentProposal} refreshKey={impactRefresh} onBasis={receiveImpactBasis} /></section>}
+      {selected && <div className={styles.detail}><h3>Profile and capacity</h3><p>Roster identity: {selected.person} · {selected.active ? "Active" : "Inactive"}. {futureAssignments !== null ? `${futureAssignments} future assignment(s) need review before an access change.` : "Check Crew before changing access."}</p><p>Current assignment dates: {assignmentDates.join(", ") || "none shown"}. Unavailable dates: {unavailableDates.join(", ") || "none shown"}.</p></div>}
       {selected && statusReviewId === selected.id && <p>
         <button type="button" disabled={busy || Boolean(pending) || Boolean(selected.active === false && !impactBasis)}
           onClick={() => {
@@ -169,7 +171,7 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
           }}>Confirm {selected.active ? "deactivation" : "reactivation"}</button>
         {selected.active && !impactBasis ? " Security deactivation remains available while booking impact is unavailable." : null}
       </p>}
-      <form className={styles.form} key={selected?.id ?? "new"} onInput={(event) => {
+      {(selected || creating) && <form className={styles.form} key={selected?.id ?? "new"} onInput={(event) => {
         if (!selected) return;
         const values = new FormData(event.currentTarget);
         setProposed({ personId: selected.id, profileRevision: selected.profileRevision,
@@ -177,33 +179,31 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
             qualifications: String(values.get("qualifications") ?? "").split(",").map((item) => item.trim()).filter(Boolean),
             weeklyCapacityHours: Number(values.get("capacity")) } });
       }} onSubmit={save}>
-        {selected && <p>Roster ID {selected.id} · revision {selected.profileRevision} · {selected.bound ? "account-bound" : "planning only"}.
-          {futureAssignments !== null ? ` ${futureAssignments} future assignment(s) require review before an access change.` : " Review Crew for assignment impact."}</p>}
-        {selected && <p>Current assignment dates: {assignmentDates.join(", ") || "none shown"}. Unavailable dates: {unavailableDates.join(", ") || "none shown"}. Detailed booking amendments remain in Crew.</p>}
+        <h3>{selected ? "Edit profile and qualifications" : "Create fictional roster person"}</h3>
         <label>Stable roster identity<input name="person" required minLength={2} defaultValue={selected?.person ?? ""} readOnly={Boolean(selected)} placeholder="Fictional worker name" /></label>
         <label>Display name<input name="displayName" required defaultValue={selected?.displayName ?? ""} /></label>
         <label>Qualifications, comma separated<input name="qualifications" required defaultValue={selected?.qualifications.join(", ") ?? ""} /></label>
         <label>Weekly capacity (hours)<input name="capacity" required type="number" min="1" max="80" step="0.5" defaultValue={selected?.weeklyCapacityHours ?? 40} /></label>
         <button className="d5o-primary" disabled={busy || Boolean(pending) || Boolean(selected && !impactBasis)}>{selected ? "Save person" : "Add person"}</button>
-        {selected ? <button type="button" onClick={() => setSelected(null)}>Cancel</button> : null}
-      </form>
+        {selected && !selectedPersonId ? <button type="button" onClick={() => setSelected(null)}>Close details</button> : null}
+      </form>}
       {selected?.bound && <form className={styles.form} onSubmit={(event) => {
         event.preventDefault(); const values = new FormData(event.currentTarget);
         if (window.confirm(`Correct the current binding for ${selected.displayName}? Earlier reports and evidence stay with the original account.`))
           void command("correct-binding", { id: selected.id, email: String(values.get("email") ?? "").trim(), reason: String(values.get("reason") ?? "").trim() });
-      }}><strong>Correct an incorrect account binding</strong>
+      }}><h3>Correct account binding</h3>
         <p>Current account: {selected.email ?? selected.workerUserId}. Published or draft future bookings must be corrected in Crew first. No old report, evidence or booking is transferred.</p>
         <label>Replacement confirmed account<input name="email" type="email" required autoComplete="off" /></label>
         <label>Correction reason<input name="reason" minLength={12} maxLength={500} required /></label>
         <button disabled={busy || Boolean(pending) || (futureAssignments ?? 0) > 0}>Correct binding</button>
         <Link href={`/work/admin/audit?workspace=rybex&subject=${selected.id}`}>View change history →</Link>
       </form>}
-      {state.people.filter((item) => item.active && !item.bound).map((item) =>
-        <form className={styles.form} key={item.id} onSubmit={(event) => {
+      {selected?.active && !selected.bound &&
+        <form className={styles.form} key={selected.id} onSubmit={(event) => {
           event.preventDefault(); const data = new FormData(event.currentTarget);
-          void command("bind-person", { id: item.id, email: String(data.get("email") ?? "").trim() });
-        }}><strong>Connect {item.displayName}</strong><label>Existing confirmed sign-in email<input name="email" type="email" required autoComplete="off" /></label><button disabled={busy}>Bind account</button></form>)}
-      <p className={styles.note}>These fictional workforce records are scoped to the isolated Rybex workspace. A binding grants only field-worker access; it does not authorize releases, reviews or Finance decisions.</p>
+          void command("bind-person", { id: selected.id, email: String(data.get("email") ?? "").trim() });
+        }}><h3>Bind {selected.displayName} to an account</h3><p>Choose an existing confirmed sign-in account. This grants only field-worker access; it does not create an account or authorize business reviews.</p><label>Confirmed sign-in email<input name="email" type="email" required autoComplete="off" /></label><button disabled={busy || Boolean(pending)}>Bind account</button></form>}
+      {selected && <div className={styles.detail}><h3>Access and history</h3><Link href={`/work/admin/audit?workspace=rybex&subject=${selected.id}`}>View change history →</Link><p><button type="button" disabled={busy || Boolean(pending)} onClick={() => setStatusReviewId(selected.id)}>Review {selected.active ? "deactivation" : "reactivation"}</button></p></div>}
     </>}
   </section>;
 }
