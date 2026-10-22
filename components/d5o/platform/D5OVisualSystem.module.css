@@ -1006,6 +1006,7 @@
 .root :global(.d5o-phase-menu button small) { color:#b8cad4; font-size:11px; }
 @media (max-width:600px) {
   .root :global(.d5o-rail-links) { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .root :global(.d5o-nav-drawer .d5o-menu-records-link) { display:none; }
   .root :global(.d5o-rail-links .d5o-rail-phase) { display:none !important; }
   .root :global(.d5o-rail-links .d5o-mobile-phase-trigger),
   .root :global(.d5o-rail-links .d5o-mobile-work-trigger),

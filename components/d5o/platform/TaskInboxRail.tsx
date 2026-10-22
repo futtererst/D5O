@@ -35,7 +35,7 @@ export function TaskInboxRail({ workspace, currentRecordId, currentFocus, curren
   const waitingCount = tasks.filter((task) => task.position === "waiting").length;
 
   return <aside className="d5o-task-inbox-rail" aria-label="Your task inbox">
-    <header><div><small>YOUR WORKSPACE</small><h2>My work</h2></div><button type="button" aria-label="Refresh task inbox" title="Refresh task inbox" onClick={() => setRefresh((value) => value + 1)}>↻</button></header>
+    <header><div><small>YOUR WORKSPACE</small><h2>My Work</h2></div><button type="button" aria-label="Refresh task inbox" title="Refresh task inbox" onClick={() => setRefresh((value) => value + 1)}>↻</button></header>
     <label className="d5o-task-inbox-search"><span className="sr-only">Search tasks</span><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search tasks, jobs, customers…" /></label>
     <div className="d5o-task-inbox-tabs" role="group" aria-label="Task position"><button type="button" aria-pressed={!waiting} onClick={() => setWaiting(false)}>Action needed <b>{activeCount}</b></button><button type="button" aria-pressed={waiting} onClick={() => setWaiting(true)}>Waiting <b>{waitingCount}</b></button></div>
     <div className="d5o-task-inbox-rows" role="list" aria-live="polite">

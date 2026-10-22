@@ -23,7 +23,9 @@ try {
       await page.getByRole("button", { name: "Continue to your work", exact: true }).click();
       await page.waitForURL("**/work");
       assert.equal(new URL(page.url()).pathname, "/work", `Unexpected workspace route: ${new URL(page.url()).pathname}`);
-      await page.getByRole("button", { name: "Work hub", exact: true }).waitFor();
+      await page.getByRole("button", { name: "More navigation" }).click();
+      await page.getByRole("button", { name: "Dashboard", exact: true }).waitFor();
+      await page.getByRole("button", { name: "Close navigation" }).click();
       await page.waitForTimeout(1000);
       await page.getByRole("button", { name: /Account/ }).click();
       assert.equal(await page.locator(".d5o-account-trigger").getAttribute("aria-expanded"), "true", "Account menu did not open after hydration");
