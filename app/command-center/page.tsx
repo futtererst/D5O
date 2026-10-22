@@ -197,7 +197,7 @@ export default async function CommandCenterPage() {
             {supportingBlockers.length > 0 ? (
               <div className="command-action-supporting-list" data-qa="command-center-supporting-actions">
                 {supportingBlockers.map((item, index) => (
-                  <article className="command-action-supporting-row" data-qa="command-center-supporting-action" key={item.id}>
+                  <article className="command-action-supporting-row" data-qa="command-center-supporting-action" key={`${item.id}-${index}`}>
                     <div className="command-action-rank command-action-rank-subordinate" aria-label={`Rank ${index + 2}`}>
                       {index + 2}
                     </div>
@@ -255,8 +255,8 @@ export default async function CommandCenterPage() {
               >
                 <h2>{section.title}</h2>
                 <ul className="command-supporting-context-list">
-                  {section.items.map((item) => (
-                    <li className="command-supporting-context-row" key={item.id}>
+                  {section.items.map((item, index) => (
+                    <li className="command-supporting-context-row" key={`${section.title}-${item.id}-${index}`}>
                       <div>
                         <strong>{item.label}</strong>
                         <span>{item.detail}</span>
