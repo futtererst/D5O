@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { groupIndicativeOrders, type ForecastPeriod } from "./discover-forecast";
 import { activeForecast } from "./discover-decision";
 import type { WorkRecord } from "./work-types";
@@ -42,6 +42,29 @@ export function DevelopPipeline({ work, selectedId, onSelect }: { work: WorkReco
   const [ownerFilter, setOwnerFilter] = useState("All");
   const [period, setPeriod] = useState<ForecastPeriod>("month");
   const [contributors, setContributors] = useState<string[]>([]);
+  const [routeReady, setRouteReady] = useState(false);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("developSurface") === "forecast") setSurface("forecast");
+      if (params.get("developDisplay") === "board") setDisplay("board");
+      setQuery(params.get("developQ") ?? "");
+      const stage = params.get("developStage");
+      if (stage && currentStates.includes(stage as State)) setStageFilter(stage as State);
+      setOwnerFilter(params.get("developOwner") ?? "All");
+      if (params.get("developPeriod") === "quarter") setPeriod("quarter");
+      setContributors((params.get("developContributors") ?? "").split(",").filter(Boolean));
+      setRouteReady(true);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+  useEffect(() => {
+    if (!routeReady) return;
+    const url = new URL(window.location.href);
+    const values = { developSurface: surface === "forecast" ? surface : "", developDisplay: display === "board" ? display : "", developQ: query, developStage: stageFilter === "All" ? "" : stageFilter, developOwner: ownerFilter === "All" ? "" : ownerFilter, developPeriod: period === "quarter" ? period : "", developContributors: contributors.join(",") };
+    for (const [key, value] of Object.entries(values)) { if (value) url.searchParams.set(key, value); else url.searchParams.delete(key); }
+    window.history.replaceState(window.history.state, "", url);
+  }, [routeReady, surface, display, query, stageFilter, ownerFilter, period, contributors]);
   const rows = useMemo(() => work.filter((item) => item.discovery).map((item) => ({ item, position: state(item) })).filter(({ item, position }) => (stageFilter === "All" || position === stageFilter) && (ownerFilter === "All" || item.owner === ownerFilter) && `${item.title} ${item.customer} ${item.site} ${item.type}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => (a.item.nextActionDue || "9999").localeCompare(b.item.nextActionDue || "9999")), [work, stageFilter, ownerFilter, query]);
   const owners = [...new Set(work.map((item) => item.owner))].sort();
   const forecastWork = work.filter((item) => item.definition?.status === "Approved" && item.discovery);

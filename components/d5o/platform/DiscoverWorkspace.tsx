@@ -51,8 +51,9 @@ const newDiscovery = (): DiscoveryRecord => ({
   proposal: { status: "Not started", dueDate: "", method: "Customer portal", recipient: "", response: "" },
 });
 
-export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceName, configurationInventory, work, commercialProfiles, actor, actorId, actorRole, canEdit, hosted = false, focusRecordId, reviewFocus, onOpen, onDefine, onOpenDevelopControls, onPhase, onControl, onBack, onSelect, onPricingQueued, onProposalQueued, onCommercialCommand, onPursuitCommand, onUpdate, onCreate, onNotice, onPolicyUpdated, onPeople, visiblePhases }: {
+export function DiscoverWorkspace({ mode = "discover", developDestination = "workspace", workspaceKey, workspaceName, configurationInventory, work, commercialProfiles, actor, actorId, actorRole, canEdit, hosted = false, focusRecordId, reviewFocus, onOpen, onDefine, onOpenDevelopControls, onPhase, onControl, onBack, onSelect, onDevelopSelect, onDevelopPipeline, onPricingQueued, onProposalQueued, onCommercialCommand, onPursuitCommand, onUpdate, onCreate, onNotice, onPolicyUpdated, onPeople, visiblePhases }: {
   mode?: "discover" | "develop";
+  developDestination?: "pipeline" | "workspace" | "task";
   workspaceKey: WorkspaceKey;
   workspaceName: string;
   configurationInventory: ConfigurationInventory;
@@ -69,6 +70,8 @@ export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceNa
   onControl: (record: WorkRecord, control: WorkControl) => void;
   onBack: () => void;
   onSelect: (id: string) => void;
+  onDevelopSelect?: (id: string) => void;
+  onDevelopPipeline?: () => void;
   onPricingQueued: () => void;
   onProposalQueued: () => void;
   onCommercialCommand: (command: Omit<CommercialCommand, "expectedRevision">) => Promise<boolean>;
@@ -449,7 +452,13 @@ export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceNa
   </div>;
 
   if (!isDevelop) return <DiscoverCRMWorkspace workspaceKey={workspaceKey} workspaceName={workspaceName} configurationInventory={configurationInventory} work={work} actor={actor} actorId={actorId} actorRole={actorRole} canEdit={canEdit} focusRecordId={focusRecordId} taskFocus={reviewFocus === "pursuit-prep" || reviewFocus === "pursuit-review" || reviewFocus === "define-handoff-prep" || reviewFocus === "define-handoff-receive" ? reviewFocus : null} onOpen={onOpen} onDefine={onDefine} onPhase={onPhase} onControl={onControl} onBack={onBack} onSelect={onSelect} onPursuitCommand={onPursuitCommand} onUpdate={onUpdate} onCreate={onCreate} onNotice={onNotice} visiblePhases={visiblePhases} />;
+  if (developDestination === "pipeline") return <main className="d5o-page d5o-record-full d5o-early-phase d5o-discover-phase" aria-label={`${workspaceName} Develop pipeline`}>
+    <DevelopPipeline work={work} onSelect={(id) => onDevelopSelect?.(id)} />
+    <div className={`${styles.metrics} d5o-early-phase-metrics`}><Metric label="ESTIMATES IN REVIEW" value={String(pricingCount)} note="Exact revisions awaiting a decision" /><Metric label="AWAITING CUSTOMER" value={String(awaitingCustomerCount)} note="Submitted offers without a response" /><Metric label="ACTIVE SUBMITTED VALUE" value={submittedValueLabel} note="Exact customer snapshots; currencies separate" /></div>
+    {onPolicyUpdated ? <PricingPolicyAdmin workspace={workspaceKey} hosted={hosted} onNotice={onNotice} onPolicyUpdated={async () => { await onPolicyUpdated(); setPolicyVersionSignal((value) => value + 1); }} /> : null}
+  </main>;
   return <main className="d5o-page d5o-record-full d5o-early-phase d5o-discover-phase">
+    {developDestination === "workspace" ? <button type="button" className="d5o-outline" onClick={onDevelopPipeline}>← Back to Develop pipeline</button> : null}
     {!reviewFocus ? <WorkPhaseJourney active={isDevelop ? "Develop" : "Discover"} record={phaseRecord} backLabel={isDevelop ? "Define" : "Dashboard"} onBack={onBack} visiblePhases={visiblePhases} onChoose={(phase) => { if (phaseRecord) onPhase(phaseRecord, phase); }} onControl={(control) => { if (phaseRecord) onControl(phaseRecord, control); }} /> : null}
     {reviewFocus && selected && estimate && proposal ? <FocusedTaskFrame title={({ pricing: "Pricing review", proposal: "Proposal approval", "solution-prep": "Prepare solution", "solution-review": "Independent solution review", "pricing-prep": "Prepare detailed estimate", "proposal-prep": "Prepare customer proposal", "customer-submission-prep": "Record customer submission", "rom-budget-ack": "Record ROM budget acknowledgment", "rom-design-authorization": "Authorize detailed Design", "design-handoff-receive": "Receive Design handoff", "design-handoff-correction": "Correct Design handoff" } as Record<string, string>)[reviewFocus] ?? "Develop task"}
       work={selected.title} customer={selected.customer} site={selected.site} workspace={workspaceKey}
@@ -462,11 +471,6 @@ export function DiscoverWorkspace({ mode = "discover", workspaceKey, workspaceNa
       <p>Use the exact controls below. The server checks your membership, source revision and independence when you save.</p>
     </FocusedTaskFrame> : null}
     {isDevelop && !reviewFocus && selectedOutsideDevelop ? <div className={styles.sourceAlert}><strong>This work is waiting for an approved Define basis</strong><span>{selectedOutsideDevelop.title} is selected, but commercial preparation cannot begin until its current definition is approved and received.</span><button className="d5o-outline" type="button" onClick={() => onDefine(selectedOutsideDevelop)}>Open the current Define work →</button></div> : null}
-    {isDevelop && !reviewFocus ? <DevelopPipeline work={work} selectedId={selected?.id} onSelect={(id) => { const item = work.find((candidate) => candidate.id === id); if (item && item.discovery?.pursuitControl && item.definition?.status !== "Approved") onDefine(item); else { onSelect(id); setEstimateDirty(false); } }} /> : null}
-    {!reviewFocus ? <div className={`${styles.metrics} d5o-early-phase-metrics`}>
-      <><Metric label="ESTIMATES IN REVIEW" value={String(pricingCount)} note="Exact revisions awaiting a decision" /><Metric label="AWAITING CUSTOMER" value={String(awaitingCustomerCount)} note="Submitted offers without a response" /><Metric label="ACTIVE SUBMITTED VALUE" value={submittedValueLabel} note="Exact customer snapshots; currencies separate" /></>
-    </div> : null}
-    {isDevelop && !reviewFocus && onPolicyUpdated ? <PricingPolicyAdmin workspace={workspaceKey} hosted={hosted} onNotice={onNotice} onPolicyUpdated={async () => { await onPolicyUpdated(); setPolicyVersionSignal((value) => value + 1); }} /> : null}
     {isDevelop && !reviewFocus && hosted && selected?.canonicalWorkId ? selected.packages?.filter((pkg) => currentAcceptedRelease(selected,pkg.id)).map((pkg) => <FieldChangeControl key={pkg.id} mode="commercial" workspace={selected.workspace} workId={selected.id} packageId={pkg.id} releaseId={currentAcceptedRelease(selected,pkg.id)?.id} reports={[]} evidence={[]} />) : null}
     <div className={`${styles.layout} d5o-early-phase-layout`} style={isDevelop ? { gridTemplateColumns: "minmax(0, 1fr)" } : undefined}>
       {!isDevelop ? <section className={`${styles.register} d5o-early-phase-rail`} aria-label="Discover work register">
