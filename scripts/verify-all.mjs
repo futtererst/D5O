@@ -138,7 +138,7 @@ try {
   await run(npmCommand, ["run", "demo:check"]);
   await run(npmCommand, ["run", "workflow:verify-actions"]);
   await run(npmCommand, ["run", "workflow-completion:verify"]);
-  await run(npmCommand, ["run", "billing-v2:verify-ui"]);
+  await run(npmCommand, ["run", "billing-v2:verify-ui", "--", "--repository-wide"]);
   await run(npmCommand, ["run", "completion-registry:verify"]);
   await run(npmCommand, ["run", "field-issue-completion:verify"]);
   await run(npmCommand, ["run", "closeout-completion:verify"]);
