@@ -679,7 +679,8 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       if ((view === "develop" || view === "discover") && ["pricing", "proposal", "solution-prep", "solution-review", "pricing-prep", "proposal-prep", "customer-submission-prep", "rom-budget-ack", "rom-design-authorization", "design-spend-authority-prep", "design-spend-authority-review", "design-spend-commitment-prep", "design-spend-commitment-review", "design-handoff-receive", "design-handoff-correction", "pursuit-prep", "pursuit-review", "define-handoff-prep", "define-handoff-receive"].includes(params.get("focus") ?? "")) setDiscoverEntry(params.get("focus") as typeof discoverEntry);
       if (view === "define" && ["commercial", "delivery", "define-prep", "develop-handoff-prep", "develop-handoff-receive"].includes(params.get("focus") ?? "")) setDefineReviewEntry(params.get("focus") as typeof defineReviewEntry);
       if (recordId && work.some((item) => item.id === recordId && item.workspace === activeWorkspace)) { setSelectedId(recordId); setUnavailableRecordId(null); }
-      else if (recordId && ["record", "discover", "define", "develop"].includes(view ?? "")) setUnavailableRecordId(recordId);
+      else if (recordId && ["record", "define", "develop"].includes(view ?? "")) setUnavailableRecordId(recordId);
+      else setUnavailableRecordId(null);
       if (view && durableScreens.has(view as Screen)) {
         const linkedReview = work.find((item) => item.id === recordId && item.workspace === activeWorkspace);
         const focus = params.get("focus");
@@ -751,7 +752,8 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
     if (!urlRestored) return;
     const url = new URL(window.location.href);
     url.searchParams.set("view", screen);
-    if (screen === "record" && unavailableRecordId) url.searchParams.set("record", unavailableRecordId);
+    if (screen === "discover" && !taskFocus && (url.searchParams.get("discoverPanel") === "list" || !url.searchParams.has("record"))) url.searchParams.delete("record");
+    else if (screen === "record" && unavailableRecordId) url.searchParams.set("record", unavailableRecordId);
     else if (selected) url.searchParams.set("record", selected.id);
     if (screen === "record") { url.searchParams.set("section", tab); url.searchParams.set("from", recordReturn); if (taskPackageId) url.searchParams.set("package", taskPackageId); }
     else { url.searchParams.delete("section"); if (!((screen === "discover" || screen === "develop" || screen === "define") && taskFocus)) for (const key of ["focus", "decision", "sourceRevision", "decisionRevision", "package", "designTab", "from", "release", "turnover", "documentKind", "deployRevision", "request"]) url.searchParams.delete(key); }
@@ -790,6 +792,12 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
     if (next !== screen) retainNavigationHistory();
     if (next !== "record") { setTaskFocus(null); setTaskPackageId(null); setTaskRequestId(null); setTaskRevision(null); setStalePreparationLink(false); }
     setNotice(""); setScreen(next); setMobileMenuOpen(false);
+    if (next === "discover") {
+      const url = new URL(window.location.href);
+      url.searchParams.set("view", "discover");
+      url.searchParams.delete("section");
+      window.history.replaceState(window.history.state, "", url);
+    }
     if (next !== "record") setDetailsOpen(false);
     if (mobileMenuOpen) requestAnimationFrame(() => document.querySelector<HTMLElement>(".d5o-full-content")?.focus());
     if (next !== "record") setUnavailableRecordId(null);
@@ -821,6 +829,13 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
     setDefineReviewEntry(null);
     if (next) setSelectedId(next.id);
     go(target);
+    if (target === "discover") {
+      const url = new URL(window.location.href);
+      url.searchParams.set("discoverPanel", preferred ? "detail" : "list");
+      if (preferred) url.searchParams.set("record", preferred.id);
+      else url.searchParams.delete("record");
+      window.history.replaceState(window.history.state, "", url);
+    }
   }
   function openJourneyPhase(item: WorkRecord, phase: WorkPhase) {
     setSelectedId(item.id);
@@ -831,7 +846,16 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
   }
   function openPrimaryPhase(phase: WorkPhase) {
     if (!permittedPhases.includes(phase)) { setNotice("This phase is outside your role workspace."); return; }
-    if (phase === "Discover") { setDiscoverEntry(null); go("discover"); return; }
+    if (phase === "Discover") {
+      setDiscoverEntry(null);
+      go("discover");
+      const url = new URL(window.location.href);
+      url.searchParams.set("discoverPanel", "list");
+      url.searchParams.delete("record");
+      url.searchParams.delete("discoverTab");
+      window.history.replaceState(window.history.state, "", url);
+      return;
+    }
     if (selected) { openJourneyPhase(selected as WorkRecord, phase); return; }
     go("portfolio");
     setNotice(`Select a Work Record to view ${phase}.`);
