@@ -58,7 +58,7 @@ export function DiscoverCRMWorkspace({ workspaceKey, workspaceName, configuratio
   const configuredTypes = activePublishedWorkTypeLabels(
     configurationInventory.versions.find((item) => item.id === configurationInventory.activeVersionId)?.config_manifest_json,
     workspaceKey);
-  const selected = opportunities.find((item) => item.id === focusRecordId) ?? (taskFocus ? undefined : opportunities[0]);
+  const selected = focusRecordId ? work.find((item) => item.id === focusRecordId && item.workspace === workspaceKey) : taskFocus ? undefined : opportunities[0];
   const crmEditable = canEdit && (!selected || selected.discovery?.phase === "Qualification" && !selected.definition);
   const crm = selected?.discovery?.crm ?? blankCRM();
   const assessment = crm.assessmentHistory.at(-1);
@@ -140,6 +140,10 @@ export function DiscoverCRMWorkspace({ workspaceKey, workspaceName, configuratio
       const weighted = weightedPotential({ ...c, forecast }); return { ...c, forecast, forecastSnapshots: [...(c.forecastSnapshots ?? []), { at, period: forecast.awardDate.slice(0, 7), currency: forecast.currency, workRevision: selected?.discovery?.pursuitControl?.revision ?? 0, value: forecast.value, probability: forecast.probability, weighted, category: forecast.category, awardDate: forecast.awardDate, workId: selected?.id }] }; }, "Indicative forecast snapshot recorded");
   }
   if (taskFocus && !selected) return <main className="d5o-page"><section role="alert"><h2>This task is unavailable</h2><p>The exact Discover record is no longer available. No other opportunity was selected.</p><button type="button" onClick={onBack}>Back to tasks</button></section></main>;
+  if (selected && !selected.discovery && !taskFocus) return <main className={`d5o-page d5o-record-full d5o-early-phase ${styles.page}`}>
+    <WorkPhaseJourney active="Discover" record={selected} backLabel="Work hub" onBack={onBack} visiblePhases={visiblePhases} onChoose={(phase) => onPhase(selected, phase)} onControl={(control) => onControl(selected, control)} />
+    <section className="d5o-panel" role="status"><h2>Discover intake is unavailable for this record</h2><p>This retained Work Record has no connected Discover intake. Its existing history remains available; selecting another phase does not create or approve an intake.</p><button type="button" onClick={() => onControl(selected, "Overview")}>Open record overview</button></section>
+  </main>;
   if (taskFocus && selected && selected.id === focusRecordId) {
     const pursuit = selected.discovery?.pursuitControl;
     const receive = taskFocus === "define-handoff-receive";
