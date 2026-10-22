@@ -979,6 +979,12 @@
   .root :global(.d5o-selected-work-details summary) { min-height:44px; }
 }
 
+@media (max-width:900px) {
+  .root :global(.d5o-task-main:has(.d5o-discover-list-open) > .d5o-selected-work-header) { display:none; }
+  .root :global(.d5o-task-main:has(.d5o-discover-detail-open) > .d5o-selected-work-header) { display:none; }
+  .root :global(.d5o-task-main:has(.d5o-discover-detail-open) .d5o-header-record-switch) { display:none; }
+}
+
 /* My Work and the six governed phases share one destination model at every width. */
 .root :global(.d5o-mobile-phase-trigger),
 .root :global(.d5o-mobile-work-trigger),
