@@ -171,7 +171,7 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
           }}>Confirm {selected.active ? "deactivation" : "reactivation"}</button>
         {selected.active && !impactBasis ? " Security deactivation remains available while booking impact is unavailable." : null}
       </p>}
-      {(selected || creating) && <form className={styles.form} key={selected?.id ?? "new"} onInput={(event) => {
+      {(selected || creating) && <form className={styles.form} key={selected ? `profile-${selected.id}` : "new-profile"} onInput={(event) => {
         if (!selected) return;
         const values = new FormData(event.currentTarget);
         setProposed({ personId: selected.id, profileRevision: selected.profileRevision,
@@ -199,7 +199,7 @@ export function CrewAccessPanel({ selectedPersonId }: { selectedPersonId?: strin
         <Link href={`/work/admin/audit?workspace=rybex&subject=${selected.id}`}>View change history →</Link>
       </form>}
       {selected?.active && !selected.bound &&
-        <form className={styles.form} key={selected.id} onSubmit={(event) => {
+        <form className={styles.form} key={`binding-${selected.id}`} onSubmit={(event) => {
           event.preventDefault(); const data = new FormData(event.currentTarget);
           void command("bind-person", { id: selected.id, email: String(data.get("email") ?? "").trim() });
         }}><h3>Bind {selected.displayName} to an account</h3><p>Choose an existing confirmed sign-in account. This grants only field-worker access; it does not create an account or authorize business reviews.</p><label>Confirmed sign-in email<input name="email" type="email" required autoComplete="off" /></label><button disabled={busy || Boolean(pending)}>Bind account</button></form>}
