@@ -819,7 +819,9 @@
   .root :global(.d5o-rail-links button) { min-width:0; min-height:52px; gap:2px; padding:4px 1px; font-size:10px; }
   .root :global(.d5o-rail-links button span) { display:inline; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .root :global(.d5o-rail-links button svg) { width:20px; height:20px; }
-  .root :global(.d5o-full-content) { padding:0 12px calc(84px + env(safe-area-inset-bottom)); }
+  .root :global(.d5o-full-content) { padding:0 12px calc(116px + env(safe-area-inset-bottom)); }
+  .root :global(.d5o-full-content :is(button, input, select, textarea)) { min-height:44px; }
+  .root :global(.d5o-full-content .d5o-surface-host :is(.d5o-primary, .d5o-outline, .d5o-quiet)) { min-height:44px; }
   .root :global(.d5o-app-topbar) { min-height:48px; margin:0 -12px 8px; padding:4px 12px; }
   .root :global(.d5o-app-topbar .d5o-top-actions) { gap:4px; }
   .root :global(.d5o-app-topbar .d5o-top-actions > button) { display:none; }
