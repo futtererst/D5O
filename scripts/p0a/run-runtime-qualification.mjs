@@ -8,7 +8,7 @@ import { createServerClient } from "@supabase/ssr";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
-const output = resolve(root, "docs/architecture/evidence/p0a-runtime-results.json");
+const output = resolve(root, "docs/architecture/evidence/phase1-p0a-runtime-results.json");
 const result = { schemaVersion: 1, startedAt: new Date().toISOString(), baseline: process.env.P0A_BASELINE_SHA ?? "unrecorded",
   environment: "disposable local Supabase", tests: [], migrationLineage: null, cleanup: null, gates: {} };
 let runtime, server;
@@ -219,10 +219,10 @@ try {
     assert([403, 404].includes(crossRecord.status)); assert.equal(noAdmin.status, 403);
     assert([400, 403].includes(otherAdmin.status));
   });
-  await record("pilot allowlist remains enforced", async () => {
+  await record("independent configuration enabled only in disposable pilot", async () => {
     const adminB = await get("b_admin", "/api/d5o-hosted/admin-configuration?workspace=enterprise_test");
     const searchB = await get("b_admin", "/api/d5o-hosted/prototype-search?workspace=enterprise_test&view=search");
-    assert.equal(adminB.status, 400); assert.equal(searchB.status, 400);
+    assert.equal(adminB.status, 200); assert.equal(searchB.status, 400);
   });
 } catch (error) {
   result.setupError = String(error.message).slice(0, 1200);
@@ -235,7 +235,7 @@ try {
     setupError: Boolean(result.setupError), cleanupVerified: Boolean(result.cleanup?.clean) };
   mkdirSync(resolve(root, "docs/architecture/evidence"), { recursive: true });
   writeFileSync(output, `${JSON.stringify(result, null, 2)}\n`);
-  console.log(JSON.stringify({ ...result.summary, output: "docs/architecture/evidence/p0a-runtime-results.json" }));
+  console.log(JSON.stringify({ ...result.summary, output: "docs/architecture/evidence/phase1-p0a-runtime-results.json" }));
   if (result.setupError || result.summary.failed || !result.summary.cleanupVerified) process.exitCode = 1;
 }
 

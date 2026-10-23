@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
+import { customerAdminWorkspaceAllowed } from "@/lib/d5o/admin/customer-workspace";
 
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
@@ -10,7 +11,7 @@ const errorStatus = (error: Rpc["error"]) => error?.code === "42501" ? 403
   : error?.code === "23505" || error?.code === "23514" ? 409
     : error?.code === "22023" ? 400 : 503;
 async function admin(workspace: string) {
-  if (workspace !== "rybex") throw new HostedStateError("invalid_workspace", 400);
+  if (!customerAdminWorkspaceAllowed(workspace)) throw new HostedStateError("invalid_workspace", 400);
   const context = await hostedPrototypeContext(workspace);
   if (context.actor.role !== "admin") throw new HostedStateError("admin_membership_required", 403);
 }
@@ -19,9 +20,12 @@ export async function GET(request: NextRequest) {
     const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
     await admin(workspace);
     const client = await createRybexSupabaseServerClient();
-    const { data, error } = await (client.rpc as unknown as (name: string, args: Record<string, unknown>) => Promise<Rpc>)(
-      "d5o_hosted_configuration_admin_read_v1", { p_workspace_key: workspace });
-    return error ? reply({ error: error.message }, errorStatus(error)) : reply(data);
+    const rpc = client.rpc.bind(client) as unknown as (name: string, args: Record<string, unknown>) => Promise<Rpc>;
+    const { data, error } = await rpc("d5o_hosted_configuration_admin_read_v1", { p_workspace_key: workspace });
+    if (error) return reply({ error: error.message }, errorStatus(error));
+    const history = await rpc("d5o_hosted_configuration_history_v1", { p_workspace_key: workspace });
+    return history.error ? reply({ error: history.error.message }, errorStatus(history.error))
+      : reply({ ...(data as Record<string, unknown>), history: history.data });
   } catch (error) { return error instanceof HostedStateError ? reply({ error: error.code }, error.status)
     : reply({ error: "configuration_unavailable" }, 503); }
 }
@@ -34,7 +38,7 @@ export async function POST(request: NextRequest) {
     if (raw.length > 3200) return reply({ error: "request_too_large" }, 413);
     const input = JSON.parse(raw) as { action?: string; version?: string; expectedActive?: string;
       expectedRevision?: number; data?: Record<string, unknown>; reason?: string; commandId?: string };
-    if (!["create-draft", "save-policy", "save-route", "create-work-type", "retire-work-type",
+    if (!["create-draft", "save-policy", "save-route", "create-work-type", "rename-work-type", "retire-work-type",
       "set-create-role", "validate-publish", "activate"].includes(input.action ?? "")
       || !/^[0-9a-f-]{36}$/i.test(input.version ?? "")
       || !/^[0-9a-f-]{36}$/i.test(input.expectedActive ?? "")

@@ -1,0 +1,23 @@
+.shell { min-height: 100vh; display: grid; grid-template-columns: minmax(220px, 270px) minmax(0, 1fr); background: #f7f9fc; color: #14233b; }
+.rail { background: #102d45; color: white; padding: 2rem 1.3rem; display: flex; flex-direction: column; gap: 1.5rem; }
+.rail nav { display: flex; flex-direction: column; gap: .5rem; }
+.rail nav a, .rail nav span { color: white; padding: .65rem .8rem; border-radius: .35rem; background: #25506d; }
+.rail p { color: #d0e1ed; font-size: .9rem; line-height: 1.55; }
+.main { padding: clamp(1.2rem, 4vw, 3rem); max-width: 1200px; width: 100%; }
+.main h1 { font-size: clamp(1.7rem, 3vw, 2.4rem); margin: .25rem 0 .8rem; }
+.main > p { max-width: 65ch; line-height: 1.5; }
+.eyebrow { color: #426c86; font-weight: 700; font-size: .82rem; text-transform: uppercase; letter-spacing: .08em; }
+.search { display: flex; align-items: end; gap: .7rem; margin: 2rem 0 1rem; flex-wrap: wrap; }
+.search label { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; }
+.search input { min-width: min(75vw, 320px); padding: .65rem; border: 1px solid #91a9bc; border-radius: .3rem; }
+.search button { padding: .65rem 1.1rem; background: #174e74; color: white; border: 0; border-radius: .3rem; cursor: pointer; }
+.tableWrap { overflow-x: auto; background: white; border: 1px solid #d8e1e8; border-radius: .45rem; }
+.tableWrap table { width: 100%; border-collapse: collapse; text-align: left; }
+.tableWrap th, .tableWrap td { padding: .8rem 1rem; border-bottom: 1px solid #e6edf2; }
+.tableWrap th small { display: block; font-weight: 400; color: #60758a; }
+.main a { color: #125b89; }
+.details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; margin: 2rem 0; }
+.details div { background: white; border: 1px solid #d8e1e8; border-radius: .4rem; padding: 1rem; }
+.details dt { color: #536d81; font-size: .9rem; }
+.details dd { margin: .35rem 0 0; font-weight: 650; overflow-wrap: anywhere; }
+@media (max-width: 700px) { .shell { display: block; } .rail { padding: 1rem; gap: .6rem; } .rail p { display: none; } .details { grid-template-columns: 1fr; } }

@@ -11,6 +11,9 @@ export function validLocalScheduleOrigin(headers: Headers): boolean {
     const parsed = new URL(origin);
     if (parsed.origin !== origin || parsed.host !== host) return false;
     const runtime = d5oCommandRuntime();
+    if (runtime === "pilot" && process.env.NODE_ENV === "development"
+      && process.env.D5O_ISOLATED_APP_ORIGIN === origin
+      && parsed.hostname === "127.0.0.1") return true;
     if (runtime === "pilot"
       && (origin === "http://127.0.0.1:61641" ||
         process.env.D5O_ISOLATED_PILOT_URL === "http://127.0.0.1:56621" && origin === "http://127.0.0.1:61642" ||
