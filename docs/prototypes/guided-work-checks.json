@@ -1,0 +1,31 @@
+{
+  "checks": [
+    "All six phase views visible",
+    "Viewing Deploy does not advance Define",
+    "Future phase offers return to current work",
+    "Saved activity survives reload",
+    "Submitting review preserves current phase",
+    "Submitter cannot perform receiving review",
+    "Reviewer receives a named My Work task",
+    "Returned review retains governed position",
+    "Resubmission creates a second review revision",
+    "Separate approval commits Develop and survives reload",
+    "Returned decision remains in history",
+    "Work filters and search survive record round trip",
+    "Opportunity draft resumes after reload",
+    "Intake review retains entered context",
+    "New opportunity opens in Discover",
+    "Created record preserves opportunity title",
+    "Guided record reaches accepted work",
+    "Customer acceptance does not complete Finance",
+    "Finance role records separate closeout disposition",
+    "Blank intake does not create a record",
+    "Draft data is preserved as literal text",
+    "Mobile screen has no horizontal overflow",
+    "Mobile menu exposes role and navigation",
+    "Mobile navigation closes after selecting a destination",
+    "Mobile retains all phase links",
+    "No browser JavaScript errors"
+  ],
+  "errors": []
+}
