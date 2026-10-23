@@ -1,0 +1,14 @@
+{
+  "startedAt": "2026-10-23T20:43:46.339Z",
+  "environment": "disposable local Supabase",
+  "tests": [],
+  "cleanup": null,
+  "setupError": "isolated_start_failed:api_port=57621:Using workdir C:\\Users\\futte\\AppData\\Local\\Temp\\d5o-p0a-9d947d16-eea-aoJqYD\nWARN: config section [inbucket] is deprecated. Please use [local_smtp] instead.\n studio Skipped - Image is already present locally \n db Skipped - Image is already present locally \n mailpit Skipped - Image is already present locally \n pgmeta Skipped - Image is already present locally \n vector Skipped - Image is already present locally \n gateway Skipped - Image is already present locally \n auth Skipped - Image is already present locally \n realtime Skipped - Image is already present locally \n imgProxy Skipped - Image is already present locally \n analytics Skipped - Image is already present locally \n api Skipped - Image is already present locally \n storage Skipped - Image is already present locally \nStarting database...\nInitialising schema...\nSeeding globals from roles.sql...\nApplying migration 0001_core_foundation.sql...\nNOTICE (42710): extension \"pgcrypto\" already exists, skipping\nApplying migration 0002_d1_d2_pipeline_projects.sql...\nApplying migration 0003_workflow_transactions.sql...\nApplying migration 0004_rls_security_scaffold.sql...\nApplying migration 0005_identity_w",
+  "finishedAt": "2026-10-23T20:45:25.913Z",
+  "summary": {
+    "passed": 0,
+    "failed": 0,
+    "setupError": true,
+    "cleanupVerified": false
+  }
+}

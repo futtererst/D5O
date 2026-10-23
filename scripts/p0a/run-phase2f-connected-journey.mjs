@@ -9,8 +9,13 @@ import { chromium } from "@playwright/test";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
-const output = resolve(root, "docs/architecture/evidence/phase2f-connected-journey-results.json");
-const evidence = { baseline: "8d536b4ce74282fe6c3a0e2dbb66b1752ca51ec2",
+const phase2g = process.env.D5O_PHASE2G === "1";
+const output = resolve(root, phase2g
+  ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
+  : "docs/architecture/evidence/phase2f-connected-journey-results.json");
+const evidence = { baseline: phase2g
+    ? "dae8e1fa975bc47ef6d1180b512399683e3c9613"
+    : "8d536b4ce74282fe6c3a0e2dbb66b1752ca51ec2",
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
 // Field start checks the real shift clock. The disposable journey uses today's
 // local business date so that its schedule is actually eligible for execution.
@@ -813,6 +818,27 @@ try {
         versionId:record.phaseConfigurationVersionId,
         missingEvidenceDenied:strict,solutionStatus:approved.develop.review.status,
         sourceRevision:saved.data.revision});
+    }
+    return outcomes;
+  });
+  if(phase2g) await check("early solution approval is persisted as Develop preparation only",async()=>{
+    const outcomes=[];
+    for(const [prefix,tenant] of [["a",a],["b",b]]) {
+      const current=await call(`${prefix}_admin`,"d5o_hosted_prototype_read_v1",{
+        p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+      assert(!current.error,current.error?.message);
+      const work=current.data.state.records.find((item)=>item.title==="Phase 2D policy qualification");
+      const status=await call(`${prefix}_admin`,"d5o_hosted_phase_status_read_v1",{
+        p_workspace_key:tenant.workspaceKey,p_presentation_id:work.id});
+      assert(!status.error,status.error?.message);
+      assert.equal(status.data.status,"resolved");
+      assert.equal(status.data.replayMatches,true);
+      assert.equal(status.data.projection.phases.Develop.status,"preparation_in_progress");
+      assert.notEqual(status.data.projection.phases.Design.status,"completed");
+      outcomes.push({tenant:tenant.workspaceKey,workId:work.canonicalWorkId,
+        develop:status.data.projection.phases.Develop.status,
+        design:status.data.projection.phases.Design.status,
+        preparationEvidence:status.data.projection.phases.Develop.preparationEvidence});
     }
     return outcomes;
   });
@@ -1716,10 +1742,112 @@ try {
     return {tenant:a.workspaceKey,foreignActor:users.b_admin.id,
       denied:denied.error.message};
   });
+  if(phase2g) {
+    await check("transactional phase projection matches replay and pinned final outcomes",async()=>{
+      const outcomes=[];
+      for(const [prefix,tenant] of [["a",a],["b",b]]) {
+        const source=await call(`${prefix}_admin`,"d5o_hosted_prototype_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+        assert(!source.error,source.error?.message);
+        const work=source.data.state.records.find((item)=>item.title==="Phase 2D policy qualification");
+        const status=await call(`${prefix}_admin`,"d5o_hosted_phase_status_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:work.id});
+        assert(!status.error,status.error?.message);
+        assert.equal(status.data.status,"resolved");
+        assert.equal(status.data.replayMatches,true);
+        for(const phase of ["Discover","Define","Design","Develop","Deploy"])
+          assert.equal(status.data.projection.phases[phase].status,"completed",`${prefix}:${phase}`);
+        assert.equal(status.data.projection.phases.Operate.status,"active");
+        assert.equal(status.data.projection.currentPhase,"Operate");
+        assert.equal(status.data.projection.supportActive,true);
+        assert.equal(status.data.projection.financialCloseout,"Pending");
+        assert.equal(status.data.configurationVersionId,work.phaseConfigurationVersionId);
+        const foreign=await call(prefix==="a"?"b_admin":"a_admin",
+          "d5o_hosted_phase_status_read_v1",{
+            p_workspace_key:tenant.workspaceKey,p_presentation_id:work.id});
+        assert.equal(foreign.error?.code,"42501");
+        outcomes.push({tenant:tenant.workspaceKey,workId:work.canonicalWorkId,
+          projectionRevision:status.data.projectionRevision,
+          currentPhase:status.data.projection.currentPhase,
+          statuses:Object.fromEntries(Object.entries(status.data.projection.phases)
+            .map(([phase,value])=>[phase,value.status])),
+          supportActive:true,financialCloseout:"Pending",replayMatches:true,
+          crossTenantDenied:foreign.error.message});
+      }
+      return outcomes;
+    });
+    await check("authenticated tenant-neutral Work UI and API isolation",async()=>{
+      if(!server)server=await startNext(url,anon,service);
+      const browser=await chromium.launch();
+      const dir=resolve(root,"docs/architecture/evidence/phase2g-browser");
+      mkdirSync(dir,{recursive:true});const outcomes=[];
+      try {
+        for(const [prefix,tenant,other] of [["a",a,b],["b",b,a]]) {
+          const page=await browser.newPage({viewport:{width:1440,height:900}});
+          await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=%2Fwork`);
+          await page.getByLabel("Email").fill(users[`${prefix}_admin`].email);
+          await page.getByLabel("Password").fill(users[`${prefix}_admin`].password);
+          await page.getByRole("button",{name:"Continue to your work"}).click();
+          await page.getByRole("link",{name:/Open workspace/}).first().waitFor({timeout:30000});
+          await page.screenshot({path:resolve(dir,`${prefix}-workspace-selection.png`),fullPage:true});
+          await page.locator(`[data-workspace="${tenant.workspaceKey}"]`).click();
+          await page.getByRole("heading",{name:"Work lifecycle"}).waitFor({timeout:30000});
+          await page.locator(".d5o-customer-work-list a").filter({hasText:"Phase 2D policy qualification"}).click();
+          await page.getByRole("heading",{name:"Phase 2D policy qualification"}).waitFor({timeout:30000});
+          await page.getByText("Financial closeout",{exact:true}).first().waitFor({timeout:30000});
+          await page.screenshot({path:resolve(dir,`${prefix}-work-operate.png`),fullPage:true});
+          await page.setViewportSize({width:390,height:844});
+          await page.screenshot({path:resolve(dir,`${prefix}-work-operate-mobile.png`),fullPage:true});
+          await page.setViewportSize({width:1440,height:900});
+          await page.reload();
+          await page.getByRole("heading",{name:"Phase 2D policy qualification"}).waitFor({timeout:30000});
+          const otherSource=await call(`${prefix==="a"?"b":"a"}_admin`,
+            "d5o_hosted_prototype_read_v1",{
+              p_workspace_key:other.workspaceKey,p_state_key:"work"});
+          const otherWork=otherSource.data.state.records.find((item)=>
+            item.title==="Phase 2D policy qualification");
+          const crossRead=await page.request.get(`http://127.0.0.1:${server.port}`+
+            `/api/d5o-hosted/customer-work?workspace=${other.workspaceKey}&workId=${otherWork.id}`);
+          assert.equal(crossRead.status(),403);
+          const crossWrite=await page.request.post(`http://127.0.0.1:${server.port}`+
+            `/api/d5o-hosted/customer-work?workspace=${other.workspaceKey}`,{
+              data:{workId:otherWork.id,command:"operate",commandId:randomUUID(),
+                arguments:{p_action:"activate",p_input:{note:"Forged cross-tenant activation"},
+                  p_expected_source_revision:0,p_expected_deploy_revision:0,
+                  p_expected_operate_revision:0}}});
+          assert.equal(crossWrite.status(),403);
+          await page.goto(`http://127.0.0.1:${server.port}/work/connected-work?workspace=${tenant.workspaceKey}`);
+          await page.getByRole("button",{name:"Create connected Work"}).waitFor({timeout:30000});
+          const browserWork=`Phase 2G browser Work ${prefix.toUpperCase()}`;
+          await page.getByLabel("Work name").fill(browserWork);
+          await page.getByLabel("Customer",{exact:true}).fill("Fictional browser customer");
+          await page.getByLabel("Site").fill("Fictional browser site");
+          await page.getByLabel("Accountable owner").fill("Fictional owner");
+          await page.getByLabel("Demand source").fill("Fictional customer request");
+          await page.getByLabel("Customer need").fill("A fictional connected service need created through the authenticated application.");
+          await page.getByLabel("Procurement route").fill("Customer authorization required");
+          await page.getByRole("button",{name:"Create connected Work"}).click();
+          await page.getByRole("link",{name:"Open Work lifecycle"}).waitFor({timeout:30000});
+          await page.getByRole("link",{name:"Open Work lifecycle"}).click();
+          await page.getByRole("heading",{name:browserWork}).waitFor({timeout:30000});
+          await page.getByText("Discover",{exact:true}).first().waitFor();
+          await page.screenshot({path:resolve(dir,`${prefix}-browser-created-work.png`),fullPage:true});
+          outcomes.push({tenant:tenant.workspaceKey,route:`/work/customer/${tenant.workspaceKey}`,
+            screenshot:`${prefix}-work-operate.png`,mobileScreenshot:`${prefix}-work-operate-mobile.png`,reloadPersisted:true,
+            crossTenantGetStatus:crossRead.status(),crossTenantPostStatus:crossWrite.status(),
+            browserCreatedWork:browserWork,creationScreenshot:`${prefix}-browser-created-work.png`});
+          await page.close();
+        }
+      } finally {await browser.close();}
+      return outcomes;
+    });
+  }
   await check("authenticated tenant administration and connected Work entry render",async()=>{
     if(!server) server=await startNext(url,anon,service);
     const browser=await chromium.launch();
-    const dir=resolve(root,"docs/architecture/evidence/phase2f-browser");
+    const dir=resolve(root,phase2g
+      ? "docs/architecture/evidence/phase2g-browser"
+      : "docs/architecture/evidence/phase2f-browser");
     mkdirSync(dir,{recursive:true});
     const files=[];
     try {
@@ -1765,6 +1893,8 @@ finally {
     setupError:Boolean(evidence.setupError),cleanupVerified:Boolean(evidence.cleanup?.clean)};
   mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
-  console.log(JSON.stringify({...evidence.summary,output:"docs/architecture/evidence/phase2f-connected-journey-results.json"}));
+  console.log(JSON.stringify({...evidence.summary,output:phase2g
+    ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
+    : "docs/architecture/evidence/phase2f-connected-journey-results.json"}));
   if(evidence.summary.failed||evidence.summary.setupError||!evidence.summary.cleanupVerified) process.exitCode=1;
 }

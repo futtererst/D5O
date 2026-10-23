@@ -46,10 +46,14 @@ export default async function WorkHomePage({ searchParams }: {
       </section>
       <div className={styles.grid}>{entries.map((entry) => <Link className={styles.card}
         data-workspace={entry.workspaceKey} key={entry.workspaceKey}
-        href={`/work?workspace=${encodeURIComponent(entry.workspaceKey)}`}>
+        href={entry.workspaceKey === "rybex" || entry.workspaceKey === "rotork"
+          ? `/work?workspace=${encodeURIComponent(entry.workspaceKey)}`
+          : `/work/customer/${encodeURIComponent(entry.workspaceKey)}`}>
         <span className={styles.marker} aria-hidden="true" />
         <div><small>WORKSPACE</small><h2>{entry.workspaceName}</h2>
-          <p>{entry.workspaceKey === "rybex" ? "Technical delivery and controlled turnover" : "Modernization, paid pilots and lifecycle service"}</p>
+          <p>{entry.workspaceKey === "rybex" ? "Technical delivery and controlled turnover"
+            : entry.workspaceKey === "rotork" ? "Modernization, paid pilots and lifecycle service"
+              : "Your organization's configured Work lifecycle"}</p>
           <span className={styles.role}>Your role: {entry.role.replaceAll("_", " ")}</span></div>
         <strong>Open workspace →</strong>
       </Link>)}</div>

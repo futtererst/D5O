@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type WorkType = { key: string; label: string };
@@ -9,6 +10,7 @@ export function ConnectedWorkStart({workspace}:{workspace:string}) {
   const [error,setError]=useState("");
   const [busy,setBusy]=useState(false);
   const [created,setCreated]=useState("");
+  const [createdId,setCreatedId]=useState("");
   useEffect(()=>{const controller=new AbortController();
     void fetch(`/api/d5o-hosted/connected-work?workspace=${encodeURIComponent(workspace)}`,
       {cache:"no-store",signal:controller.signal}).then(async(response)=>{
@@ -21,7 +23,7 @@ export function ConnectedWorkStart({workspace}:{workspace:string}) {
     event.preventDefault();if(!data?.available||busy)return;
     const form=event.currentTarget;
     const fields=new FormData(form);
-    setBusy(true);setError("");setCreated("");
+    setBusy(true);setError("");setCreated("");setCreatedId("");
     try {
       const response=await fetch(`/api/d5o-hosted/connected-work?workspace=${encodeURIComponent(workspace)}`,{
         method:"POST",headers:{"Content-Type":"application/json"},
@@ -33,6 +35,7 @@ export function ConnectedWorkStart({workspace}:{workspace:string}) {
       const body=await response.json() as {error?:string;result?:{presentationId?:string}};
       if(!response.ok)throw Error(body.error??"Connected Work could not be created");
       form.reset();setCreated(String(fields.get("title")));
+      setCreatedId(body.result?.presentationId ?? "");
     }catch(cause){setError(cause instanceof Error?cause.message:"Command failed");}
     finally{setBusy(false);}
   }
@@ -53,7 +56,8 @@ export function ConnectedWorkStart({workspace}:{workspace:string}) {
         <label>Procurement route<input name="procurement" required maxLength={120} /></label>
         <button disabled={busy||!data.workTypes.length}>{busy?"Creating Work…":"Create connected Work"}</button>
       </form>
-      {created&&<p role="status">Connected Work created: {created}</p>}
+      {created&&<p role="status">Connected Work created: {created}{createdId &&
+        workspace !== "rybex" && workspace !== "rotork" ? <> · <Link href={`/work/customer/${encodeURIComponent(workspace)}?work=${encodeURIComponent(createdId)}`}>Open Work lifecycle</Link></> : null}</p>}
     </>}
   </section>;
 }
