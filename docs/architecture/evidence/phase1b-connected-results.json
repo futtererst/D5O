@@ -1,0 +1,136 @@
+{
+  "sourceCommit": "7b8a629d57f4652acd7545ac244555e228a563d4",
+  "startedAt": "2026-10-23T12:23:09.820Z",
+  "tests": [
+    {
+      "name": "A direct authorization and job RPC deny missing approval",
+      "status": "PASS",
+      "detail": {
+        "authorization": "denied",
+        "job": "denied"
+      }
+    },
+    {
+      "name": "A pending approval is scoped and independently decided",
+      "status": "PASS",
+      "detail": {
+        "status": "approved",
+        "wrongActorDenied": true,
+        "crossTenantDenied": true
+      }
+    },
+    {
+      "name": "A valid approval authorizes customer decision and creates job",
+      "status": "PASS",
+      "detail": {
+        "approvalId": "a36771c4-e96a-4f6b-a7a2-aee6054c9afa",
+        "authorization": "recorded",
+        "jobId": "a57f2f73-1c2c-4673-b977-9cd1f4efdade",
+        "duplicateJob": "stable"
+      }
+    },
+    {
+      "name": "A approval cannot authorize a second request on the same Work",
+      "status": "PASS",
+      "detail": {
+        "sameWorkDifferentRequest": "denied"
+      }
+    },
+    {
+      "name": "B 25000 threshold needs no additional approval record",
+      "status": "PASS",
+      "detail": {
+        "thresholdMinor": 2500000,
+        "approvalRequired": false,
+        "fabricatedApprovals": 0,
+        "authorization": "recorded",
+        "jobId": "857582cb-4a08-4868-b691-32155a7fc37a",
+        "concurrentJobAttempts": {
+          "accepted": 1,
+          "denied": 1
+        }
+      }
+    },
+    {
+      "name": "new active version does not repin A historical connected request",
+      "status": "PASS",
+      "detail": {
+        "historicalVersion": "2ada63d1-a1eb-46ae-adad-717733981c4c",
+        "historicalThresholdMinor": 1000000,
+        "newWorkVersion": "83346f33-a999-4e75-8eab-0e9c732c1cd7",
+        "newThresholdMinor": 2500000
+      }
+    },
+    {
+      "name": "changed amount invalidates A approval",
+      "status": "PASS",
+      "detail": {
+        "changedAmountMinor": 1600000,
+        "authorization": "denied"
+      }
+    },
+    {
+      "name": "legacy service-role related-work path also denies stale approval",
+      "status": "PASS",
+      "detail": {
+        "olderServerRoute": "denied"
+      }
+    },
+    {
+      "name": "changed amount requires a new scoped decision while retaining history",
+      "status": "PASS",
+      "detail": {
+        "previousApprovalRetained": true,
+        "revisedAmountMinor": 1600000,
+        "currentStatus": "approved"
+      }
+    },
+    {
+      "name": "revoked approval authority fails closed",
+      "status": "PASS",
+      "detail": {
+        "revokedApprover": "denied"
+      }
+    },
+    {
+      "name": "direct legacy entry points are not callable",
+      "status": "PASS",
+      "detail": {
+        "authenticatedPricing": false,
+        "authenticatedJob": false,
+        "serviceRoleRelatedWork": false
+      }
+    },
+    {
+      "name": "decision audit retains tenant and pinned version",
+      "status": "PASS",
+      "detail": {
+        "eventCount": 4,
+        "tenant": "A",
+        "pinnedVersion": "2ada63d1-a1eb-46ae-adad-717733981c4c"
+      }
+    }
+  ],
+  "setupError": null,
+  "cleanup": {
+    "projectId": "d5o-p0a-d908603c-289",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "environment": {
+    "projectId": "d5o-p0a-d908603c-289",
+    "apiPort": 57421,
+    "localOnly": true,
+    "migration": "20261023115306_d5o_phase1b_connected_service_approval.sql"
+  },
+  "finishedAt": "2026-10-23T12:24:24.115Z",
+  "summary": {
+    "passed": 12,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  }
+}

@@ -9,6 +9,9 @@ import { CustomerDecisionEvidence } from "./CustomerDecisionEvidence";
 import style from "./OperateWorkspace.module.css";
 
 type PolicyResponse = { policies: PricingPolicy[]; active?: { id: string; version: number } };
+type ApprovalState = { status: string; approvalRequired: boolean; thresholdMinor?: number;
+  amountMinor?: number; currency?: string; configurationVersionId?: string;
+  canRequest: boolean; canDecide: boolean; canAuthorize: boolean; localKey: string };
 type Command = Omit<OperateCommand, "workId" | "expectedRevision" | "commandId">;
 const categories: PricingCategory[] = ["labor", "material", "equipment", "subcontract", "travel", "mobilization", "setup", "recurring", "other"];
 const field = (form: FormData, name: string) => String(form.get(name) ?? "").trim();
@@ -19,6 +22,10 @@ export function ServicePricingPanel({ work, request, hosted, busy, focused = fal
   const [riskBasis, setRiskBasis] = useState(request.serviceEstimate?.input.riskBasis ?? "");
   const [discount, setDiscount] = useState(request.serviceEstimate?.input.discountPercent ?? 0);
   const [authorizationEvidenceId, setAuthorizationEvidenceId] = useState("");
+  const [approvalState, setApprovalState] = useState<ApprovalState | null>(null);
+  const [approvalError, setApprovalError] = useState("");
+  const [approvalBusy, setApprovalBusy] = useState(false);
+  const approvalEndpoint = `/api/d5o-hosted/service-approval?workspace=${encodeURIComponent(work.workspace)}&parentPresentationId=${encodeURIComponent(work.id)}&requestId=${encodeURIComponent(request.id)}`;
   const endpoint = hosted ? `/api/d5o-hosted/prototype-state?workspace=${encodeURIComponent(work.workspace)}&key=work&pricing=1` : "/api/work/prototype-state?pricing=1";
   useEffect(() => { let active = true; void fetch(endpoint, { cache: "no-store" }).then((response) => response.json()).then((body: PolicyResponse) => { if (active && Array.isArray(body.policies)) setPolicyState(body); }).catch(() => undefined); return () => { active = false; }; }, [endpoint]);
   const policy = policyState?.policies.find((item) => item.id === policyState.active?.id && item.version === policyState.active.version && item.status === "published");
@@ -28,6 +35,38 @@ export function ServicePricingPanel({ work, request, hosted, busy, focused = fal
   const currentCycle = estimate?.requestCycleAt === (request.reopenedAt ?? request.reportedAt);
   const authorizationCurrent = currentCycle && estimate?.status === "Approved" && request.serviceAuthorization?.estimateRevision === estimate.revision;
   const priceable = request.coverage === "Chargeable" || request.coverage === "Partially covered";
+  const approvalKey = `${request.id}:${request.reopenedAt ?? request.reportedAt}:${estimate?.revision}:${estimate?.evaluation.proposedPriceMinor}`;
+  const currentApprovalState = approvalState?.localKey === approvalKey ? approvalState : null;
+  useEffect(() => {
+    if (!hosted || !work.canonicalWorkId || estimate?.status !== "Approved" || !currentCycle) return;
+    let active = true;
+    const refresh = () => { void fetch(approvalEndpoint, { cache: "no-store" }).then(async (response) => {
+      const body = await response.json();
+      if (!response.ok) throw Error(body.error ?? "Approval status unavailable");
+      return body.result as ApprovalState;
+    }).then((result) => { if (active) { setApprovalState({ ...result, localKey: approvalKey }); setApprovalError(""); } })
+      .catch((error) => { if (active) { setApprovalState(null); setApprovalError(String(error.message)); } }); };
+    refresh();
+    window.addEventListener("focus", refresh);
+    return () => { active = false; window.removeEventListener("focus", refresh); };
+  }, [approvalEndpoint, approvalKey, hosted, work.canonicalWorkId, estimate?.status, currentCycle]);
+
+  async function decideApproval(action: "request" | "approve" | "reject") {
+    setApprovalBusy(true); setApprovalError("");
+    try {
+      const response = await fetch("/api/d5o-hosted/service-approval", { method: "POST",
+        headers: { "Content-Type": "application/json" }, body: JSON.stringify({
+          workspace: work.workspace, parentPresentationId: work.id, requestId: request.id,
+          action, commandId: crypto.randomUUID() }) });
+      const body = await response.json();
+      if (!response.ok) throw Error(body.error ?? "Approval decision failed");
+      const refreshed = await fetch(approvalEndpoint, { cache: "no-store" });
+      const state = await refreshed.json();
+      if (!refreshed.ok) throw Error(state.error ?? "Approval status unavailable");
+      setApprovalState({ ...state.result, localKey: approvalKey });
+    } catch (error) { setApprovalError(error instanceof Error ? error.message : "Approval decision failed"); }
+    finally { setApprovalBusy(false); }
+  }
 
   function addLine(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = event.currentTarget, data = new FormData(form), rateId = field(data, "rateId");
@@ -53,6 +92,13 @@ export function ServicePricingPanel({ work, request, hosted, busy, focused = fal
     {request.coverage === "Partially covered" ? <p>Price only the uncovered scope. The agreement remains partially applicable; the estimate and customer decision do not reclassify it as Covered.</p> : null}
     {!policy ? <p>No active published pricing policy is available. A System Administrator must configure and activate one in Develop.</p> : <p>{policy.name} v{policy.version} · {policy.currency} · effective {policy.effectiveFrom}</p>}
     {request.serviceAuthorization ? <p>Customer authorization recorded: estimate r{request.serviceAuthorization.estimateRevision} · {formatMinor(request.serviceAuthorization.amountMinor, request.serviceAuthorization.currency)} · {request.serviceAuthorization.customerParty} · source {request.serviceAuthorization.source}{authorizationCurrent ? "" : " · historical, reassessment required"}</p> : null}
+    {hosted && work.canonicalWorkId && estimate?.status === "Approved" && currentCycle ? <div className={style.row}>
+      <b>Tenant service approval: {currentApprovalState?.status ?? "checking"}</b>
+      {currentApprovalState ? <span>{currentApprovalState.approvalRequired ? "Additional approval required" : "No additional threshold approval"} · policy version {currentApprovalState.configurationVersionId} · {currentApprovalState.currency ?? "USD"} {currentApprovalState.thresholdMinor === undefined ? "legacy" : formatMinor(currentApprovalState.thresholdMinor, "USD")}</span> : null}
+      {currentApprovalState?.canRequest ? <button type="button" disabled={busy || approvalBusy} onClick={() => void decideApproval("request")}>Request additional approval</button> : null}
+      {currentApprovalState?.canDecide ? <><button type="button" disabled={busy || approvalBusy} onClick={() => void decideApproval("approve")}>Approve service threshold</button><button type="button" disabled={busy || approvalBusy} onClick={() => void decideApproval("reject")}>Reject service threshold</button></> : null}
+      {approvalError ? <small role="alert">{approvalError}</small> : null}
+    </div> : null}
     {estimate ? <div className={style.row}><b>Saved estimate r{estimate.revision} · {estimate.status}</b><span>{formatMinor(estimate.evaluation.proposedPriceMinor, estimate.evaluation.currency)} · included-cost margin {estimate.evaluation.marginPercent?.toFixed(1) ?? "unknown"}% · policy {estimate.policySnapshot.id} v{estimate.policySnapshot.version}</span>{estimate.evaluation.issues.map((issue, index) => <small key={`${issue.code}-${index}`}>{issue.message} Next: {issue.action}</small>)}</div> : null}
     {policy && priceable ? <>
       <form className={style.form} onSubmit={addLine}><b>Build a sourced cost basis</b><label>Cost category<select name="category">{(work.canonicalWorkId ? categories.filter((item) => item === "labor") : categories).map((item) => <option key={item}>{item}</option>)}</select></label><label>Work performed or supplied<input name="description" required /></label><label>Quantity or hours<input name="quantity" type="number" min="0.001" step="0.001" required /></label><label>Unit<input name="unit" placeholder="hour, each, month" required /></label><label>Catalog rate ID<input name="rateId" list={`service-rates-${request.id}`} placeholder="Choose an applicable published rate" required={!!work.canonicalWorkId} /></label><datalist id={`service-rates-${request.id}`}>{policy.rates.map((rate) => <option key={`${rate.id}-${rate.scope.kind}`} value={rate.id}>{rate.label} · {rate.unit} · {rate.scope.kind}</option>)}</datalist>{!work.canonicalWorkId ? <label>Manual quoted unit cost<input name="manualRate" placeholder={`Amount in ${policy.currency}; leave blank for catalog rate`} /></label> : null}<label>Rate or quote source<input name="source" required /></label><label>Quantity / cost assumption<input name="assumption" required /></label><button type="submit" disabled={busy || (!!work.canonicalWorkId && lines.length >= 1)}>Add cost line</button></form>
@@ -63,6 +109,6 @@ export function ServicePricingPanel({ work, request, hosted, busy, focused = fal
     </> : null}
     {estimate?.status === "Draft" && currentCycle ? <button type="button" disabled={busy || !!estimate.evaluation.issues.length} onClick={() => void onCommand({ action: "submit-service-pricing", requestId: request.id, estimateRevision: estimate.revision })}>Submit exact revision for pricing review</button> : null}
     {estimate?.status === "Pricing review" && currentCycle ? <><form className={style.form} onSubmit={(event) => void record(event, "approve-service-pricing")}><label>Independent pricing approval basis<input name="note" required /></label><button disabled={busy}>Approve priced service</button></form><form className={style.form} onSubmit={(event) => void record(event, "return-service-pricing")}><label>Required correction<input name="note" required /></label><button disabled={busy}>Return for correction</button></form></> : null}
-    {estimate?.status === "Approved" && currentCycle && !authorizationCurrent ? <form className={style.form} onSubmit={(event) => void record(event, "record-service-authorization")}><label>External customer authority / party<input name="customerParty" required /></label>{work.canonicalWorkId && hosted ? <CustomerDecisionEvidence workspace={work.workspace} workId={work.id} purpose="service-authorization" scopeId={request.id} evidenceId={authorizationEvidenceId} onEvidence={setAuthorizationEvidenceId} /> : <label>Customer approval source / document<input name="source" required /></label>}<label>Customer organization<input name="customerOrganization" required /></label><label>Representative role<input name="customerRole" required /></label><label>Stated authority<input name="authorityBasis" required /></label><label>Conditions<input name="conditions" /></label><label>Exclusions<input name="exclusions" /></label><label>Internal recording rationale<input name="note" required /></label><button disabled={busy || (!!work.canonicalWorkId && !authorizationEvidenceId)}>Record exact customer authorization</button></form> : null}
+    {estimate?.status === "Approved" && currentCycle && !authorizationCurrent ? <form className={style.form} onSubmit={(event) => void record(event, "record-service-authorization")}><label>External customer authority / party<input name="customerParty" required /></label>{work.canonicalWorkId && hosted ? <CustomerDecisionEvidence workspace={work.workspace} workId={work.id} purpose="service-authorization" scopeId={request.id} evidenceId={authorizationEvidenceId} onEvidence={setAuthorizationEvidenceId} /> : <label>Customer approval source / document<input name="source" required /></label>}<label>Customer organization<input name="customerOrganization" required /></label><label>Representative role<input name="customerRole" required /></label><label>Stated authority<input name="authorityBasis" required /></label><label>Conditions<input name="conditions" /></label><label>Exclusions<input name="exclusions" /></label><label>Internal recording rationale<input name="note" required /></label><button disabled={busy || (!!work.canonicalWorkId && !authorizationEvidenceId) || (hosted && !!work.canonicalWorkId && !currentApprovalState?.canAuthorize)}>Record exact customer authorization</button></form> : null}
   </details>;
 }

@@ -1,5 +1,9 @@
 # Administration configuration release plan
 
+## Phase 1B continuation
+
+The local Phase 1B branch prepares the connected authorization/job database guard and passes its focused A/B command suite. Release remains on hold pending the historical M1 regressions, full pilot browser journey, staging migration/rollback review and production authorization. See [Phase 1B release recommendation](D5O_PHASE1B_RELEASE_RECOMMENDATION.md). The production readiness settings below remain separate and unchanged.
+
 No production deployment, hosted migration, push or merge is authorized in this package. The local migration is forward-only and retains existing hosted versions and work pins.
 
 Before release, qualify the service approval command as a mandatory boundary in the connected service workflow; verify no downstream transition bypasses pending or rejected decisions. The disposable two-tenant suite and authenticated desktop/mobile capture are complete. Run the remaining Rybex/Rotork configuration and six-phase regressions. Resolve the missing historical `RUN-MANIFEST.json` through isolated test setup, without committing credentials or generated state.

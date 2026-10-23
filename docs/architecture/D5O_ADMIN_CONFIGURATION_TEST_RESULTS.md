@@ -1,5 +1,9 @@
 # D5O administration/configuration Phase 1 test results
 
+## Phase 1B continuation
+
+The connected service bypass is closed in the local Phase 1B migration and 12/12 targeted connected checks passed, including A/B authorization and job creation with different thresholds. The original Phase 1 test result below is historical evidence. See [Phase 1B regression results](D5O_PHASE1B_REGRESSION_RESULTS.md) for the new result and the still-blocked legacy M1 and full pilot journey tests. Neither Phase 1 nor Phase 1B is fully QUALIFIED for release.
+
 ## Result: PARTIAL
 
 The final focused disposable run passed **18/18** checks with no setup error and verified cleanup. See [sanitized two-tenant results](evidence/phase1-two-tenant-results.json). It applied the committed local migration set to a unique loopback Supabase project, used separate fictional Auth administrators and vendor identity, and stopped and removed the project, network and containers. No production migration, data or deployment changed.
@@ -32,4 +36,4 @@ The latest run's UI captures are [Rybex desktop](evidence/phase1-admin-ui/a-1440
 
 ## Qualification limit
 
-The new service decision command is authoritative for its own request and approval record, but the existing connected service authorization and service-job commands do not yet require that record. A caller can still use that older route without entering the new approval command. The connected six-phase journey, full privileged RPC inventory, all Rybex/Rotork production pilot regressions, vendor administrator provisioning and end-to-end production readiness are unqualified. Therefore this package is **PARTIAL**, not Phase 1 QUALIFIED.
+At Phase 1 delivery, the new service decision command was authoritative for its own request and approval record, but the older connected service authorization and service-job commands did not yet require that record. Phase 1B now guards those connected commands in the local migration. The connected six-phase journey and historical M1 regressions remain blocked as recorded in the [Phase 1B regression results](D5O_PHASE1B_REGRESSION_RESULTS.md). Vendor administrator provisioning and end-to-end production readiness remain outside this qualification. Both packages remain **PARTIAL** for release.

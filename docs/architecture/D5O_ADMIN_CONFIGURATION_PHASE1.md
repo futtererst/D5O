@@ -1,5 +1,9 @@
 # D5O administration and configuration: Phase 1
 
+## Phase 1B follow-up (local branch)
+
+The connected service bypass described below was corrected in the local Phase 1B branch. Same-signature database wrappers now require the hosted policy decision before connected customer authorization and job creation, including the older service-role related-work job path. The approved request is bound to request cycle, scope, estimate revision, amount, currency and the parent Work's version pin. The original Work-level approval command and ledger remain in use. See [Phase 1B enforcement](D5O_PHASE1B_APPROVAL_ENFORCEMENT.md) and [connected results](D5O_PHASE1B_TWO_TENANT_RESULTS.md). This follow-up does not retroactively change the Phase 1 result or qualify the full pilot journey; Phase 1B remains PARTIAL while the historical M1 regressions and browser journey are blocked.
+
 ## Implementation boundary
 
 The hosted `d5o_hosted.configuration_versions` lineage is the source for new service-work policy. The existing customer configuration console edits a draft through `d5o_hosted_configuration_admin_command_v1`; publication validates and freezes the candidate, and activation changes the default for future Work. Work records retain their exact version pin. The older `config_*` tables and browser prototype remain historical compatibility paths. No rows were migrated or deleted in this package.

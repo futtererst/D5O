@@ -1,0 +1,19 @@
+# Phase 1B connected service approval enforcement
+
+## Decision and boundary
+
+The hosted tenant configuration version pinned to the **parent Work Record** supplies `serviceWorkApproval`. Connected service requests are scoped beneath that parent. The new adapter uses the existing `service_approval_requests`, `service_approval_events` and `service_approval_receipts` ledger; it does not write to a second policy store. A migration adds a stable approval ID and connected request identity to the ledger while retaining historical Work-level decisions and events.
+
+For a reviewed partial or chargeable request, the database derives the current amount and currency from the **approved service estimate**, then applies the existing `amountMinor > thresholdMinor` rule. USD is required and there is no conversion. Covered service obligations have zero uncovered price and no additional threshold approval. A historical pinned version with no hosted service policy continues under the earlier pilot customer pricing/evidence controls; it is not silently repinned. New published policy versions use the hosted setting and fail closed on malformed or unavailable policy.
+
+The decision binds parent Work and request ID. Its scope fingerprint includes request cycle, asset and agreement, title and description, coverage, approved estimate revision and input, amount, and currency. A changed amount, estimate, request cycle or material scope cannot reuse a prior approval; a new scoped decision preserves the earlier decision. Approval is requested only after an approved estimate; an independent active member with the configured authority role decides it. The command records actor, member, tenant, pinned version, decision and idempotent receipt. A revoked approver or changed role invalidates an approval for a later protected transition without rewriting its historical event.
+
+## Protected commands
+
+The existing pricing authorization and service job RPCs keep their signatures and prior validations. Their old implementations are renamed and lose direct `authenticated`/`service_role` execution. Same-signature wrappers take the workspace advisory transaction lock, resolve canonical Work, and call `require_connected_service_approval_v1` before the old command in the **same database transaction**. The service-role `create_related_work_v1` fallback is wrapped for `create-job` and its renamed implementation is likewise non-callable directly. Existing receipt, optimistic revision, customer evidence, duplicate-visit and job rights checks still execute in the prior commands. Draft estimates and pricing review are unaffected.
+
+The read command returns authoritative status (`legacy`, `not_required`, `required`, `pending`, `approved`, `rejected`, `stale`) and permission flags. The Operate pricing panel shows the pinned version and threshold, exposes permitted request/decision actions, and disables customer authorization while the server says it is blocked. The route only forwards authenticated requests; all tenant, member, Work and role checks are in the database. No production allowlist changes were made.
+
+## Migration and rollback
+
+`20261023115306_d5o_phase1b_connected_service_approval.sql` is additive for ledger rows, then atomically renames and replaces three command entry points. It must be applied after Phase 1 migration `20261023111641_d5o_service_approval_policy_phase1.sql`. It was applied only in disposable loopback Supabase projects. Before a hosted rollout, review migration ordering, grants and existing approval rows. Rollback of application code alone is insufficient once the wrappers are deployed: a controlled follow-on database migration would restore the prior function names/grants while retaining ledger and audit history. That rollback would reopen the threshold bypass, so operations must hold new service authorization while it is active. No production migration, deployment, push or merge occurred.
