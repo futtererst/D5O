@@ -29,6 +29,7 @@ import { seededWorkIds, type CatalogWorkRecord, type SharedWorkCatalog } from ".
 import { downloadPrototypeSnapshot } from "./prototype-state-export";
 import { lifecycleProfiles, requirementLabel, roleLabel, transitionsAt } from "./lifecycle-profiles";
 import { DiscoverWorkspace } from "./DiscoverWorkspace";
+import { isDevelopTaskFocus, parseDevelopRoute, writeDevelopRoute, type DevelopTaskFocus } from "./develop-route";
 import type { PursuitCommand } from "./pursuit-control";
 import type { CommercialCommand } from "@/lib/d5o/prototype-work/commercial-command";
 import type { DefineCommand } from "@/lib/d5o/prototype-work/define-command";
@@ -238,6 +239,8 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
   const presentation = presentationForRole(actorRole, hostedPreview);
   const permittedPhases = presentation.phases.map((phase) => (phase[0].toUpperCase() + phase.slice(1)) as WorkPhase);
   const [screen, setScreen] = useState<Screen>(hostedPreview ? "my-work" : "home");
+  const [developDestination, setDevelopDestination] = useState<"pipeline" | "workspace" | "task">("pipeline");
+  const [invalidDevelopRoute, setInvalidDevelopRoute] = useState(false);
   const [urlRestored, setUrlRestored] = useState(false);
   const [unavailableRecordId, setUnavailableRecordId] = useState<string | null>(null);
   const [recordReturn, setRecordReturn] = useState<Exclude<Screen, "record">>("portfolio");
@@ -667,8 +670,12 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       const params = new URLSearchParams(window.location.search);
       const recordId = params.get("record");
       const view = params.get("view");
+      const developRoute = view === "develop" ? parseDevelopRoute(params) : { destination: "pipeline" as const };
+      setDevelopDestination(developRoute.destination === "invalid-task" ? "task" : developRoute.destination);
+      setInvalidDevelopRoute(view === "develop" && developRoute.destination === "invalid-task");
       const section = params.get("section");
-      setTaskFocus(params.get("focus"));
+      setTaskFocus(view === "develop" ? developRoute.destination === "task" ? developRoute.focus : null : params.get("focus"));
+      if (view === "develop") setDiscoverEntry(developRoute.destination === "task" ? developRoute.focus : null);
       setTaskPackageId(view === "record" ? params.get("package") : null);
       const returnView = params.get("from") as Screen | null;
       if (view === "record" && returnView && returnView !== "record" && durableScreens.has(returnView)) setRecordReturn(returnView);
@@ -677,11 +684,11 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       if (params.has("portfolioQ")) setPortfolioSearch(params.get("portfolioQ") ?? "");
       if (params.has("crewWeek") && Number.isInteger(Number(params.get("crewWeek")))) setCrewWeek(Number(params.get("crewWeek")));
       setTaskRequestId(view === "record" ? params.get("request") : null);
-      setTaskRevision(params.has("sourceRevision") ? Number(params.get("sourceRevision")) : null);
-      if ((view === "develop" || view === "discover") && ["pricing", "proposal", "solution-prep", "solution-review", "pricing-prep", "proposal-prep", "customer-submission-prep", "rom-budget-ack", "rom-design-authorization", "design-spend-authority-prep", "design-spend-authority-review", "design-spend-commitment-prep", "design-spend-commitment-review", "design-handoff-receive", "design-handoff-correction", "pursuit-prep", "pursuit-review", "define-handoff-prep", "define-handoff-receive"].includes(params.get("focus") ?? "")) setDiscoverEntry(params.get("focus") as typeof discoverEntry);
+      setTaskRevision(view === "develop" ? developRoute.destination === "task" ? developRoute.revision : null : params.has("sourceRevision") ? Number(params.get("sourceRevision")) : null);
+      if (view === "discover" && ["pursuit-prep", "pursuit-review", "define-handoff-prep", "define-handoff-receive"].includes(params.get("focus") ?? "")) setDiscoverEntry(params.get("focus") as typeof discoverEntry);
       if (view === "define" && ["commercial", "delivery", "define-prep", "develop-handoff-prep", "develop-handoff-receive"].includes(params.get("focus") ?? "")) setDefineReviewEntry(params.get("focus") as typeof defineReviewEntry);
-      if (recordId && work.some((item) => item.id === recordId && item.workspace === activeWorkspace)) { setSelectedId(recordId); setUnavailableRecordId(null); }
-      else if (recordId && ["record", "define", "develop"].includes(view ?? "")) setUnavailableRecordId(recordId);
+      if (recordId && !(view === "develop" && developRoute.destination === "pipeline") && work.some((item) => item.id === recordId && item.workspace === activeWorkspace)) { setSelectedId(recordId); setUnavailableRecordId(null); }
+      else if (recordId && !(view === "develop" && developRoute.destination === "pipeline") && ["record", "define", "develop"].includes(view ?? "")) setUnavailableRecordId(recordId);
       else setUnavailableRecordId(null);
       if (view && durableScreens.has(view as Screen)) {
         const linkedReview = work.find((item) => item.id === recordId && item.workspace === activeWorkspace);
@@ -692,7 +699,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
           { authorityRole?: string; submittedByActorId?: string } | undefined;
         // A reviewer may open the exact focused task even when the broader phase is absent
         // from their navigation. The typed command still enforces current authority and source.
-        const eligibleFocusedReview = view === "develop" && (focus === "pricing" || focus === "proposal" || focus === "solution-review") &&
+        const eligibleFocusedReview = view === "develop" && developRoute.destination === "task" && (focus === "pricing" || focus === "proposal" || focus === "solution-review") &&
           Boolean((focus === "solution-review" ? linkedReview?.develop?.review?.approverRole : review?.authorityRole) === actorRole &&
             review?.submittedByActorId !== actorId);
         const eligiblePursuitReviewer = view === "discover" && focus === "pursuit-review" && linkedReview?.discovery?.pursuitControl?.status === "submitted" && linkedReview.discovery.pursuitControl.submission?.actorId !== actorId && ["admin", "billing_commercial_lead", "business_development_lead"].includes(actorRole ?? "");
@@ -704,11 +711,11 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
           linkedReview?.definition?.developHandoff?.status === "submitted" &&
           linkedReview.definition.developHandoff.submittedByActorId !== actorId &&
           ["admin", "operations_leader", "project_manager"].includes(actorRole ?? "");
-        const eligibleDesignReceiver = view === "develop" && focus === "design-handoff-receive" &&
+        const eligibleDesignReceiver = view === "develop" && developRoute.destination === "task" && focus === "design-handoff-receive" &&
           Boolean(linkedReview?.canonicalWorkId) && actorRole === "operations_leader";
-        const eligibleDesignSpendReviewer = view === "develop" && ["design-spend-authority-review", "design-spend-commitment-review"].includes(focus ?? "") &&
+        const eligibleDesignSpendReviewer = view === "develop" && developRoute.destination === "task" && ["design-spend-authority-review", "design-spend-commitment-review"].includes(focus ?? "") &&
           Boolean(linkedReview?.canonicalWorkId) && actorRole === linkedReview?.discovery?.estimate.detailed?.policySnapshot.proposalApproverRole;
-        const eligibleRomAuthority = view === "develop" && focus === "rom-design-authorization" &&
+        const eligibleRomAuthority = view === "develop" && developRoute.destination === "task" && focus === "rom-design-authorization" &&
           Boolean(linkedReview?.canonicalWorkId) && actorRole === linkedReview?.discovery?.estimate.detailed?.policySnapshot.proposalApproverRole;
         const prepRevision = focus === "pursuit-prep" || focus === "define-handoff-prep" ? linkedReview?.discovery?.pursuitControl?.revision
           : focus === "define-prep" || focus === "develop-handoff-prep" ? linkedReview?.definition?.revision ?? (focus === "define-prep" ? 1 : undefined)
@@ -730,7 +737,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
           : focus === "rom-budget-ack" ? Boolean(linkedReview?.discovery?.estimate.status === "Approved" && linkedReview.discovery.proposal.status === "Submitted" && linkedReview.discovery.estimate.detailed?.input.estimateMaturity === "ROM")
           : focus === "design-handoff-correction" ? Boolean(linkedReview?.discovery?.outcome === "Won" && linkedReview.discovery.designHandoff?.status === "returned" && actorRole === "project_manager")
           : true;
-        setStalePreparationLink(["pursuit-prep", "define-handoff-prep", "define-prep", "develop-handoff-prep", "solution-prep", "pricing-prep", "proposal-prep", "customer-submission-prep", "rom-budget-ack", "design-handoff-correction"].includes(focus ?? "") && (prepRevision === undefined || Number(params.get("sourceRevision")) !== prepRevision || !linkedReview || !prepCurrent));
+        setStalePreparationLink((view !== "develop" || developRoute.destination === "task") && ["pursuit-prep", "define-handoff-prep", "define-prep", "develop-handoff-prep", "solution-prep", "pricing-prep", "proposal-prep", "customer-submission-prep", "rom-budget-ack", "design-handoff-correction"].includes(focus ?? "") && (prepRevision === undefined || Number(params.get("sourceRevision")) !== prepRevision || !linkedReview || !prepCurrent));
         if (canPresentSurface(presentation, view as Screen) || eligibleFocusedReview || eligiblePursuitReviewer || eligibleDiscoverReceiver || eligibleDevelopReceiver || eligibleDesignReceiver || eligibleRomAuthority || eligibleDesignSpendReviewer) setScreen(view as Screen);
         else { setScreen("my-work"); setNotice("This view is outside your role workspace. Choose an available task below."); }
       }
@@ -753,21 +760,31 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
   useEffect(() => {
     if (!urlRestored) return;
     const url = new URL(window.location.href);
+    // Keep a malformed exact-task link intact for diagnosis. Never replace its
+    // missing identity with the Work remembered from another destination.
+    if (screen === "develop" && developDestination === "task" && invalidDevelopRoute) return;
     url.searchParams.set("view", screen);
-    if (screen === "design-queue" || screen === "discover" && !taskFocus && (url.searchParams.get("discoverPanel") === "list" || !url.searchParams.has("record"))) url.searchParams.delete("record");
+    if (screen === "design-queue" || screen === "discover" && !taskFocus && (url.searchParams.get("discoverPanel") === "list" || !url.searchParams.has("record")) || screen === "develop" && developDestination === "pipeline") url.searchParams.delete("record");
     else if (screen === "record" && unavailableRecordId) url.searchParams.set("record", unavailableRecordId);
     else if (selected) url.searchParams.set("record", selected.id);
+    if (screen === "develop" && developDestination === "task" && selected && isDevelopTaskFocus(taskFocus) && taskRevision !== null)
+      writeDevelopRoute(url.searchParams, { destination: "task", recordId: selected.id, focus: taskFocus, revision: taskRevision });
+    else if (screen === "develop" && developDestination === "workspace" && selected)
+      writeDevelopRoute(url.searchParams, { destination: "workspace", recordId: selected.id });
+    else if (screen === "develop" && developDestination === "pipeline")
+      writeDevelopRoute(url.searchParams, { destination: "pipeline" });
+    else url.searchParams.delete("developPanel");
     if (screen === "record") { url.searchParams.set("section", tab); url.searchParams.set("from", recordReturn); if (taskPackageId) url.searchParams.set("package", taskPackageId); }
     else { url.searchParams.delete("section"); if (!((screen === "discover" || screen === "develop" || screen === "define") && taskFocus)) for (const key of ["focus", "decision", "sourceRevision", "decisionRevision", "package", "designTab", "from", "release", "turnover", "documentKind", "deployRevision", "request"]) url.searchParams.delete(key); }
     if (screen === "portfolio" || screen === "record" && recordReturn === "portfolio") { url.searchParams.set("portfolioFilter", portfolioFilter); if (portfolioSearch) url.searchParams.set("portfolioQ", portfolioSearch); else url.searchParams.delete("portfolioQ"); }
     if (screen === "crew" || screen === "record" && recordReturn === "crew") { if (crewWeek === null) url.searchParams.delete("crewWeek"); else url.searchParams.set("crewWeek", String(crewWeek)); }
     window.history.replaceState(window.history.state, "", url);
-  }, [screen, selected, tab, urlRestored, unavailableRecordId, taskFocus, taskPackageId, crewWeek, recordReturn, portfolioFilter, portfolioSearch]);
+  }, [screen, selected, tab, urlRestored, unavailableRecordId, taskFocus, taskRevision, taskPackageId, crewWeek, recordReturn, portfolioFilter, portfolioSearch, developDestination, invalidDevelopRoute]);
   const selectedPhaseConfig = selected ? resolvePublishedPhaseConfiguration(configurationInventory, activeWorkspace, selected.type, selected as WorkRecord) : null;
   const linkedPhaseTask = (screen === "define" && ["commercial", "delivery", "develop-handoff-receive"].includes(taskFocus ?? "")) ||
     (screen === "develop" && ["pricing", "proposal", "solution-review", "design-handoff-receive"].includes(taskFocus ?? "")) ||
     (screen === "discover" && ["define-handoff-receive", "pursuit-review"].includes(taskFocus ?? ""));
-  const stalePhaseTask = stalePreparationLink || linkedPhaseTask && (!selected || !Number.isInteger(taskRevision) ||
+  const stalePhaseTask = invalidDevelopRoute || stalePreparationLink || linkedPhaseTask && (!selected || !Number.isInteger(taskRevision) ||
     (taskFocus === "pursuit-review" ? selected.discovery?.pursuitControl?.status !== "submitted" || selected.discovery.pursuitControl.revision !== taskRevision || selected.discovery.pursuitControl.submission?.actorId === actorId || !["admin", "billing_commercial_lead", "business_development_lead"].includes(actorRole ?? "")
       : taskFocus === "define-handoff-receive" ? selected.discovery?.pursuitControl?.status !== "qualified" ||
       selected.discovery.pursuitControl.revision !== taskRevision || selected.discovery.pursuitControl.handoff?.status !== "submitted" ||
@@ -783,16 +800,28 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
         selected.develop.revision !== taskRevision || selected.develop.review.revision !== taskRevision ||
         selected.develop.review.approverRole !== actorRole || selected.develop.review.submittedByActorId === actorId
       : taskFocus === "pricing" ? selected.discovery?.estimate.status !== "Pricing review" ||
-        selected.discovery.estimate.revision !== taskRevision || selected.discovery.estimate.review?.revision !== taskRevision
+        selected.discovery.estimate.revision !== taskRevision || selected.discovery.estimate.review?.revision !== taskRevision ||
+        hostedPreview && (!["admin", "operations_leader"].includes(actorRole ?? "") ||
+          Boolean(selected.discovery.estimate.detailed && selected.discovery.estimate.detailed.policySnapshot.pricingApproverRole !== actorRole) ||
+          selected.discovery.estimate.review?.submittedByActorId === actorId)
         : selected.discovery?.proposal.status !== "Internal review" ||
-          selected.discovery.proposal.package?.revision !== taskRevision || selected.discovery.proposal.review?.revision !== taskRevision));
+          selected.discovery.proposal.package?.revision !== taskRevision || selected.discovery.proposal.review?.revision !== taskRevision ||
+          hostedPreview && (!["admin", "operations_leader"].includes(actorRole ?? "") ||
+            Boolean(selected.discovery.estimate.detailed && selected.discovery.estimate.detailed.policySnapshot.proposalApproverRole !== actorRole) ||
+            Boolean(selected.discovery.proposal.review?.authorityRole && selected.discovery.proposal.review.authorityRole !== actorRole) ||
+            selected.discovery.proposal.review?.submittedByActorId === actorId)));
   const myActions = visibleWork.filter((item) => item.status !== "complete").sort((a, b) => compareActionPriority(a, b) || a.title.localeCompare(b.title));
 
   function retainNavigationHistory() { if (urlRestored) window.history.pushState(window.history.state, "", window.location.href); }
-  function go(next: Screen, entry?: { myWork?: "all" | "mine" | "pricing" | "proposal" | "definition"; crew?: "coverage" | "attendance" }) {
+  function go(next: Screen, entry?: { myWork?: "all" | "mine" | "pricing" | "proposal" | "definition"; crew?: "coverage" | "attendance"; develop?: "pipeline" | "workspace" | "task"; focus?: DevelopTaskFocus; revision?: number }) {
     if (!canPresentSurface(presentation, next)) { setNotice("This view is outside your role workspace."); return; }
-    if (next !== screen) retainNavigationHistory();
+    if (next !== screen || next === "develop" && developDestination !== (entry?.develop ?? "pipeline")) retainNavigationHistory();
+    if (next === "develop") setDevelopDestination(entry?.develop ?? "pipeline");
+    if (next === "develop") setDiscoverEntry(entry?.develop === "task" ? entry.focus ?? null : null);
+    else if (screen === "develop") setDiscoverEntry(null);
     if (next !== "record") { setTaskFocus(null); setTaskPackageId(null); setTaskRequestId(null); setTaskRevision(null); setStalePreparationLink(false); }
+    setInvalidDevelopRoute(false);
+    if (next === "develop" && entry?.develop === "task") { setTaskFocus(entry.focus ?? null); setTaskRevision(entry.revision ?? null); }
     setNotice(""); setScreen(next); setMobileMenuOpen(false);
     if (next === "discover") {
       const url = new URL(window.location.href);
@@ -842,7 +871,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
   function openJourneyPhase(item: WorkRecord, phase: WorkPhase) {
     setSelectedId(item.id);
     if (phase === "Discover" || phase === "Define") { openWorkspacePhase(phase.toLowerCase() as "discover" | "define", item as Work); return; }
-    if (phase === "Develop" && item.discovery) { setDiscoverEntry(null); go("develop"); return; }
+    if (phase === "Develop" && item.discovery) { setDiscoverEntry(null); go("develop", { develop: "workspace" }); return; }
     setTab(phase);
     go("record");
   }
@@ -858,6 +887,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       window.history.replaceState(window.history.state, "", url);
       return;
     }
+    if (phase === "Develop") { setDiscoverEntry(null); go("develop", { develop: "pipeline" }); return; }
     if (selected) { openJourneyPhase(selected as WorkRecord, phase); return; }
     go("portfolio");
     setNotice(`Select a Work Record to view ${phase}.`);
@@ -1330,7 +1360,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
     } catch (error) { setNotice(error instanceof Error ? error.message : "The prototype snapshot could not be downloaded."); }
   }
   const showSelectedWorkHeader = (!hostedPreview || workReadStatus === "ready" && loadedWorkScope === `${initialWorkspace}:${actorId}`) &&
-    Boolean(selected && !taskFocus && (screen === "record" || screen === "define" && !defineReviewEntry || screen === "develop" && !discoverEntry));
+    Boolean(selected && !taskFocus && (screen === "record" || screen === "define" && !defineReviewEntry || screen === "develop" && developDestination === "workspace" && !discoverEntry));
 
   return <main ref={appRootRef} className={`d5o-full-app ${visualSystem.root}`} onFocusCapture={() => requestAnimationFrame(keepFocusedFieldVisible)} style={{ "--d5o-accent": accent, "--d5o-dark": workspaceDark, "--d5o-on-accent": contrastText(accent), "--d5o-on-dark": contrastText(workspaceDark), "--d5o-accent-light": contrastText(workspaceDark) === "#ffffff" ? "color-mix(in srgb, var(--d5o-accent) 54%, #fff)" : previewAccent(accent, workspaceDark) } as CSSProperties}>
     <aside className="d5o-full-sidebar d5o-nav-rail" aria-label="Primary navigation" inert={mobileMenuOpen || detailsOpen}>
@@ -1387,8 +1417,8 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
         })}
         <button type="button" className="d5o-outline" onClick={() => { sessionStorage.removeItem(defineRecoveryKey(activeWorkspace, actorId)); setDefineRecovery([]); }}>Discard retained copy after reconciliation</button>
       </section> : null}
-      <div className={`d5o-surface-host${hostedPreview && taskFocus && screen !== "my-work" ? " d5o-has-task-inbox" : ""}`}>
-      {hostedPreview && taskFocus && screen !== "my-work" ? <TaskInboxRail workspace={activeWorkspace} currentRecordId={selected?.id} currentFocus={taskFocus} currentPackageId={taskPackageId} /> : null}
+      <div className={`d5o-surface-host${hostedPreview && taskFocus && !stalePhaseTask && !unavailableRecordId && screen !== "my-work" ? " d5o-has-task-inbox" : ""}`}>
+      {hostedPreview && taskFocus && !stalePhaseTask && !unavailableRecordId && screen !== "my-work" ? <TaskInboxRail workspace={activeWorkspace} currentRecordId={selected?.id} currentFocus={taskFocus} currentPackageId={taskPackageId} /> : null}
       <div className="d5o-task-main">
       {showSelectedWorkHeader && selected ? <header className="d5o-selected-work-header"><div className="d5o-selected-work-crumb"><button type="button" onClick={returnFromSelectedWork}>← {screen === "record" ? operatingNavigation.find((item) => item.screen === recordReturn)?.label ?? "Work" : screen === "define" ? "Discover" : screen === "develop" ? "Define" : "Dashboard"}</button><span aria-hidden="true">/</span><span>Work Record</span></div><div className="d5o-selected-work-main"><div><p>SELECTED WORK</p><h1>{selected.title}</h1><span className="d5o-selected-work-meta">{selected.customer} · {selected.site} · {selected.type}</span><details className="d5o-selected-work-details"><summary>Customer and site</summary><p>{selected.customer} · {selected.site} · {selected.type}</p></details></div><div className="d5o-selected-work-actions"><div className={`d5o-stage-badge ${selected.status}`}><small>Governed position</small><strong>{connectedWorkPosition(selected as WorkRecord)?.label ?? selected.stage}</strong></div>{screen === "record" ? <button ref={detailsTriggerRef} type="button" className="d5o-work-details-trigger" aria-haspopup="dialog" aria-expanded={detailsOpen} aria-controls="d5o-work-details-panel" onClick={() => { retainNavigationHistory(); setTab(detailTab); }}>Work details</button> : null}<WorkRecordSwitcher key={`${activeWorkspace}:${screen}`} placement="header" records={visibleWork} selected={selected} workspaceName={palette.name} currentUser={currentUserLabel} accent={accent} hostedWorkspace={hostedPreview ? activeWorkspace : undefined} onSelect={(item) => { retainNavigationHistory(); selectWorkRecord(item); }} onOverview={() => { setTab("Overview"); go("record"); }} /></div></div></header> : null}
       {hostedPreview && (workReadStatus !== "ready" || loadedWorkScope !== `${initialWorkspace}:${actorId}`) ? <section className="d5o-panel" role={workReadStatus === "failed" ? "alert" : "status"}>
@@ -1399,13 +1429,15 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       {screen === "discover" && !stalePhaseTask && !unavailableRecordId ? <DiscoverWorkspace visiblePhases={permittedPhases} workspaceKey={activeWorkspace} workspaceName={palette.name} hosted={hostedPreview} configurationInventory={configurationInventory} work={visibleWork as WorkRecord[]} commercialProfiles={commercialProfiles} actor={currentUserLabel} actorId={actorId ?? undefined} actorRole={actorRole} canEdit={canEditWork && sharedWorkRevision !== null} focusRecordId={selected?.discovery ? selected.id : undefined} reviewFocus={discoverEntry} onPhase={openJourneyPhase} onControl={(item, control) => { setSelectedId(item.id); setTab(control); go("record"); }} onBack={() => taskFocus ? go("my-work") : go("home")} onSelect={setSelectedId} onOpen={(item) => openRecord(item as Work)} onDefine={(item) => openWorkspacePhase("define", item as Work)} onPricingQueued={() => { pendingReviewQueue.current = "pricing"; setNotice("Saving the pricing review before opening its role queue."); }} onProposalQueued={() => { pendingReviewQueue.current = "proposal"; setNotice("Saving the proposal review before opening its role queue."); }} onCommercialCommand={executeCommercialCommand} onPursuitCommand={authoritativeCommands ? executePursuitCommand : undefined} onUpdate={(id, transform) => { pendingDiscoverSave.current = id; updateWork(id, (current) => transform(current as WorkRecord) as Work); }} onCreate={createDiscoverWork} onNotice={setNotice} /> : null}
       {screen === "define" && !stalePhaseTask && !unavailableRecordId ? <DefineWorkspace visiblePhases={permittedPhases} key={`${activeWorkspace}:${selected?.id ?? ""}:${defineRecoveryLoadEpoch}`} workspaceKey={activeWorkspace} workspaceName={palette.name} configurationInventory={configurationInventory} work={visibleWork as WorkRecord[]} focusRecordId={selected?.id} reviewFocus={defineReviewEntry} actorLabel={currentUserLabel} onReviewQueued={() => { pendingReviewQueue.current = "definition"; setNotice("Saving the definition review before opening its role queue."); }} onCommand={executeDefineCommand} onPhase={openJourneyPhase} onControl={(item, control) => { setSelectedId(item.id); setTab(control); go("record"); }} onBack={() => taskFocus ? go("my-work") : openWorkspacePhase("discover")} onSelect={setSelectedId} onOpen={(item) => openRecord(item as Work)} onUpdate={(id, transform) => updateWork(id, (current) => transform(current as WorkRecord) as Work)} onNotice={setNotice} /> : null}
       {screen === "develop" && !stalePhaseTask && !unavailableRecordId ? <DiscoverWorkspace
-        mode="develop" visiblePhases={permittedPhases} workspaceKey={activeWorkspace} workspaceName={palette.name} hosted={hostedPreview}
+        mode="develop" developDestination={developDestination} visiblePhases={permittedPhases} workspaceKey={activeWorkspace} workspaceName={palette.name} hosted={hostedPreview}
         configurationInventory={configurationInventory} work={visibleWork as WorkRecord[]}
         commercialProfiles={commercialProfiles} actor={currentUserLabel} actorId={actorId ?? undefined} actorRole={actorRole}
-        canEdit={canEditWork && sharedWorkRevision !== null} focusRecordId={selected?.id}
+        canEdit={canEditWork && sharedWorkRevision !== null} focusRecordId={developDestination === "pipeline" ? undefined : selected?.id}
         reviewFocus={discoverEntry} onPhase={openJourneyPhase}
         onControl={(item, control) => { setSelectedId(item.id); setTab(control); go("record"); }}
         onBack={() => taskFocus ? go("my-work") : openWorkspacePhase("define", selected)} onSelect={setSelectedId}
+        onDevelopSelect={(id) => { const item = visibleWork.find((candidate) => candidate.id === id); if (!item) return; if (item.discovery?.pursuitControl && item.definition?.status !== "Approved") { openWorkspacePhase("define", item); return; } sessionStorage.setItem(`d5o-develop-scroll:${activeWorkspace}`, String(window.scrollY)); setSelectedId(id); setDiscoverEntry(null); go("develop", { develop: "workspace" }); }}
+        onDevelopPipeline={() => { setDiscoverEntry(null); go("develop", { develop: "pipeline" }); requestAnimationFrame(() => { const saved = Number(sessionStorage.getItem(`d5o-develop-scroll:${activeWorkspace}`) ?? 0); if (Number.isFinite(saved)) window.scrollTo(0, saved); }); }}
         onOpen={(item) => openRecord(item as Work)}
         onDefine={(item) => openWorkspacePhase("define", item as Work)}
         onPolicyUpdated={synchronizePricingRevision}
@@ -1419,7 +1451,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       /> : null}
       {screen === "home" ? <OperationalHome workspaceName={palette.name} currentOwner={currentUserLabel} ownedIds={ownedWorkIds ?? undefined} actions={myActions} work={visibleWork} schedule={sharedSchedule.schedule} scheduleWeek={scheduleWeek} onOpenDecision={(item) => { setSelectedId(item.id); setTab(connectedWorkPosition(item as WorkRecord) ? "Overview" : getBlockers(item).length ? conditionTargetTab(item, getBlockers(item)) : "Readiness"); go("record"); }} onPortfolio={() => { setPortfolioFilter("all"); setPortfolioSearch(""); go("portfolio"); }} onConditions={() => { setPortfolioFilter("blocked"); setPortfolioSearch(""); go("portfolio"); }} onAssignedToYou={() => go("my-work", { myWork: "mine" })} onMyWork={() => go("my-work")} onCrewCoverage={() => go("crew", { crew: "coverage" })} onCrewAttendance={() => go("crew", { crew: "attendance" })} getBlockers={getBlockers} currentPosition={(item) => connectedWorkPosition(item as WorkRecord)} /> : null}
       {screen === "operate" ? <OperateBoard workspace={activeWorkspace} workspaceName={palette.name} work={visibleWork as WorkRecord[]} timezoneByWorkId={operateTimezones} onOpen={(id, section) => { const target = visibleWork.find((item) => item.id === id); if (!target) return; setSelectedId(id); setOperateFocus({ workId: id, section }); setTab("Operate"); go("record"); }} onBrowse={() => go("portfolio")} /> : null}
-      {screen === "my-work" ? <MyWorkBoard hostedWorkspace={hostedPreview ? activeWorkspace : undefined} workRecords={visibleWork as WorkRecord[]} actorId={actorId ?? undefined} actorRole={actorRole} onOperateCommand={executeOperateCommand} actions={myActions} currentOwner={currentUserLabel} initialFilter={myWorkEntry} onOpen={(item) => { const record = visibleWork.find((entry) => entry.id === item.id) ?? (item as Work & { source?: Work }).source ?? item; selectWorkRecord(record); setTab(connectedWorkPosition(record as WorkRecord) ? "Overview" : getDecisionContext(record).target); go("record"); }} onReviewPricing={(item) => { selectWorkRecord((item as Work & { source?: Work }).source ?? item); setDiscoverEntry("pricing"); go("develop"); }} onReviewProposal={(item) => { selectWorkRecord((item as Work & { source?: Work }).source ?? item); setDiscoverEntry("proposal"); go("develop"); }} onReviewDefinition={(item, role) => { selectWorkRecord((item as Work & { source?: Work }).source ?? item); setDefineReviewEntry(role); go("define"); }} getDecisionContext={getDecisionContext} /> : null}
+      {screen === "my-work" ? <MyWorkBoard hostedWorkspace={hostedPreview ? activeWorkspace : undefined} workRecords={visibleWork as WorkRecord[]} actorId={actorId ?? undefined} actorRole={actorRole} onOperateCommand={executeOperateCommand} actions={myActions} currentOwner={currentUserLabel} initialFilter={myWorkEntry} onOpen={(item) => { const record = visibleWork.find((entry) => entry.id === item.id) ?? (item as Work & { source?: Work }).source ?? item; selectWorkRecord(record); setTab(connectedWorkPosition(record as WorkRecord) ? "Overview" : getDecisionContext(record).target); go("record"); }} onReviewPricing={(item) => { selectWorkRecord((item as Work & { source?: Work }).source ?? item); go("develop", { develop: "task", focus: "pricing", revision: item.discovery?.estimate.revision }); }} onReviewProposal={(item) => { selectWorkRecord((item as Work & { source?: Work }).source ?? item); go("develop", { develop: "task", focus: "proposal", revision: item.discovery?.proposal?.package?.revision }); }} onReviewDefinition={(item, role) => { selectWorkRecord((item as Work & { source?: Work }).source ?? item); setDefineReviewEntry(role); go("define"); }} getDecisionContext={getDecisionContext} /> : null}
       {screen === "portfolio" ? <PortfolioBoard hostedPreview={hostedPreview} workspaceKey={activeWorkspace} work={operationalWork} scheduleAssignments={scheduleAssignments.filter((item) => item.week === scheduleWeek).map((item) => ({ ...item, week: 0 }))} search={portfolioSearch} setSearch={setPortfolioSearch} filter={portfolioFilter} setFilter={setPortfolioFilter} onOpen={(item) => { const record = visibleWork.find((candidate) => candidate.id === item.id) ?? item as Work; selectWorkRecord(record); setTab(portfolioFilter === "blocked" ? conditionTargetTab(record) : recordPhaseFor(record)); go("record"); }} /> : null}
       {screen === "design-queue" ? <section className="d5o-page d5o-design-queue-page"><header><div><p>DESIGN · WORKSPACE VIEW</p><h1>Design work queue</h1><span>Browse engineering work across records. Open one Work Record for its exact Design sections and package decisions.</span></div></header><DesignPipeline work={visibleWork as WorkRecord[]} inventory={configurationInventory} demands={sharedSchedule.schedule?.packageDemands ?? []} onSelect={(id) => { const record = visibleWork.find((item) => item.id === id); if (!record) return; setSelectedId(record.id); setTab("Design"); go("record"); }} /></section> : null}
       {screen === "decisions" ? <DecisionBoard hostedWorkspace={hostedPreview ? activeWorkspace : undefined} work={visibleWork.map((item) => ({ ...item, readinessBlockers: getBlockers(item) }))} getDecisionContext={getDecisionContext} onOpen={(item) => { const record = visibleWork.find((entry) => entry.id === item.id) ?? (item as Work & { source?: Work }).source ?? item; selectWorkRecord(record); setTab(getDecisionContext(record).target); go("record"); }} /> : null}
@@ -1432,7 +1464,7 @@ export function D5OPlatform({ initialWorkspace, configurationInventory, actorLab
       {screen === "operating" ? <OperatingModel workspaceKey={activeWorkspace} workspaceName={palette.name} /> : null}
       {screen === "configuration" ? <WorkspaceStudio workspaceKey={activeWorkspace} workspaceName={palette.name} configurationInventory={configurationInventory} hosted={hostedPreview} canManageWorkerAccounts={hostedPreview && actorRole === "admin" && activeWorkspace === "rybex"} actorRole={actorRole ?? undefined} accent={accent} foundation={workspaceDark} workTypes={configuredTypes} commercialProfiles={commercialProfiles} onAccent={setAccent} onFoundation={setWorkspaceDark} onWorkTypes={setConfiguredTypes} onCommercialProfiles={(profiles) => { setCommercialProfiles(profiles); setCommercialPolicyInitialized(true); }} /> : null}
       {screen === "start" ? <StartWork workspaceKey={activeWorkspace} workspaceName={palette.name} workTypes={publishedStartTypes} configurationInventory={configurationInventory} publishedVersionId={configurationInventory.status === "ready" ? configurationInventory.activeVersionId : null} defaultOwner={currentUserLabel} accessStatus={sharedWork.accessStatus} accessError={sharedWork.error} submitting={startBusy} onRetryAccess={() => { void sharedWork.refresh().catch(() => undefined); }} onSubmit={startWork} onCancel={() => go("home")} /> : null}
-      {screen === "record" && selected ? <WorkRecord key={`${selected.id}:${taskFocus ?? "full"}`} taskFocus={taskFocus} taskPackageId={taskPackageId} taskRequestId={taskRequestId} onFullRecord={() => { setTaskFocus(null); setTaskPackageId(null); setTaskRequestId(null); const url = new URL(window.location.href); for (const key of ["focus", "decision", "sourceRevision", "decisionRevision", "package", "designTab", "release", "turnover", "documentKind", "deployRevision", "request"]) url.searchParams.delete(key); window.history.replaceState(window.history.state, "", url); }} profiles={schedulingProfiles} actorId={actorId ?? "unknown-user"} actorRole={actorRole} work={selected} allWork={visibleWork} tab={phaseTab} detailsOpen={detailsOpen} detailsMounted={detailsMounted} detailTab={detailTab} portalRoot={portalRoot} detailsDialogRef={detailsDialogRef} detailsCloseRef={detailsCloseRef} onCloseDetails={closeWorkDetails} setTab={(next) => { if (next !== tab) retainNavigationHistory(); setTab(next); }} phaseConfig={selectedPhaseConfig} phaseDemandCount={(sharedSchedule.schedule?.packageDemands ?? []).filter((item) => item.workId === selected.id).length} phaseAssignmentCount={scheduleAssignments.filter((item) => item.workId === selected.id).length} onPhaseRowSave={(key, row, index) => savePhaseRow(selected, key, row, index)} onPhaseRowRemove={(key, index) => removePhaseRow(selected, key, index)} backLabel={operatingNavigation.find((item) => item.screen === recordReturn)?.label ?? designNavigation.find((item) => item.screen === recordReturn)?.label ?? "Dashboard"} onBack={() => { if (taskFocus) { go("my-work"); return; } if (recordReturn === "crew") setCrewFocusWorkId(selected.id); go(recordReturn, { myWork: myWorkEntry, crew: crewEntry ?? undefined }); }} onOpenDiscovery={() => openWorkspacePhase("discover", selected)} onOpenDefinition={() => openWorkspacePhase("define", selected)} onOpenDevelop={() => { setDiscoverEntry(null); go("develop"); }} onOpenPeople={() => go("people")} onOpenCrew={() => { go("crew"); setCrewFocusWorkId(selected.id); }} onActionPriority={(event) => saveActionPriority(selected, event)} onEvidence={(event) => addEvidence(selected, event)} onReviewEvidence={(event) => reviewEvidence(selected, event)} onPackage={(event) => addPackage(selected, event)} onPackageDemand={(event) => savePackageDemand(selected, event)} packageDemands={sharedSchedule.schedule?.packageDemands ?? []} canEditDemand={sharedSchedule.canEdit} onPackageFacts={(event) => recordPackageFacts(selected, event)} onAdvancePackage={(id) => advancePackage(selected, id)} onIssue={(event) => createIssue(selected, event)} onResolveIssue={(event) => resolveIssue(selected, event)} onException={(event) => recordException(selected, event)} onCommercial={(event) => saveCommercial(selected, event)} onLifecycle={(event) => addLifecycle(selected, event)} onDesignCommand={(command) => executeDesignCommand({ ...command, workId: selected.id })} schedule={sharedSchedule.schedule ?? null} onDeployCommand={(command) => executeDeployCommand({ ...command, workId: selected.id })} onDeployUpload={(packageId, data) => uploadDeployEvidence(selected.id, packageId, data)} hosted={hostedPreview} onOperateCommand={(command) => executeOperateCommand({ ...command, workId: selected.id })} operateFocus={operateFocus?.workId === selected.id ? operateFocus.section : "Overview"} onOpenOperateWork={(id, section) => { const target = visibleWork.find((item) => item.id === id); setSelectedId(id); setOperateFocus(section && target?.operate ? { workId: id, section } : null); if (target?.discovery && !target?.serviceSource && !target?.operate) { go("discover"); return; } setTab(target?.serviceSource ? "Design" : target?.operate ? "Operate" : "Overview"); }} onDesignHandoff={(decision, note) => executeCommercialCommand({ workId: selected.id, action: decision, packageRevision: selected.discovery?.proposal.package?.revision ?? 0, handoffRevision: selected.discovery?.designHandoff?.revision, note })} /> : null}
+      {screen === "record" && selected ? <WorkRecord key={`${selected.id}:${taskFocus ?? "full"}`} taskFocus={taskFocus} taskPackageId={taskPackageId} taskRequestId={taskRequestId} onFullRecord={() => { setTaskFocus(null); setTaskPackageId(null); setTaskRequestId(null); const url = new URL(window.location.href); for (const key of ["focus", "decision", "sourceRevision", "decisionRevision", "package", "designTab", "release", "turnover", "documentKind", "deployRevision", "request"]) url.searchParams.delete(key); window.history.replaceState(window.history.state, "", url); }} profiles={schedulingProfiles} actorId={actorId ?? "unknown-user"} actorRole={actorRole} work={selected} allWork={visibleWork} tab={phaseTab} detailsOpen={detailsOpen} detailsMounted={detailsMounted} detailTab={detailTab} portalRoot={portalRoot} detailsDialogRef={detailsDialogRef} detailsCloseRef={detailsCloseRef} onCloseDetails={closeWorkDetails} setTab={(next) => { if (next !== tab) retainNavigationHistory(); setTab(next); }} phaseConfig={selectedPhaseConfig} phaseDemandCount={(sharedSchedule.schedule?.packageDemands ?? []).filter((item) => item.workId === selected.id).length} phaseAssignmentCount={scheduleAssignments.filter((item) => item.workId === selected.id).length} onPhaseRowSave={(key, row, index) => savePhaseRow(selected, key, row, index)} onPhaseRowRemove={(key, index) => removePhaseRow(selected, key, index)} backLabel={operatingNavigation.find((item) => item.screen === recordReturn)?.label ?? designNavigation.find((item) => item.screen === recordReturn)?.label ?? "Dashboard"} onBack={() => { if (taskFocus) { go("my-work"); return; } if (recordReturn === "crew") setCrewFocusWorkId(selected.id); go(recordReturn, { myWork: myWorkEntry, crew: crewEntry ?? undefined }); }} onOpenDiscovery={() => openWorkspacePhase("discover", selected)} onOpenDefinition={() => openWorkspacePhase("define", selected)} onOpenDevelop={() => { setDiscoverEntry(null); go("develop", { develop: "workspace" }); }} onOpenPeople={() => go("people")} onOpenCrew={() => { go("crew"); setCrewFocusWorkId(selected.id); }} onActionPriority={(event) => saveActionPriority(selected, event)} onEvidence={(event) => addEvidence(selected, event)} onReviewEvidence={(event) => reviewEvidence(selected, event)} onPackage={(event) => addPackage(selected, event)} onPackageDemand={(event) => savePackageDemand(selected, event)} packageDemands={sharedSchedule.schedule?.packageDemands ?? []} canEditDemand={sharedSchedule.canEdit} onPackageFacts={(event) => recordPackageFacts(selected, event)} onAdvancePackage={(id) => advancePackage(selected, id)} onIssue={(event) => createIssue(selected, event)} onResolveIssue={(event) => resolveIssue(selected, event)} onException={(event) => recordException(selected, event)} onCommercial={(event) => saveCommercial(selected, event)} onLifecycle={(event) => addLifecycle(selected, event)} onDesignCommand={(command) => executeDesignCommand({ ...command, workId: selected.id })} schedule={sharedSchedule.schedule ?? null} onDeployCommand={(command) => executeDeployCommand({ ...command, workId: selected.id })} onDeployUpload={(packageId, data) => uploadDeployEvidence(selected.id, packageId, data)} hosted={hostedPreview} onOperateCommand={(command) => executeOperateCommand({ ...command, workId: selected.id })} operateFocus={operateFocus?.workId === selected.id ? operateFocus.section : "Overview"} onOpenOperateWork={(id, section) => { const target = visibleWork.find((item) => item.id === id); setSelectedId(id); setOperateFocus(section && target?.operate ? { workId: id, section } : null); if (target?.discovery && !target?.serviceSource && !target?.operate) { go("discover"); return; } setTab(target?.serviceSource ? "Design" : target?.operate ? "Operate" : "Overview"); }} onDesignHandoff={(decision, note) => executeCommercialCommand({ workId: selected.id, action: decision, packageRevision: selected.discovery?.proposal.package?.revision ?? 0, handoffRevision: selected.discovery?.designHandoff?.revision, note })} /> : null}
       {stalePhaseTask && !unavailableRecordId ? <section className="d5o-panel" role="alert"><h2>This task changed or was decided</h2><p>The exact source revision is no longer available for this action. No other Work Record or revision was selected.</p><button onClick={() => go("my-work")}>Return to refreshed My Work</button></section> : null}
       {(["record", "define", "develop"] as Screen[]).includes(screen) && unavailableRecordId ? <section className="d5o-panel" role="alert"><h2>Work Record unavailable</h2><p>The requested record {unavailableRecordId} is unavailable in this workspace. Refresh the queue to find the current decision.</p><button onClick={() => go("my-work")}>Return to My Work</button></section> : null}
       </>}
