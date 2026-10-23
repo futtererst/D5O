@@ -1,8 +1,12 @@
 export type CustomerWorkTask = { id: string; workId: string; title: string; phase: string;
-  status: "available" | "view_only"; revision: number; packageId?: string;
+  status: "available" | "view_only"; revision: number; packageId?: string; releaseId?: string;
   dueDate?: string; action?: string; reviewRole?: string };
 
-export type CustomerTaskWork = { id: string; definition?: { status?: string; authorityRevision?: number;
+export type CustomerTaskWork = { id: string;
+  discovery?: { pursuitControl?: { handoff?: { status?: string } } };
+  design?: { authorityRevision?: number; releases?: Array<{
+    id: string; packageId: string; status: string; issuedByActorId?: string }> };
+  definition?: { status?: string; authorityRevision?: number;
   reviews?: { commercial?: string; delivery?: string };
   decisions?: Array<{ action?: string; actorId?: string; reviewRole?: string }>;
   developHandoff?: { status?: string; submittedByActorId?: string } } };
@@ -10,7 +14,14 @@ export type CustomerTaskWork = { id: string; definition?: { status?: string; aut
 export function defineTasks(records: CustomerTaskWork[], role: string, actorId: string): CustomerWorkTask[] {
   return records.flatMap((record) => {
     const definition = record.definition;
-    if (!definition) return [];
+    if (!definition || definition.status === "Draft") {
+      if (record.discovery?.pursuitControl?.handoff?.status !== "accepted") return [];
+      return ["admin", "project_manager", "operations_leader"].includes(role)
+        ? [{ id: `define:${record.id}:submit:${definition?.authorityRevision ?? 0}`,
+          workId: record.id, title: "Prepare and submit Define scope", phase: "Define",
+          status: "available", revision: definition?.authorityRevision ?? 0, action: "submit" }]
+        : [];
+    }
     const revision = definition.authorityRevision ?? 0;
     const decisions = definition.decisions ?? [];
     const submitter = [...decisions].reverse().find((item) => item.action === "submit")?.actorId;
@@ -39,4 +50,18 @@ export function defineTasks(records: CustomerTaskWork[], role: string, actorId: 
     }
     return [];
   });
+}
+
+export function designReceiptTasks(records: CustomerTaskWork[], role: string,
+  actorId: string): CustomerWorkTask[] {
+  if (!["admin", "operations_leader", "project_manager"].includes(role)) return [];
+  return records.flatMap((record) => (record.design?.releases ?? [])
+    .filter((release) => release.status === "Awaiting receipt" && release.issuedByActorId !== actorId)
+    .map((release) => ({
+      id: `design:${record.id}:${release.id}:${record.design?.authorityRevision ?? 0}`,
+      workId: record.id, packageId: release.packageId,
+      releaseId: release.id,
+      title: "Receive released Design package", phase: "Design", status: "available" as const,
+      revision: record.design?.authorityRevision ?? 0, action: "respond-receipt"
+    })));
 }

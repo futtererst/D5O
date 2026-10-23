@@ -1,0 +1,7 @@
+# Phase 2H completion browser journey
+
+The disposable test launches the actual Next application against a loopback Supabase/PostgreSQL stack. Each tenant administrator signs in, opens the exact connected Work from My Work, saves a Define draft through the browser, then submits it. Tenant A receives the published risk-narrative denial first; adding a narrative permits submission. Tenant B submits without the additional narrative. Separate signed-in Finance and Operations actors then perform commercial and delivery review and accepted-scope handoff through My Work, as inherited from Phase 2H.
+
+The new Design receipt control is exercised by a signed-in Operations actor after a package is released. Preparation, evidence upload, reviews and issuance still use the disposable fixture's authenticated hosted commands. The test must therefore be described as a **partial** browser journey, even though the same connected Work reaches support activation in the hosted fixture.
+
+Evidence: [`evidence/phase2h-completion-define-results.json`](evidence/phase2h-completion-define-results.json) and actual authenticated screenshots in [`evidence/phase2h-completion-browser/`](evidence/phase2h-completion-browser/). The screenshots show Define draft and submission on desktop/mobile and Design receipt before/after for both tenants when the completed test result records success. They are not Design preparation, Develop, Deploy or Operate screenshots.

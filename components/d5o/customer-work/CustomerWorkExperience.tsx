@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { CustomerDefineDraftForm } from "./CustomerDefineDraftForm";
+import type { DefineDraftInput } from "@/lib/d5o/hosted/customer-define-draft";
 
 const phases = ["Discover", "Define", "Design", "Develop", "Deploy", "Operate"] as const;
 type Phase = typeof phases[number];
@@ -15,7 +17,7 @@ type WorkSummary = { id: string; title: string; customer?: string; site?: string
   owner?: string; type?: string; phaseConfigurationVersionId?: string };
 type CustomerTask = { id: string; workId: string; title: string; phase: string;
   status: "available" | "view_only"; revision: number; packageId?: string;
-  dueDate?: string; action?: string; reviewRole?: string };
+  releaseId?: string; dueDate?: string; action?: string; reviewRole?: string };
 type WorkDetail = WorkSummary & { canonicalWorkId: string; workspace: string;
   definition?: { status?: string; authorityRevision?: number;
     reviews?: { commercial?: string; delivery?: string };
@@ -30,7 +32,7 @@ type ListResponse = { workspaceName: string; role: string; records: WorkSummary[
   tasks: CustomerTask[]; error?: string };
 type DetailResponse = { workspaceName: string; role: string; canEdit: boolean;
   revision: number; record: WorkDetail; phaseStatus: PhaseStatus;
-  defineActions: CustomerTask[]; error?: string };
+  defineActions: CustomerTask[]; designActions: CustomerTask[]; error?: string };
 
 const statusLabel: Record<string, string> = {
   not_started: "Not started", preparation_in_progress: "Preparation in progress",
@@ -67,6 +69,7 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [reason, setReason] = useState("");
+  const [designNote, setDesignNote] = useState("");
   const load = useCallback(async (signal?: AbortSignal) => {
     setLoading(true); setError("");
     try {
@@ -94,6 +97,21 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
   const projection = detail?.phaseStatus?.projection;
   const role = detail?.role ?? list?.role ?? "";
   const canOperate = role === "operations_leader" && detail?.canEdit;
+  async function saveDefineDraft(fields: DefineDraftInput) {
+    if (!detail || busy) return;
+    setBusy(true); setError("");
+    try {
+      const response = await fetch(`/api/d5o-hosted/customer-work?workspace=${encodeURIComponent(workspace)}`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workId: detail.record.id, command: "define-draft",
+          commandId: crypto.randomUUID(), arguments: {
+            p_expected_source_revision: detail.revision, fields } }) });
+      const result = await response.json() as { error?: string };
+      if (!response.ok) throw Error(result.error ?? "Define draft could not be saved");
+      await load();
+    } catch (cause) { setError(readableError(cause instanceof Error ? cause.message : "Draft failed")); }
+    finally { setBusy(false); }
+  }
   async function command(action: string, input: Record<string, unknown>, domain: "define" | "operate" = "operate") {
     if (!detail || busy) return;
     setBusy(true); setError("");
@@ -115,6 +133,25 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
       setReason("");
       await load();
     } catch (cause) { setError(readableError(cause instanceof Error ? cause.message : "Decision failed")); }
+    finally { setBusy(false); }
+  }
+  async function respondDesignReceipt(releaseId: string, responseValue: "Accepted" | "Returned") {
+    if (!detail || busy || designNote.trim().length < 15) return;
+    setBusy(true); setError("");
+    try {
+      const response = await fetch(`/api/d5o-hosted/customer-work?workspace=${encodeURIComponent(workspace)}`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workId: detail.record.id, command: "design-receipt",
+          commandId: crypto.randomUUID(), arguments: {
+            p_action: "respond-receipt",
+            p_input: { releaseId, response: responseValue, note: designNote.trim() },
+            p_expected_source_revision: detail.revision,
+            p_expected_decision_revision: detail.record.design?.authorityRevision ?? 0 } }) });
+      const result = await response.json() as { error?: string };
+      if (!response.ok) throw Error(result.error ?? "Package receipt could not be recorded");
+      setDesignNote("");
+      await load();
+    } catch (cause) { setError(readableError(cause instanceof Error ? cause.message : "Receipt failed")); }
     finally { setBusy(false); }
   }
   return <section className="d5o-customer-work-content">
@@ -156,12 +193,18 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
             <div><dt>Completion basis</dt><dd title={status.completionEvidence ?? undefined}>{status.completionEvidence ? evidenceLabel(status.completionEvidence) : "Pending"}</dd></div>
             {status.preparationEvidence && <div><dt>Preparation</dt><dd title={status.preparationEvidence}>{evidenceLabel(status.preparationEvidence)}; this does not complete Develop.</dd></div>}</dl>
           {phase === "Define" && <><p>Scope status: {detail.record.definition?.status ?? "Not submitted"}.</p>
-            {detail.phaseStatus.replayMatches && detail.record.definition && detail.defineActions.length > 0 &&
+            {detail.phaseStatus.replayMatches && detail.defineActions.some((item) => item.action === "submit") &&
+              <CustomerDefineDraftForm key={`${detail.record.id}:${detail.revision}`} busy={busy}
+                draft={detail.record.definition as Record<string, unknown> | undefined}
+                onSave={saveDefineDraft} />}
+            {detail.phaseStatus.replayMatches && detail.defineActions.length > 0 &&
               ["admin", "project_manager", "operations_leader", "billing_commercial_lead"].includes(role) &&
               <div className="d5o-customer-actions">
                 <label htmlFor="define-decision-reason">Decision reason</label>
                 <input id="define-decision-reason" value={reason} onChange={(event) => setReason(event.target.value)}
                   maxLength={500} placeholder="Explain the decision" />
+                {detail.record.definition?.status === "Draft" && detail.defineActions.some((item) => item.action === "submit") &&
+                  <button disabled={busy || !reason.trim()} onClick={() => void command("submit", {}, "define")}>Request commercial and delivery review</button>}
                 {detail.defineActions?.some((item) => item.action === "approve-review" && item.reviewRole === "commercial") &&
                   <><button disabled={busy || !reason.trim()} onClick={() => void command("approve-review", { role: "commercial" }, "define")}>Approve commercial review</button>
                   <button disabled={busy || !reason.trim()} onClick={() => void command("return-review", { role: "commercial" }, "define")}>Return commercial review</button></>}
@@ -170,9 +213,18 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
                   <button disabled={busy || !reason.trim()} onClick={() => void command("return-review", { role: "delivery" }, "define")}>Return delivery review</button></>}
                 {detail.defineActions?.some((item) => item.action === "submit-handoff" || item.action === "accept-handoff") &&
                   <button disabled={busy || !reason.trim()} onClick={() => void command(
-                    detail.record.definition?.developHandoff?.status === "submitted" ? "accept-handoff" : "submit-handoff", {}, "define")}>{detail.record.definition.developHandoff?.status === "submitted" ? "Receive approved scope" : "Send approved scope"}</button>}
+                    detail.record.definition?.developHandoff?.status === "submitted" ? "accept-handoff" : "submit-handoff", {}, "define")}>{detail.record.definition?.developHandoff?.status === "submitted" ? "Receive approved scope" : "Send approved scope"}</button>}
               </div>}</>}
-          {phase === "Design" && <p>{detail.record.design?.packages?.length ?? 0} package(s); {detail.record.design?.releases?.filter((item) => item.status === "Accepted").length ?? 0} accepted release(s).</p>}
+          {phase === "Design" && <><p>{detail.record.design?.packages?.length ?? 0} package(s); {detail.record.design?.releases?.filter((item) => item.status === "Accepted").length ?? 0} accepted release(s).</p>
+            {detail.phaseStatus.replayMatches && detail.designActions?.length > 0 &&
+              <div className="d5o-customer-actions"><label htmlFor="design-receipt-note">Package receipt reason</label>
+                <input id="design-receipt-note" value={designNote} onChange={(event) => setDesignNote(event.target.value)}
+                  minLength={15} maxLength={500} placeholder="Explain the independent receipt decision" />
+                {detail.designActions.map((task) => <div className="d5o-customer-design-receipt" key={task.id}>
+                  <p>Released package: {detail.record.design?.packages?.find((item) => item.packageId === task.packageId)?.name ?? "Design package"}</p>
+                  <button disabled={busy || designNote.trim().length < 15} onClick={() => void respondDesignReceipt(task.releaseId ?? "", "Accepted")}>Accept released package</button>
+                  <button disabled={busy || designNote.trim().length < 15} onClick={() => void respondDesignReceipt(task.releaseId ?? "", "Returned")}>Return released package</button>
+                </div>)}</div>}</>}
           {phase === "Deploy" && <p>Whole-Work customer acceptance: {detail.record.deploy?.workAcceptance?.receipt ?? "Pending"}.</p>}
           {phase === "Operate" && <p>Support {status.supportStatus ?? "Pending"}; financial closeout {status.financialCloseout ?? "Pending"}.</p>}
           {canOperate && detail.phaseStatus.replayMatches && phase === "Operate" && status.status === "active" &&

@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
-import { defineTasks } from "../../lib/d5o/hosted/customer-work-tasks.ts";
+import { defineTasks, designReceiptTasks } from "../../lib/d5o/hosted/customer-work-tasks.ts";
 
+const acceptedIntake = {id:"work-a",discovery:{pursuitControl:{handoff:{status:"accepted"}}}};
+assert.equal(defineTasks([acceptedIntake],"project_manager","owner")[0]?.action,"submit",
+  "a manager must receive a Define draft task before submission");
+assert.equal(defineTasks([acceptedIntake],"billing_commercial_lead","finance").length,0,
+  "a reviewer cannot author the initial Define draft");
+assert.equal(defineTasks([{id:"work-a"}],"project_manager","owner").length,0,
+  "unaccepted Discover Work must not appear as actionable Define draft");
 const base = { id: "work-a", definition: { status: "In review", authorityRevision: 1,
   reviews: { commercial: "Pending", delivery: "Pending" },
   decisions: [{ action: "submit", actorId: "submitter" }] } };
@@ -23,4 +30,13 @@ assert.equal(defineTasks([approved], "operations_leader", "receiver")[0]?.action
 approved.definition.developHandoff.status = "accepted";
 assert.equal(defineTasks([approved], "operations_leader", "receiver").length, 0,
   "a completed handoff must leave the current task queue");
-console.log(JSON.stringify({ suite: "phase2h-task-visibility", passed: 8 }));
+const design = { id: "work-a", design: { authorityRevision: 4, releases: [{
+  id: "release-1", packageId: "package-1", status: "Awaiting receipt", issuedByActorId: "issuer" }] } };
+assert.equal(designReceiptTasks([design], "operations_leader", "receiver")[0]?.action, "respond-receipt");
+assert.equal(designReceiptTasks([design], "project_manager", "issuer").length, 0,
+  "the issuing actor cannot receive their own release");
+assert.equal(designReceiptTasks([design], "field_worker", "field").length, 0);
+design.design.releases[0].status = "Accepted";
+assert.equal(designReceiptTasks([design], "operations_leader", "receiver").length, 0,
+  "accepted release must leave the queue");
+console.log(JSON.stringify({ suite: "phase2h-task-visibility", passed: 15 }));

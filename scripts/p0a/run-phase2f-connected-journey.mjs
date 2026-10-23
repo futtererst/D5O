@@ -10,8 +10,11 @@ import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
 const phase2g = process.env.D5O_PHASE2G === "1";
-const phase2h = process.env.D5O_PHASE2H === "1";
-const output = resolve(root, phase2h
+const phase2hCompletion = process.env.D5O_PHASE2H_COMPLETION === "1";
+const phase2h = process.env.D5O_PHASE2H === "1" || phase2hCompletion;
+const output = resolve(root, phase2hCompletion
+  ? "docs/architecture/evidence/phase2h-completion-define-results.json"
+  : phase2h
   ? "docs/architecture/evidence/phase2h-connected-journey-results.json"
   : phase2g
   ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
@@ -642,6 +645,133 @@ try {
       const index=state.records.findIndex((item)=>item.title==="Phase 2D policy qualification");
       assert(index>=0);
       const record=state.records[index];
+      if(phase2hCompletion) {
+        if(!server)server=await startNext(url,anon,service);
+        const browser=await chromium.launch();
+        const page=await browser.newPage({viewport:{width:1440,height:900}});
+        try {
+          await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=%2Fwork`);
+          await page.getByLabel("Email").fill(users[owner].email);
+          await page.getByLabel("Password").fill(users[owner].password);
+          await page.getByRole("button",{name:"Continue to your work"}).click();
+          await page.locator(`[data-workspace="${tenant.workspaceKey}"]`).click();
+          const task=page.locator(".d5o-customer-work-list a")
+            .filter({hasText:"Prepare and submit Define scope"})
+            .filter({hasText:"Phase 2D policy qualification"}).first();
+          await task.waitFor({timeout:30000});
+          await task.click();
+          await page.getByRole("heading",{name:"Prepare Define scope"}).waitFor({timeout:30000});
+          const dir=resolve(root,"docs/architecture/evidence/phase2h-completion-browser");
+          mkdirSync(dir,{recursive:true});
+          await page.screenshot({path:resolve(dir,`${prefix}-define-draft-desktop.png`),fullPage:true});
+          await page.setViewportSize({width:390,height:844});
+          await page.screenshot({path:resolve(dir,`${prefix}-define-draft-mobile.png`),fullPage:true});
+          await page.setViewportSize({width:1440,height:900});
+          const values={
+            "Customer contact":"Fictional representative",
+            "Site or work area":record.site,
+            "Affected systems":"Service component",
+            "Access constraints":"Escorted access",
+            "Expected outcome":"Inspected service restored",
+            "Excluded scope":"Unrelated systems",
+            "Delivery approach":"Controlled visit and test",
+            "Delivery milestones":"Inspect then test",
+            "Dependencies":"Approved site access",
+            "Estimate basis":"Synthetic USD 15000 scope",
+            "Commercial terms":"Subject to authorization",
+            "Customer representative":"Fictional representative",
+            "Customer agreement date":"2026-10-23",
+            "Customer agreement basis":"Synthetic accepted scope",
+            "Confirmed finding":"Service component needs inspection",
+            "Finding source":"Synthetic customer briefing",
+            "Customer requirement":"Restore service component",
+            "Requirement source":"Synthetic customer scope",
+            "Requirement owner":"Project manager",
+            "Scoped deliverable":"Inspected component",
+            "Scope boundary":"Service component",
+            "Scope owner":"Project manager",
+            "Acceptance result":"Operational",
+            "Acceptance method":"Functional test",
+            "Acceptance proof":"Synthetic test record",
+            "Acceptance authority":"Customer representative",
+            "Interface boundary":"Service component",
+            "Interface owner":"Project manager",
+            "Interface counterparty":"Customer",
+            "Interface agreement":"Escorted inspection"
+          };
+          for(const [label,value] of Object.entries(values))
+            await page.getByLabel(label,{exact:true}).fill(value);
+          const initialFields=await page.locator("form.d5o-customer-define-draft")
+            .evaluate((form)=>Object.fromEntries(new FormData(form).entries()));
+          const direct=async(target,body)=>page.evaluate(async({target,body})=>{
+            const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${encodeURIComponent(target)}`,{
+              method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+            return {status:response.status,body:await response.json()};
+          },{target,body});
+          if(prefix==="a") {
+            const prematureWork=current.data.state.records.find((item)=>item.title==="Connected Work qualification");
+            assert(prematureWork && prematureWork.discovery?.pursuitControl?.handoff?.status!=="accepted");
+            const premature=await direct(tenant.workspaceKey,{workId:prematureWork.id,
+              command:"define-draft",commandId:randomUUID(),
+              arguments:{p_expected_source_revision:current.data.revision,fields:initialFields}});
+            assert.equal(premature.status,409,JSON.stringify(premature.body));
+            assert.equal(premature.body.error,"define_intake_handoff_required");
+          }
+          const save=async()=>{
+            const responsePromise=page.waitForResponse((response)=>response.url().includes("/api/d5o-hosted/customer-work")
+              && response.request().method()==="POST");
+            await page.getByRole("button",{name:"Save Define draft"}).click();
+            const response=await responsePromise;
+            assert.equal(response.status(),200,JSON.stringify(await response.json()));
+            await page.getByRole("button",{name:"Request commercial and delivery review"}).waitFor();
+          };
+          await save();
+          await page.getByLabel("Decision reason").fill("Submit complete fictional Define scope for independent review");
+          let policyDenied=false;
+          if(strict) {
+            const responsePromise=page.waitForResponse((response)=>response.url().includes("/api/d5o-hosted/customer-work")
+              && response.request().method()==="POST");
+            await page.getByRole("button",{name:"Request commercial and delivery review"}).click();
+            const response=await responsePromise;
+            const denied=await response.json();
+            assert.equal(response.status(),422,JSON.stringify(denied));
+            assert.match(String(denied.error),/define_risk_narrative_required/,
+              `unexpected_define_denial:${JSON.stringify(denied)}`);
+            await page.locator(".d5o-customer-work-error")
+              .filter({hasText:"define risk narrative required"}).waitFor();
+            policyDenied=true;
+            await page.getByLabel("Risk narrative").fill("Service outage during controlled inspection");
+            await save();
+            await page.getByLabel("Decision reason").fill("Submit complete fictional Define scope for independent review");
+          }
+          const responsePromise=page.waitForResponse((response)=>response.url().includes("/api/d5o-hosted/customer-work")
+            && response.request().method()==="POST");
+          await page.getByRole("button",{name:"Request commercial and delivery review"}).click();
+          const response=await responsePromise;
+          const submitPayload=JSON.parse(response.request().postData()??"{}");
+          assert.equal(response.status(),200,JSON.stringify(await response.json()));
+          const replay=await direct(tenant.workspaceKey,submitPayload);
+          assert.equal(replay.status,200,`Define command replay: ${JSON.stringify(replay.body)}`);
+          await page.getByText("Scope status: In review.").waitFor({timeout:30000});
+          assert.equal(await page.locator(".d5o-customer-work-list a")
+            .filter({hasText:"Prepare and submit Define scope"})
+            .filter({hasText:"Phase 2D policy qualification"}).count(),0);
+          await page.screenshot({path:resolve(dir,`${prefix}-define-submitted.png`),fullPage:true});
+          const cross=await direct(prefix==="a"?b.workspaceKey:a.workspaceKey,
+            {workId:record.id,command:"define-draft",commandId:randomUUID(),
+              arguments:{p_expected_source_revision:current.data.revision,fields:initialFields}});
+          assert.equal(cross.status,403,JSON.stringify(cross.body));
+          assert.notEqual(cross.body.error,"invalid_origin");
+          const stale=await direct(tenant.workspaceKey,
+            {workId:record.id,command:"define-draft",commandId:randomUUID(),
+              arguments:{p_expected_source_revision:current.data.revision,fields:initialFields}});
+          assert.equal(stale.status,409,JSON.stringify(stale.body));
+          outcomes.push({tenant:tenant.workspaceKey,workId:record.canonicalWorkId,
+            versionId:record.phaseConfigurationVersionId,policyDenied,
+            browserDraft:true,browserSubmission:true,taskRemoved:true});
+        } finally {await browser.close();}
+        continue;
+      }
       record.definition={revision:1,status:"Draft",outcome:"Inspected service restored",
         acceptance:"Customer verifies operation after service",
         includedScope:"Inspect and repair service component",
@@ -683,6 +813,8 @@ try {
     }
     return outcomes;
   });
+  if(phase2hCompletion && evidence.tests.at(-1)?.status!=="PASS")
+    throw Error("define_browser_gate_failed");
   await check("independent Define reviews approve and hand off each pinned baseline",async()=>{
     const outcomes=[];
     for(const [prefix,tenant] of [["a",a],["b",b]]) {
@@ -1248,20 +1380,51 @@ try {
       current=await read();
       const pending=current.record.design.releases.find((item)=>item.packageId===pkg.packageId);
       assert.equal(pending.status,"Awaiting receipt");
-      const accepted=await call(ops,"d5o_hosted_design_release_command_v1",{
-        p_workspace_key:tenant.workspaceKey,p_presentation_id:current.record.id,
-        p_action:"respond-receipt",p_input:{releaseId:pending.id,response:"Accepted",
-          note:"Independently accepted exact fictional Design package"},
-        p_command_id:`phase2e-${prefix}-accept-package`,
-        p_expected_source_revision:current.revision,
-        p_expected_decision_revision:current.record.design.authorityRevision});
-      assert(!accepted.error,`${prefix}:accept-package:${accepted.error?.message}`);
+      let browserReceipt=false;
+      if(phase2hCompletion) {
+        if(!server)server=await startNext(url,anon,service);
+        const browser=await chromium.launch();
+        const page=await browser.newPage({viewport:{width:1440,height:900}});
+        try {
+          await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=%2Fwork`);
+          await page.getByLabel("Email").fill(users[ops].email);
+          await page.getByLabel("Password").fill(users[ops].password);
+          await page.getByRole("button",{name:"Continue to your work"}).click();
+          await page.locator(`[data-workspace="${tenant.workspaceKey}"]`).click();
+          const task=page.locator(".d5o-customer-work-list a")
+            .filter({hasText:"Receive released Design package"})
+            .filter({hasText:"Phase 2D policy qualification"}).first();
+          await task.waitFor({timeout:30000});
+          await task.click();
+          await page.getByLabel("Package receipt reason").fill("Independently accepted exact fictional Design package");
+          const dir=resolve(root,"docs/architecture/evidence/phase2h-completion-browser");
+          mkdirSync(dir,{recursive:true});
+          await page.screenshot({path:resolve(dir,`${prefix}-design-receipt-before.png`),fullPage:true});
+          const responsePromise=page.waitForResponse((response)=>response.url().includes("/api/d5o-hosted/customer-work")
+            && response.request().method()==="POST");
+          await page.getByRole("button",{name:"Accept released package"}).click();
+          const response=await responsePromise;
+          assert.equal(response.status(),200,JSON.stringify(await response.json()));
+          await task.waitFor({state:"hidden",timeout:30000});
+          await page.screenshot({path:resolve(dir,`${prefix}-design-receipt-accepted.png`),fullPage:true});
+          browserReceipt=true;
+        } finally {await browser.close();}
+      } else {
+        const accepted=await call(ops,"d5o_hosted_design_release_command_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:current.record.id,
+          p_action:"respond-receipt",p_input:{releaseId:pending.id,response:"Accepted",
+            note:"Independently accepted exact fictional Design package"},
+          p_command_id:`phase2e-${prefix}-accept-package`,
+          p_expected_source_revision:current.revision,
+          p_expected_decision_revision:current.record.design.authorityRevision});
+        assert(!accepted.error,`${prefix}:accept-package:${accepted.error?.message}`);
+      }
       current=await read();
       assert.equal(current.record.design.releases.find((item)=>item.id===pending.id).status,"Accepted");
       outcomes.push({tenant:tenant.workspaceKey,workId:current.record.canonicalWorkId,
         packageId:pkg.packageId,methodRequired:strict,
         prematureRelease:denied?.error?.message??null,releaseStatus:"Accepted",
-        versionId:current.record.phaseConfigurationVersionId});
+        versionId:current.record.phaseConfigurationVersionId,browserReceipt});
     }
     return outcomes;
   });
@@ -1957,7 +2120,9 @@ finally {
     setupError:Boolean(evidence.setupError),cleanupVerified:Boolean(evidence.cleanup?.clean)};
   mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
-  console.log(JSON.stringify({...evidence.summary,output:phase2h
+  console.log(JSON.stringify({...evidence.summary,output:phase2hCompletion
+    ? "docs/architecture/evidence/phase2h-completion-define-results.json"
+    : phase2h
     ? "docs/architecture/evidence/phase2h-connected-journey-results.json"
     : phase2g ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
     : "docs/architecture/evidence/phase2f-connected-journey-results.json"}));
