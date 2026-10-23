@@ -1,0 +1,7 @@
+# Phase 2H two-tenant results
+
+The inherited disposable Phase 2G fixture is the regression source for the already qualified RPC-level journey. It provisions two fictional tenants, publishes USD 10,000 and USD 25,000 service thresholds, completes connected business decisions, checks event-backed phase replay, performs authenticated browser creation/readback and cleans up fixtures when successful.
+
+Phase 2H adds no tenant-specific condition. The new task projection uses membership-derived role and current Work decisions for each tenant. The focused local test verifies independent reviewer and handoff-sender exclusion. Both fictional tenants executed the four Define decisions through browser controls using distinct finance, operations and administrator identities. The Define task appeared before each decision and disappeared afterward. Design, Develop, Deploy and Operate still rely on the RPC harness. The acceptance result for Phase 2H is therefore PARTIAL.
+
+The inherited fixture passed 48/48 on its second, local Docker-enabled run, with `cleanupVerified=true`, `projectDirectoryAbsent=true` and no residual fixture containers. The dedicated Phase 2H run also passed 48/48 with browser-based Define decisions and cleanup; its strengthened rerun adds actual task-visibility and direct API denial assertions. See `evidence/phase2h-results.json`, `evidence/phase2h-connected-journey-results.json` and `evidence/phase2h-inherited-phase2g-results.json`. The first sandboxed attempt failed during setup and is separately recorded.

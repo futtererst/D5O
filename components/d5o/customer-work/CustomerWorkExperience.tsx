@@ -13,17 +13,24 @@ type PhaseStatus = { status: string; projection?: Projection; projectionRevision
   replayMatches?: boolean; sourceEvent?: string; updatedAt?: string; reason?: string };
 type WorkSummary = { id: string; title: string; customer?: string; site?: string;
   owner?: string; type?: string; phaseConfigurationVersionId?: string };
+type CustomerTask = { id: string; workId: string; title: string; phase: string;
+  status: "available" | "view_only"; revision: number; packageId?: string;
+  dueDate?: string; action?: string; reviewRole?: string };
 type WorkDetail = WorkSummary & { canonicalWorkId: string; workspace: string;
-  definition?: { status?: string }; develop?: { review?: { status?: string } };
+  definition?: { status?: string; authorityRevision?: number;
+    reviews?: { commercial?: string; delivery?: string };
+    developHandoff?: { status?: string } }; develop?: { review?: { status?: string } };
   design?: { authorityRevision?: number; packages?: Array<{ packageId: string; name?: string }>;
     releases?: Array<{ packageId: string; status: string }> };
   deploy?: { authorityRevision?: number; workAcceptance?: { receipt?: string; id?: string;
     revision?: number } }; operate?: { authorityRevision?: number;
     source?: { workAcceptanceId?: string }; support?: { status?: string };
     activation?: { status?: string }; finance?: { status?: string } } };
-type ListResponse = { workspaceName: string; role: string; records: WorkSummary[]; error?: string };
+type ListResponse = { workspaceName: string; role: string; records: WorkSummary[];
+  tasks: CustomerTask[]; error?: string };
 type DetailResponse = { workspaceName: string; role: string; canEdit: boolean;
-  revision: number; record: WorkDetail; phaseStatus: PhaseStatus; error?: string };
+  revision: number; record: WorkDetail; phaseStatus: PhaseStatus;
+  defineActions: CustomerTask[]; error?: string };
 
 const statusLabel: Record<string, string> = {
   not_started: "Not started", preparation_in_progress: "Preparation in progress",
@@ -59,6 +66,7 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [reason, setReason] = useState("");
   const load = useCallback(async (signal?: AbortSignal) => {
     setLoading(true); setError("");
     try {
@@ -86,21 +94,25 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
   const projection = detail?.phaseStatus?.projection;
   const role = detail?.role ?? list?.role ?? "";
   const canOperate = role === "operations_leader" && detail?.canEdit;
-  async function command(action: string, input: Record<string, unknown>) {
+  async function command(action: string, input: Record<string, unknown>, domain: "define" | "operate" = "operate") {
     if (!detail || busy) return;
     setBusy(true); setError("");
     try {
       const source = detail.revision;
-      const args: Record<string, unknown> = { p_action: action, p_input: input,
-        p_expected_source_revision: source,
-        p_expected_deploy_revision: detail.record.deploy?.authorityRevision ?? 0,
-        p_expected_operate_revision: detail.record.operate?.authorityRevision ?? 0 };
+      const args: Record<string, unknown> = domain === "define"
+        ? { p_action: action, p_review_role: input.role ?? null,
+          p_reason: reason.trim(), p_expected_source_revision: source,
+          p_expected_decision_revision: detail.record.definition?.authorityRevision ?? 0 }
+        : { p_action: action, p_input: input, p_expected_source_revision: source,
+          p_expected_deploy_revision: detail.record.deploy?.authorityRevision ?? 0,
+          p_expected_operate_revision: detail.record.operate?.authorityRevision ?? 0 };
       const response = await fetch(`/api/d5o-hosted/customer-work?workspace=${encodeURIComponent(workspace)}`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workId: detail.record.id, command: "operate",
+        body: JSON.stringify({ workId: detail.record.id, command: domain,
           commandId: crypto.randomUUID(), arguments: args }) });
       const result = await response.json() as { error?: string };
       if (!response.ok) throw Error(result.error ?? "Decision was not recorded");
+      setReason("");
       await load();
     } catch (cause) { setError(readableError(cause instanceof Error ? cause.message : "Decision failed")); }
     finally { setBusy(false); }
@@ -108,6 +120,11 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
   return <section className="d5o-customer-work-content">
     <aside className="d5o-customer-work-list"><div><strong>{list?.workspaceName ?? workspace}</strong>
       <small>{role.replaceAll("_", " ") || "Loading access"}</small></div>
+      <h2>My Work</h2>{list?.tasks?.length ? <ul>{list.tasks.map((task) => {
+        const work = list.records.find((item) => item.id === task.workId);
+        return <li key={task.id}><Link href={`/work/customer/${encodeURIComponent(workspace)}?work=${encodeURIComponent(task.workId)}#phase-${task.phase.toLowerCase()}`}>
+          {task.title}<small>{task.phase} · {work?.title ?? "Work"} · {work?.customer ?? "Customer pending"} · {task.status === "view_only" ? "View context" : "Ready for decision"}{task.dueDate ? ` · Due ${task.dueDate}` : ""}</small></Link></li>;
+      })}</ul> : !loading && !error ? <p>No current responsibilities for your role. Refresh after a business decision.</p> : null}
       <h2>Work records</h2>{list?.records.length ? <ul>{list.records.map((work) =>
         <li key={work.id}><Link aria-current={selected === work.id ? "page" : undefined}
           href={`/work/customer/${encodeURIComponent(workspace)}?work=${encodeURIComponent(work.id)}`}>{work.title}
@@ -138,7 +155,23 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
           <dl><div><dt>Entry basis</dt><dd title={status.entryEvidence ?? undefined}>{evidenceLabel(status.entryEvidence)}</dd></div>
             <div><dt>Completion basis</dt><dd title={status.completionEvidence ?? undefined}>{status.completionEvidence ? evidenceLabel(status.completionEvidence) : "Pending"}</dd></div>
             {status.preparationEvidence && <div><dt>Preparation</dt><dd title={status.preparationEvidence}>{evidenceLabel(status.preparationEvidence)}; this does not complete Develop.</dd></div>}</dl>
-          {phase === "Define" && <p>Scope status: {detail.record.definition?.status ?? "Not submitted"}.</p>}
+          {phase === "Define" && <><p>Scope status: {detail.record.definition?.status ?? "Not submitted"}.</p>
+            {detail.phaseStatus.replayMatches && detail.record.definition && detail.defineActions.length > 0 &&
+              ["admin", "project_manager", "operations_leader", "billing_commercial_lead"].includes(role) &&
+              <div className="d5o-customer-actions">
+                <label htmlFor="define-decision-reason">Decision reason</label>
+                <input id="define-decision-reason" value={reason} onChange={(event) => setReason(event.target.value)}
+                  maxLength={500} placeholder="Explain the decision" />
+                {detail.defineActions?.some((item) => item.action === "approve-review" && item.reviewRole === "commercial") &&
+                  <><button disabled={busy || !reason.trim()} onClick={() => void command("approve-review", { role: "commercial" }, "define")}>Approve commercial review</button>
+                  <button disabled={busy || !reason.trim()} onClick={() => void command("return-review", { role: "commercial" }, "define")}>Return commercial review</button></>}
+                {detail.defineActions?.some((item) => item.action === "approve-review" && item.reviewRole === "delivery") &&
+                  <><button disabled={busy || !reason.trim()} onClick={() => void command("approve-review", { role: "delivery" }, "define")}>Approve delivery review</button>
+                  <button disabled={busy || !reason.trim()} onClick={() => void command("return-review", { role: "delivery" }, "define")}>Return delivery review</button></>}
+                {detail.defineActions?.some((item) => item.action === "submit-handoff" || item.action === "accept-handoff") &&
+                  <button disabled={busy || !reason.trim()} onClick={() => void command(
+                    detail.record.definition?.developHandoff?.status === "submitted" ? "accept-handoff" : "submit-handoff", {}, "define")}>{detail.record.definition.developHandoff?.status === "submitted" ? "Receive approved scope" : "Send approved scope"}</button>}
+              </div>}</>}
           {phase === "Design" && <p>{detail.record.design?.packages?.length ?? 0} package(s); {detail.record.design?.releases?.filter((item) => item.status === "Accepted").length ?? 0} accepted release(s).</p>}
           {phase === "Deploy" && <p>Whole-Work customer acceptance: {detail.record.deploy?.workAcceptance?.receipt ?? "Pending"}.</p>}
           {phase === "Operate" && <p>Support {status.supportStatus ?? "Pending"}; financial closeout {status.financialCloseout ?? "Pending"}.</p>}

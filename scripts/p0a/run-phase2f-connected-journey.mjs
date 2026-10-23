@@ -10,7 +10,10 @@ import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
 const phase2g = process.env.D5O_PHASE2G === "1";
-const output = resolve(root, phase2g
+const phase2h = process.env.D5O_PHASE2H === "1";
+const output = resolve(root, phase2h
+  ? "docs/architecture/evidence/phase2h-connected-journey-results.json"
+  : phase2g
   ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
   : "docs/architecture/evidence/phase2f-connected-journey-results.json");
 const evidence = { baseline: phase2g
@@ -691,6 +694,67 @@ try {
       assert(record);
       let decision=1;
       const invoke=async(actor,action,role)=>{
+        if(phase2h) {
+          if(!server)server=await startNext(url,anon,service);
+          const browser=await chromium.launch();
+          const page=await browser.newPage({viewport:{width:1440,height:900}});
+          try {
+            await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=%2Fwork`);
+            await page.getByLabel("Email").fill(users[actor].email);
+            await page.getByLabel("Password").fill(users[actor].password);
+            await page.getByRole("button",{name:"Continue to your work"}).click();
+            await page.getByRole("link",{name:/Open workspace/}).first().waitFor({timeout:30000});
+            await page.locator(`[data-workspace="${tenant.workspaceKey}"]`).click();
+            const label=action==="approve-review"
+              ? `Approve ${role} review`
+              : action==="submit-handoff"?"Send approved scope":"Receive approved scope";
+            const taskTitle=action==="approve-review"
+              ? `Review ${role} scope`
+              : action==="submit-handoff"?"Send approved scope":"Receive approved scope";
+            const taskLink=page.locator(".d5o-customer-work-list a").filter({hasText:taskTitle}).first();
+            await taskLink.waitFor({timeout:30000});
+            await taskLink.click();
+            await page.getByRole("heading",{name:"Phase 2D policy qualification"}).waitFor({timeout:30000});
+            await page.getByLabel("Decision reason").fill("Independent review of complete fictional scope");
+            if(action==="approve-review" && role==="commercial") {
+              const direct=async(targetWorkspace,reviewRole,reason)=>page.evaluate(async({targetWorkspace,workId,reviewRole,reason,sourceRevision,decisionRevision})=>{
+                const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${encodeURIComponent(targetWorkspace)}`,{
+                  method:"POST",headers:{"Content-Type":"application/json"},
+                  body:JSON.stringify({workId,command:"define",commandId:crypto.randomUUID(),arguments:{
+                    p_action:"approve-review",p_review_role:reviewRole,p_reason:reason,
+                    p_expected_source_revision:sourceRevision,p_expected_decision_revision:decisionRevision}})});
+                return {status:response.status,body:await response.json()};
+              },{targetWorkspace,workId:record.id,reviewRole,reason,
+                sourceRevision:current.data.revision,decisionRevision:decision});
+              const foreign=prefix==="a"?b:a;
+              const cross=await direct(foreign.workspaceKey,"commercial","Cross tenant decision must be rejected");
+              assert.equal(cross.status,403,`${prefix}:cross-tenant Define:${JSON.stringify(cross.body)}`);
+              assert.notEqual(cross.body.error,"invalid_origin");
+              const wrongRole=await direct(tenant.workspaceKey,"delivery","Wrong role decision must be rejected");
+              assert.equal(wrongRole.status,403,`${prefix}:wrong-role Define:${JSON.stringify(wrongRole.body)}`);
+              assert.equal(wrongRole.body.error,"define_review_role_denied");
+            }
+            const dir=resolve(root,"docs/architecture/evidence/phase2h-browser");
+            mkdirSync(dir,{recursive:true});
+            await page.screenshot({path:resolve(dir,`${prefix}-define-${action}-${role??"handoff"}-before.png`),fullPage:true});
+            if(action==="approve-review" && role==="commercial") {
+              await page.setViewportSize({width:390,height:844});
+              await page.screenshot({path:resolve(dir,`${prefix}-define-commercial-mobile-before.png`),fullPage:true});
+              await page.setViewportSize({width:1440,height:900});
+            }
+            const responsePromise=page.waitForResponse((response)=>response.url().includes("/api/d5o-hosted/customer-work")
+              && response.request().method()==="POST");
+            await page.getByRole("button",{name:label}).click();
+            const response=await responsePromise;
+            assert.equal(response.status(),200,`${prefix}:${label}:${await response.text()}`);
+            await page.getByRole("button",{name:label}).waitFor({state:"hidden",timeout:30000});
+            await page.locator(".d5o-customer-work-list a").filter({hasText:taskTitle})
+              .first().waitFor({state:"hidden",timeout:30000});
+            await page.screenshot({path:resolve(dir,`${prefix}-define-${action}-${role??"handoff"}.png`),fullPage:true});
+            decision++;
+            return;
+          } finally {await page.close();await browser.close();}
+        }
         const response=await call(actor,"d5o_hosted_define_command_v1",{
           p_workspace_key:tenant.workspaceKey,p_presentation_id:record.id,
           p_action:action,p_review_role:role,p_reason:"Independent review of complete fictional scope",
@@ -1893,8 +1957,9 @@ finally {
     setupError:Boolean(evidence.setupError),cleanupVerified:Boolean(evidence.cleanup?.clean)};
   mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
-  console.log(JSON.stringify({...evidence.summary,output:phase2g
-    ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
+  console.log(JSON.stringify({...evidence.summary,output:phase2h
+    ? "docs/architecture/evidence/phase2h-connected-journey-results.json"
+    : phase2g ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
     : "docs/architecture/evidence/phase2f-connected-journey-results.json"}));
   if(evidence.summary.failed||evidence.summary.setupError||!evidence.summary.cleanupVerified) process.exitCode=1;
 }

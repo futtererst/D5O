@@ -1,0 +1,7 @@
+# Phase 2H browser journey
+
+**Not completed.** The dedicated Phase 2H fixture signs in separate finance, operations and administrator actors for each tenant. They execute Define commercial review, delivery review, approved-scope submission and independent receipt through the tenant-neutral browser. The test waits for the actual HTTP 200 response, task disappearance and final accepted handoff on the same Work. The inherited Phase 2G browser checks create Work through the UI and verify final phase readback. The other business transitions still run through authenticated RPC calls from the disposable test harness, so this is not a full Phase 2H browser journey.
+
+This slice exposes current Define review and handoff decisions on the tenant-neutral page, with My Work links to that Work. The route still lacks Define draft authoring, Design release and receipt, Develop scheduling and authorization, Deploy field evidence and customer acceptance, and Operate documentation review and support-acceptance controls. Field workers still use their existing assignment route and cannot enter the tenant-neutral Work directory. A **complete** two-tenant, multi-actor browser journey cannot yet be claimed.
+
+`evidence/phase2h-browser/*define*-before.png` and matching after images capture actual Define decisions, visible My Work responsibility and task removal. Phase 2G-style Work creation and Operate screenshots remain readback evidence; they do not prove the later phase decisions were browser-executed.
