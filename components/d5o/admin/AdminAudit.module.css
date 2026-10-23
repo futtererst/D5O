@@ -1,0 +1,24 @@
+.audit { min-width: 0; }
+.filters { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; }
+.filters label { display: grid; gap: .3rem; min-width: min(100%, 12rem); flex: 1 1 12rem; font-weight: 650; }
+.audit input { min-height: 44px; max-width: 100%; border: 1px solid #bdcfda; border-radius: .45rem; padding: .55rem .7rem; font: inherit; }
+.audit button { min-height: 44px; border: 1px solid #b8cbd7; border-radius: .45rem; padding: .55rem .85rem; background: white; color: #112b42; font: inherit; font-weight: 700; cursor: pointer; }
+.filters > button { background: #d4aa2a; border-color: #b68c19; }
+.audit button:disabled { opacity: .5; cursor: not-allowed; }
+.audit :is(button, input):focus-visible { outline: 3px solid #bf9625; outline-offset: 2px; }
+.events { display: grid; gap: .6rem; }
+.eventHead,.events article { display:grid; grid-template-columns:minmax(8rem,1fr) minmax(9rem,1.25fr) minmax(9rem,1.25fr) minmax(7rem,1fr) minmax(6rem,.7fr); gap:.7rem; align-items:start; }
+.eventHead { padding:.7rem; background:#e8eef2; color:#496579; font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; font-weight:800; }
+.events article { min-width:0; overflow-wrap:anywhere; background:white; padding:.8rem; border:1px solid #d5e0e7; border-radius:.45rem; }
+.events article details { min-width:0; }
+.events article summary { color:#075f83; cursor:pointer; font-weight:700; }
+.events article details p { margin:.5rem 0; }
+.events article details dl { display:grid; gap:.2rem; }
+.events article details dt { color:#526577; font-size:.8rem; }
+.events article details dd { margin:0 0 .4rem; }
+.pagination { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1rem; }
+.error { background: #fff7e5; border: 1px solid #d4aa2a; border-radius: .5rem; padding: .8rem; }
+.error button { margin-left: .5rem; }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media(max-width:900px) { .eventHead { display:none; } .events article { grid-template-columns:1fr 1fr; } .events article details { grid-column:1/-1; } }
+@media(max-width:600px) { .events article { grid-template-columns:1fr; } .events article details { grid-column:auto; } }

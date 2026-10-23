@@ -1,8 +1,8 @@
 /** Synthetic planning data for the local prototype. Scheduling never grants work authority. */
 export type WorkspaceKey = "rybex" | "rotork";
-export type Assignment = { id: string; crew: string; people: string[]; workId: string; packageId: string; week: number; day: number; date?: string; shift: string };
-export type ScheduleWork = { id: string; title: string; site: string; stage?: string; owner?: string; nextAction?: string; blockers: string[]; packages?: { id: string; name: string; status: "planned" | "in progress" | "ready" | "accepted" }[] };
-export type PersonProfile = { name: string; qualifications: string[]; weeklyCapacityHours: number; unavailable?: { week: number; day: number; reason: string }[] };
+export type Assignment = { id: string; crew: string; people: string[]; workId: string; packageId: string; week: number; day: number; date?: string; shift: string; personHoursPerWorker?: number };
+export type ScheduleWork = { id: string; title: string; site: string; stage?: string; owner?: string; nextAction?: string; blockers: string[]; packages?: { id: string; name: string; status: "planned" | "in progress" | "ready" | "accepted" }[]; design?: { packages: { packageId: string; revision: number }[]; releases: { packageId: string; packageRevision: number; status: string }[] } };
+export type PersonProfile = { name: string; displayName?: string; qualifications: string[]; weeklyCapacityHours: number; active?: boolean; bound?: boolean; unavailable?: { week: number; day: number; reason: string }[] };
 export type AvailabilityBlock = { id: string; person: string; week: number; day: number; date?: string; reason: string };
 export type ScheduleActor = { id: string; name: string; role: string };
 export type PublishedSchedule = { id: string; week: number; weekStart: string; draftRevision: number; publishedAt: string; publishedBy: ScheduleActor; assignments: Assignment[]; packageDemands?: PackageCrewDemand[] };
@@ -36,7 +36,7 @@ export function publishedWeekStatus(schedule: SharedSchedule, week: number) {
 export type ScheduleIssue = { kind: "qualification" | "overlap" | "capacity" | "availability" | "crew" | "window" | "configuration" | "work" | "shift"; person?: string; message: string; action: string };
 export type ScheduleRequirement = { packageId: string; qualification: string; minimumPeople: number; estimatedPersonHours: number; fixtureSeedDay: number; priority: "Critical" | "High" | "Normal"; prerequisite: string; crewSchedulable: boolean };
 export type CrewDemandSlot = { date: string; shift: string };
-export type PackageCrewDemand = Omit<ScheduleRequirement, "fixtureSeedDay"> & { workId: string; requiredSlots: CrewDemandSlot[] };
+export type PackageCrewDemand = Omit<ScheduleRequirement, "fixtureSeedDay"> & { workId: string; requiredSlots: CrewDemandSlot[]; designPackageRevision?: number };
 export type ScheduleDemand = PackageCrewDemand & CrewDemandSlot & { configured: boolean; workTitle: string; packageName: string; site: string; packageStatus: string; scheduledPersonHours: number; remainingPersonHours: number; release: string; releaseDetail: string };
 
 /** Keep an adjusted booking and its required slot in the same draft revision. */
@@ -219,10 +219,21 @@ export function personUnavailable(person: PersonProfile, week: number, day: numb
 function packageRelease(record: ScheduleWork | undefined, workPackage: NonNullable<ScheduleWork["packages"]>[number] | undefined) {
   if (!record || !workPackage) return "Work/package unavailable";
   if (workPackage.status === "accepted") return "Package complete";
+  const currentRevision = record.design?.packages.find((entry) => entry.packageId === workPackage.id)?.revision;
+  if (currentRevision && record.design?.releases.some((entry) => entry.packageId === workPackage.id && entry.packageRevision === currentRevision && entry.status === "Accepted")) return "Design release received";
+  if (currentRevision) return "Release held";
   if (record.blockers.length) return "Release held";
   if (workPackage.status === "planned") return "Planning only";
   if (workPackage.status === "ready") return "Awaiting acceptance";
   return "In progress";
+}
+
+function packageReleaseDetail(record: ScheduleWork | undefined, workPackage: NonNullable<ScheduleWork["packages"]>[number] | undefined) {
+  const release = packageRelease(record, workPackage);
+  if (release === "Design release received") return "Deploy accepted the current package revision. Booking publication, worker response, and field-start authorization remain separate.";
+  if (release === "Release held" && record?.design?.packages.some((entry) => entry.packageId === workPackage?.id)) return "The current Design package revision has no accepted Deploy receipt.";
+  if (release === "Package complete") return "This package is already accepted; review whether further work is required.";
+  return record?.blockers[0] ?? (workPackage?.status === "planned" ? "Package planning is incomplete." : "Scheduling does not grant work release.");
 }
 
 export function scheduleDemand(work: ScheduleWork[], assignments: Assignment[], week: number, demands: PackageCrewDemand[] = [...initialPackageDemands("rybex", planningMonday()), ...initialPackageDemands("rotork", planningMonday())], anchor = ""): ScheduleDemand[] {
@@ -240,7 +251,7 @@ export function scheduleDemand(work: ScheduleWork[], assignments: Assignment[], 
       requiredSlots: requirement?.requiredSlots ?? [], date: slot.date, shift: slot.shift,
       configured: Boolean(requirement), workId: record.id, workTitle: record.title, packageName: entry.name, site: record.site,
       packageStatus: entry.status, scheduledPersonHours, remainingPersonHours: Math.max(0, (requirement?.estimatedPersonHours ?? 0) - scheduledPersonHours),
-      release: packageRelease(record, entry), releaseDetail: record.blockers[0] ?? (entry.status === "planned" ? "Package planning is incomplete." : "Scheduling does not grant work release.")
+      release: packageRelease(record, entry), releaseDetail: packageReleaseDetail(record, entry)
     } as ScheduleDemand;
     });
   })).sort((a, b) => {
@@ -272,17 +283,6 @@ export function shiftHours(shift: string): number {
   return Math.max(0, (minutes - (minutes >= 360 ? 30 : 0)) / 60);
 }
 
-function shiftsOverlap(left: string, right: string): boolean {
-  const pattern = /^(\d{2}):(\d{2})[–-](\d{2}):(\d{2})$/;
-  const a = pattern.exec(left);
-  const b = pattern.exec(right);
-  if (!a || !b) return true;
-  const startA = Number(a[1]) * 60 + Number(a[2]);
-  const endA = Number(a[3]) * 60 + Number(a[4]);
-  const startB = Number(b[1]) * 60 + Number(b[2]);
-  const endB = Number(b[3]) * 60 + Number(b[4]);
-  return startA < endB && startB < endA;
-}
 
 export function personHours(assignments: Assignment[], person: string, week: number): number {
   return assignments.filter((item) => item.week === week && item.people.includes(person)).reduce((hours, item) => hours + shiftHours(item.shift), 0);
@@ -292,11 +292,12 @@ export function assignmentAssessment(candidate: Assignment, assignments: Assignm
   const requirement = packageDemand(candidate.packageId, demands);
   const requiredQualification = requirement?.qualification;
   const unqualified = candidate.people.filter((name) => !requiredQualification || !profile.find((person) => person.name === name)?.qualifications.includes(requiredQualification));
+  const unbound = candidate.people.filter((name) => { const person = profile.find((entry) => entry.name === name); return !person || person.active === false || person.bound === false; });
   const unavailablePeople = candidate.people.filter((name) => {
     const person = profile.find((entry) => entry.name === name);
     return person && personUnavailable(person, candidate.week, candidate.day);
   });
-  const collisions = assignments.filter((item) => item.id !== candidate.id && item.week === candidate.week && item.day === candidate.day && shiftsOverlap(item.shift, candidate.shift) && item.people.some((name) => candidate.people.includes(name)));
+  const collisions = assignments.filter((item) => item.id !== candidate.id && item.week === candidate.week && item.day === candidate.day && item.people.some((name) => candidate.people.includes(name)));
   const overlappingPeople = [...new Set(collisions.flatMap((item) => item.people.filter((name) => candidate.people.includes(name))))];
   const withoutCandidate = assignments.filter((item) => item.id !== candidate.id);
   const overCapacity = candidate.people.filter((name) => {
@@ -306,7 +307,7 @@ export function assignmentAssessment(candidate: Assignment, assignments: Assignm
   const record = work.find((item) => item.id === candidate.workId);
   const workPackage = record?.packages?.find((item) => item.id === candidate.packageId);
   const original = assignments.find((item) => item.id === candidate.id);
-  const changed = !original || original.week !== candidate.week || original.day !== candidate.day || original.date !== candidate.date || original.crew !== candidate.crew || original.shift !== candidate.shift || original.people.join("|") !== candidate.people.join("|");
+  const changed = !original || original.week !== candidate.week || original.day !== candidate.day || original.date !== candidate.date || original.crew !== candidate.crew || original.shift !== candidate.shift || original.people.join("|") !== candidate.people.join("|") || original.personHoursPerWorker !== candidate.personHoursPerWorker;
   const requiredDateSlots = requirement?.requiredSlots.filter((slot) => slot.date === candidate.date) ?? [];
   const outsideRequiredDates = Boolean(requirement && candidate.date && requiredDateSlots.length === 0);
   const outsideRequiredShift = Boolean(requirement && candidate.date && requiredDateSlots.length > 0 && !requiredDateSlots.some((slot) => slot.shift === candidate.shift));
@@ -321,6 +322,7 @@ export function assignmentAssessment(candidate: Assignment, assignments: Assignm
     ...(requirement && candidate.people.length < requirement.minimumPeople ? [`This package needs at least ${requirement.minimumPeople} qualified people.`] : []),
     ...(outsideRequiredDates ? [`This booking is outside the Work Package required dates: ${requiredDateList}.`] : []),
     ...(outsideRequiredShift ? [`This booking shift must be ${requiredDateSlots.map((slot) => slot.shift).join(" or ")} on ${candidate.date}.`] : []),
+    ...(unbound.length ? [`Account binding or active profile required: ${unbound.join(", ")}.`] : []),
     ...(unqualified.length ? [`Qualification missing: ${unqualified.join(", ")}.`] : []),
     ...(unavailablePeople.length ? [`Unavailable on ${weekdays[candidate.day] ?? "this day"}: ${unavailablePeople.join(", ")}.`] : []),
     ...(overlappingPeople.length ? [`Already scheduled that day: ${overlappingPeople.join(", ")}.`] : []),
@@ -335,21 +337,22 @@ export function assignmentAssessment(candidate: Assignment, assignments: Assignm
     ...(requirement && candidate.people.length < requirement.minimumPeople ? [{ kind: "crew" as const, message: `${workPackage?.name ?? "This package"} needs ${requirement.minimumPeople} qualified people; ${candidate.people.length} selected.`, action: "Add qualified people before saving." }] : []),
     ...(outsideRequiredDates ? [{ kind: "window" as const, message: `${workPackage?.name ?? "This package"} is booked outside its required dates: ${requiredDateList}.`, action: "Choose a required date or revise the Work Package demand." }] : []),
     ...(outsideRequiredShift ? [{ kind: "shift" as const, message: `${workPackage?.name ?? "This package"} requires ${requiredDateSlots.map((slot) => slot.shift).join(" or ")} on ${candidate.date}.`, action: "Choose a required shift or revise the Work Package demand." }] : []),
+    ...unbound.map((name) => ({ kind: "qualification" as const, person: name, message: `${name} is inactive or has no confirmed account binding.`, action: "Use Workforce administration to activate and bind this person." })),
     ...unqualified.map((name) => ({ kind: "qualification" as const, person: name, message: `${name} does not hold ${requiredQualification ?? "the required package qualification"}.`, action: "Replace this person with someone qualified." })),
     ...unavailablePeople.map((name) => ({ kind: "availability" as const, person: name, message: `${name} is unavailable ${weekdays[candidate.day]}: ${personUnavailable(profile.find((entry) => entry.name === name)!, candidate.week, candidate.day)}.`, action: "Choose another day or replace this person." })),
-    ...collisions.flatMap((item) => item.people.filter((name) => candidate.people.includes(name)).map((name) => ({ kind: "overlap" as const, person: name, message: `${name} is already on ${item.crew}, ${weekdays[item.day]} ${item.shift}.`, action: "Choose another day or replace this person." }))),
+    ...collisions.flatMap((item) => item.people.filter((name) => candidate.people.includes(name)).map((name) => ({ kind: "overlap" as const, person: name, message: `${name} is already booked on ${item.crew}, ${weekdays[item.day]} ${item.shift}.`, action: "Choose another day or replace this person." }))),
     ...overCapacity.map((name) => { const person = profile.find((entry) => entry.name === name); const total = personHours(withoutCandidate, name, candidate.week) + shiftHours(candidate.shift); return { kind: "capacity" as const, person: name, message: `${name} would reach ${total}h against ${person?.weeklyCapacityHours ?? 0}h weekly capacity.`, action: "Reduce the person's workload or choose another qualified person." }; }),
     ...(acceptedPackageChanged ? [{ kind: "work" as const, message: "This package is accepted; its recorded schedule is historical.", action: "Create independently governed follow-on work before planning more execution." }] : []),
     ...(!record || !workPackage ? [{ kind: "work" as const, message: "The linked Work Record or package is unavailable in this workspace.", action: "Open the Work Record and choose a valid package." }] : [])
   ];
-  const releaseDetail = workPackage?.status === "accepted" ? "This package is already accepted; review whether further work is required." : record?.blockers[0] ?? (workPackage?.status === "planned" ? "Package planning has not been completed." : "Scheduling is not work-release authority.");
-  return { requiredQualification, requirement, unqualified, unavailablePeople, overlappingPeople, overCapacity, release, releaseDetail, nextDecision: record?.nextAction ?? "Review Work Record", decisionOwner: record?.stage === "Customer acceptance" ? "Owner representative · customer acceptance" : record?.owner ?? "Work owner", errors, issues };
+  const releaseDetail = packageReleaseDetail(record, workPackage);
+  return { requiredQualification, requirement, unbound, unqualified, unavailablePeople, overlappingPeople, overCapacity, release, releaseDetail, nextDecision: release === "Design release received" ? "Publish the booking, obtain the worker response, then assess field-start readiness" : record?.nextAction ?? "Review Work Record", decisionOwner: release === "Design release received" ? "Crew coordinator and Delivery Leader" : record?.stage === "Customer acceptance" ? "Owner representative · customer acceptance" : record?.owner ?? "Work owner", errors, issues };
 }
 
 export function replacementCandidates(candidate: Assignment, replacedPerson: string, assignments: Assignment[], workspaceKey: WorkspaceKey, work: ScheduleWork[], profile = applyAvailability(peopleProfiles[workspaceKey], initialAvailabilityBlocks[workspaceKey]), demands: PackageCrewDemand[] = initialPackageDemands(workspaceKey, planningMonday())) {
   const required = packageDemand(candidate.packageId, demands)?.qualification;
   if (!required) return [];
-  return profile.filter((person) => person.qualifications.includes(required) && !candidate.people.includes(person.name)).filter((person) => {
+  return profile.filter((person) => person.active !== false && person.bound !== false && person.qualifications.includes(required) && !candidate.people.includes(person.name)).filter((person) => {
     const replacement = { ...candidate, people: candidate.people.map((name) => name === replacedPerson ? person.name : name) };
     const assessment = assignmentAssessment(replacement, assignments, workspaceKey, work, profile, demands);
     return !assessment.unqualified.includes(person.name) && !assessment.unavailablePeople.includes(person.name) && !assessment.overlappingPeople.includes(person.name) && !assessment.overCapacity.includes(person.name);

@@ -2,7 +2,7 @@ import { validatePricingPolicy, type PricingPolicy, type PricingPolicyState } fr
 import type { WorkspaceKey } from "@/components/d5o/platform/work-types";
 import { PrototypeWorkError } from "./store-error";
 
-export type PricingPolicyCommand = { action: "save-draft" | "publish" | "activate"; expectedRevision: number; policy?: PricingPolicy; policyId?: string; policyVersion?: number };
+export type PricingPolicyCommand = { action: "save-draft" | "publish" | "activate"; expectedRevision: number; commandId?: string; policy?: PricingPolicy; policyId?: string; policyVersion?: number };
 export function applyPricingPolicyCommand<T extends PricingPolicyState>(state: T, workspace: WorkspaceKey, actor: { id: string; role: string }, command: PricingPolicyCommand): T {
   if (actor.role !== "admin") throw new PrototypeWorkError("pricing_config_forbidden", 403, "Only a System Administrator may change pricing configuration.");
   const policies = state.pricingPolicies ?? [];

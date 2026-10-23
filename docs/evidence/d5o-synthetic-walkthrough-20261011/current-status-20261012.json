@@ -1,0 +1,1531 @@
+{
+  "schema": "d5o.synthetic-walkthrough.current-status.v1",
+  "generatedAt": "2026-10-15T02:27:21Z",
+  "originalRunImmutable": true,
+  "originalRunSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+  "originalRunCounts": {
+    "Passed": 64,
+    "Failed": 4,
+    "Not run": 45,
+    "Blocked": 0
+  },
+  "currentApplicationSha": "0a9ad0750afdd8759370d850c51d9fd841acfc20",
+  "fixtures": {
+    "handoff": "http://127.0.0.1:61647/work?workspace=rybex; isolated database 57021",
+    "delivery": "http://127.0.0.1:61643/work?workspace=rybex; isolated database 56621",
+    "support": "http://127.0.0.1:61645/work?workspace=rybex; isolated database 56821",
+    "return": "http://127.0.0.1:61648/work?workspace=rybex; d5o-handoff-return-20261012; disposable API 57121",
+    "jobFinanceClone": "http://127.0.0.1:61649/work?workspace=rybex; d5o-service-mutable-20261012; disposable API 57221",
+    "partialServiceClone": "http://127.0.0.1:61650/work?workspace=rybex; d5o-partial-service-mutable-20261012; disposable API 57421"
+  },
+  "notes": [
+    "I06-I09 current-build follow-ups do not rewrite the 113 original result rows.",
+    "B03 evidence maps to Operations Define receipt, not the described Commercial intake qualification.",
+    "B10 and B11 original role labels are reversed relative to their screenshots.",
+    "H09 and other compound cases require the full stated outcome; read-only subchecks do not count as payment mutation.",
+    "Current-build checks below are separate from the latest historical case result. A read-only reload on 9973b08 does not redated an earlier browser mutation."
+  ],
+  "cases": [
+    {
+      "id": "A01",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Fictional PM signed into normal /work landing on mutable 61643, displayed Build fccecd4dc99f, and saw seven actual action-needed cards including two distinct package turnover tasks; screenshot mutable-delivery-pm-start.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "A02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Worker browser My schedule showed only two assigned bookings and assigned-work links; no administrative navigation.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "A03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Finance browser My Work showed Finance role actions and no administrator control in primary navigation.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "A04",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "same-browser authenticated account switch",
+      "evidence": "PM signed out through account menu, Finance signed in, selected Rybex workspace, and fresh My Work showed Finance identity, no PM identity and four role-scoped task cards.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "A05",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+      "mode": "authenticated PM browser; read-only API probe",
+      "evidence": "On isolated 61647, Rybex role actions GET returned 200; same signed-in PM requesting Rotork role actions returned 403 workspace_forbidden. No command sent.",
+      "remainingGap": "Current-build cross-tenant queue read verified; cross-tenant mutation not rerun."
+    },
+    {
+      "id": "A06",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "A07",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "B01",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM saved Discover intake for canonical Work rybex-2fad0999a8f24514a7188e98f0720149; fresh session retained customer/site/need and exact Work identity.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted the fictional intake; independent receiver saw exact source in My Work.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": null,
+      "mode": "evidence reconciliation",
+      "evidence": "Original B03 screenshot define-receiving.png shows Operations receiving Define handoff, not Commercial qualifying Discover intake.",
+      "remainingGap": "Described Commercial intake decision is not established by B03 capture; preserve original row as historical record."
+    },
+    {
+      "id": "B04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted exact qualified Discover handoff revision 1 through My Work; independent Operations receiving task appeared. Browser POST 200, screenshots final-define-handoff-submitted.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B05",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Independent Operations account accepted Discover-to-Define handoff revision 1 through My Work. Fresh PM session showed Prepare definition; screenshot final-define-handoff-received.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B06",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM used structured investigation, two requirements, two deliverables and two linked acceptance criteria, agreement, owned interface, milestone, dependency, risk and exclusion in Define task. Each draft save was allowed to finish; fresh browser session retained the entries and 12/12 assessment. Screenshot final-define-ready-assessment.png. Earlier rapid harness exit had lost pending saves and is not counted as a product defect.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B07",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted exact Define revision 1 through My Work; typed browser command returned 200 and independent Commercial and Delivery review cards appeared. Screenshot final-define-submitted.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B08",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Separate Commercial account returned revision 1 with specific fictional correction basis through My Work; typed browser command returned 200. Fresh PM queue showed Prepare definition correction. Screenshot final-define-commercial-return.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B09",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM started corrected revision 2, clarified customer outage and acceptance coordination, saved the draft and resubmitted. Original return remained in revision history; typed browser commands returned 200. Screenshot final-define-corrected-resubmitted.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "B10",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "historical authenticated browser capture",
+      "evidence": "final-define-commercial-approve.png shows Commercial reviewer approving revision 2; original row incorrectly names Operations.",
+      "remainingGap": "Role label corrected in ledger; not retested on current build."
+    },
+    {
+      "id": "B11",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "historical authenticated browser capture",
+      "evidence": "final-define-operations-approve.png shows Operations reviewer approving revision 2; original row incorrectly names Commercial.",
+      "remainingGap": "Role label corrected in ledger; not retested on current build."
+    },
+    {
+      "id": "B12",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted exact approved Define revision 2 into Develop and separate Operations account accepted from its My Work task. Both browser typed commands returned 200; receiver link became decided and PM queue showed Prepare solution. Screenshots final-develop-transfer-pm.png and final-develop-transfer-operations.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C01",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM prepared and submitted one selected two-zone solution with both confirmed requirements and rationale via My Work on build fccecd4dc99f; alternatives comparison was not exercised (C01B).",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C01B",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "C02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Independent Operations returned submitted solution revision 3 for supplier fallback; return and correction card appeared after fresh sign-in.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM corrected option/material risk, reselected and resubmitted revision 5; old return remained historical.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations independently approved solution revision 5 from My Work; PM pricing preparation task appeared.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C05",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM saved fictional USD detailed estimate revision 1: 64 labor hours and two sourced manual-quote kits; policy showed included cost USD 18,565.60, sell USD 26,522.29, 30% margin.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C06",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted estimate revision 1; separate Operations pricing task appeared.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C07",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations approved exact pricing revision 1 from My Work; PM proposal preparation appeared.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C08",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM saved and submitted proposal revision 1 linked to approved estimate and Define basis; scope, assumptions, exclusions and fictional terms visible.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C09",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations independently approved exact proposal revision 1 from My Work (typed command 200).",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C10",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM recorded fictional proposal submission and Awarded outcome with source FICTIONAL-AWARD-DHB-2026-01 through full Develop UI. No external communication or retained customer award PDF. PM queue lacked this action; see finding F-04.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "C10B",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "C11",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM submitted exact Develop-to-Design handoff revision 1 and Operations accepted it via Design full-record UI (typed command 200); My Work receiving card was absent; see F-05.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D01",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM created canonical North zone package wp-9cca1c2e5faa4135b65a85eb79857159 from accepted Design source and enriched draft rev2 with 10 control points, material, requirements, MOP, safety/access and verification.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM created distinct South package wp-5bf213e536d84e188427fcd0126acaf0, also rev2 and 10 control points. Package dependency behavior was not exercised separately.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D02B",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "D03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM created and submitted exact fictional MOP/document and package revision for independent discipline review for both packages.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Separate Operations account approved each document and configured Engineering, Delivery, Safety, Quality and Procurement reviews for both package revisions.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D05",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM issued documents and authorized exact Design releases c8684d60-c91b-4720-afb1-bb0d610bdabc (North) and c9bdcffa-7149-43c6-896a-85e2ef854542 (South) after Ready for release assessment.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D06",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations independently accepted each exact release in Deploy; fresh signed-in reload showed accepted receipts.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "D07",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "D08",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "D09",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "D10",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "E01",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated administrator browser",
+      "evidence": "Created fictional stable roster identity Fictional Alex Unbound 2026 with Controls service and 32 weekly hours from Workspace configuration; POST 200; reload retained profile.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "E02",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "E03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Scheduling demand listed Controls service and minimum one qualified person; Operations selected qualified account-bound Jordan Lee and Samira Khan for the exact two packages. Negative ineligibility case is E03B, not exercised.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E03B",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated scheduler browser",
+      "evidence": "On Mon 2026-10-12 demand, fictional Alex and existing Mara were labeled no confirmed binding and disabled for selection; overlapping qualified workers were separately labeled shift overlap.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "E04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations published unique North/South bookings on Wed 2026-10-14 07:00-15:30; read-only state tied crew-rybex-9/10 to exact package IDs and publication 4d225a9b-c7b3-4983-bc00-e78bc8cecbbb.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E05",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "E06",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Worker accepted booking through confirmation dialog; reload showed 0 awaiting and accepted response. UI states booking does not authorize start.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E07",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "After separate worker acknowledgments, Operations assessed and authorized field start for both current accepted release revisions via browser; read-only reload retained Authorized permits. Booking itself did not grant start.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E08",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Assigned Jordan reported North 5/10 control points and 4h with fictional PNG. Browser showed Local only, synchronized Draft, Submitted; supervisor review did not establish full completion.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E09",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Supervisor reviewed current North corrective 5/10 and South 10/10 reports from My Work; fresh role queues removed the exact report cards and completion showed reviewed 10/10 after North correction.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E10",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser + read-only state",
+      "evidence": "Jordan and Samira assigned-work reports referenced the current Design release/package revision; report/release linkage survived fresh browser session.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E11",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "E12",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "E13",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Quality independently verified failed North initial alarm test; exact completion card remained blocked and failure stayed historical after later retest.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E14",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Jordan submitted corrective remaining 5/10 report plus linked passing North retest; Quality independently verified retest and second North/South requirements. Fresh queues removed inspection cards.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E15",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations independently recorded current North and South completion at released 10/10 control points each after report and passing inspections; prior failure remained in history.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E16",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM assembled exact package turnovers; independent Operations-role reviewer retained fictional North/South PDFs, downloaded matching SHA-256 bytes and accepted exact package scopes. South-only acceptance did not produce whole-work acceptance.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E17",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Different Operations account independently received South and North package acceptances through My Work (each typed command 200).",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E18",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Second package and North corrective work reached independently reviewed 10/10 with passing verification; acceptance and whole-work receipt followed only after both packages qualified.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E19",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Independent Operations-role reviewer recorded whole-work acceptance against exact two-package scope using fictional retained PDF; downloaded SHA-256 a2a16343673cecd9759a4054363164070ed05829872a214c8d5abcaf96804cd0 matched source.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E20",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Separate Operations account independently accepted exact whole-work receipt via My Work (typed command 200).",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E21",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "After each committed turnover/acceptance/receipt, the saved task displayed ACTION CHANGED and did not select another package; duplicate command replay is separate E21B and not exercised.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E21B",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "F01",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Operations linked exact whole-work acceptance a29449fd and two turnovers to Operate; residual as-built/inspection obligations retained.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Separate operations_leader account accepted support ownership after first Operations actor linked handoff; actors differ.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Support profile recorded explicit fictional contact, escalation, intake, no warranty/no paid agreement, and residual document owner.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser + authenticated API read",
+      "evidence": "Operations activated support from Ready assessment. Authenticated read after reload: activation Active, Operate Finance Pending.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F05",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "PM supplied four exact turnover-linked private PDFs; each authorized Operations retrieval matched local SHA-256 bytes.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F06",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "Browser",
+      "evidence": "Separate Operations reviewer recorded four document reviews; authenticated reload showed four Reviewed obligations with original source identities retained.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F07",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Current-cycle covered request e5f55b03-bb35-4bad-acb8-f25daa720969 was resolved by PM only after linked accepted service job, then independently closed by Operations; reload retained Closed.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "F08",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "G01",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Operations approved fictional service agreement, triaged exact asset/category as Covered, PM drafted and submitted bounded service execution basis; independent Operations accepted current request cycle and coverage. Agreement had one duplicate unapproved Draft from harness rerun; it did not provide authority.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "G02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM created child Work rybex-f464cbc1c4aa4200bca6d99c7142135c and package wp-fa72a92decbb4c4aabecea249a5b9a8e from accepted basis; independent Design reviews, PM exact release and Operations Deploy receipt all returned 200 and persisted.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "G03",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Qualified Jordan Lee accepted published service shift; separate supervisor authorized field start. Jordan submitted 1 service visit, 4 hours and retained fictional PNG. Supervisor reviewed report, Quality reviewed evidence and verified passing requirement inspection; independent completion reviewed 1/1.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "G04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "PM turnover, independent fictional PDF-backed scoped and whole acceptance (SHA-256 exact retrieved bytes), Operations receipts, Quality linked execution, Operations completed job, PM reviewed resolution and independent Operations closed current-cycle request; four Operate commands returned 200. Job completion and request closure remained distinct.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "G05",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "G06",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "G07",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "G08",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H01",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "Finance full ledger showed USD 26,522.29 awarded/revised contract, USD 500 incurred Equipment source, USD 1,500 remaining-cost forecast, accepted North/South quantity and retained bill histories.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "H02",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "After fictional invoices totaling USD 26,522.29 and USD 1,000 paid, full ledger showed USD 25,522.29 outstanding while Finance stayed Pending.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "H03",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H04",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "separate authenticated fictional PM and Finance browsers; retained private PDF retrieval",
+      "evidence": "PM prepared service Finance basis; Finance independently held operational-only terms; PM uploaded and retrieved 1,309-byte fictional PDF SHA-256 d61d079201ff2c247c1a7d846e998614a0f2591dc0eb43b2fb9b541c5d3dba26; PM recorded exact USD 524.65 fixed-fee/Net 30 supplement and reassessed; Finance independently marked Ready. The Hold remains historical. No invoice was inferred from readiness.",
+      "remainingGap": "Fictional terms and signer authority only; current-build invoice journey is a separate new check."
+    },
+    {
+      "id": "H05",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H06",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H07",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H08",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "I01",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "0a9ad0750afdd8759370d850c51d9fd841acfc20",
+      "mode": "read-only authenticated PM, Operations and auditor browsers",
+      "evidence": "Displayed Build 0a9ad0750afd on isolated 61651. PM My Work routed East Campus asset identity preparation; Operations showed it waiting; auditor browse showed the committed delivery receipt and asset warning and opened the exact Overview. Work hub and Portfolio showed the same East blocker and prior-scope acceptance warning. Handoff showed East 2/2 current releases, completions and scoped acceptances, exact Operations receipt, no support owner and no activation. Insights showed the asset blocker, prior-scope hold and received service visit without old Design preparation text. Evidence Library named its shared-reference boundary and searched East Campus to its owning Work Record; mobile width 390 px had no horizontal overflow. No decision or file was changed.",
+      "remainingGap": "Retained private decision documents are not indexed as shared references; authorized retrieval remains in the exact phase panels. This was synthetic projection verification, not a file-byte or real-user usability check."
+    },
+    {
+      "id": "I02",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser read-only sweep",
+      "evidence": "Admin opened 13 routed browsing surfaces without application error; Finance had no general admin controls. This is a render/navigation sample, not qualification of every administrative action.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "I03",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "I04",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser responsive sweep",
+      "evidence": "PM and worker 390px layouts had no horizontal overflow; keyboard Back to tasks from Finance task returned to My Work after Portfolio. Sampled task content, not exhaustive accessibility.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "I05",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser",
+      "evidence": "Post-decision exact links for turnover, package acceptance, package receipt, whole-work acceptance and receipt showed ACTION CHANGED and a return to refreshed My Work, with no substitute package.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "E16C",
+      "originalResult": "Passed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "authenticated browser plus authorized document retrieval",
+      "evidence": "On build fccecd4, PM assembled turnover ca42e506-8be4-4b0b-b8eb-0c03384e76ba; Operations uploaded evidence 6ea310ab-7007-4d08-9c63-c2a721e142b4 and recorded a conditional outcome. Retrieved 2,128 PDF bytes matched SHA-256 84388D52FC813D1941FC10F77FF102B75CC9E4973C52D2D08766CE34D0DF70E4. Fresh PM queue had zero false South turnover cards and one valid North card; screenshot final-conditional-queue-fixed.png.",
+      "remainingGap": "Historical result; not retested on current build"
+    },
+    {
+      "id": "I06",
+      "originalResult": "Failed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+      "mode": "authenticated Finance browser; read-only",
+      "evidence": "screenshots/i06-billing-waiting-28a.png; historical bill revision 2 labeled Waiting with no retained current-scope basis and PM correction owner.",
+      "remainingGap": "No new bill review attempted; typed guard was previously observed."
+    },
+    {
+      "id": "I07",
+      "originalResult": "Failed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+      "mode": "authenticated PM browser; read-only",
+      "evidence": "screenshots/i07-committed-work-hub-28a.png; hydrated Work hub, Work Record and Portfolio showed committed Operate position and historical legacy observations.",
+      "remainingGap": "Sampled accepted job only."
+    },
+    {
+      "id": "I08",
+      "originalResult": "Failed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+      "mode": "separate authenticated PM and Operations browsers; business decisions",
+      "evidence": "screenshots/i08-customer-submission-decided-28a.png and screenshots/i08-design-receipt-decided-28a.png; proposal revision 1 submitted by PM, fictional award recorded separately, handoff revision 1 accepted by independent Operations; both saved links became decided after reload.",
+      "remainingGap": "Return/correction branch not exercised; package-planning next-owner queue card absent."
+    },
+    {
+      "id": "I09",
+      "originalResult": "Failed",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+      "mode": "authenticated Operations browser; read-only",
+      "evidence": "screenshots/i09-package-card-28a.png; North zone controls installation as-built card names exact package and opens North document.",
+      "remainingGap": "One pending North card sampled; South card not retested on this build."
+    },
+    {
+      "id": "D11",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "D12",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "G09",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "G10",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H09",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "7b1220a3e9528cc619b1d19d737c0c9d77030921",
+      "mode": "separate authenticated fictional Finance browser on disposable changed-job clone; current-build read-only reload",
+      "evidence": "Finance recorded FICTIONAL-POST-CLOSEOUT-CLONE-20261012 USD 100 through focused payment task (HTTP 200). Whole job remained Finance Closed, billed USD 109,977.15, paid rose USD 25,000 to USD 25,100, outstanding fell USD 84,977.15 to USD 84,877.15. Same invoice unpaid USD 29,888.57 on Build 9973b08 after reload; screenshots/current-post-closeout-clone-997.png. Original source fixture retained USD 25,000 history.",
+      "remainingGap": "Positive mutation occurred on earlier 7b1220 application code; persistence and focused UI were read on 9973b08. No additional payment was recorded on current build."
+    },
+    {
+      "id": "E22",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H10",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H11",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "PM browser drafted North 10 control points USD 12,000 and South 10 control points USD 14,522.29 with exact accepted release and reviewed evidence links; submitted both via typed commands.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "H12",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "Separate Finance browser opened each bill from My Work, reviewed exact revisions independently, and cards disappeared after each decision.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "H13",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "Finance browser recorded fictional North and South invoice events FICTIONAL-INVOICE-DHB-001/002, totaling USD 26,522.29; no invoice was sent.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "H14",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Passed",
+      "latestTestedSha": "6f668f0ed45ff98cf79965568cb029f71b494e8a",
+      "mode": "authenticated fictional browser + read-only ledger reload",
+      "evidence": "Finance browser recorded fictional USD 1,000 payment FICTIONAL-PAYMENT-DHB-001 on North invoice; reload showed USD 11,000 North and USD 14,522.29 South outstanding, Finance Pending.",
+      "remainingGap": "Follow-up on 6f668f0ed45f; not retested on current 28aeee2 build."
+    },
+    {
+      "id": "H15",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "id": "H16",
+      "originalResult": "Not run",
+      "originalTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "latestResult": "Not run",
+      "latestTestedSha": "fccecd4dc99f68b66c42e50d9aaf9c8299ca609b",
+      "mode": "original run",
+      "evidence": "",
+      "remainingGap": "No execution on current build"
+    },
+    {
+      "caseId": "I19 exact Design document custody and correction",
+      "applicationSha": "76291ef5dfe7690d71b40ada153cb7e60dee4ed6",
+      "mode": "separate authenticated fictional Operations and PM browsers on disposable 61648; direct authorized PDF-byte retrieval and read-only committed database inspection",
+      "result": "Passed",
+      "evidence": "Operations returned source-only document 5c15e2a7-f007-4480-8f8d-da8d50861cc0@1 with retained reason (HTTP 200); old link became stale. PM created @2, uploaded fictional 729-byte PDF receipt a3e62833-7126-4a69-891a-968c1c050f83, submitted @2 (200). Operations retrieved exact bytes (200, SHA-256 4aedfd6ec44abe5164fd338be41433c5e7b8b92596bced55cdff34966d62af19) and approved @2 (200); PM issued @2 (200). Reload/read-only DB retains @1 Returned and @2 Issued for use. Worker document GET denied 403. No Design release exists."
+    },
+    {
+      "caseId": "I20 ordered candidate migration replay",
+      "applicationSha": "76291ef5dfe7690d71b40ada153cb7e60dee4ed6",
+      "mode": "fresh empty disposable Supabase database d5o-pr2-replay-20261013; ordered CLI migration reset and read-only grant/version probes, no business browser actions",
+      "result": "Passed",
+      "evidence": "79 candidate files replayed from empty local database, last version 20261013111633. Private design_document_evidence table exists; evidence registration EXECUTE false for authenticated and true for service_role. The populated 61648 pilot received only this final forward migration incrementally. No shared or production migration applied."
+    },
+    {
+      "caseId": "I21 issued-document package-preparation routing",
+      "applicationSha": "8772528739df3c167ccfb976bc56105fdf86889b",
+      "mode": "authenticated fictional PM browser on disposable 61648, exact My Work task; read-only stale-link check",
+      "result": "Passed",
+      "evidence": "After independent issue of document 5c15e2a7-f007-4480-8f8d-da8d50861cc0@2, PM My Work initially offered Request package review on Draft package rev 3 despite no governing document link. The corrected build offered Link issued document to package. PM followed that exact card, selected @2 and saved package rev 4 through the typed Design command (HTTP 200). Reload showed Request package review for rev 4. Saved rev-3 link showed changed/completed, no substitute package controls, and return to My Work. Review and release were subsequently exercised in I22."
+    },
+    {
+      "caseId": "I22 revision-specific package reviews and Design release",
+      "applicationSha": "b37ed3c55e15cd4cc32efc54eedddc71ec52a5d6",
+      "mode": "separate authenticated fictional PM, Operations and Quality browsers on disposable 61648; read-only committed-state inspection",
+      "result": "Passed",
+      "evidence": "PM requested Engineering review for package wp-671ae5c6b3f4437f88705c386560c2db revision 4. Operations retrieved the exact retained PDF from the focused review task and approved Engineering. PM requested Delivery, Safety, Quality and Procurement; Operations approved Delivery, Safety and Procurement, while a separate fictional Quality account approved Quality. All five revision-4 reviews were Approved in committed state. PM's first release command rejected dated_crew_demand_required (409) with zero releases; PM refreshed dated demand for revision 4, rechecked readiness and issued release 4bd2f56a-17b9-45ab-9a88-8d9e3d335f3b (200), containing exact package revision 4 and document @2. Configured synthetic Operations membership covers several disciplines; this does not establish production specialist qualification."
+    },
+    {
+      "caseId": "I23 independent exact Design release receipt",
+      "applicationSha": "d2aee0e6642484a887af573264d7a03371bfdce0",
+      "mode": "separate authenticated fictional Operations and PM browsers on disposable 61648; actual private PDF-byte retrieval and typed receipt response",
+      "result": "Passed",
+      "evidence": "Operations My Work exposed exact Receive Design release, package revision 4 and release 4bd2f56a-17b9-45ab-9a88-8d9e3d335f3b. The focused Deploy task showed scope and the issued PDF. Operations retrieved matching SHA-256 4aedfd6ec44abe5164fd338be41433c5e7b8b92596bced55cdff34966d62af19 and accepted independently through the typed command (200). The card disappeared after reload; its saved link became stale without controls, and the PM issuer had no Accept control. Read-only committed state showed release Accepted. Receipt did not publish a booking or authorize field start."
+    },
+    {
+      "caseId": "I24 accepted release to published worker response",
+      "applicationSha": "1c88c9a259a243a128455b5f5b4da00c19b7cdd8",
+      "mode": "separate authenticated fictional Operations and worker browsers on disposable 61648; positive UI commands and reloads",
+      "result": "Passed",
+      "evidence": "The schedule previously labeled the accepted current revision Release held using a legacy Work blocker. Corrected projection displayed Design release received while preserving publication and field-start separation. Operations published the existing 2026-10-16 fictional one-person Controls service booking through Worker responses; reload showed Shared with workers and one awaiting response. Nate Walker's worker-only My crew schedule showed the exact package and Accept booking; he accepted with confirmation and reload showed Accepted by you, zero awaiting. Operations Deploy readiness subsequently displayed Ready for authorized start with no permit yet. Field start and future-dated actual work were not recorded."
+    },
+    {
+      "caseId": "I25 assigned-worker issued Design PDF retrieval",
+      "applicationSha": "ec47633b79c797e21bc73317eff14f382c2def5f",
+      "mode": "authenticated fictional worker and executive browsers on disposable 61648; private byte retrieval and negative route reads",
+      "result": "Passed",
+      "evidence": "The worker's assigned package initially listed the governing wiring PDF only as a document ID with no link. The corrected field view offers the exact released revision. Nate Walker followed the assignment and retrieved 729 private PDF bytes (200), SHA-256 4aedfd6ec44abe5164fd338be41433c5e7b8b92596bced55cdff34966d62af19. Other-document and other-tenant requests returned 403 design_document_scope_denied; the same URL from a read-only executive session returned 403. Server access requires the signed-in worker's current published assignment, matching accepted release/package revision and retained issued document snapshot. Field start was not granted."
+    }
+  ],
+  "newCases": [
+    {
+      "id": "I10",
+      "title": "Accepted Design receipt lacks PM package-planning task",
+      "originalFindingSha": "28aeee2bb4037a450ab48049569f588021fb23b8",
+      "latestResult": "Passed",
+      "latestTestedSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
+      "mode": "separate authenticated PM browser for package creation/correction; API and DB for adversarial probes",
+      "evidence": "screenshots/i10-package-review-next-26a.png; PM opened exact accepted handoff revision 1, created package wp-e34a99042b894dbbafd110b5f984ebd8, corrected a malformed first engineering draft through My Work, saved revision 2 and reached Request package review after reload. Saved engineering link became changed; Operations direct PM task showed no substitute.",
+      "remainingGap": "Package review request/independent decision not yet committed. Separate return/correction case I11 remains Not run."
+    },
+    {
+      "id": "I11",
+      "title": "Returned Design handoff correction and independent receipt",
+      "latestResult": "Passed",
+      "latestTestedSha": "d38b02614ca93654c7c68d10418252ed153342c7",
+      "mode": "separate authenticated fictional Operations and PM browser actions; authenticated API/DB boundary probes; current-build reload",
+      "evidence": "In separate 57121 fixture, Operations returned Design handoff revision 1; PM My Work corrected/resubmitted revision 2 with retained clarification; Operations independently accepted revision 2. Four events and four receipts retained. PM My Work opened Prepare Work Package and created wp-671ae5c6b3f4437f88705c386560c2db through authoritative command; reload shows Engineer Work Package. Current Build 9973b08 screenshot i11-package-after-return-997.png. Saved PM/Operations links show changed task at 390px without substitute.",
+      "remainingGap": "The package is created but engineering review/release was not continued in this new return fixture."
+    },
+    {
+      "id": "I12",
+      "title": "Service Finance reassessment exact task omitted its preparation control",
+      "originalFindingSha": "e90193c460a105e9bdb6f631ed6a5a05db6e7b30",
+      "latestResult": "Passed",
+      "latestTestedSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "separate authenticated fictional PM and Finance browser actions",
+      "evidence": "My Work Service Finance reassessment link had focusKind Service Finance reassessment but the PM form filtered it out. The focused form now renders; PM prepared current terms-bound revision 3 (HTTP 200), Finance independently marked revision 4 Ready (HTTP 200), and review card disappeared after reload.",
+      "remainingGap": "No real customer authority; fictional retained terms only."
+    },
+    {
+      "id": "I13",
+      "title": "Partially covered service invoice, payment and sourced cost correction",
+      "latestResult": "Passed",
+      "latestTestedSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "separate authenticated fictional PM/Finance browsers; read-only local DB identity checks; authenticated API negative probes",
+      "evidence": "PM drafted and submitted; Finance reviewed and issued invoice bdc3a384-6155-437e-baa2-598d18ab29d4 / SVC-BDC3A384-615 for USD 524.65; Finance recorded fictional payment ede5d8d2-663f-4262-8433-a86baa8388f8 USD 100. Reload: USD 424.65 outstanding. Finance recorded cost fee16221-e5bd-48a3-97aa-0609f4d2ea78 USD 75, reversal 66539ef4-8da5-4be8-a444-f41dc17ac1cd and replacement 152e192d-6f3e-46f2-96c2-db36ab071ad9 USD 70. Provisional uncovered contribution USD 454.65; final margin unknown. Screenshot current-partial-service-finance-997.png.",
+      "remainingGap": "No invoice delivery, money collection, external cost custody, cost-completeness certification or covered agreement revenue allocation."
+    },
+    {
+      "id": "I14",
+      "title": "PM release-preparation task disappears after independent Engineering review",
+      "latestResult": "Passed",
+      "latestTestedSha": "1f3d5162502452521a904ec965b205abcb860fd0",
+      "mode": "separate authenticated fictional PM and Operations browsers on disposable 61648; read-only release assessment",
+      "evidence": "PM My Work saved engineering revision 1 for wp-671ae5c6b3f4437f88705c386560c2db and requested Engineering review 863a3373-d72a-4484-b9ce-c9810371097c. Independent Operations approved exact revision 1 through its My Work card. PM reload then showed no task for that package, while full Design readiness retained mandatory safety, permit, window, resource, material, document and four discipline-review blockers. Screenshots i14-pm-queue-gap-997.png and i14-release-blockers-997.png.",
+      "remainingGap": "The original queue omission on Build 9973b08 remains documented. Build 1f3d516 adds exact PM release preparation and governed-control links; no release or field change was attempted, so D07/E22 remain Not run."
+    },
+    {
+      "id": "I15",
+      "title": "Independent governing-document review is missing from My Work",
+      "latestResult": "Passed",
+      "latestTestedSha": "7db8c25d7f910658fedd241d84467a58b4557b4c",
+      "mode": "fictional PM document draft/submission and separate Operations browser task discovery; stale/wrong-role links",
+      "evidence": "PM saved and submitted document 5c15e2a7-f007-4480-8f8d-da8d50861cc0 revision 1; Operations My Work originally showed zero actions. The new exact task appeared on Build 7db8210 and persisted on Build 7db8c25. Stale sourceRevision=0 showed a changed-task message, and PM could not open the Operations decision. Screenshot i15-document-review-7db8.png.",
+      "remainingGap": "The fictional source is only a drawing reference with no retained private bytes. No approval or issue was recorded; the source cannot be inspected from the task and the current document command has no return-for-correction outcome. Positive document review and release remain Not run."
+    },
+    {
+      "id": "I16",
+      "title": "Returned package incorrectly routes straight back to review request",
+      "latestResult": "Passed",
+      "latestTestedSha": "7db8c25d7f910658fedd241d84467a58b4557b4c",
+      "mode": "separate authenticated PM and Operations browsers on the disposable return fixture",
+      "evidence": "PM saved package revision 2 with one approved Define requirement, safety/access/MOP/rollback, material lines and dated demand. Operations returned Engineering review of exact revision 2 for missing issued document and a material-buffer miss. Before the fix My Work offered Request package review again. Build 7db8c25 showed Correct returned package, the retained reason, exact revision 2 and exact package controls. PM corrected the forecast to 2026-10-13 in revision 3; reload cleared only the material-buffer blocker and retained document/review holds.",
+      "remainingGap": "Revision 3 remains a draft awaiting governing document and fresh discipline reviews; no release or execution was claimed."
+    },
+    {
+      "id": "I17",
+      "title": "Draft crew booking is rejected until Design release despite planning UI",
+      "latestResult": "Passed",
+      "latestTestedSha": "15f41eb40e72952f405bad571ff476ba8081fba2",
+      "mode": "authenticated fictional PM, Operations and worker browsers on disposable 61648; typed command and read-only revision inspection",
+      "evidence": "Initial draft save correctly rejected current_demand_coverage_required because the corrected package was revision 3 but the crew demand still cited revision 2. PM refreshed that same demand through the browser (HTTP 200). Operations then saved the qualified Nate Walker draft through the browser (HTTP 200), schedule revision 2; reload showed one planned 8h shift and Release held. Publication from Worker responses rejected HTTP 409 release_changed_before_publication. The worker browser showed no booking after load. No worker response or field authorization exists.",
+      "remainingGap": "Draft planning works. Publication, acknowledgment and field start remain gated by an accepted current release, which this fixture lacks. Fresh ordered 78-file migration replay is not yet qualified due Docker subnet exhaustion; only this forward migration was applied to the disposable pilot."
+    },
+    {
+      "id": "I18",
+      "title": "Unpublished draft is not worker assignment or field authority",
+      "latestResult": "Passed",
+      "latestTestedSha": "15f41eb40e72952f405bad571ff476ba8081fba2",
+      "mode": "separate authenticated fictional Operations and worker browsers; held-release typed publication response",
+      "evidence": "Operations saw one draft booking and a Release held status. Publish this week returned HTTP 409 release_changed_before_publication with No shared bookings unchanged. The worker My crew schedule showed zero awaiting and no draft crew after loading; the corrected copy says a booking appears only after publication.",
+      "remainingGap": "Positive publication and worker acknowledgment need a legitimately accepted Design release and remain Not run on this fixture."
+    },
+    {
+      "id": "I26",
+      "title": "Future published shift must not authorize field start early",
+      "originalFindingSha": "ec47633b79c797e21bc73317eff14f382c2def5f",
+      "latestResult": "Passed",
+      "latestTestedSha": "fe8cf58c4f3552ed533b432c0b4ac066a6be3e28",
+      "mode": "rollback-only authenticated database probe before fix; authenticated Operations browser and API after fix; fresh disposable migration replay",
+      "evidence": "Before fix, the Operations authenticated database command WOULD_AUTHORIZE the 2026-10-16 published booking on 2026-10-13 in a rolled-back transaction. After forward migration 20261013140000, the same exact current revisions rejected field_shift_not_current. Build fe8cf58c4f35 browser shows Hold for resolution, booked 2026-10-16 07:00-15:30 and pinned America/New_York, with no permit. Authenticated API probes returned future-shift 409 field_shift_not_current, wrong role 403 field_start_authority_required, stale source 409 stale_field_start_basis and other tenant 403 workspace_forbidden. Work 23, Design 31, schedule 4, Deploy 0, permits 0 and events 0 remained unchanged. At 390px the authenticated Operations browser showed the start button disabled, the correct hold, and no horizontal overflow; screenshot screenshots/i26-future-shift-held-mobile.png.",
+      "remainingGap": "Positive start on the actual shift remains Not run; no field actuals or completion are claimed."
+    },
+    {
+      "id": "I27",
+      "title": "Positive current-shift field-start authority on a separate two-package pilot clone",
+      "originalFindingSha": "fe8cf58c4f3552ed533b432c0b4ac066a6be3e28",
+      "latestResult": "Passed",
+      "latestTestedSha": "3134017af29945267e45a76f136732c2f875d0a9",
+      "mode": "separate authenticated fictional PM, Operations-leader and worker browsers on disposable 61651/57621; read-only database state and private PDF byte comparison",
+      "evidence": "The isolated 80-migration target received a local-only clone of fictional Work/Auth/Storage, including matching private PDF bytes. PM created survey package wp-203522d0b30a4b1680f69e6783fe4df2, saved engineering and Oct 13 09:00-16:00 demand, uploaded private survey PDF d97a2c5a-c30e-4740-88c4-888c7fd9e70d (SHA-256 d3fe160cd56f4d9f2734b1f1001e2d4a947740b35e54cdeb8f9ff34746372fb3), submitted it, and an independent Operations actor retrieved identical bytes and approved it. PM issued/linked document f39de88b-1a65-4905-ab85-628e02e81731@1 in package revision 2; Operations approved five exact discipline reviews. The reviewing actor release attempt correctly rejected 403 release_separation_required. A separate Operations-leader release first rejected 409 dated_crew_demand_required because demand still cited revision 1; PM refreshed the same dated demand to revision 2 and that separate actor issued release b4570daa-c2ca-4759-b9ba-9bcd7c5b0577 (200). Original reviewer independently accepted Deploy receipt (200). Scheduler booked bound qualified Nate Walker on the exact shift and published the week; worker acknowledged the survey booking (200). Operations browser showed Ready for authorized start and committed authorize-start (200) during the current shift. Read-only state: one accepted survey release, five approved reviews, one Authorized permit, zero survey reports. Reload on Build 3134017af299 retained Authorized start and the worker viewed exact instructions. Desktop and 390px mobile screenshots i27-current-shift-authorized-desktop.png and i27-worker-authorized-mobile.png show no overflow; computed mobile title color is rgb(255, 255, 255).",
+      "remainingGap": "Fictional survey work has not been reported or verified; positive current-shift permit does not establish completion or acceptance. Review-card discipline title correction passed source/type/build checks but its post-fix browser card was not exercised because all five pending reviews were decided before rebuild."
+    },
+    {
+      "caseId": "I28 independent Design release task routing",
+      "applicationSha": "9ff714e5d74af6fe96ea327225b15d21629952b3",
+      "mode": "production-mode disposable 61651, separate authenticated fictional PM and Operations browser sessions, exact typed release and queue reload",
+      "result": "Passed",
+      "evidence": "A separate fictional witness package progressed through PM engineering, private PDF custody (retrieval 200, exact SHA-256 and bytes), document review/issue, dated demand and five current-revision independent reviews. Revision 2 was held for unknown material and showed no release button. PM corrected the source to revision 3 with an explicit counted material line, refreshed demand and obtained fresh reviews. The independent Operations leader saw Authorize package release from My Work; the Engineering reviewer and PM did not. At 390px the task was keyboard-openable with no horizontal overflow, showed exact scope and Ready for release, and committed release HTTP 200. Reload removed the release card and showed Receive Design release only to the separate Operations receiver. Saved release link became stale with no decision control or substitute package. Field execution and Deploy receipt of this witness were not performed."
+    },
+    {
+      "id": "I29",
+      "title": "Exact field-evidence linkage, returned-report correction and failed inspection",
+      "result": "Passed",
+      "applicationSha": "b7ee79013fc098c94799896c3951b8a70fc5513e",
+      "mode": "separate authenticated worker, Operations and Quality browser actions; authenticated API domain rejection; fresh disposable 81-file database replay",
+      "evidence": "Worker uploaded a 21637-byte fictional PNG (SHA-256 d1ebc6175f2aaec3e24872fb0a203756425b564aeda2cb1d3953e7b6034be699). Reviewer downloaded matching private bytes and independently reviewed it. Original submitted report was returned for an absent evidence link; worker corrected the same ID through retained rev2 and rev3 drafts, linked evidence aa1765d4-ac3b-43a7-81fe-d29fabf89aee, resubmitted, and a separate Operations user reviewed 0.25/1 set. Worker submitted a linked Fail inspection 8e3478a6-c85a-4d6e-96a4-e35110791fe2; Quality independently Verified Fail. A wrong evidence ID returned 409 field_evidence_scope_invalid before the valid inspection; only one new inspection was retained. Completion queue remains preparation: no independently verified passing inspection. Worker mobile scroll width 390px at a 390px viewport.",
+      "remainingGap": "The partial survey still needs authorized correction, passing retest and remaining reviewed quantity. No package turnover or customer acceptance was attempted in this clone."
+    },
+    {
+      "id": "I30",
+      "title": "Partial failure to corrected scoped package acceptance and independent receipt",
+      "result": "Passed",
+      "applicationSha": "b7ee79013fc098c94799896c3951b8a70fc5513e",
+      "mode": "separate authenticated worker, PM, Operations and Quality browser actions on isolated 61651",
+      "evidence": "Worker uploaded a distinct fictional after-work PNG 8b09f3c5-0e39-40db-8f14-9af779f647c9, SHA-256 be1b7ca06eb3fee6832463af5f1db77a7288ff5e7d7e76c02b251a1f85f48263; Quality downloaded identical private bytes. Worker synchronized and submitted 0.75 survey set in report b6af8a80-8e01-41b0-9db0-d4f23cad6284. Independent reviews passed. Worker submitted Pass inspection 749ef32a-bfca-4f9b-b2f7-3aa7aee8e0b8 explicitly superseding verified Fail 8e3478a6-c85a-4d6e-96a4-e35110791fe2; Quality verified it. Reviewed quantity reached exactly one of one set. Independent completion f3c42d90-ad16-408b-b649-1b9467254702. PM assembled turnover ed8140dc-964a-4387-aefa-314226c46e2f with exact two report IDs, passing inspection ID and completion ID. Separate Operations user retained fictional acceptance PDF evidence ad0ae30d-744b-4468-bafb-a79601ba0a3f; authorized download matched all 38941 bytes and SHA-256 59813d06d527f20723c2c7dec8ff058bb2c0138b1e6a4f6025b90e95a44c7668. A different Operations user accepted receipt. My Work removed completed actions after reload. Whole-work acceptance remained null.",
+      "remainingGap": "Only this package was accepted and received. Other packages and the separate release witness have not been completed. The signer and document are fictional; no real customer approval is claimed."
+    }
+  ],
+  "currentBuildChecks": [
+    {
+      "caseId": "I10 package creation replay",
+      "applicationSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
+      "mode": "authenticated PM API plus DB read",
+      "result": "Passed",
+      "evidence": "Identical command returned 201 with same package ID; conflicting command returned 409 command_reuse_conflict; stale source returned 409 stale_package_basis. One package state and one receipt remained."
+    },
+    {
+      "caseId": "I10 role/tenant",
+      "applicationSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
+      "mode": "separate authenticated browser and API",
+      "result": "Passed",
+      "evidence": "Worker create-package and PM Rotork create-package returned 403 workspace_forbidden. Operations direct PM review-request link showed changed/unavailable without substitute."
+    },
+    {
+      "caseId": "I10 draft guard",
+      "applicationSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
+      "mode": "authenticated PM API plus DB read",
+      "result": "Passed",
+      "evidence": "Omitted reference arrays returned 400 package_draft_invalid. Work revision 23 and Design decision/events/receipts 2/2/2 were unchanged."
+    },
+    {
+      "caseId": "I10 mobile/keyboard",
+      "applicationSha": "26a09fc3b1927b53be9593e4a303350942a70d1b",
+      "mode": "authenticated PM browser",
+      "result": "Passed",
+      "evidence": "At 390px, keyboard Tab and Enter opened exact review-request task, with no document-width overflow. Old revision-1 engineering link reported changed."
+    },
+    {
+      "caseId": "I11 accepted handoff/package task reload",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated PM browser on separate 57121 fixture",
+      "result": "Passed",
+      "evidence": "Build 9973b08 displays exact Engineer Work Package for wp-671ae5c6b3f4437f88705c386560c2db after independent accepted handoff revision 2; screenshot i11-package-after-return-997.png."
+    },
+    {
+      "caseId": "I11 stale links/mobile",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated PM and Operations browser at 390px",
+      "result": "Passed",
+      "evidence": "Both saved revision-specific links state This task changed or was decided, expose no obsolete decision or substitute Work/package, and show no horizontal overflow. Earlier harness boolean regex was case-sensitive and printed false despite the captured exact text."
+    },
+    {
+      "caseId": "I11 replay/role/tenant/stale",
+      "applicationSha": "d38b02614ca93654c7c68d10418252ed153342c7",
+      "mode": "authenticated API and read-only DB comparison",
+      "result": "Passed",
+      "evidence": "Identical receipt replay returned original result; conflicting reuse command_reuse_conflict; worker handoff_role_denied; PM other-tenant workspace_forbidden; stale source stale_state. Handoff/event/receipt counts unchanged after rejections."
+    },
+    {
+      "caseId": "I13 service invoice negative boundaries",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated PM and Finance API probes plus local DB lower-boundary probe",
+      "result": "Passed",
+      "evidence": "PM payment returned 403 service_invoice_role_required; stale ledger 409 stale_service_invoice_revision; overpayment 409 service_invoice_overpayment; conflicting payment command ID 409 command_reuse_conflict. Invoice read JSON unchanged at 42465 cents; direct authenticated other-tenant read raised service_invoice_scope_forbidden. API other-tenant wrapper returned unavailable, so exact DB denial is reported separately."
+    },
+    {
+      "caseId": "H09 job clone current-build reload",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated Finance browser read",
+      "result": "Passed",
+      "evidence": "Build 9973b08 focused North invoice shows billed USD 54,988.57, paid USD 25,100 and unpaid USD 29,888.57; whole Work remains Finance Closed; screenshot current-post-closeout-clone-997.png."
+    },
+    {
+      "caseId": "I11 package create replay/denial",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated PM and worker API probes plus local DB read",
+      "result": "Passed",
+      "evidence": "Exact original create-package command ID returned HTTP 201 with the same wp-671ae5c6b3f4437f88705c386560c2db; conflicting reuse 409 command_reuse_conflict; stale source 409 stale_package_basis; worker and other-tenant 403 workspace_forbidden. Catalog read was identical before/after; connected_package_states and receipts each remained one."
+    },
+    {
+      "caseId": "H15 expanded-scope closeout denial",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated fictional Finance browser plus read-only DB comparison on 57221 clone",
+      "result": "Passed",
+      "evidence": "Two-package job rybex-9e4f1e5f9e6b4e429142d3b01e1825e5 showed Accepted prior scope/current scope changed. Finance attempted Closed; typed API returned 409 work_acceptance_scope_changed. Reload remained Pending with scope warning; decision revision 7 and zero matching new events/receipts. Positive eligible closeout remains Not run."
+    },
+    {
+      "caseId": "D07/E22 fixture triage",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "read-only disposable DB and archived checkpoint status inspection",
+      "result": "Not run",
+      "evidence": "Current changed-job clone and preserved pre-turnover archive each hold the same field change as Resolved, including authorized revised release. No pre-decision field-change browser fixture was available; no new field-change command was sent."
+    },
+    {
+      "caseId": "I13 competing service payments and identical replay",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated typed database commands in separately named disposable database clone; no browser action",
+      "result": "Passed",
+      "evidence": "Two concurrent final-balance USD 424.65 commands targeted invoice bdc3a384-6155-437e-baa2-598d18ab29d4 at revision 4/ledger 1. One committed payment b0100321-e879-4d27-b349-7ea70fceb4d2; the other rejected stale_service_invoice_revision. Identical replay returned that payment ID. Clone has two payments totaling USD 524.65; preserved source has one USD 100 payment. The first attempted restore lacked source ACLs and was rejected before any payment; exact public schema/function grants were restored in the clone before this probe."
+    },
+    {
+      "caseId": "G09/G10 current-cycle service closure guards",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated typed database commands in disposable 73-migration preclosure clone advanced with four candidate migrations; no browser action",
+      "result": "Passed",
+      "evidence": "Preclosure fixture was materialized at Operate revision 31 only in the clone. Rollback-only premature close rejected independent_request_close_required; changed-cycle close rejected current_service_cycle_required. Separate authenticated Operations completion, PM resolution and independent Operations close committed revisions 32-34. Request is Closed in clone; original preclosure source remains revision 34. These probes do not qualify a browser queue journey."
+    },
+    {
+      "caseId": "H15 eligible Finance closeout command",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "authenticated typed database command in disposable accepted-job clone; no browser action",
+      "result": "Passed",
+      "evidence": "Clone alone was restored to its retained event-1 Finance Pending snapshot. Billing Commercial Lead committed update-finance Closed against Work source 185, Deploy 33 and Operate 1. Clone now has Finance Closed revision 2, one update-finance event and one replay receipt; preserved source remained Finance Closed. Positive browser closeout remains unrun."
+    },
+    {
+      "caseId": "I14 package engineering/review browser sequence",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "separate authenticated fictional PM and Operations browsers on disposable 61648",
+      "result": "Failed",
+      "evidence": "PM saved measured ten-termination engineering revision 1 and requested Engineering review; independent Operations approved it. Each typed Design POST returned 200, and saved task links became stale rather than selecting another package. PM reload then omitted this Work entirely from Action needed despite current mandatory release blockers. Current package remains unreleased; screenshots i14-pm-queue-gap-997.png and i14-release-blockers-997.png."
+    },
+    {
+      "caseId": "Finance browser fixture startup",
+      "applicationSha": "9973b08df8f21f88421c668a38bb4e684ba42a3b",
+      "mode": "local disposable infrastructure setup, no business command",
+      "result": "Blocked",
+      "evidence": "A new loopback Supabase target for positive Finance browser closeout failed before database startup with Docker 'all predefined address pools have been fully subnetted'. Stopping the unused preclosure stack preserved its volume but did not free an address pool; second start failed identically. The existing three previews, Auth records and private files were not redirected. Positive Finance browser action remains Not run."
+    },
+    {
+      "caseId": "I14 release-preparation focused-task retest",
+      "applicationSha": "1f3d5162502452521a904ec965b205abcb860fd0",
+      "mode": "authenticated fictional PM and worker browsers on disposable 61648; exact-link, stale-link and 390px mobile checks",
+      "result": "Passed",
+      "evidence": "PM My Work now shows Complete package release preparation for exact package wp-671ae5c6b3f4437f88705c386560c2db revision 1. The focused task shows mandatory holds and next owner; Open exact package controls reaches the same package on the Packages tab. A saved sourceRevision=0 link explains that the task changed and exposes no controls. The worker account is redirected to My crew schedule with no PM controls. Mobile shows no horizontal overflow; screenshot i14-release-task-1f3-mobile.png. Release remains held and unissued."
+    },
+    {
+      "caseId": "I15 document task routing",
+      "applicationSha": "7db8c25d7f910658fedd241d84467a58b4557b4c",
+      "mode": "separate authenticated fictional PM/Operations browsers; no document decision committed",
+      "result": "Passed",
+      "evidence": "Operations discovered document revision 1 from My Work and opened the exact source and package. An obsolete revision link explained that the task changed; PM could not open the Operations decision. Source reference FIC-PSB-WIRE-A has no retained bytes, so independent approval and subsequent issue were intentionally left unexecuted."
+    },
+    {
+      "caseId": "I16 returned package correction and source reassessment",
+      "applicationSha": "7db8c25d7f910658fedd241d84467a58b4557b4c",
+      "mode": "separate authenticated fictional PM/Operations browsers with committed revision reloads",
+      "result": "Passed",
+      "evidence": "PM submitted revision 2, Operations returned the exact Engineering review with retained reason, PM followed Correct returned package from My Work to the exact package and saved revision 3. The two-day material-buffer finding cleared; document and revision-3 discipline-review findings remained."
+    },
+    {
+      "caseId": "I17 pre-release booking rejection",
+      "applicationSha": "7db8c25d7f910658fedd241d84467a58b4557b4c",
+      "mode": "authenticated fictional Operations browser and typed schedule response; read-only reload",
+      "result": "Failed",
+      "evidence": "Crew Schedule showed one eligible bound worker, one disabled unbound profile and one dated demand. Saving a draft planning booking returned 409 released_demand_coverage_required; reload showed zero crew bookings. Publication was not attempted, and field authorization remained unavailable."
+    },
+    {
+      "caseId": "I17 current-demand booking correction",
+      "applicationSha": "15f41eb40e72952f405bad571ff476ba8081fba2",
+      "mode": "separate authenticated fictional PM and Operations browsers with typed schedule responses",
+      "result": "Passed",
+      "evidence": "Stale revision-2 demand rejected before mutation; PM saved revision-3 demand HTTP 200; Operations saved source-bound qualified draft HTTP 200. Reload retained one draft and release-held status. No accepted release exists."
+    },
+    {
+      "caseId": "I18 held publication and worker invisibility",
+      "applicationSha": "15f41eb40e72952f405bad571ff476ba8081fba2",
+      "mode": "separate authenticated fictional Operations and worker browsers",
+      "result": "Passed",
+      "evidence": "Publication rejected 409 release_changed_before_publication with No shared bookings unchanged. Worker schedule showed zero awaiting and no fictional draft crew. No worker response or field-start authority was created."
+    },
+    {
+      "caseId": "I26 field-start shift guard",
+      "applicationSha": "fe8cf58c4f3552ed533b432c0b4ac066a6be3e28",
+      "mode": "authenticated fictional Operations browser read and authenticated API rejection probes on disposable 61648; database pre-fix rollback-only counterexample; fresh 80-file migration replay",
+      "result": "Passed",
+      "evidence": "Published future shift is held in the browser; typed command returns 409 field_shift_not_current. Wrong-role, stale and tenant denials retain exact domain errors. Rejected commands leave source, Design, schedule, Deploy, permits and events unchanged. Full 80-file ordered replay completed on empty disposable d5o-pr2-replay-20261013. A 390px browser check found the Authorize field start button disabled with no horizontal overflow."
+    },
+    {
+      "caseId": "I27 current-shift browser and scoped presentation",
+      "applicationSha": "3134017af29945267e45a76f136732c2f875d0a9",
+      "mode": "production-mode isolated 61651 build, authenticated fictional role browsers, TypeScript, scoped ESLint and visual mobile check",
+      "result": "Passed",
+      "evidence": "npm run typecheck, scoped ESLint on FocusedMyWorkBoard.tsx, production build and git diff --check passed. Operations UI authorized exact current-shift package and worker mobile displayed Authorized start after reload; title computed rgb(255, 255, 255), scroll width equaled 390px. No migration changed after the earlier 80-file fresh replay."
+    },
+    {
+      "caseId": "I29 field evidence and inspection",
+      "applicationSha": "b7ee79013fc098c94799896c3951b8a70fc5513e",
+      "mode": "production-mode isolated build, TypeScript, scoped ESLint, authenticated browsers and fresh local DB replay",
+      "result": "Passed",
+      "evidence": "npm run typecheck, scoped ESLint, production build and git diff --check passed. A fresh database-only target replayed exactly 81 candidate files; final version 20261013152258 and authenticated/anon execute grant true/false. Browser role actions and domain rejection are recorded separately in walkthrough.md."
+    }
+  ],
+  "runtimeStatus": "61651 isolated production-mode preview displays Build 9ff714e5d74a against disposable API 57621. Witness package rev3 has issued exact release awaiting independent Deploy receipt. Earlier survey package remains Authorized with zero actuals. Preserved 61648/57121 checkpoint unchanged; shared and production unchanged.",
+  "fixtureStatus": {
+    "returnProject": "d5o-handoff-return-20261012; package revision 4 has accepted release and exact issued private-PDF document @2. One future 2026-10-16 published booking was acknowledged by Nate Walker. Current Build fe8cf58c4f35 holds field start until the scheduled shift; Deploy revision 0, zero permits and actuals. No accepted history was altered.",
+    "jobFinanceClone": "d5o-service-mutable-20261012; cloned fictional changed-job Finance history; new USD 100 post-closeout payment only in clone",
+    "partialServiceClone": "d5o-partial-service-mutable-20261012; exact canonical partially covered request/child/asset; separate mutable Auth/Storage; fictional terms, invoice, payment and cost correction persisted",
+    "preserved": "Delivery/support observation checkpoints, original preclosure and original changed-job payment history unchanged.",
+    "currentShiftClone": "d5o-pr2-replay-20261013; isolated production-mode 61651/57621, 81st migration incremental. Fictional survey package wp-203522d0b30a4b1680f69e6783fe4df2: reviewed 0.25+0.75 of one set, independently Verified Fail and superseding Pass, reviewed completion f3c42d90-ad16-408b-b649-1b9467254702, turnover ed8140dc-964a-4387-aefa-314226c46e2f Client accepted and independently received. Whole Work acceptance absent. Separate release witness awaits receipt."
+  }
+}

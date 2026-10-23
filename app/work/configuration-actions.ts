@@ -1,5 +1,6 @@
 "use server";
 
+import { authoritativeD5OCommandsReady } from "@/lib/d5o/auth/hosted-target";
 import { revalidatePath } from "next/cache";
 import { getRequestContext } from "@/lib/d5o/auth/request-context";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
@@ -8,6 +9,7 @@ import { validatePublishedPhaseContract, type PublishedPhaseContract } from "@/c
 import { validateDiscoverPolicy, type DiscoverPolicy } from "@/components/d5o/platform/discover-decision";
 import type { WorkspaceKey } from "@/components/d5o/platform/work-types";
 import { loadConfigurationInventory } from "@/lib/d5o/configuration/server";
+import { hostedConfigurationInventory } from "@/lib/d5o/hosted/configuration-inventory";
 
 type ActionResult = { ok: true; draftVersionId?: string; publishedVersionId?: string } | { ok: false; error: string };
 
@@ -28,6 +30,12 @@ function errorMessage(error: unknown) {
 
 export async function verifyActiveConfigurationPin(workspaceId: string, expectedVersionId: string): Promise<{ ok: boolean; error?: string }> {
   try {
+    if (authoritativeD5OCommandsReady()) {
+      const inventory = await hostedConfigurationInventory("rybex");
+      if (inventory.workspaceId !== workspaceId || inventory.activeVersionId !== expectedVersionId)
+        throw new Error("configuration_default_changed_refresh_required");
+      return { ok: true };
+    }
     assertProofEnvironment();
     const context = await getRequestContext();
     if (context.status !== "authorized" || context.workspace?.id !== workspaceId || !context.membership) throw new Error("configuration_workspace_forbidden");

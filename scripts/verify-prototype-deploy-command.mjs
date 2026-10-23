@@ -12,7 +12,8 @@ function load(file, dependencies = {}) {
 const deployPolicy = load("components/d5o/platform/deploy-policy.ts");
 const model = load("components/d5o/platform/deploy-model.ts", { "./deploy-policy": deployPolicy });
 const errors = load("lib/d5o/prototype-work/store-error.ts");
-const { applyDeployCommand, assertSnapshotDeployIntegrity } = load("lib/d5o/prototype-work/deploy-command.ts", { "@/components/d5o/platform/deploy-model": model, "@/components/d5o/platform/deploy-policy": deployPolicy, "./store-error": errors });
+const serviceBasis = load("lib/d5o/prototype-work/service-execution-basis.ts");
+const { applyDeployCommand, assertSnapshotDeployIntegrity } = load("lib/d5o/prototype-work/deploy-command.ts", { "@/components/d5o/platform/deploy-model": model, "@/components/d5o/platform/deploy-policy": deployPolicy, "./store-error": errors, "./service-execution-basis": serviceBasis });
 const actor = {
   worker: { id: "worker", name: "Worker", membershipId: "m-worker", role: "field_technician", person: "Alex" },
   otherWorker: { id: "other-worker", name: "Other Worker", membershipId: "m-other-worker", role: "field_technician", person: "Casey" },
@@ -20,11 +21,31 @@ const actor = {
   reviewer: { id: "reviewer", name: "Reviewer", membershipId: "m-reviewer", role: "project_manager" },
   leader: { id: "leader", name: "Leader", membershipId: "m-leader", role: "operations_leader" }
 };
-const detail = { packageId: "p1", revision: 2, scope: "Certify data hall fiber", location: "Hall A", requirementIds: ["fiber-cert"], predecessorIds: [], materialLines: [{ id: "m1", item: "Fiber", quantity: 2, availableQuantity: 2, unit: "reel", status: "Available", source: "Count" }], materialStatus: "Available", access: "Authorized", permit: "Approved permit", safetyControls: "Isolation", method: "MOP-1", verification: "Certify every strand", crewDemandRequired: true };
+assert.throws(() => applyDeployCommand({ id: "rybex-service", workspace: "rybex", title: "Service", type: "Lifecycle service", history: [], serviceSource: { parentWorkId: "rybex-parent", requestId: "request-1" } }, { action: "authorize-start", workId: "rybex-service", packageId: "p1", expectedRevision: 1, commandId: "missing-source", note: "Start after authorization" }, actor.supervisor, null), (error) => error.code === "service_basis_blocked");
+const detail = { packageId: "p1", revision: 2, scope: "Certify data hall fiber", location: "Hall A", requirementIds: ["fiber-cert"], predecessorIds: [], completionBasis: { kind: "Measured", plannedQuantity: 12, unit: "m" }, materialLines: [{ id: "m1", item: "Fiber", quantity: 2, availableQuantity: 2, unit: "reel", status: "Available", source: "Count" }], materialStatus: "Available", access: "Authorized", permit: "Approved permit", safetyControls: "Isolation", method: "MOP-1", verification: "Certify every strand", crewDemandRequired: true };
 const release = { id: "release-1", packageId: "p1", packageRevision: 2, configurationVersionId: "pin-1", status: "Accepted", snapshot: detail, crewDemandSnapshot: { minimumPeople: 1 }, documentRefs: ["doc@1"], sourceSnapshot: null };
 let work = { id: "w1", workspace: "rybex", title: "Fiber", type: "Technical delivery", customer: "Customer", site: "Hall A", owner: "PM", stage: "Deploy", nextAction: "Execute", progress: 0, value: "", status: "moving", proof: [], blockers: [], history: [], packages: [{ id: "p1", name: "Fiber" }], phaseConfigurationVersionId: "pin-1", design: { releases: [release], packages: [detail], documents: [], reviews: [], history: [] } };
 const assignment = { id: "booking-1", crew: "Fiber", people: ["Alex"], workId: "w1", packageId: "p1", week: 0, day: 0, date: "2026-10-12", shift: "07:00–15:30" };
 const schedule = { revision: 2, assignments: [assignment], publications: [{ id: "publication-1", week: 0, assignments: [assignment] }], receipts: [], packageDemands: [] };
+const unreleased = structuredClone({ ...work, design: { ...work.design, releases: [] } });
+const concernCommand = { action: "raise-prestart-concern", workId: "w1", packageId: "p1", bookingId: "booking-1", publicationId: "publication-1", expectedRevision: 1, commandId: "prestart-1", title: "Site access is missing", impact: "The crew cannot enter the assigned work area." };
+const concerned = applyDeployCommand(unreleased, concernCommand, actor.worker, schedule);
+assert.equal(concerned.deploy.issues[0].kind, "Pre-start concern");
+assert.equal(concerned.deploy.issues[0].releaseId, null);
+assert.equal(concerned.deploy.issues[0].bookingId, "booking-1");
+assert.equal(concerned.deploy.permits.length, 0);
+assert.equal(model.assessDeployReadiness(concerned, "p1", schedule).recommendation, "Return for Design review");
+assert.equal(applyDeployCommand(concerned, concernCommand, actor.worker, schedule), concerned, "A retried concern must not duplicate it");
+assert.throws(() => applyDeployCommand(unreleased, concernCommand, actor.otherWorker, schedule), (error) => error.code === "assignment_required");
+assert.throws(() => applyDeployCommand(unreleased, concernCommand, actor.supervisor, schedule), (error) => error.code === "current_assignment_required");
+assert.throws(() => applyDeployCommand(unreleased, concernCommand, actor.worker, { ...schedule, publications: [...schedule.publications, { id: "publication-2", week: 0, assignments: [assignment] }] }), (error) => error.code === "current_assignment_required");
+assert.throws(() => applyDeployCommand(work, concernCommand, actor.worker, schedule), (error) => error.code === "prestart_concern_unavailable");
+const draftRelease = { ...unreleased, design: { ...unreleased.design, releases: [{ ...release, status: "Draft" }] } };
+assert.equal(applyDeployCommand(draftRelease, concernCommand, actor.worker, schedule).deploy.issues[0].kind, "Pre-start concern", "A Design draft is not an issued work basis");
+assert.throws(() => assertSnapshotDeployIntegrity([concerned], [{ ...concerned, deploy: undefined }]), (error) => error.code === "protected_deploy_changed");
+const resolvedConcern = applyDeployCommand(concerned, { action: "resolve-issue", workId: "w1", packageId: "p1", expectedRevision: 2, commandId: "prestart-resolution", issueId: concerned.deploy.issues[0].id, resolution: "Site access must be confirmed before the release and start review." }, actor.supervisor, schedule);
+assert.equal(resolvedConcern.deploy.issues[0].status, "Resolved");
+assert.equal(model.assessDeployReadiness(resolvedConcern, "p1", schedule).recommendation, "Return for Design review", "Resolving the concern cannot substitute for Design release");
 let serial = 0;
 const send = (action, who = actor.supervisor) => { work = applyDeployCommand(work, { ...action, workId: work.id, expectedRevision: ++serial, commandId: `deploy-${serial}` }, who, schedule); return work; };
 const rejects = (action, code, who = actor.supervisor) => assert.throws(() => send(action, who), (error) => error.code === code, code);
@@ -43,13 +64,16 @@ rejects({ action: "save-report", packageId: "p1", bookingId: "booking-1", report
 send({ action: "submit-report", packageId: "p1", reportId: report.id }, actor.worker);
 rejects({ action: "review-report", packageId: "p1", reportId: report.id, decision: "Reviewed", note: "Reviewed physical record" }, "report_review_denied", { ...actor.supervisor, id: "worker" });
 send({ action: "review-report", packageId: "p1", reportId: report.id, decision: "Reviewed", note: "Reviewed physical record" });
+assert.equal(model.currentReviewedCompletion(work, "p1"), null, "A reviewed report alone does not complete the package");
+const zeroActivity = structuredClone(work); zeroActivity.deploy.reports[0].quantity = 0;
+assert(model.assessPackageCompletion(zeroActivity, "p1").blockers.some((item) => item.includes("12 m")), "A zero-quantity report cannot complete measurable scope");
 rejects({ action: "record-inspection", packageId: "p1", bookingId: "booking-1", reportId: report.id, requirementId: "fiber-cert", requirement: "Fiber certification", method: "Light test", result: "Fail" }, "inspection_report_scope_denied", actor.otherWorker);
 rejects({ action: "record-inspection", packageId: "p1", bookingId: "booking-1", reportId: report.id, requirement: "Fiber certification", method: "Light test", result: "Fail" }, "inspection_requirement_invalid", actor.worker);
 send({ action: "record-inspection", packageId: "p1", bookingId: "booking-1", reportId: report.id, requirementId: "fiber-cert", requirement: "Fiber certification", method: "Light test", result: "Fail" }, actor.worker);
 const failure = work.deploy.inspections[0];
 send({ action: "review-inspection", packageId: "p1", inspectionId: failure.id, decision: "Verified", note: "Failure confirmed from result" }, actor.reviewer);
-send({ action: "assemble-turnover", packageId: "p1", operateOwner: "Lifecycle manager" }, actor.supervisor);
-rejects({ action: "accept-client", packageId: "p1", turnoverId: work.deploy.turnovers[0].id, signerName: "Customer", signerOrganization: "Owner", authorityBasis: "Delegation", source: "letter.pdf" }, "acceptance_blocked", actor.reviewer);
+rejects({ action: "review-completion", packageId: "p1", note: "Review released planned scope" }, "completion_blocked", actor.reviewer);
+rejects({ action: "assemble-turnover", packageId: "p1", operateOwner: "Lifecycle manager" }, "completion_required", actor.supervisor);
 send({ action: "record-inspection", packageId: "p1", bookingId: "booking-1", reportId: report.id, requirementId: "fiber-cert", requirement: "Fiber certification", method: "Retest", result: "Pass", supersedesId: failure.id }, actor.worker);
 const retest = work.deploy.inspections.at(-1);
 send({ action: "review-inspection", packageId: "p1", inspectionId: retest.id, decision: "Verified", note: "Retest passed after correction" }, actor.reviewer);
@@ -58,6 +82,8 @@ assert.equal(work.deploy.permits.at(-1).status, "Held");
 rejects({ action: "resume", packageId: "p1", note: "Conditions reviewed again" }, "start_blocked");
 send({ action: "resolve-issue", packageId: "p1", issueId: work.deploy.issues[0].id, resolution: "Connector replaced and retested" }, actor.supervisor);
 send({ action: "resume", packageId: "p1", note: "Resolution and crew checked" });
+send({ action: "review-completion", packageId: "p1", note: "Twelve metres certified against released scope" }, actor.reviewer);
+assert.equal(model.currentReviewedCompletion(work, "p1")?.reviewedQuantity, 12);
 const signatureId = crypto.randomUUID();
 work = applyDeployCommand(work, { action: "attach-evidence", packageId: "p1", workId: "w1", expectedRevision: ++serial, commandId: `deploy-${serial}`, purpose: "Customer signature", caption: `Captured for reviewed report ${report.id}` }, actor.worker, schedule, { id: signatureId, filename: "customer.png", mimeType: "image/png", sizeBytes: 100, checksumSha256: "a".repeat(64) });
 rejects({ action: "save-report", packageId: "p1", bookingId: "booking-1", quantity: 1, unit: "m", laborHours: 1, summary: "Other worker's field record", evidenceIds: [signatureId] }, "evidence_scope_invalid", actor.otherWorker);
@@ -77,6 +103,14 @@ send({ action: "accept-client", packageId: "p1", turnoverId: turnover.id, signer
 assert.equal(turnover.status, "Draft");
 assert.equal(work.deploy.turnovers.at(-1).status, "Client accepted");
 assert.equal(work.deploy.signoffs.at(-1).kind, "Customer scope acceptance");
+const partialDelivery = structuredClone(work);
+const secondDetail = { ...detail, packageId: "p2", revision: 1, scope: "Certify second fiber route", location: "Hall B", predecessorIds: ["p1"], completionBasis: { kind: "Measured", plannedQuantity: 8, unit: "m" } };
+partialDelivery.packages.push({ id: "p2", name: "Second fiber route" });
+partialDelivery.design.packages.push(secondDetail);
+partialDelivery.design.releases.push({ ...release, id: "release-2", packageId: "p2", packageRevision: 1, snapshot: secondDetail });
+assert.equal(model.currentReviewedCompletion(partialDelivery, "p1")?.reviewedQuantity, 12, "The first package retains reviewed delivery");
+assert.equal(model.currentReviewedCompletion(partialDelivery, "p2"), null, "An unreported second package remains incomplete");
+assert.throws(() => applyDeployCommand(partialDelivery, { action: "accept-work", workId: "w1", packageId: "p1", signerName: "Customer", signerOrganization: "Owner", signerRole: "Director", authorityBasis: "Delegation", source: "final.pdf", expectedRevision: serial + 1, commandId: "partial-work-acceptance" }, actor.reviewer, schedule), (error) => error.code === "work_acceptance_blocked", "Accepted first-package scope must not imply whole-work acceptance");
 rejects({ action: "accept-work", packageId: "p1", signerName: "Customer", signerOrganization: "Owner", signerRole: "Director", authorityBasis: "Delegation", source: "final.pdf" }, "acceptance_independence", { ...actor.supervisor, role: "project_manager" });
 send({ action: "accept-work", packageId: "p1", signerName: "Customer", signerOrganization: "Owner", signerRole: "Director", authorityBasis: "Delegation", source: "final.pdf" }, actor.reviewer);
 assert.equal(work.deploy.signoffs.at(-1).kind, "Final client acceptance");
@@ -98,4 +132,6 @@ assert.equal(workerView.discovery, undefined);
 assert.equal(workerView.design.releases[0].sourceSnapshot, null);
 assert(workerView.deploy.reports.every((item) => item.authorId === actor.worker.id && item.bookingId === "booking-1"));
 assert.equal(workerView.deploy.turnovers.length, 0);
+const incompleteLegacyRelease = { ...work, design: { ...work.design, releases: [{ id: "legacy-release", packageId: "p1", packageRevision: 2, status: "Accepted" }] }, deploy: { reports: [], inspections: [], issues: [] } };
+assert(model.assessPackageCompletion(incompleteLegacyRelease, "p1").blockers.some((item) => item.includes("no planned quantity")), "legacy release without a scope snapshot must be held, not crash");
 console.log("Deploy command and readiness controls passed.");

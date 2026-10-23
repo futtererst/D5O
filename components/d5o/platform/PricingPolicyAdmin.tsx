@@ -24,7 +24,7 @@ export function PricingPolicyAdmin({ workspace, hosted, onNotice, onPolicyUpdate
     if (!state || busy) return;
     setBusy(true);
     try {
-      const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, expectedRevision: state.revision, policy: action === "save-draft" ? policy : undefined, policyId: action === "save-draft" ? undefined : policy.id, policyVersion: action === "save-draft" ? undefined : policy.version }) });
+      const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, expectedRevision: state.revision, commandId: crypto.randomUUID(), policy: action === "save-draft" ? policy : undefined, policyId: policy.id, policyVersion: policy.version }) });
       const body = await response.json() as PolicyResponse & { error?: string };
       if (!response.ok) { onNotice(body.message ?? body.error ?? "Pricing policy was not saved."); return; }
       const nextState = { ...body, canAdmin: state.canAdmin };

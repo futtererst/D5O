@@ -34,7 +34,7 @@
 .intro h1 {
   max-width: 680px;
   margin: 10px 0 12px;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: clamp(38px, 5vw, 64px);
   line-height: 1.04;
   letter-spacing: -.035em;
@@ -76,3 +76,24 @@
 .card strong { grid-column: 2; align-self: end; font-size: 13px; }
 .notice { max-width: 900px; margin: 25px 0 0; color: #677e8e; font-size: 12px; }
 .signout { display: inline-block; margin-top: 28px; color: #38536a; font-size: 13px; font-weight: 700; }
+.entryActions { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; margin-top: 1rem; }
+.entryActions a { min-height: 44px; display: inline-flex; align-items: center; color: #38536a; font-size: 14px; font-weight: 700; }
+.entryActions a:focus-visible { outline: 3px solid #d0a329; outline-offset: 3px; }
+.setup {
+  max-width: 760px;
+  margin: 1.5rem auto;
+  padding: 1.5rem;
+  border: 1px solid #d5e0e8;
+  border-radius: 12px;
+  background: #fff;
+}
+.setup h2 { margin: 0 0 .5rem; }
+.setup dl { display: grid; grid-template-columns: minmax(9rem, 1fr) 2fr; gap: .5rem 1rem; margin: 1.2rem 0; }
+.setup dt { font-weight: 700; }
+.setup dd { margin: 0; }
+.setup form { display: grid; gap: 1rem; }
+.setup label { display: grid; gap: .35rem; font-weight: 650; }
+.setup select, .setup input { width: 100%; min-height: 44px; padding: .55rem .7rem; border: 1px solid #9db2c3; border-radius: 7px; font: inherit; }
+.setup button { width: fit-content; min-height: 44px; padding: .6rem 1rem; border: 1px solid #c69e25; border-radius: 7px; background: #d4aa2a; color: #102a43; font: inherit; font-weight: 700; cursor: pointer; }
+.setup button:focus-visible, .setup select:focus-visible, .setup input:focus-visible { outline: 3px solid #d0a329; outline-offset: 2px; }
+@media (max-width: 640px) { .setup { margin: 1rem; padding: 1rem; } .setup dl { grid-template-columns: 1fr; } }

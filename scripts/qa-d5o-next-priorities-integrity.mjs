@@ -1,0 +1,36 @@
+import { readFileSync } from "node:fs";
+import { createClient } from "@supabase/supabase-js";
+const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,file=process.env.D5O_PILOT_CREDENTIALS_FILE;
+if(process.env.D5O_ISOLATED_PILOT!=="1"||url!=="http://127.0.0.1:56621"||!key||!file)throw new Error("disposable_only");
+const users=JSON.parse(readFileSync(file,"utf8")).users;
+async function actor(role){const u=users.find(x=>x.key===role),c=createClient(url,key,{auth:{persistSession:false}}),{error}=await c.auth.signInWithPassword({email:u.email,password:u.password});if(error)throw error;return c;}
+function expect(result,code,label){if(result.error?.code!==code)throw new Error(`${label}:${result.error?.code}:${result.error?.message}`);}
+const admin=await actor("admin"),pm=await actor("pm"),worker=await actor("rina"),finance=await actor("finance");
+const wf=(await admin.rpc("d5o_hosted_workforce_read_v1",{p_workspace_key:"rybex"})).data;
+const person=wf.people.find(x=>x.person==="Rina Patel");if(!person?.workerUserId||!person.qualifications.includes("Controls service"))throw new Error("committed_person_missing");
+const base={p_workspace_key:"rybex",p_action:"set-active",p_input:{id:person.id,active:true},p_command_id:`wf-integrity-${crypto.randomUUID()}`,p_expected_revision:wf.revision};
+expect(await pm.rpc("d5o_hosted_workforce_command_v1",base),"42501","wrong_workforce_role");
+expect(await worker.rpc("d5o_hosted_workforce_read_v1",{p_workspace_key:"rybex"}),"42501","worker_workforce_denial");
+expect(await admin.rpc("d5o_hosted_workforce_command_v1",{...base,p_expected_revision:wf.revision-1}),"23505","stale_workforce");
+const first=await admin.rpc("d5o_hosted_workforce_command_v1",base);if(first.error)throw first.error;
+const replay=await admin.rpc("d5o_hosted_workforce_command_v1",base);if(replay.error||replay.data.revision!==first.data.revision)throw new Error("workforce_replay_failed");
+expect(await admin.rpc("d5o_hosted_workforce_command_v1",{...base,p_input:{id:person.id,active:false}}),"23505","workforce_conflicting_replay");
+const wfAfter=(await admin.rpc("d5o_hosted_workforce_read_v1",{p_workspace_key:"rybex"})).data;if(wfAfter.revision!==wf.revision+1)throw new Error("workforce_unexpected_mutation");
+const workId="rybex-f50b8a6e7c174052ba298491a6ce1037",packageId="wp-a99da2df4c6248eb907b131ad2c9e4cb";
+const work=(await pm.rpc("d5o_hosted_prototype_read_v1",{p_workspace_key:"rybex",p_state_key:"work"})).data;
+const target=work.state.records.find(x=>x.id===workId);if(!target)throw new Error("change_work_missing");
+const altered=structuredClone(work.state);altered.records.find(x=>x.id===workId).design.releases.at(-1).status="Accepted by snapshot";
+expect(await pm.rpc("d5o_hosted_prototype_save_v1",{p_workspace_key:"rybex",p_state_key:"work",p_expected_revision:work.revision,p_state:altered}),"42501","generic_release_forgery");
+const changeRead=(await pm.rpc("d5o_hosted_field_change_read_v1",{p_workspace_key:"rybex",p_presentation_id:workId})).data;
+const change=changeRead.changes.find(x=>x.packageId===packageId);if(change.status!=="Resolved"||change.facts.revisedPackageRevision!=="3")throw new Error("revised_change_missing");
+const designBase={p_workspace_key:"rybex",p_presentation_id:workId,p_action:"record-change",p_input:{packageId,source:`field-change:${change.id}`,reason:"Fictional repeat obstruction requires another revision for testing.",technicalImpact:"Revised route inspection needed",scheduleImpact:"Two days"},p_command_id:`design-negative-${crypto.randomUUID()}`,p_expected_source_revision:work.revision,p_expected_decision_revision:target.design.authorityRevision};
+expect(await worker.rpc("d5o_hosted_design_field_change_command_v1",designBase),"42501","wrong_design_role");
+expect(await pm.rpc("d5o_hosted_design_field_change_command_v1",{...designBase,p_command_id:`design-stale-${crypto.randomUUID()}`,p_expected_decision_revision:1}),"23505","stale_design_change");
+expect(await pm.rpc("d5o_hosted_design_field_change_command_v1",{...designBase,p_command_id:`design-cross-${crypto.randomUUID()}`,p_workspace_key:"rotork"}),"42501","cross_tenant_design");
+const badFinance={p_workspace_key:"rybex",p_presentation_id:workId,p_action:"add-cost",p_input:{kind:"Incurred",category:"Labor",amountMinor:"15000",costDate:"2026-10-09",source:"FICTIONAL-LABOR-TIME-01",packageId},p_command_id:`finance-wrong-${crypto.randomUUID()}`,p_expected_revision:0};
+expect(await pm.rpc("d5o_hosted_job_finance_command_v1",badFinance),"22023","wrong_finance_role");
+const financeRead=(await finance.rpc("d5o_hosted_job_finance_read_v1",{p_workspace_key:"rybex",p_presentation_id:workId})).data;
+if(financeRead.changes.length!==1||financeRead.changes[0].priceAmount!=="2600.00"||financeRead.bills.length)throw new Error("authorized_change_or_billing_scope_wrong");
+const unchanged=(await pm.rpc("d5o_hosted_prototype_read_v1",{p_workspace_key:"rybex",p_state_key:"work"})).data;
+if(unchanged.revision!==work.revision||unchanged.state.records.find(x=>x.id===workId).design.authorityRevision!==target.design.authorityRevision)throw new Error("denied_command_changed_design");
+console.log(JSON.stringify({workforce:{wrongRole:true,workerDenied:true,stale:true,replay:true,conflictingReplay:true},fieldChange:{wrongRole:true,stale:true,crossTenant:true,snapshotDenied:true,resolvedRevision:3},finance:{wrongRole:true,authorizedChangeMinor:260000,billingAbsent:true}}));

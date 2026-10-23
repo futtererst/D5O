@@ -23,7 +23,9 @@ async function authorizedClient(workspaceKey: string) {
   const call = client.rpc.bind(client) as unknown as
     (name: RpcName, args: Record<string, unknown>) => Promise<{ data: unknown; error: RpcError | null }>;
   const scope = await call("d5o_hosted_actor_v1", { p_workspace_key: workspaceKey });
-  if (scope.error || !scope.data) return { error: "workspace_forbidden", status: 403 as const };
+  const actor = scope.data as { role?: string } | null;
+  if (scope.error || !actor || actor.role === "field_worker")
+    return { error: "workspace_forbidden", status: 403 as const };
   return { call, status: 200 as const };
 }
 

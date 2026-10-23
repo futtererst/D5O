@@ -20,6 +20,8 @@ visual-qa-output/*
 node_modules/
 .next/
 .next-review-61430/
+.next-observe-delivery/
+.next-observe-support/
 package-output/
 .rybexos-local/
 
@@ -27,3 +29,10 @@ package-output/
 visual-qa-output/**
 
 .vercel/
+
+.next-review-61648/
+.tmp/
+.next-review-61649/
+
+.next-review-61650/
+.next-review-61643/

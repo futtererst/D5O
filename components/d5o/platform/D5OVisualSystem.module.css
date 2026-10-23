@@ -1,10 +1,10 @@
 .root {
-  --d5o-content-max: 1400px;
-  --d5o-content-gutter: clamp(16px, 2.2vw, 32px);
-  --d5o-section-gap: 14px;
-  --d5o-card-radius: 8px;
-  --d5o-control-radius: 6px;
-  --d5o-control-height: 38px;
+  --d5o-content-max: 1520px;
+  --d5o-content-gutter: clamp(16px, 2vw, 32px);
+  --d5o-section-gap: 16px;
+  --d5o-card-radius: 10px;
+  --d5o-control-radius: 7px;
+  --d5o-control-height: 40px;
   --d5o-surface: #fff;
   --d5o-surface-muted: #f5f8fa;
   --d5o-ink: #183544;
@@ -38,6 +38,8 @@
   min-width: 0;
 }
 
+.root :global(.d5o-app-topbar > .d5o-top-actions) { display: flex; margin-left: auto; }
+
 .root :global(.d5o-surface-host > :is(.d5o-page, .d5o-ops-home, .d5o-ops-mywork, .d5o-portfolio-concept, .d5o-decisions-board, .d5o-crew-concept, .d5o-capacity-board, .d5o-execution-board, .d5o-handoff-concept, .d5o-library-board, .d5o-record-full)) {
   margin-inline: auto;
   max-width: var(--d5o-content-max);
@@ -56,10 +58,11 @@
 /* Shared heading, eyebrow, and introductory-copy rhythm. */
 .root :global(.d5o-surface-host h1) {
   color: var(--d5o-ink);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 3vw, 3rem);
-  letter-spacing: -.04em;
-  line-height: 1.04;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1.55rem, 2.2vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -.035em;
+  line-height: 1.15;
 }
 
 .root :global(.d5o-surface-host h2),
@@ -78,11 +81,11 @@
 .root :global(.d5o-board-hero > div > p),
 .root :global(.d5o-handoff-concept > header p),
 .root :global(.d5o-library-board > header > div:first-child > p),
-.root :global(.d5o-record-full > header p) {
+.root :global(.d5o-phase-record-header > div:first-child > p) {
   color: color-mix(in srgb, var(--d5o-accent) 68%, #253f4b);
-  font-size: .65rem;
+  font-size: .72rem;
   font-weight: 900;
-  letter-spacing: .12em;
+  letter-spacing: .08em;
   line-height: 1.35;
   text-transform: uppercase;
 }
@@ -99,7 +102,7 @@
 .root :global(.d5o-handoff-concept > header > div > span),
 .root :global(.d5o-library-board > header > div:first-child > span) {
   color: var(--d5o-muted);
-  font-size: .82rem;
+  font-size: .875rem;
   line-height: 1.5;
   max-width: 78ch;
 }
@@ -214,4 +217,556 @@
   .root :global(.d5o-record-full) {
     max-width: none;
   }
+}
+
+/* The same compact record and control hierarchy applies in every phase. */
+.root :global(.d5o-surface-host :is(h2, h3)) {
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: -.02em;
+  line-height: 1.25;
+}
+
+.root :global(.d5o-phase-record-header) {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 12px 16px;
+}
+
+.root :global(.d5o-phase-record-header > div:first-child) { min-width: 0; }
+.root :global(.d5o-phase-record-header h1) {
+  font-size: clamp(1.2rem, 1.7vw, 1.5rem);
+  line-height: 1.25;
+  margin: 3px 0;
+  overflow-wrap: anywhere;
+}
+.root :global(.d5o-phase-record-header > div:first-child > span) {
+  color: var(--d5o-muted);
+  display: block;
+  font-size: .82rem;
+  line-height: 1.4;
+}
+.root :global(.d5o-phase-header-actions) {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.root :global(.d5o-phase-header-actions > :is(.d5o-stage-badge, .d5o-record-menu)) {
+  min-height: 42px;
+  min-width: 0;
+  width: auto;
+}
+.root :global(.d5o-record-menu summary) { min-height: 42px; }
+.root :global(.d5o-work-phase-nav) {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-block: 8px 14px;
+  overflow-x: auto;
+}
+.root :global(.d5o-work-phase-nav button) {
+  flex: 1 0 100px;
+  min-height: 42px;
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
+/* Current decisions must remain legible even with long work names or outcomes. */
+.root :global(.d5o-gate-overview .d5o-gate-requirements > button) {
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.root :global(.d5o-gate-overview .d5o-gate-requirements > button > div) { min-width: 0; }
+.root :global(.d5o-gate-overview .d5o-gate-requirements > button :is(strong, span)) {
+  font-size: .83rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.root :global(.d5o-gate-overview .d5o-gate-requirements > button > b) {
+  font-size: .78rem;
+  white-space: nowrap;
+}
+.root :global(.d5o-record-summary strong) { overflow-wrap: anywhere; }
+.root :global(.d5o-record-workspace.is-connected) { display: block; }
+.root :global(.d5o-record-workspace.is-connected .d5o-record-primary) { width: 100%; }
+.root :global(.d5o-record-workspace .d5o-record-body) { max-width: none; }
+
+/* Registers use the width for business facts; guidance is secondary. */
+.root :global(.d5o-execution-layout) { grid-template-columns: minmax(0, 1fr); }
+.root :global(.d5o-execution-board > .d5o-board-hero) { grid-template-columns: minmax(0, 1fr); }
+.root :global(.d5o-package-board-head),
+.root :global(.d5o-execution-main > button) {
+  grid-template-columns: minmax(230px, 1.5fr) minmax(150px, .85fr) minmax(180px, 1fr) minmax(210px, 1fr);
+}
+.root :global(.d5o-execution-main > button > div) { min-width: 0; }
+.root :global(.d5o-package-progress span) { display: block; font-size: .82rem; line-height: 1.4; overflow-wrap: anywhere; }
+.root :global(.d5o-package-progress span small) { color: var(--d5o-muted); font-size: .75rem; }
+.root :global(.d5o-package-progress span strong) { font-size: .85rem; }
+.root :global(.d5o-execution-guidance) {
+  background: #fff;
+  border: 1px solid var(--d5o-border);
+  border-radius: var(--d5o-card-radius);
+  color: var(--d5o-muted);
+  font-size: .85rem;
+  line-height: 1.5;
+  padding: 10px 16px;
+}
+.root :global(.d5o-execution-guidance summary) { color: var(--d5o-ink); cursor: pointer; font-weight: 700; }
+.root :global(.d5o-execution-guidance p) { margin: 8px 0 0; }
+
+.root :global(.d5o-handoff-list) { display: grid; }
+.root :global(.d5o-handoff-item) { border-top: 1px solid var(--d5o-border); min-width: 0; }
+.root :global(.d5o-handoff-item-main) {
+  align-items: start;
+  background: #fff;
+  border: 0;
+  color: var(--d5o-ink);
+  cursor: pointer;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(190px, 1.4fr) repeat(4, minmax(100px, .72fr)) minmax(150px, 1fr);
+  min-width: 0;
+  padding: 16px 18px;
+  text-align: left;
+  width: 100%;
+}
+.root :global(.d5o-handoff-item-main:hover) { background: #f6f9fa; }
+.root :global(.d5o-handoff-item-main > span) { min-width: 0; }
+.root :global(.d5o-handoff-item-main small) {
+  color: var(--d5o-muted);
+  display: block;
+  font-size: .75rem;
+  line-height: 1.35;
+  margin-bottom: 4px;
+}
+.root :global(.d5o-handoff-item-main strong) { display: block; font-size: .85rem; line-height: 1.35; overflow-wrap: anywhere; }
+.root :global(.d5o-handoff-identity em) { color: var(--d5o-muted); display: block; font-size: .75rem; font-style: normal; margin-top: 4px; }
+.root :global(.d5o-handoff-item-main .d5o-proof-state) { font-size: .8rem; line-height: 1.35; }
+.root :global(.d5o-handoff-item-detail) { background: #f7fafb; padding: 0 18px 12px; }
+.root :global(.d5o-handoff-item-detail summary) { color: #315b70; cursor: pointer; font-size: .8rem; font-weight: 700; padding: 10px 0; }
+.root :global(.d5o-handoff-item-detail p) { color: #496775; font-size: .8rem; line-height: 1.45; margin: 7px 0; overflow-wrap: anywhere; }
+
+/* Summary counts should orient the reader without pushing the register below the fold. */
+.root :global(.d5o-handoff-summary article) { min-width: 0; }
+.root :global(.d5o-handoff-summary span) { font-size: .75rem; line-height: 1.3; white-space: normal; }
+
+@media (max-width: 1100px) {
+  .root :global(.d5o-package-board-head),
+  .root :global(.d5o-execution-main > button) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .root :global(.d5o-handoff-item-main) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .root :global(.d5o-handoff-identity) { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  .root :global(.d5o-execution-main > button) { grid-template-columns: minmax(0, 1fr); }
+  .root :global(.d5o-back) { margin-bottom: 4px; }
+  .root :global(.d5o-phase-record-header) { align-items: stretch; flex-direction: column; gap: 8px; padding: 8px 12px; }
+  .root :global(.d5o-phase-record-header h1) { font-size: 1.15rem; }
+  .root :global(.d5o-phase-record-header > div:first-child > span) { font-size: .77rem; margin-top: 3px; }
+  .root :global(.d5o-phase-header-actions) { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .root :global(.d5o-phase-header-actions > :is(.d5o-stage-badge, .d5o-record-menu)) { min-height: 40px; width: auto; }
+  .root :global(.d5o-phase-header-actions .d5o-stage-badge) { padding: 6px 8px; }
+  .root :global(.d5o-phase-header-actions .d5o-stage-badge strong) { font-size: .76rem; overflow-wrap: anywhere; }
+  .root :global(.d5o-record-menu summary) { font-size: .7rem; min-height: 40px; padding: 6px 8px; }
+  .root :global(.d5o-work-phase-nav) { margin-block: 5px 10px; }
+  .root :global(.d5o-work-phase-nav button) { min-height: 36px; padding: 6px 10px; }
+  .root :global(.d5o-work-phase-nav button) { flex: 0 0 auto; }
+  .root :global(.d5o-handoff-item-main) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .root :global(.d5o-handoff-next) { grid-column: 1 / -1; }
+  .root :global(.d5o-handoff-summary) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
+  .root :global(.d5o-handoff-summary article) { padding: 8px; }
+  .root :global(.d5o-handoff-summary strong) { font-size: 1.15rem; }
+}
+
+/* The work application uses one canvas, one navigation scale and one set of
+   task/control dimensions. Phase modules retain their domain-specific grids. */
+.root {
+  --d5o-content-max: 1560px;
+  --d5o-content-gutter: clamp(18px, 2.3vw, 36px);
+  --d5o-surface-muted: #f5f8fa;
+  --d5o-ink: #153246;
+  --d5o-muted: #566e7d;
+  --d5o-border: #dbe4e9;
+  --d5o-card-radius: 12px;
+  --d5o-control-radius: 8px;
+  --d5o-control-height: 42px;
+  background: #f5f7fa;
+  grid-template-columns: 242px minmax(0, 1fr);
+}
+
+.root :global(.d5o-full-sidebar) {
+  background: #102b42;
+  gap: 10px;
+  padding: 18px 12px 12px;
+}
+.root :global(.d5o-full-brand) {
+  border-bottom: 1px solid rgb(255 255 255 / 12%);
+  margin: 0 2px 8px;
+  min-height: 52px;
+  padding: 3px 8px 16px;
+}
+.root :global(.d5o-full-brand > strong) { font-size: 12px; line-height: 1.2; }
+.root :global(.d5o-full-brand small) { font-size: 11px; opacity: .7; }
+.root :global(.d5o-nav-caption) {
+  color: #9eb3c1;
+  font-size: 10px;
+  letter-spacing: .09em;
+  margin: 8px 12px 5px;
+}
+.root :global(.d5o-sidebar-menu) { row-gap: 4px; }
+.root :global(.d5o-full-nav) { gap: 3px; }
+.root :global(.d5o-full-nav button) {
+  border: 0;
+  border-radius: 8px;
+  color: #d6e1e8;
+  font-size: 13px;
+  font-weight: 650;
+  min-height: 42px;
+  padding: 10px 12px;
+}
+.root :global(.d5o-full-nav button:hover) { background: rgb(255 255 255 / 9%); }
+.root :global(.d5o-full-nav button.is-active) {
+  background: #29445a;
+  box-shadow: inset 3px 0 var(--d5o-accent);
+  color: #fff;
+}
+.root :global(.d5o-full-nav button .d5o-platform-icon) { color: #aabfcb; height: 18px; width: 18px; }
+.root :global(.d5o-nav-disclosure) {
+  border-top: 1px solid rgb(255 255 255 / 12%);
+  margin: 8px 4px 0;
+  padding-top: 8px;
+}
+.root :global(.d5o-nav-disclosure summary) {
+  border-radius: 8px;
+  color: #d9e6ec;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.35;
+  min-height: 40px;
+  padding: 11px 12px;
+}
+.root :global(.d5o-nav-disclosure summary:hover) { background: rgb(255 255 255 / 8%); }
+.root :global(.d5o-nav-disclosure[open] > summary) { color: #fff; }
+.root :global(.d5o-nav-disclosure .d5o-full-nav) { padding: 4px 0; }
+.root :global(.d5o-sidebar-phase-nav button) { min-height: 36px; padding-left: 18px; }
+.root :global(.d5o-nav-phase-number) {
+  align-items: center;
+  border: 1px solid rgb(214 231 239 / 48%);
+  border-radius: 50%;
+  color: #dceaf0;
+  display: inline-flex;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+.root :global(.d5o-sidebar-record-context) {
+  background: rgb(255 255 255 / 6%);
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 9px;
+  margin: 4px 3px 10px;
+  padding: 11px;
+}
+.root :global(.d5o-sidebar-record-title) { font-size: 13px; }
+.root :global(.d5o-sidebar-record-switch) { min-height: 38px; }
+.root :global(.d5o-user-card) {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 0;
+  gap: 3px;
+  margin: auto 3px 0;
+  padding: 13px 9px 4px;
+}
+.root :global(.d5o-user-card strong) { font-size: 13px; font-weight: 700; text-transform: capitalize; }
+.root :global(.d5o-user-card small) { font-size: 11px; overflow-wrap: anywhere; }
+.root :global(.d5o-source-id) { color: #8ea5b5; font-size: 11px; margin: 4px 12px 0; }
+.root :global(.d5o-appearance) { margin: 8px 10px; }
+
+.root :global(.d5o-full-content) {
+  margin: 0;
+  max-width: none;
+  min-width: 0;
+  padding: 0 var(--d5o-content-gutter) 56px;
+}
+.root :global(.d5o-app-topbar) {
+  background: #fff;
+  border-bottom: 1px solid var(--d5o-border);
+  box-shadow: none;
+  margin: 0 calc(-1 * var(--d5o-content-gutter)) 20px;
+  min-height: 62px;
+  padding: 0 var(--d5o-content-gutter);
+}
+.root :global(.d5o-app-topbar > div:first-child span) { color: #728390; font-size: 11px; }
+.root :global(.d5o-app-topbar > div:first-child strong) { color: var(--d5o-ink); font-size: 14px; }
+.root :global(.d5o-app-topbar button) { min-height: 40px; }
+.root :global(.d5o-surface-host) { margin: 0 auto; max-width: var(--d5o-content-max); width: 100%; }
+.root :global(.d5o-full-content > section) { max-width: var(--d5o-content-max); }
+.root :global(.d5o-surface-host > :is(.d5o-page, .d5o-ops-home, .d5o-ops-mywork, .d5o-portfolio-concept, .d5o-decisions-board, .d5o-crew-concept, .d5o-capacity-board, .d5o-execution-board, .d5o-handoff-concept, .d5o-library-board, .d5o-record-full)) { max-width: var(--d5o-content-max); }
+.root :global(.d5o-surface-host h1) { font-size: clamp(1.6rem, 2vw, 2rem); line-height: 1.18; }
+.root :global(.d5o-surface-host :is(h2, h3, h4)) { font-family: Arial, Helvetica, sans-serif; letter-spacing: -.025em; }
+.root :global(.d5o-surface-host p) { line-height: 1.5; }
+.root :global(.d5o-surface-host :is(.d5o-page, .d5o-ops-home, .d5o-ops-mywork, .d5o-portfolio-concept, .d5o-decisions-board, .d5o-crew-concept, .d5o-capacity-board, .d5o-execution-board, .d5o-handoff-concept, .d5o-library-board, .d5o-record-full) > header) {
+  margin-bottom: 18px;
+}
+.root :global(.d5o-surface-host :is(.d5o-page, .d5o-ops-home, .d5o-ops-mywork, .d5o-portfolio-concept, .d5o-decisions-board, .d5o-crew-concept, .d5o-capacity-board, .d5o-handoff-concept, .d5o-library-board) > header h1) {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1.65rem, 2.15vw, 2.15rem);
+  letter-spacing: -.035em;
+  line-height: 1.15;
+  max-width: none;
+}
+.root :global(.d5o-surface-host :is(.d5o-page, .d5o-record-full, .d5o-ops-home, .d5o-ops-mywork, .d5o-portfolio-concept, .d5o-decisions-board, .d5o-crew-concept, .d5o-capacity-board, .d5o-handoff-concept, .d5o-library-board)) { padding-top: 0; }
+.root :global(.d5o-surface-host small) { font-size: 12px; line-height: 1.4; }
+.root :global(.d5o-surface-host :is(input:not([type="checkbox"]):not([type="radio"]):not([type="color"]), select, textarea)) {
+  background: #fff;
+  border-color: #bdcdd7;
+  color: var(--d5o-ink);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  min-height: 42px;
+  padding: 9px 12px;
+}
+.root :global(.d5o-surface-host textarea) { min-height: 88px; }
+.root :global(.d5o-surface-host label) { color: #344f61; font-size: 13px; letter-spacing: normal; line-height: 1.35; text-transform: none; }
+.root :global(.d5o-surface-host :is(.d5o-primary, .d5o-outline)) { font-size: 13px; min-height: 42px; padding: 9px 14px; }
+.root :global(.d5o-surface-host .d5o-outline) {
+  background: #fff;
+  border-color: #b8cad5;
+  color: #24465a;
+}
+.root :global(.d5o-surface-host .d5o-platform-hero .d5o-outline) {
+  background: transparent;
+  border-color: rgb(255 255 255 / 45%);
+  color: #fff;
+}
+.root :global(.d5o-surface-host :is(button, a, input, textarea, select, summary):focus-visible) { outline: 3px solid #bf9625; outline-offset: 2px; }
+
+/* Focused tasks use the same frame in every phase, and the available canvas. */
+.root :global(.d5o-task-frame),
+.root :global(.d5o-asset-task),
+.root :global(.d5o-focused-record-header) {
+  max-width: var(--d5o-content-max);
+  width: 100%;
+}
+.root :global(.d5o-task-frame) {
+  background: #fff;
+  border: 1px solid var(--d5o-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgb(16 44 64 / 5%);
+  margin: 16px auto 24px;
+  padding: clamp(18px, 2.3vw, 32px);
+}
+.root :global(.d5o-task-frame-header) { align-items: start; border-bottom: 0; margin: 0; padding: 0 0 18px; }
+.root :global(.d5o-task-heading) { max-width: 75ch; min-width: 0; }
+.root :global(.d5o-task-frame-header h1) { font-size: clamp(1.55rem, 2.2vw, 2.1rem); margin: 8px 0 12px; }
+.root :global(.d5o-task-frame-header small) { color: #936a13; font-size: 11px; letter-spacing: .06em; }
+.root :global(.d5o-task-frame-header p) { display: grid; gap: 3px; margin: 0; }
+.root :global(.d5o-task-frame-header p strong) { color: var(--d5o-ink); font-size: 14px; }
+.root :global(.d5o-task-frame-header p span) { color: var(--d5o-muted); font-size: 13px; }
+.root :global(.d5o-task-frame-header a) { color: #345b71; font-size: 13px; white-space: nowrap; }
+.root :global(.d5o-task-intent) {
+  background: #f3f7fa;
+  border: 1px solid #e2e9ee;
+  border-radius: 9px;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  margin-bottom: 24px;
+  padding: 16px 20px;
+}
+.root :global(.d5o-task-intent span) { color: #647b89; font-size: 11px; font-weight: 800; letter-spacing: .06em; }
+.root :global(.d5o-task-intent p) { color: var(--d5o-ink); font-size: 14px; margin: 6px 0 0; }
+.root :global(.d5o-task-controls > article) { border: 0; margin: 0; padding: 0; }
+.root :global(.d5o-task-frame form) { max-width: none; }
+.root :global(.d5o-task-next) { background: #eef6f2; border-radius: 8px; color: #2d5c49; font-size: 13px; margin: 20px 0 0; padding: 12px 15px; }
+.root :global(.d5o-task-blocker) { background: #fff4e8; border-left: 4px solid #c1812e; color: #754910; display: grid; gap: 4px; padding: 12px 15px; }
+.root :global(.d5o-task-supporting) { color: var(--d5o-muted); font-size: 13px; margin-top: 22px; }
+
+/* Record context stays available without occupying the first screen of a phase. */
+.root :global(.d5o-surface-host .d5o-record-full > .d5o-phase-record-header h1) {
+  font-size: clamp(1.15rem, 1.5vw, 1.35rem);
+  line-height: 1.25;
+  max-width: 62ch;
+}
+.root :global(.d5o-phase-record-header) { padding: 10px 14px; }
+.root :global(.d5o-phase-header-actions .d5o-stage-badge) { padding: 8px 12px; }
+.root :global(.d5o-work-phase-nav) { margin-block: 6px 12px; }
+.root :global(.d5o-work-phase-nav button) { min-height: 38px; }
+
+/* Creation is a working form, so it follows the same content width as tasks. */
+.root :global(.d5o-start-page form) {
+  gap: 18px 22px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 1100px;
+  padding: 26px;
+}
+.root :global(.d5o-start-page form > :is(label:first-child, label:nth-child(6), .d5o-path-card, div:last-child)) { grid-column: 1 / -1; }
+.root :global(.d5o-start-page form > label) { min-width: 0; }
+.root :global(.d5o-start-page form > label input),
+.root :global(.d5o-start-page form > label select),
+.root :global(.d5o-start-page form > label textarea) { width: 100%; }
+
+/* Evidence is a browsable register: make each retained file and its actions scannable. */
+.root :global(.d5o-private-evidence-row) {
+  align-items: center;
+  border-top: 1px solid var(--d5o-border);
+  display: grid;
+  gap: 22px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 16px 18px;
+}
+.root :global(.d5o-private-evidence-row > div:first-child) { display: grid; gap: 4px; min-width: 0; }
+.root :global(.d5o-private-evidence-row strong) { color: var(--d5o-ink); font-size: 14px; overflow-wrap: anywhere; }
+.root :global(.d5o-private-evidence-row small) { color: var(--d5o-muted); font-size: 12px; }
+.root :global(.d5o-private-evidence-row > div:last-child) { align-items: center; display: flex; flex-wrap: wrap; gap: 9px; justify-content: flex-end; }
+.root :global(.d5o-private-evidence-row :is(a, button)) {
+  align-items: center;
+  background: #fff;
+  border: 1px solid #b8cad5;
+  border-radius: 7px;
+  color: #24465a;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 700;
+  min-height: 38px;
+  padding: 8px 11px;
+  text-decoration: none;
+}
+.root :global(.d5o-private-evidence-row a) { background: #edf4f7; }
+
+/* An empty follow-through column must not consume half the insight canvas. */
+.root :global(.d5o-insight-grid:has(.d5o-system-list:empty)) { grid-template-columns: minmax(0, 1fr); }
+.root :global(.d5o-insight-grid:has(.d5o-system-list:empty) > article:has(.d5o-system-list:empty)) { display: none; }
+
+@media (max-width: 1100px) {
+  .root { grid-template-columns: 216px minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  .root { display: block; overflow-x: clip; }
+  .root :global(.d5o-full-sidebar) { padding: 8px 14px; }
+  .root :global(.d5o-full-content) { padding: 0 14px 36px; }
+  .root :global(.d5o-surface-host) { min-width: 0; overflow-x: clip; }
+  .root :global(.d5o-app-topbar) { margin: 0 -14px 12px; padding: 8px 14px; }
+  .root :global(.d5o-task-frame) { margin: 8px auto; padding: 16px; }
+  .root :global(.d5o-task-frame-header) { display: grid; gap: 12px; }
+  .root :global(.d5o-task-intent) { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 14px; }
+  .root :global(.d5o-start-page form) { grid-template-columns: minmax(0, 1fr); padding: 18px; }
+  .root :global(.d5o-start-page form > *) { grid-column: 1 / -1; }
+  .root :global(.d5o-private-evidence-row) { grid-template-columns: minmax(0, 1fr); }
+  .root :global(.d5o-private-evidence-row > div:last-child) { justify-content: flex-start; }
+  .root :global(.d5o-surface-host .d5o-record-full > .d5o-phase-record-header h1) { font-size: 1.1rem; }
+}
+
+/* The compact rail is global navigation; exact work stays in the task inbox and canvas. */
+.root { grid-template-columns: 76px minmax(0, 1fr); }
+.root :global(.d5o-nav-rail) { align-items:center; gap:0; width:76px; padding:12px 6px 10px; overflow:visible; z-index:15; }
+.root :global(.d5o-nav-rail .d5o-full-brand) { justify-content:center; width:60px; min-height:54px; margin:0 0 18px; padding:8px 2px 15px; }
+.root :global(.d5o-nav-rail .d5o-full-brand .d5o-wordmark) { font-size:25px; }
+.root :global(.d5o-rail-links), .root :global(.d5o-rail-bottom) { display:grid; width:100%; gap:5px; }
+.root :global(.d5o-rail-bottom) { margin-top:auto; padding-top:10px; border-top:1px solid rgb(255 255 255 / 13%); }
+.root :global(.d5o-rail-links button), .root :global(.d5o-rail-bottom button), .root :global(.d5o-rail-bottom a) { display:grid; justify-items:center; align-content:center; gap:4px; width:100%; min-height:58px; border:0; border-radius:9px; background:transparent; color:#d7e5ed; cursor:pointer; font-size:10px; font-weight:700; line-height:1.1; padding:7px 3px; text-decoration:none; }
+.root :global(.d5o-rail-links button:hover), .root :global(.d5o-rail-bottom button:hover), .root :global(.d5o-rail-bottom a:hover) { background:rgb(255 255 255 / 10%); }
+.root :global(.d5o-rail-links button.is-active), .root :global(.d5o-rail-links button[aria-current=page]), .root :global(.d5o-rail-bottom button[aria-current=page]) { background:#29465b; color:#fff; box-shadow:inset 3px 0 var(--d5o-accent); }
+.root :global(.d5o-rail-links svg), .root :global(.d5o-rail-bottom svg) { width:21px; height:21px; }
+.root :global(.d5o-rail-build) { color:#9db1bf; font-size:9px; line-height:1.2; padding:10px 2px 0; text-align:center; overflow-wrap:anywhere; }
+.root :global(.d5o-nav-scrim) { position:fixed; inset:0; z-index:16; border:0; background:rgb(12 32 47 / 35%); cursor:default; }
+.root :global(.d5o-nav-drawer) { position:fixed; top:0; bottom:0; left:76px; z-index:17; display:flex; flex-direction:column; width:min(340px, calc(100vw - 76px)); padding:16px 14px; overflow:auto; background:#102b42; color:#fff; box-shadow:8px 0 28px rgb(14 37 53 / 20%); transform:translateX(-110%); visibility:hidden; }
+.root :global(.d5o-nav-drawer.is-open) { transform:none; visibility:visible; }
+.root :global(.d5o-nav-drawer-heading) { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:0 4px 12px; border-bottom:1px solid rgb(255 255 255 / 15%); }
+.root :global(.d5o-nav-drawer-heading div) { display:grid; gap:2px; }
+.root :global(.d5o-nav-drawer-heading strong) { font-size:17px; }
+.root :global(.d5o-nav-drawer-heading small) { color:#a9bfca; }
+.root :global(.d5o-nav-drawer-heading button) { border:0; border-radius:7px; background:rgb(255 255 255 / 10%); color:#fff; cursor:pointer; font-size:24px; width:36px; height:36px; }
+.root :global(.d5o-nav-drawer .d5o-sidebar-menu) { display:block; }
+.root :global(.d5o-nav-drawer .d5o-user-card) { margin-top:22px; }
+.root :global(.d5o-full-content) { padding:0 clamp(14px, 1.5vw, 26px) 42px; }
+.root :global(.d5o-app-topbar) { margin:0 calc(-1 * clamp(14px, 1.5vw, 26px)) 12px; padding:0 clamp(14px, 1.5vw, 26px); }
+.root :global(.d5o-surface-host) { max-width:none; }
+.root :global(.d5o-has-task-inbox) { display:grid; grid-template-columns: minmax(255px, 300px) minmax(0, 1fr); align-items:start; gap:0; min-height:calc(100vh - 75px); background:#fff; border:1px solid var(--d5o-border); border-radius:11px; overflow:clip; }
+.root :global(.d5o-task-main) { min-width:0; }
+.root :global(.d5o-has-task-inbox .d5o-task-main) { padding:12px clamp(16px, 2vw, 32px) 32px; }
+.root :global(.d5o-has-task-inbox .d5o-task-frame), .root :global(.d5o-has-task-inbox .d5o-focused-record-header), .root :global(.d5o-has-task-inbox .d5o-asset-task) { max-width:100%; }
+.root :global(.d5o-task-inbox-rail) { position:sticky; top:62px; align-self:start; display:flex; flex-direction:column; min-width:0; height:calc(100vh - 63px); border-right:1px solid var(--d5o-border); background:#fbfcfd; }
+.root :global(.d5o-task-inbox-rail header) { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:20px 16px 12px; }
+.root :global(.d5o-task-inbox-rail header small) { color:#657d8a; font-size:10px; font-weight:800; letter-spacing:.08em; }
+.root :global(.d5o-task-inbox-rail h2) { margin:2px 0 0; color:#122f43; font-size:20px; }
+.root :global(.d5o-task-inbox-rail header button) { border:1px solid #ccd9e0; border-radius:7px; background:#fff; color:#33566b; cursor:pointer; width:35px; height:35px; font-size:20px; }
+.root :global(.d5o-task-inbox-search) { display:block; padding:0 14px 12px; }
+.root :global(.d5o-task-inbox-search input) { width:100%; min-height:39px; padding:8px 10px; border:1px solid #cad9e1; border-radius:7px; background:#fff; color:#173c50; }
+.root :global(.d5o-task-inbox-tabs) { display:flex; padding:0 14px; gap:14px; border-bottom:1px solid var(--d5o-border); }
+.root :global(.d5o-task-inbox-tabs button) { border:0; border-bottom:3px solid transparent; background:none; color:#566e7d; cursor:pointer; font-size:12px; font-weight:700; padding:9px 2px; white-space:nowrap; }
+.root :global(.d5o-task-inbox-tabs button[aria-pressed=true]) { color:#153b56; border-bottom-color:var(--d5o-accent); }
+.root :global(.d5o-task-inbox-tabs b) { margin-left:4px; }
+.root :global(.d5o-task-inbox-rows) { flex:1; overflow-y:auto; }
+.root :global(.d5o-task-inbox-rows a) { display:grid; gap:3px; padding:12px 15px; border-bottom:1px solid #e4ebef; border-left:3px solid transparent; color:#173b52; text-decoration:none; }
+.root :global(.d5o-task-inbox-rows a:hover), .root :global(.d5o-task-inbox-rows a.is-current-record) { background:#f0f5f8; border-left-color:#bc8c1d; }
+.root :global(.d5o-task-inbox-rows small) { color:#627987; font-size:10px; font-weight:800; text-transform:uppercase; }
+.root :global(.d5o-task-inbox-rows strong) { font-size:13px; line-height:1.25; }
+.root :global(.d5o-task-inbox-rows span), .root :global(.d5o-task-inbox-rows em) { color:#5c7380; font-size:11px; font-style:normal; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.root :global(.d5o-task-inbox-rows p) { padding:14px; color:#59727f; font-size:12px; }
+.root :global(.d5o-task-inbox-all) { padding:12px 16px; border-top:1px solid var(--d5o-border); color:#245a7b; font-size:12px; font-weight:800; text-decoration:none; }
+.root :global(.d5o-workbench-shell) { grid-template-columns:minmax(300px, 350px) minmax(0, 1fr); }
+.root :global(.d5o-workbench .d5o-workbench-row) { min-height:78px; padding:12px 16px; }
+.root :global(.d5o-workbench-pane) { padding:24px clamp(20px, 2.5vw, 40px); }
+@media (max-width:1050px) { .root :global(.d5o-has-task-inbox) { grid-template-columns:minmax(220px, 255px) minmax(0, 1fr); } }
+@media (max-width:780px) {
+  .root { display:block; }
+  .root :global(.d5o-nav-rail) { display:flex; position:sticky; top:0; flex-direction:row; flex-wrap:nowrap; width:100%; height:58px; max-height:none; padding:4px 8px; }
+  .root :global(.d5o-nav-rail .d5o-full-brand) { margin:0 10px 0 0; padding:4px; min-height:42px; width:55px; border:0; }
+  .root :global(.d5o-rail-links) { display:flex; flex:1; justify-content:space-around; min-width:0; width:auto; overflow:auto; }
+  .root :global(.d5o-rail-links button:nth-child(n+4)) { display:none; }
+  .root :global(.d5o-rail-links button), .root :global(.d5o-rail-bottom button), .root :global(.d5o-rail-bottom a) { min-width:52px; min-height:46px; }
+  .root :global(.d5o-rail-links button span), .root :global(.d5o-rail-bottom button span), .root :global(.d5o-rail-bottom a span), .root :global(.d5o-rail-build) { display:none; }
+  .root :global(.d5o-rail-bottom) { display:flex; flex:0 0 auto; width:auto; margin:0; border:0; padding:0; }
+  .root :global(.d5o-nav-drawer) { left:0; width:min(340px, 90vw); }
+  .root :global(.d5o-task-inbox-rail) { position:static; height:auto; max-height:330px; border-right:0; border-bottom:1px solid var(--d5o-border); }
+  .root :global(.d5o-has-task-inbox) { display:block; }
+  .root :global(.d5o-has-task-inbox .d5o-task-main) { padding:10px 14px 24px; }
+  .root :global(.d5o-workbench-shell) { grid-template-columns:1fr; }
+}
+
+/* Selected Work provides one context header for the existing phase screens. */
+.root :global(.d5o-selected-work-header) {
+  background:#fff;
+  border:1px solid var(--d5o-border);
+  border-radius:10px;
+  margin:8px 0 0;
+  padding:15px 18px;
+}
+.root :global(.d5o-selected-work-crumb) { align-items:center; color:#617787; display:flex; gap:9px; font-size:12px; font-weight:700; margin-bottom:10px; }
+.root :global(.d5o-selected-work-crumb button) { background:none; border:0; color:#245775; cursor:pointer; font:inherit; padding:2px 0; }
+.root :global(.d5o-selected-work-main) { align-items:center; display:flex; gap:18px; justify-content:space-between; min-width:0; }
+.root :global(.d5o-selected-work-main > div:first-child) { min-width:0; }
+.root :global(.d5o-selected-work-main p) { color:#6a8090; font-size:10px; font-weight:800; letter-spacing:.1em; margin:0 0 3px; }
+.root :global(.d5o-selected-work-main h1) { color:var(--d5o-ink); font-size:clamp(21px,2vw,29px); line-height:1.2; margin:0 0 4px; overflow-wrap:anywhere; }
+.root :global(.d5o-selected-work-main > div:first-child > span) { color:#587181; display:block; font-size:13px; overflow-wrap:anywhere; }
+.root :global(.d5o-selected-work-actions) { align-items:center; display:flex; flex:0 0 auto; gap:9px; }
+.root :global(.d5o-selected-work-actions .d5o-stage-badge) { min-height:42px; min-width:145px; padding:6px 10px; }
+.root :global(.d5o-header-record-switch) { background:#fff; border:1px solid #b9cbd5; border-radius:7px; color:#153b53; cursor:pointer; font:inherit; font-size:12px; font-weight:750; min-height:42px; padding:8px 11px; white-space:nowrap; }
+.root :global(.d5o-header-record-switch span) { margin-left:10px; }
+.root :global(.d5o-record-full > .d5o-work-phase-nav),
+.root :global(.d5o-early-phase > .d5o-work-phase-nav) { background:transparent; border:0; border-bottom:1px solid var(--d5o-border); border-radius:0; display:flex; gap:7px; margin:0; overflow-x:auto; padding:0 4px; scrollbar-width:thin; }
+.root :global(.d5o-work-phase-nav button),
+.root :global(.d5o-record-full > .d5o-work-phase-nav button),
+.root :global(.d5o-early-phase > .d5o-work-phase-nav button) { background:transparent; border:0; border-bottom:3px solid transparent; border-radius:0; color:#415e70; flex:0 0 auto; font-size:13px; font-weight:750; min-height:46px; min-width:90px; padding:11px 15px; }
+.root :global(.d5o-work-phase-nav button.is-active),
+.root :global(.d5o-record-full > .d5o-work-phase-nav button.is-active),
+.root :global(.d5o-early-phase > .d5o-work-phase-nav button.is-active) { background:transparent; border-bottom-color:var(--d5o-accent); color:#102b42; }
+.root :global(.d5o-work-phase-nav button:disabled) { color:#8a9aa4; cursor:not-allowed; opacity:.75; }
+.root :global(.d5o-record-surface-nav) { border-bottom:1px solid var(--d5o-border); display:flex; gap:3px; margin:0 0 15px; overflow-x:auto; padding:0 4px; scrollbar-width:thin; }
+.root :global(.d5o-record-surface-nav button) { background:transparent; border:0; border-bottom:2px solid transparent; color:#526f80; cursor:pointer; flex:0 0 auto; font:inherit; font-size:11px; font-weight:650; min-height:38px; padding:8px 10px; white-space:nowrap; }
+.root :global(.d5o-record-surface-nav button.is-active) { border-bottom-color:#70899a; color:#173a51; font-weight:800; }
+.root :global(.d5o-selected-work-header button:focus-visible),
+.root :global(.d5o-work-phase-nav button:focus-visible),
+.root :global(.d5o-record-surface-nav button:focus-visible) { outline:3px solid var(--d5o-accent); outline-offset:2px; }
+@media (max-width:800px) {
+  .root :global(.d5o-selected-work-header) { margin-top:8px; padding:12px; }
+  .root :global(.d5o-selected-work-main) { align-items:flex-start; flex-direction:column; gap:10px; }
+  .root :global(.d5o-selected-work-actions) { flex-wrap:wrap; width:100%; }
+  .root :global(.d5o-work-phase-nav button) { min-width:94px; }
 }

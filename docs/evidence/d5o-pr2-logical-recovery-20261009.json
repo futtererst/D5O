@@ -1,0 +1,480 @@
+{
+  "scope": "Fictional disposable local logical recovery; no managed post-fixture restore",
+  "applicationSource": "a1a02945912967f09b6bad5c0e4f7df24f9f9870",
+  "source": "d5o-fresh-replay-final2-20261009",
+  "target": "d5o-logical-recovery-20261009",
+  "targetStartedUtc": "2026-10-09T20:54:01.575Z",
+  "finalCommandVerifiedUtc": "2026-10-09T21:09:25Z",
+  "dataArchiveBytes": 3786113,
+  "dataArchiveSha256": "06e9624e6f34c23952b96c5d1538e9590e64bbb37e8b4fa4ade2043eb5c689ad",
+  "tablesCompared": 59,
+  "targetOnlyEmptyTables": [
+    "d5o_hosted.membership_assignment_events"
+  ],
+  "tables": [
+    {
+      "table": "auth.identities",
+      "count": 12,
+      "sourceMd5": "87f4eb1c54e213fe603dd58f29c027f3",
+      "restoredMd5": "87f4eb1c54e213fe603dd58f29c027f3",
+      "matched": true
+    },
+    {
+      "table": "auth.users",
+      "count": 12,
+      "sourceMd5": "89a11b94db037432cde4b705c5d4b507",
+      "restoredMd5": "89a11b94db037432cde4b705c5d4b507",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.configuration_create_rights",
+      "count": 8,
+      "sourceMd5": "ed3f2f42987dbf6a5c5b83ab6581cda6",
+      "restoredMd5": "ed3f2f42987dbf6a5c5b83ab6581cda6",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.configuration_tenants",
+      "count": 1,
+      "sourceMd5": "fe3c0974260dd9886b0448d6ea074088",
+      "restoredMd5": "fe3c0974260dd9886b0448d6ea074088",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.configuration_versions",
+      "count": 1,
+      "sourceMd5": "eb0be34273e7f31facd6dba252ecbea1",
+      "restoredMd5": "eb0be34273e7f31facd6dba252ecbea1",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.configuration_work_types",
+      "count": 2,
+      "sourceMd5": "f6dc353f0198015fee1a841c15fb74d8",
+      "restoredMd5": "f6dc353f0198015fee1a841c15fb74d8",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_create_receipts",
+      "count": 8,
+      "sourceMd5": "7940b7690b92ee9e50d5aac46a543695",
+      "restoredMd5": "7940b7690b92ee9e50d5aac46a543695",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_crew_profile_events",
+      "count": 4,
+      "sourceMd5": "20367893785b886e90c8186a1bc543a8",
+      "restoredMd5": "20367893785b886e90c8186a1bc543a8",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_crew_profiles",
+      "count": 4,
+      "sourceMd5": "3e053a87dc6d8c573872f38af86d0399",
+      "restoredMd5": "3e053a87dc6d8c573872f38af86d0399",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_define_events",
+      "count": 5,
+      "sourceMd5": "a70d57f86677ae82450745ade1da8cd4",
+      "restoredMd5": "a70d57f86677ae82450745ade1da8cd4",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_define_receipts",
+      "count": 5,
+      "sourceMd5": "2ce77c707a511170b855a6ada0343777",
+      "restoredMd5": "2ce77c707a511170b855a6ada0343777",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_define_states",
+      "count": 1,
+      "sourceMd5": "1e9b39b00c38c3fbbc219bfc6639a738",
+      "restoredMd5": "1e9b39b00c38c3fbbc219bfc6639a738",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_deploy_events",
+      "count": 39,
+      "sourceMd5": "69caf2303e4f8a00cbba10cd286a020a",
+      "restoredMd5": "69caf2303e4f8a00cbba10cd286a020a",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_deploy_receipts",
+      "count": 39,
+      "sourceMd5": "78d24c7d471c3bb9003edefce423c179",
+      "restoredMd5": "78d24c7d471c3bb9003edefce423c179",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_deploy_states",
+      "count": 1,
+      "sourceMd5": "e007e218e9c4b6a0a51ccc257153f458",
+      "restoredMd5": "e007e218e9c4b6a0a51ccc257153f458",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_design_events",
+      "count": 99,
+      "sourceMd5": "52ee7284f6e4b422084eb65d449cd90b",
+      "restoredMd5": "52ee7284f6e4b422084eb65d449cd90b",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_design_handoff_events",
+      "count": 2,
+      "sourceMd5": "0f6005281c65cf6c893be63573293049",
+      "restoredMd5": "0f6005281c65cf6c893be63573293049",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_design_handoff_receipts",
+      "count": 2,
+      "sourceMd5": "85d2c809ee0a5e2528b20b83c1199a9a",
+      "restoredMd5": "85d2c809ee0a5e2528b20b83c1199a9a",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_design_handoffs",
+      "count": 1,
+      "sourceMd5": "398f3a9fa4470d7acd9309db91c59fc1",
+      "restoredMd5": "398f3a9fa4470d7acd9309db91c59fc1",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_design_receipts",
+      "count": 99,
+      "sourceMd5": "300f3f1e491f05a2e43b2b4b0deb6a85",
+      "restoredMd5": "300f3f1e491f05a2e43b2b4b0deb6a85",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_design_states",
+      "count": 1,
+      "sourceMd5": "8286262f00305acfdb9413cff11f05ee",
+      "restoredMd5": "8286262f00305acfdb9413cff11f05ee",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_estimate_events",
+      "count": 3,
+      "sourceMd5": "d27237cfbf894953bc84ad70dad0cb40",
+      "restoredMd5": "d27237cfbf894953bc84ad70dad0cb40",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_estimate_receipts",
+      "count": 3,
+      "sourceMd5": "1cc52ca9bac75367327ef4f01506abc3",
+      "restoredMd5": "1cc52ca9bac75367327ef4f01506abc3",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_estimate_states",
+      "count": 1,
+      "sourceMd5": "96c4f6d93726e27262f5811fdbf3a250",
+      "restoredMd5": "96c4f6d93726e27262f5811fdbf3a250",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_offer_events",
+      "count": 4,
+      "sourceMd5": "a2f6fa7ec66910791a16361db29f9939",
+      "restoredMd5": "a2f6fa7ec66910791a16361db29f9939",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_offer_receipts",
+      "count": 4,
+      "sourceMd5": "47846b193116bc72eeb7a8510474fcf1",
+      "restoredMd5": "47846b193116bc72eeb7a8510474fcf1",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_offer_states",
+      "count": 1,
+      "sourceMd5": "fae12c7276b55e077c266154b66f0400",
+      "restoredMd5": "fae12c7276b55e077c266154b66f0400",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_operate_events",
+      "count": 6,
+      "sourceMd5": "8cdf335da94f42ec4d016bb50637aab8",
+      "restoredMd5": "8cdf335da94f42ec4d016bb50637aab8",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_operate_receipts",
+      "count": 6,
+      "sourceMd5": "2cc72d9c19c213497a50c3070c546520",
+      "restoredMd5": "2cc72d9c19c213497a50c3070c546520",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_operate_states",
+      "count": 1,
+      "sourceMd5": "e2bb0abdf0ccde276c791b71b59d406d",
+      "restoredMd5": "e2bb0abdf0ccde276c791b71b59d406d",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_package_receipts",
+      "count": 3,
+      "sourceMd5": "106638a4cd49bf24afdd4105e7e9c98f",
+      "restoredMd5": "106638a4cd49bf24afdd4105e7e9c98f",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_package_states",
+      "count": 3,
+      "sourceMd5": "38959360cbec07189c2a459ad183d76e",
+      "restoredMd5": "38959360cbec07189c2a459ad183d76e",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_pricing_active",
+      "count": 1,
+      "sourceMd5": "76c53a1a6eba2377e46903d10f6082a9",
+      "restoredMd5": "76c53a1a6eba2377e46903d10f6082a9",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_pricing_events",
+      "count": 3,
+      "sourceMd5": "34019443840b5238539feb7fd6d27c24",
+      "restoredMd5": "34019443840b5238539feb7fd6d27c24",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_pricing_policies",
+      "count": 1,
+      "sourceMd5": "f5811465eaec73a11823731c30eb5cee",
+      "restoredMd5": "f5811465eaec73a11823731c30eb5cee",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_pricing_receipts",
+      "count": 3,
+      "sourceMd5": "29290f6cb4f07f2762e28fbcd102d0e9",
+      "restoredMd5": "29290f6cb4f07f2762e28fbcd102d0e9",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_pursuit_events",
+      "count": 25,
+      "sourceMd5": "7bd77ea4c1cb22ed1515c1053cad364c",
+      "restoredMd5": "7bd77ea4c1cb22ed1515c1053cad364c",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_pursuit_receipts",
+      "count": 25,
+      "sourceMd5": "c6c45eef7a7c68037ef8975dc1c6e078",
+      "restoredMd5": "c6c45eef7a7c68037ef8975dc1c6e078",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_pursuit_states",
+      "count": 6,
+      "sourceMd5": "64f308572cf7398d2811cce78252ba10",
+      "restoredMd5": "64f308572cf7398d2811cce78252ba10",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_schedule_events",
+      "count": 5,
+      "sourceMd5": "680f2f89c018dbd00c72b5231a42d0bd",
+      "restoredMd5": "680f2f89c018dbd00c72b5231a42d0bd",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_schedule_receipts",
+      "count": 5,
+      "sourceMd5": "56d94bd7ce218f824c5885d537c3f388",
+      "restoredMd5": "56d94bd7ce218f824c5885d537c3f388",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_schedule_states",
+      "count": 1,
+      "sourceMd5": "e8659d6d211e33d1ad62efd3af630d22",
+      "restoredMd5": "e8659d6d211e33d1ad62efd3af630d22",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_service_work",
+      "count": 0,
+      "sourceMd5": "d41d8cd98f00b204e9800998ecf8427e",
+      "restoredMd5": "d41d8cd98f00b204e9800998ecf8427e",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_solution_events",
+      "count": 2,
+      "sourceMd5": "3d3ec6aa63ec6466fc6e884e334f2852",
+      "restoredMd5": "3d3ec6aa63ec6466fc6e884e334f2852",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_solution_receipts",
+      "count": 2,
+      "sourceMd5": "795edf5caa3673e87fc2555ab9ee03be",
+      "restoredMd5": "795edf5caa3673e87fc2555ab9ee03be",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.connected_solution_states",
+      "count": 1,
+      "sourceMd5": "cc08531922f03a5259fe59391577ab84",
+      "restoredMd5": "cc08531922f03a5259fe59391577ab84",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.crew_binding_events",
+      "count": 3,
+      "sourceMd5": "af0b8016c1b1b0d338083dec7bfc8b83",
+      "restoredMd5": "af0b8016c1b1b0d338083dec7bfc8b83",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.crew_bindings",
+      "count": 4,
+      "sourceMd5": "4f45de0e213b1f59d0d18b2682e19442",
+      "restoredMd5": "4f45de0e213b1f59d0d18b2682e19442",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.customer_decision_evidence",
+      "count": 3,
+      "sourceMd5": "f61fce28788cf17efcbd93809a93f745",
+      "restoredMd5": "f61fce28788cf17efcbd93809a93f745",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.memberships",
+      "count": 12,
+      "sourceMd5": "0002188784a6507e3888789c5030182b",
+      "restoredMd5": "0002188784a6507e3888789c5030182b",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.prototype_state_revisions",
+      "count": 105,
+      "sourceMd5": "d97a9b4bad81c6af6cf9e69cb3101261",
+      "restoredMd5": "d97a9b4bad81c6af6cf9e69cb3101261",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.prototype_states",
+      "count": 2,
+      "sourceMd5": "df9ee61cc1f15ea520688f81aa54e82e",
+      "restoredMd5": "df9ee61cc1f15ea520688f81aa54e82e",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.work_command_receipts",
+      "count": 0,
+      "sourceMd5": "d41d8cd98f00b204e9800998ecf8427e",
+      "restoredMd5": "d41d8cd98f00b204e9800998ecf8427e",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.work_events",
+      "count": 8,
+      "sourceMd5": "a9ec16226cde6469a1d871ddd6bbdc6e",
+      "restoredMd5": "a9ec16226cde6469a1d871ddd6bbdc6e",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.work_identity_links",
+      "count": 8,
+      "sourceMd5": "78256c0e5c13fb9323b9b558d3b59094",
+      "restoredMd5": "78256c0e5c13fb9323b9b558d3b59094",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.work_records",
+      "count": 8,
+      "sourceMd5": "54a7fd7d1b0a0576aa5e634ae0b49120",
+      "restoredMd5": "54a7fd7d1b0a0576aa5e634ae0b49120",
+      "matched": true
+    },
+    {
+      "table": "d5o_hosted.workspaces",
+      "count": 1,
+      "sourceMd5": "c96f4f52030a294b64873b64d6d6ec84",
+      "restoredMd5": "c96f4f52030a294b64873b64d6d6ec84",
+      "matched": true
+    },
+    {
+      "table": "storage.buckets",
+      "count": 1,
+      "sourceMd5": "dae0b8e066f3194199700669ebb78c29",
+      "restoredMd5": "dae0b8e066f3194199700669ebb78c29",
+      "matched": true
+    },
+    {
+      "table": "storage.objects",
+      "count": 6,
+      "sourceMd5": "9e0178d44c93d96e0aec971aa01a4ccf",
+      "restoredMd5": "9e0178d44c93d96e0aec971aa01a4ccf",
+      "matched": true
+    }
+  ],
+  "privateObjects": [
+    {
+      "relativePath": "d5o-deploy-evidence/rybex/005f3648bb68147ee4f895b4e9c1aff15b2b07ce3a3ef28c98b6eea00c6da1b6/6146884d-8038-43a6-a68b-d2b1b4f38477/b15fc22a-28b1-4fbf-99d3-4441f594e9f6",
+      "bytes": 68,
+      "sha256": "ba6012106ff3e95fa0b94d01a5732e143e8139d8a7b007501b3c3d244ab48cb2"
+    },
+    {
+      "relativePath": "d5o-deploy-evidence/rybex/005f3648bb68147ee4f895b4e9c1aff15b2b07ce3a3ef28c98b6eea00c6da1b6/6303a969-032d-429d-9883-5df991e8920b/b941ff0b-03ff-4ffe-acd4-242e75100aec",
+      "bytes": 68,
+      "sha256": "ba6012106ff3e95fa0b94d01a5732e143e8139d8a7b007501b3c3d244ab48cb2"
+    },
+    {
+      "relativePath": "d5o-deploy-evidence/rybex/005f3648bb68147ee4f895b4e9c1aff15b2b07ce3a3ef28c98b6eea00c6da1b6/customer-decisions/8676588c-6dd8-4b77-80be-ae1c7a94fb5b/99877fac-5700-4464-8f93-22262f832ebf",
+      "bytes": 652,
+      "sha256": "416c1c7c64af911d70f0919f6cf4f55feecf0c5c456f3a0aaee5d62730574fba"
+    },
+    {
+      "relativePath": "d5o-deploy-evidence/rybex/005f3648bb68147ee4f895b4e9c1aff15b2b07ce3a3ef28c98b6eea00c6da1b6/customer-decisions/c4dc5b66-acf8-417e-8ce8-4d857120458c/60bb00b6-e78e-4c0c-834b-7d45d0fb1b59",
+      "bytes": 682,
+      "sha256": "595505380a4af4122a2b1df09f14fa6c9dd9c669c5ebc017066de7a477796b6f"
+    },
+    {
+      "relativePath": "d5o-deploy-evidence/rybex/005f3648bb68147ee4f895b4e9c1aff15b2b07ce3a3ef28c98b6eea00c6da1b6/customer-decisions/dfc6efa2-a194-4d73-8d26-f5a15385f648/b19e0fc8-717d-4397-8880-a7c868c2af4a",
+      "bytes": 682,
+      "sha256": "c3cfa9055cbe1117ba8033edbfde704ecc407304d8aae368b7742b4cc7ff56e8"
+    },
+    {
+      "relativePath": "d5o-deploy-evidence/rybex/005f3648bb68147ee4f895b4e9c1aff15b2b07ce3a3ef28c98b6eea00c6da1b6/d945f2e5-ad19-45f7-9cd8-8422dc947780/e2067e7d-8240-4edb-8a4e-ff43dd7e603e",
+      "bytes": 68,
+      "sha256": "ba6012106ff3e95fa0b94d01a5732e143e8139d8a7b007501b3c3d244ab48cb2"
+    }
+  ],
+  "pdfDownloadCount": 3,
+  "authorizedReviewerStatus": 200,
+  "wrongWorkStatus": 404,
+  "workerStatus": 403,
+  "typedCommand": {
+    "action": "save-intake",
+    "firstStatus": 200,
+    "identicalReplayStatus": 200,
+    "conflictingReplay": "command_reuse_conflict",
+    "staleDecision": "stale_state",
+    "eventCount": 1,
+    "receiptCount": 1
+  },
+  "limitations": [
+    "Managed internals excluded",
+    "Bucket timestamps reconciled after migration-created bucket",
+    "Private file extended attributes restored separately",
+    "No managed post-fixture restore"
+  ]
+}

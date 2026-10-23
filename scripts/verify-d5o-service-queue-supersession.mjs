@@ -1,0 +1,33 @@
+import {readFileSync} from 'node:fs';
+import {join} from 'node:path';
+import {chromium} from 'playwright';
+if(process.env.D5O_QUEUE_TARGET_URL!=='http://127.0.0.1:56821')throw new Error('disposable_only');
+const users=JSON.parse(readFileSync(process.env.D5O_PILOT_CREDENTIALS_FILE,'utf8')).users;
+const origin=process.env.D5O_QUEUE_ORIGIN;
+const browser=await chromium.launch({headless:true});
+try{
+ const pm=users.find(u=>u.key==='pm');const page=await browser.newPage();
+ await page.goto(`${origin}/auth/sign-in?next=${encodeURIComponent('/work?workspace=rybex&view=my-work')}`);
+ await page.locator('input[name="email"]').fill(pm.email);
+ await page.locator('input[name="password"]').fill(pm.password);
+ await page.getByRole('button',{name:'Continue to your work'}).click();
+ const queue=page.locator('section[aria-label="Service commercial and Finance actions"]');
+ await queue.getByRole('link',{name:/Synthetic monitoring route fault · Service billing handoff/}).click();
+ const panel=page.locator('section[aria-label="Service financial disposition"]');
+ await panel.getByText('Ready for billing',{exact:true}).waitFor();
+ await panel.locator('input[type="file"]').setInputFiles(join(process.env.TEMP,'FICTIONAL-D5O-service-billing-terms-52465.pdf'));
+ await panel.getByRole('button',{name:'Retain PDF'}).click();
+ await panel.getByRole('link',{name:'Open retained PDF for review'}).waitFor();
+ const form=panel.locator('form').filter({hasText:'Record customer billing-terms supplement'});
+ await form.locator('select[name="paymentTerms"]').selectOption({label:'Net 30 days from invoice'});
+ await form.locator('input[name="customerParty"]').fill('Fictional Casey Customer');
+ await form.locator('input[name="customerOrganization"]').fill('Fictional North Campus Properties');
+ await form.locator('input[name="customerRole"]').fill('Site service representative');
+ await form.locator('input[name="authorityBasis"]').fill('Fictional delegated authority for exact uncovered scope and amount');
+ await form.locator('input[name="note"]').fill('Fictional replacement PDF independently recorded for exact USD 524.65 and Net 30 terms.');
+ await form.getByRole('button',{name:'Record retained supplement'}).click();
+ await panel.getByText('Customer billing terms · revision 2').waitFor();
+ await page.goto(`${origin}/work?workspace=rybex&view=my-work`);
+ await page.locator('section[aria-label="Service commercial and Finance actions"]').getByText('Synthetic monitoring route fault · Service Finance reassessment').waitFor();
+ console.log(JSON.stringify({supersededTermsRevision:2,queue:'Service Finance reassessment',historicalDecision:'Ready for billing'}));
+}finally{await browser.close()}

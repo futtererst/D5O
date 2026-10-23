@@ -24,7 +24,7 @@ export function DefineInvestigation({ definition, contacts, actor, locked, onPro
   const findings = definition.findings ?? [];
   const clarifications = definition.clarifications ?? [];
   const [drawer, setDrawer] = useState<{ kind: "project" | "finding" | "question" | "answer"; id?: string } | null>(null);
-  const [projectDraft, setProjectDraft] = useState<Project>({ customerContact: "", siteArea: "", affectedSystems: "", accessConstraints: "", requiredDate: "" });
+  const [projectDraft, setProjectDraft] = useState<Project>({ customerContact: "", siteArea: "", affectedSystems: "", accessConstraints: "", requiredDate: "", ...project });
 
   function addFinding(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -62,9 +62,17 @@ export function DefineInvestigation({ definition, contacts, actor, locked, onPro
   return <div className={styles.investigation}>
     <div className={styles.intro}><p className={styles.kicker}>PROJECT INVESTIGATION</p><h3>Establish the facts before fixing scope</h3><p>Record what the customer and site require. Keep unanswered points assigned; a reference is not an uploaded or verified file.</p></div>
     <section className={styles.investigationPanel} aria-label="Project context">
-      <header><div><h4>Customer and site context</h4><p className={styles.investigationEmpty}>Capture the contact, affected systems and access needed for a credible scope.</p></div><span>{project?.customerContactId ? "Linked to Discover" : "Provisional contact"}</span></header>
-      <div className={styles.investigationFields}><div><strong>Customer contact</strong><p>{project?.customerContact || "Not recorded"}</p></div><div><strong>Site and affected area</strong><p>{project?.siteArea || "Not recorded"}</p></div><div><strong>Affected systems</strong><p>{project?.affectedSystems || "Not recorded"}</p></div><div><strong>Access constraints</strong><p>{project?.accessConstraints || "Not recorded"}</p></div><div><strong>Required date</strong><p>{project?.requiredDate || "Not recorded"}</p></div></div>
-      <button type="button" className="d5o-outline" onClick={() => { setProjectDraft({ customerContact: "", siteArea: "", affectedSystems: "", accessConstraints: "", requiredDate: "", ...project }); setDrawer({ kind: "project" }); }}>{locked ? "View context" : "Edit context"}</button>
+      <header><div><h4>Customer and site context</h4><p className={styles.investigationEmpty}>{locked ? "This approved or submitted revision is read only. Start a controlled correction to change it." : "Check the information from Discover, update what the site investigation found, then save these facts for scope review."}</p></div><span>{projectDraft.customerContactId ? "Linked Discover contact" : "Contact to confirm"}</span></header>
+      {locked ? <div className={styles.investigationFields}><div><strong>Customer contact</strong><p>{project?.customerContact || "Not recorded"}</p></div><div><strong>Site and affected area</strong><p>{project?.siteArea || "Not recorded"}</p></div><div><strong>Affected systems</strong><p>{project?.affectedSystems || "Not recorded"}</p></div><div><strong>Access constraints</strong><p>{project?.accessConstraints || "Not recorded"}</p></div><div><strong>Required date</strong><p>{project?.requiredDate || "Not recorded"}</p></div></div>
+        : <form className={styles.investigationEdit} onSubmit={(event) => { event.preventDefault(); onProjectSave(projectDraft); }}>
+          {contacts.length ? <label>Discover contact<select value={projectDraft.customerContactId ?? ""} onChange={(event) => { const contact = contacts.find((item) => item.id === event.target.value); setProjectDraft({ ...projectDraft, customerContactId: contact?.id, customerContact: contact?.name ?? projectDraft.customerContact }); }}><option value="">Choose a linked contact</option>{contacts.map((contact) => <option key={contact.id} value={contact.id}>{contact.name} · {contact.role}</option>)}</select></label> : null}
+          <label>Customer contact<input value={projectDraft.customerContact} onChange={(event) => setProjectDraft({ ...projectDraft, customerContact: event.target.value, customerContactId: undefined })} placeholder="Who can confirm the work?" required /></label>
+          <label>Site and affected area<input value={projectDraft.siteArea} onChange={(event) => setProjectDraft({ ...projectDraft, siteArea: event.target.value })} placeholder="Building, room, route or system area" required /></label>
+          <label>Affected systems<input value={projectDraft.affectedSystems} onChange={(event) => setProjectDraft({ ...projectDraft, affectedSystems: event.target.value })} placeholder="Systems, equipment or assets in scope" required /></label>
+          <label>Access and operating constraints<input value={projectDraft.accessConstraints} onChange={(event) => setProjectDraft({ ...projectDraft, accessConstraints: event.target.value })} placeholder="Escort, permit or outage conditions" required /></label>
+          <label>Customer required date<input type="date" value={projectDraft.requiredDate} onChange={(event) => setProjectDraft({ ...projectDraft, requiredDate: event.target.value })} /></label>
+          <div className={styles.investigationEditActions}><span>These are editable draft facts. A separate reviewer decides whether the definition can advance.</span><button type="submit" className="d5o-primary">Save investigation facts</button></div>
+        </form>}
     </section>
     <section className={styles.investigationPanel} aria-label="Project findings">
       <header><h4>Findings and source records</h4><span>{findings.length} recorded</span></header>

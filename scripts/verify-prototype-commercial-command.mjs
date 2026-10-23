@@ -17,12 +17,16 @@ function source(relative, dependencies = {}) {
 }
 
 const designPolicy = source("components/d5o/platform/design-policy.ts");
-const phase = source("components/d5o/platform/phase-configuration.ts", { "./design-policy": designPolicy });
-const published = source("components/d5o/platform/published-phase-configuration.ts", { "./phase-configuration": phase, "./design-policy": designPolicy });
+const deployPolicy = source("components/d5o/platform/deploy-policy.ts");
+const operatePolicy = source("components/d5o/platform/operate-policy.ts");
+const phase = source("components/d5o/platform/phase-configuration.ts", { "./design-policy": designPolicy, "./deploy-policy": deployPolicy, "./operate-policy": operatePolicy });
+const published = source("components/d5o/platform/published-phase-configuration.ts", { "./phase-configuration": phase, "./design-policy": designPolicy, "./deploy-policy": deployPolicy, "./operate-policy": operatePolicy });
 const authority = source("components/d5o/platform/commercial-authority.ts");
 const pricing = source("components/d5o/platform/develop-pricing.ts");
 const errors = source("lib/d5o/prototype-work/store-error.ts");
+const semanticJson = source("lib/d5o/prototype-work/semantic-json.ts");
 const { applyCommercialCommand, assertSnapshotCommercialIntegrity } = source("lib/d5o/prototype-work/commercial-command.ts", {
+  "./semantic-json": semanticJson,
   "@/components/d5o/platform/published-phase-configuration": published,
   "@/components/d5o/platform/commercial-authority": authority,
   "@/components/d5o/platform/develop-pricing": pricing,
@@ -205,5 +209,13 @@ assert.equal(detailedHandoff.discovery.designHandoff.brief.develop.offerSnapshot
 const staleSolution = copy(detailedDraft);
 staleSolution.develop.revision = 2;
 rejects(() => applyCommercialCommand(staleSolution, { workId: work.id, packageRevision: 2, action: "submit-pricing", dueDate: "2026-10-23" }, actor, inventory, policyState), "solution_approval_required");
+const importedWithoutPursuit = { id: "synthetic-import", workspace: "rybex", discovery: { estimate: { status: "Approved" }, proposal: { status: "Not started" } } };
+rejects(() => assertSnapshotCommercialIntegrity([], [importedWithoutPursuit]), "protected_decision_changed");
+assertSnapshotCommercialIntegrity([], [{ ...importedWithoutPursuit, discovery: { estimate: { status: "Draft" }, proposal: { status: "Not started" } } }]);
+const legacyApproved = { ...importedWithoutPursuit, discovery: { estimate: { status: "Approved", sellPrice: 100 }, proposal: { status: "Not started" } } };
+rejects(() => assertSnapshotCommercialIntegrity([legacyApproved], [{ ...legacyApproved, discovery: { ...legacyApproved.discovery, estimate: { status: "Approved", sellPrice: 1 } } }]), "protected_decision_changed");
+rejects(() => assertSnapshotCommercialIntegrity([legacyApproved], []), "protected_work_removed");
+const legacyDraft = { ...legacyApproved, discovery: { estimate: { status: "Draft", sellPrice: 100 }, proposal: { status: "Not started" } } };
+assertSnapshotCommercialIntegrity([legacyDraft], [{ ...legacyDraft, discovery: { ...legacyDraft.discovery, estimate: { status: "Draft", sellPrice: 110 } } }]);
 
 console.log("Controlled Develop solution, pricing, offer, customer response, Design handoff and snapshot bypass checks: PASS");

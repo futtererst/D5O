@@ -27,6 +27,7 @@ function validateContract(value: unknown, workspace: WorkspaceKey): string[] {
     if (keys.has(item.workTypeKey)) errors.push(`Duplicate Work Type: ${item.workTypeKey}`);
     keys.add(item.workTypeKey);
     if (!Array.isArray(item.phases)) { errors.push(`${item.workTypeKey} has no phases.`); continue; }
+    if (JSON.stringify(item.phases.map((phase) => phase.key)) !== JSON.stringify(["discover", "define", "develop", "design", "deploy", "operate"])) errors.push(`${item.workTypeKey} changed the supported phase order.`);
     errors.push(...validatePhaseConfiguration(item));
     if (item.designControls) errors.push(...validateDesignControlPolicy(item.designControls).map((message) => `${item.workTypeKey}: ${message}`));
     if (item.deployControls) errors.push(...validateDeployControlPolicy(item.deployControls).map((message) => `${item.workTypeKey}: ${message}`));
@@ -44,10 +45,12 @@ function validateContract(value: unknown, workspace: WorkspaceKey): string[] {
   const versions = new Set(contract.workTypes.map((item) => item.version));
   if (versions.size !== 1 || !versions.has("prototype-v1") && !versions.has("prototype-v2")) errors.push("All Work Types must use one supported phase-contract generation.");
   const reference = versions.has("prototype-v2") ? stageAlignedPhaseConfigurationCatalog[workspace] : prototypePhaseConfigurationCatalog[workspace];
-  if (keys.size !== reference.length) errors.push("The phase contract must contain the configured workspace Work Types exactly.");
-  for (const required of reference) {
-    const configured = contract.workTypes.find((item) => item.workTypeKey === required.workTypeKey);
-    if (!configured) { errors.push(`Missing Work Type: ${required.workTypeKey}`); continue; }
+  if (keys.size < reference.length) errors.push("The phase contract must retain the original Work Type identities.");
+  for (const item of contract.workTypes) if (!reference.some((base) => base.workTypeKey === (item.engineTemplateKey ?? item.workTypeKey))) errors.push(`Unsupported engine template for ${item.workTypeKey}.`);
+  for (const required of reference) if (!contract.workTypes.some((item) => item.workTypeKey === required.workTypeKey)) errors.push(`Missing original Work Type: ${required.workTypeKey}`);
+  for (const configured of contract.workTypes) {
+    const required = reference.find((item) => item.workTypeKey === (configured.engineTemplateKey ?? configured.workTypeKey));
+    if (!required) continue;
     for (const basePhase of required.phases) {
       const phase = configured.phases.find((entry) => entry.key === basePhase.key);
       if (!phase) continue;
@@ -101,7 +104,8 @@ export function activePhaseConfigurationVersion(inventory: ConfigurationInventor
   const version = inventory.versions.find((item) => item.id === inventory.activeVersionId);
   const contract = phaseContractFromManifest(version?.config_manifest_json, workspace);
   const normalized = workType.trim().toLowerCase();
-  return contract?.workTypes.some((item) => item.workTypeKey === normalized || item.workTypeLabel.toLowerCase() === normalized) ? version?.id ?? null : null;
+  const selected = contract?.workTypes.find((item) => item.workTypeKey === normalized || item.workTypeLabel.toLowerCase() === normalized);
+  return selected && activeRegistryEntry(version?.config_manifest_json, selected.workTypeKey) ? version?.id ?? null : null;
 }
 
 export function publishedWorkTypePinIsValid(inventory: ConfigurationInventory, workspace: WorkspaceKey, workType: string, versionId: string, requireActive: boolean): boolean {
@@ -109,5 +113,17 @@ export function publishedWorkTypePinIsValid(inventory: ConfigurationInventory, w
   const version = inventory.versions.find((item) => item.id === versionId && ["published", "superseded"].includes(item.status));
   const contract = phaseContractFromManifest(version?.config_manifest_json, workspace);
   const normalized = workType.trim().toLowerCase();
-  return Boolean(contract?.workTypes.some((item) => item.workTypeKey === normalized || item.workTypeLabel.toLowerCase() === normalized));
+  const selected = contract?.workTypes.find((item) => item.workTypeKey === normalized || item.workTypeLabel.toLowerCase() === normalized);
+  return Boolean(selected && (!requireActive || activeRegistryEntry(version?.config_manifest_json, selected.workTypeKey)));
+}
+
+function activeRegistryEntry(manifest: Record<string, unknown> | undefined, key: string): boolean {
+  const entries = manifest?.workTypes;
+  return Array.isArray(entries) && entries.some((entry) => entry && typeof entry === "object"
+    && (entry as { key?: unknown }).key === key && (entry as { status?: unknown }).status !== "disabled");
+}
+
+export function activePublishedWorkTypeLabels(manifest: Record<string, unknown> | undefined, workspace: WorkspaceKey): string[] {
+  const contract = phaseContractFromManifest(manifest, workspace);
+  return contract?.workTypes.filter((item) => activeRegistryEntry(manifest, item.workTypeKey)).map((item) => item.workTypeLabel) ?? [];
 }

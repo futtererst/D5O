@@ -57,7 +57,7 @@ export function AccountMenu({ workspace, onExportSnapshot, snapshotReady = false
     {menuOpen ? <div className="d5o-account-popover" role="menu" aria-label="Account">
       <button role="menuitem" type="button" onClick={() => { setMenuOpen(false); setDrawerOpen(true); }}>Notification preferences</button>
       {onExportSnapshot ? <button role="menuitem" type="button" disabled={!snapshotReady} onClick={() => { setMenuOpen(false); onExportSnapshot(); }}>Download prototype Work Record snapshot</button> : null}
-      <Link role="menuitem" href="/auth/sign-out" prefetch={false}>Switch account</Link>
+      <Link role="menuitem" href="/auth/sign-out" prefetch={false}>Sign out</Link>
     </div> : null}
     {drawerOpen ? createPortal(<div className="d5o-account-drawer-backdrop" onPointerDown={(event) => { if (event.target === event.currentTarget) setDrawerOpen(false); }}>
       <section ref={drawerRef} className={`d5o-account-drawer d5o-account-drawer-${workspace}`} role="dialog" aria-modal="true" aria-label="Notification preferences">

@@ -13,7 +13,7 @@ export type PhaseDefinition = { key: PhaseKey; label: string; purpose: string; c
 export type DecisionCheck = { op: "register" | "packages" | "package_coverage" | "package_facts" | "reviewed_evidence" | "lifecycle_action"; key?: string; field?: "installed" | "tested" | "accepted"; evidenceKind?: string; message: string; surface: "Plan" | "Execution" | "Evidence" | "Handoff" };
 export type DecisionCheckResult = { check: DecisionCheck; met: boolean };
 export type DecisionGuard = { stage: string; right: string; checks: DecisionCheck[] };
-export type WorkTypeConfiguration = { schemaVersion: 1; version: string; workTypeKey: string; workTypeLabel: string; templatePack: string; phases: PhaseDefinition[]; decisionGuards?: DecisionGuard[]; designControls?: DesignControlPolicy; deployControls?: DeployControlPolicy; operateControls?: OperateControlPolicy };
+export type WorkTypeConfiguration = { schemaVersion: 1; version: string; workTypeKey: string; workTypeLabel: string; engineTemplateKey?: string; templatePack: string; phases: PhaseDefinition[]; decisionGuards?: DecisionGuard[]; designControls?: DesignControlPolicy; deployControls?: DeployControlPolicy; operateControls?: OperateControlPolicy };
 
 type DecisionWork = Pick<WorkRecord, "phaseRegisters"> & { packages?: Array<{ id: string; installed: number; tested: number; accepted: number }>; evidence?: Array<{ kind: string; state: string }>; lifecycle?: Array<{ action: string; owner: string }> };
 export function decisionCheckPhase(check: DecisionCheck): PhaseKey | null {

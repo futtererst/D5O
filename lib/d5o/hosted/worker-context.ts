@@ -1,3 +1,4 @@
+import { authoritativeD5OCommandsReady } from "@/lib/d5o/auth/hosted-target";
 import "server-only";
 import { createRybexSupabaseAdminClient, createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { hostedD5OTargetReady } from "@/lib/d5o/auth/hosted-target";
@@ -26,7 +27,18 @@ export async function hostedWorkerContext(workspace: string) {
     actor: { id: userData.user.id, name: person, role: "field_worker", membershipId: identity.membershipId, person },
     person,
     async read(key: HostedStateKey): Promise<HostedStateResult> {
-      const result = await call("d5o_hosted_server_read_v1", { p_workspace_key: workspace, p_state_key: key });
+      if (key === "schedule" && authoritativeD5OCommandsReady()) {
+        const scoped = await sessionCall("d5o_hosted_worker_schedule_read_v1", { p_workspace_key: workspace });
+        if (scoped.error || !scoped.data) throw new HostedStateError(
+          scoped.error?.code === "42501" ? "workspace_forbidden" : "state_unavailable",
+          scoped.error?.code === "42501" ? 403 : 503);
+        const result = scoped.data as { revision?: number; state?: Record<string, unknown> | null };
+        if (!Number.isInteger(result.revision)) throw new HostedStateError("state_unavailable", 503);
+        return { revision: result.revision as number, state: result.state ?? null };
+      }
+      const result = await call(authoritativeD5OCommandsReady() && key === "work"
+        ? "d5o_hosted_server_connected_read_v1" : "d5o_hosted_server_read_v1",
+      { p_workspace_key: workspace, p_state_key: key });
       if (result.error || !result.data) throw new HostedStateError("state_unavailable", 503);
       return result.data as HostedStateResult;
     },

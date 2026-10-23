@@ -1,17 +1,22 @@
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import { assessOperationalReadiness, coverageFor, emptyOperate, operateState, responseDeadline, shiftSlaDeadline, type CoverageAgreement, type OperateActor, type OperateState, type ServiceJob, type ServiceRequest } from "@/components/d5o/platform/operate-model";
 import { PrototypeWorkError } from "./store-error";
+import { sameJsonValue } from "./semantic-json";
 import { legacyOperateControlPolicy, type OperateControlPolicy } from "@/components/d5o/platform/operate-policy";
 import { evaluatePricing, formatMinor, type PricingInput, type PricingPolicyState } from "@/components/d5o/platform/develop-pricing";
+import { currentAcceptedRelease, currentReviewedCompletion } from "@/components/d5o/platform/deploy-model";
 
-export type OperateCommand = { action: "receive-handoff" | "onboard-legacy" | "add-asset" | "accept-support" | "transfer-support" | "activate" | "resume" | "suspend" | "deactivate" | "add-agreement" | "approve-agreement" | "open-request" | "triage-request" | "decide-coverage" | "record-chargeable-disposition" | "save-service-estimate" | "submit-service-pricing" | "approve-service-pricing" | "return-service-pricing" | "record-service-authorization" | "link-service-pricing" | "record-response" | "record-restoration" | "pause-sla" | "resume-sla" | "create-job" | "link-execution" | "complete-job" | "resolve-request" | "close-request" | "reopen-request" | "add-maintenance" | "generate-maintenance" | "defer-maintenance" | "add-review" | "open-lifecycle" | "update-finance" | "add-lesson";
+export type OperateCommand = { action: "receive-handoff" | "onboard-legacy" | "add-asset" | "link-existing-asset" | "accept-asset" | "assign-support-supplier" | "revoke-support-supplier" | "accept-support" | "submit-support-document" | "review-support-document" | "transfer-support" | "activate" | "resume" | "suspend" | "deactivate" | "add-agreement" | "approve-agreement" | "open-request" | "triage-request" | "decide-coverage" | "record-chargeable-disposition" | "save-service-estimate" | "submit-service-pricing" | "approve-service-pricing" | "return-service-pricing" | "record-service-authorization" | "link-service-pricing" | "record-response" | "record-restoration" | "pause-sla" | "resume-sla" | "create-job" | "link-execution" | "complete-job" | "resolve-request" | "close-request" | "reopen-request" | "add-maintenance" | "generate-maintenance" | "defer-maintenance" | "add-review" | "open-lifecycle" | "update-finance" | "add-lesson";
   workId: string; expectedRevision: number; commandId: string; note?: string; id?: string; assetId?: string; requestId?: string; planId?: string; sourceWorkId?: string; turnoverId?: string;
+  expectedDeployRevision?: number; expectedDecisionRevision?: number; expectedServiceDeployRevision?: number; expectedOwnerOperateRevision?: number;
+  documentKind?: "as-built" | "inspection"; evidenceId?: string; decision?: "Reviewed" | "Returned"; supervisorEmail?: string;
+  serviceCategory?: string; serviceCategories?: string[]; laborCovered?: boolean; partsCovered?: boolean; travelCovered?: boolean;
   name?: string; kind?: string; location?: string; externalId?: string; manufacturer?: string; model?: string; serial?: string; documentation?: string;
   customerContact?: string; escalation?: string; intakeRoute?: string; warrantyDisposition?: string; serviceDisposition?: string; residualOwner?: string;
   effectiveFrom?: string; effectiveTo?: string; includes?: string; excludes?: string; responseHours?: number; restorationHours?: number; resolutionHours?: number; calendar?: "Business hours" | "Continuous"; timezone?: string; source?: string; pauseReason?: string;
   title?: string; description?: string; impact?: "Standard" | "High" | "Critical"; contact?: string; owner?: string; dueDate?: string;
   frequencyDays?: number; mode?: "Fixed date" | "Completion relative"; skill?: string; expectedHours?: number; requiredEvidence?: string;
-  pricingInput?: PricingInput; estimateRevision?: number; customerParty?: string; resolution?: string; reviewSource?: string; resolutionMethod?: "Field" | "Remote"; rationale?: string; status?: string; actionOwner?: string };
+  pricingInput?: PricingInput; estimateRevision?: number; customerParty?: string; customerOrganization?: string; customerRole?: string; authorityBasis?: string; outcome?: "Authorized" | "Declined"; conditions?: string; exclusions?: string; resolution?: string; reviewSource?: string; resolutionMethod?: "Field" | "Remote"; rationale?: string; status?: string; actionOwner?: string };
 const manager = new Set(["admin", "operations_leader", "project_manager"]);
 const operations = new Set(["admin", "operations_leader"]);
 const text = (value: unknown, max = 500) => typeof value === "string" ? value.trim().slice(0, max) : "";
@@ -57,6 +62,16 @@ export function applyOperateCommand(work: WorkRecord, all: WorkRecord[], command
     if (externalId && all.some((record) => record.workspace === work.workspace && record.operate?.assets.some((item) => item.externalId === externalId))) fail("asset_identity_conflict", "An asset with this external identity already exists in this tenant; review the match.");
     if (state.assets.some((item) => item.name.toLowerCase() === text(command.name).toLowerCase() && item.location.toLowerCase() === text(command.location).toLowerCase())) fail("asset_identity_conflict", "A matching asset and location already exist; review the match.");
     state.assets.push({ id: crypto.randomUUID(), name: text(command.name, 120), kind: text(command.kind, 80), customer: work.customer, site: work.site, location: text(command.location, 120), externalId: externalId || undefined, manufacturer: text(command.manufacturer) || undefined, model: text(command.model) || undefined, serial: text(command.serial) || undefined, sourceWorkIds: [work.id], sourceTurnoverId: state.source.workAcceptanceId, status: "Pending", owner: text(command.owner) || actor.name, documentation: text(command.documentation, 1000), history: [{ at: now, action: "Asset identified", source: state.source.kind, actorId: actor.id }] }); addEvent("Supported asset identified");
+  } else if (command.action === "accept-asset") {
+    requireOperations();
+    const item = state.assets.find((entry) => entry.id === command.assetId && entry.status === "Pending");
+    if (!item || state.activation?.status !== "Active" || !state.support
+      || !state.source || item.sourceTurnoverId !== state.source.workAcceptanceId
+      || text(command.source).length < 10 || reason.length < 10)
+      fail("asset_acceptance_invalid", "Review the pending asset, exact source and documentation before accepting it into active support.");
+    item.status = "Supported";
+    item.history.push({ at: now, action: "Support accepted", source: text(command.source), actorId: actor.id });
+    addEvent("Asset support accepted", `${item.id} · ${reason}`);
   } else if (command.action === "accept-support") {
     requireOperations(); if (!state.source || !state.assets.length || (policy.requireCustomerContact && !text(command.customerContact)) || !text(command.escalation) || !text(command.intakeRoute) || (policy.requireExplicitCoverageDisposition && (!text(command.warrantyDisposition) || !text(command.serviceDisposition))) || (policy.requireDocumentationReview && !text(command.documentation))) fail("support_profile_incomplete", "Record the applicable contact, escalation, intake, coverage and document review requirements.", 400);
     state.support = { owner: actor.name, ownerActorId: actor.id, acceptedAt: now, customerContact: text(command.customerContact), escalation: text(command.escalation), intakeRoute: text(command.intakeRoute), warrantyDisposition: text(command.warrantyDisposition), serviceDisposition: text(command.serviceDisposition), documentationReviewed: text(command.documentation, 1000), residualOwner: text(command.residualOwner) }; addEvent("Support ownership accepted");
@@ -119,7 +134,7 @@ export function applyOperateCommand(work: WorkRecord, all: WorkRecord[], command
     item.history.push({ at: now, action: "Chargeable disposition recorded", actorId: actor.id, note: item.coverageBasis }); addEvent("Chargeable disposition recorded", item.id);
   } else if (command.action === "save-service-estimate") {
     requireManager(); const item = request(), supplied = command.pricingInput;
-    if (!["Triaged", "In progress"].includes(item.status) || item.coverage !== "Chargeable") fail("service_pricing_not_applicable", "A triaged, explicitly chargeable service request is required before saving a service estimate.");
+    if (!["Triaged", "In progress"].includes(item.status) || !["Chargeable", "Partially covered"].includes(item.coverage)) fail("service_pricing_not_applicable", "A triaged request with an explicit chargeable scope is required before saving a service estimate.");
     if (!supplied || !Array.isArray(supplied.lines) || supplied.lines.length > 100 || !Number.isFinite(supplied.discountPercent) || typeof supplied.riskBasis !== "string" || !supplied.riskBasis.trim() || !supplied.lines.every((line) => line && typeof line === "object" && [line.description, line.quantity, line.unit, line.source, line.assumption].every((value) => typeof value === "string") && (line.rateId === undefined || typeof line.rateId === "string") && (line.manualRate === undefined || typeof line.manualRate === "string") && line.procurement === undefined)) fail("service_estimate_invalid", "Provide sourced service cost lines, a discount and an uncertainty basis; procurement scenarios are handled in Develop.", 400);
     const activePolicy = pricingState?.activePricingPolicy;
     const pricingPolicy = pricingState?.pricingPolicies?.find((entry) => entry.id === activePolicy?.id && entry.version === activePolicy.version && entry.status === "published" && entry.workspace === work.workspace);
@@ -130,7 +145,7 @@ export function applyOperateCommand(work: WorkRecord, all: WorkRecord[], command
     item.history.push({ at: now, action: "Service estimate saved", actorId: actor.id, note: `Revision ${item.serviceEstimate.revision}; policy ${pricingPolicy.id} v${pricingPolicy.version}; ${evaluation.recommendation}` }); addEvent("Service estimate saved", item.id);
   } else if (command.action === "submit-service-pricing") {
     requireManager(); const item = request(), estimate = item.serviceEstimate;
-    if (!estimate || estimate.revision !== command.estimateRevision || estimate.status !== "Draft" || estimate.requestCycleAt !== (item.reopenedAt ?? item.reportedAt) || item.coverage !== "Chargeable") fail("service_estimate_stale", "Submit the current-cycle chargeable estimate revision.");
+    if (!estimate || estimate.revision !== command.estimateRevision || estimate.status !== "Draft" || estimate.requestCycleAt !== (item.reopenedAt ?? item.reportedAt) || !["Chargeable", "Partially covered"].includes(item.coverage)) fail("service_estimate_stale", "Submit the current-cycle chargeable estimate revision.");
     const recalculated = evaluatePricing(estimate.policySnapshot, estimate.input, estimate.evaluation.calculatedAt);
     if (recalculated.issues.length || JSON.stringify(recalculated) !== JSON.stringify(estimate.evaluation)) fail("service_estimate_not_ready", "The pinned estimate has unresolved inputs or no longer matches its saved calculation.");
     estimate.status = "Pricing review"; estimate.submittedByActorId = actor.id; item.history.push({ at: now, action: "Service pricing submitted", actorId: actor.id, note: `Revision ${estimate.revision} to ${estimate.policySnapshot.pricingApproverRole}` }); addEvent("Service pricing submitted", item.id);
@@ -144,7 +159,7 @@ export function applyOperateCommand(work: WorkRecord, all: WorkRecord[], command
     item.history.push({ at: now, action: command.action === "approve-service-pricing" ? "Service pricing approved" : "Service pricing returned", actorId: actor.id, note: `Revision ${estimate.revision}; ${reason}` }); addEvent("Service pricing reviewed", item.id);
   } else if (command.action === "record-service-authorization") {
     requireOperations(); const item = request(), estimate = item.serviceEstimate;
-    if (!estimate || estimate.status !== "Approved" || estimate.revision !== command.estimateRevision || estimate.requestCycleAt !== (item.reopenedAt ?? item.reportedAt) || item.coverage !== "Chargeable" || !text(command.customerParty) || !text(command.source) || reason.length < 10) fail("service_authorization_invalid", "Record the external customer party and source against the exact approved chargeable estimate.");
+    if (!estimate || estimate.status !== "Approved" || estimate.revision !== command.estimateRevision || estimate.requestCycleAt !== (item.reopenedAt ?? item.reportedAt) || !["Chargeable", "Partially covered"].includes(item.coverage) || !text(command.customerParty) || !text(command.source) || reason.length < 10) fail("service_authorization_invalid", "Record the external customer party and source against the exact approved chargeable estimate.");
     if (item.serviceAuthorization?.estimateRevision === estimate.revision) fail("service_authorization_exists", "The exact estimate revision already has a recorded customer authorization; preserve it and create a revised estimate for changed scope or price.");
     if (item.serviceAuthorization) item.serviceAuthorizationHistory = [...(item.serviceAuthorizationHistory ?? []), structuredClone(item.serviceAuthorization)];
     item.serviceAuthorization = { estimateRevision: estimate.revision, amountMinor: estimate.evaluation.proposedPriceMinor, currency: estimate.evaluation.currency, source: text(command.source), customerParty: text(command.customerParty), recordedByActorId: actor.id, recordedAt: now };
@@ -153,7 +168,7 @@ export function applyOperateCommand(work: WorkRecord, all: WorkRecord[], command
     requireOperations(); const item = request(), estimate = item.serviceEstimate, authorization = item.serviceAuthorization;
     const job = state.jobs.find((entry) => entry.id === command.id && entry.requestId === item.id && entry.status === "Generated");
     const execution = all.find((entry) => entry.id === job?.workId && entry.workspace === work.workspace && entry.serviceSource?.parentWorkId === work.id && entry.serviceSource.requestId === item.id);
-    if (!job || !(item.currentCycleJobIds ?? item.jobIds).includes(job.id) || !execution || execution.serviceSource?.pricing || execution.deploy?.permits?.length || execution.deploy?.reports?.length || execution.design?.releases?.length || item.coverage !== "Chargeable" || !estimate || estimate.status !== "Approved" || estimate.requestCycleAt !== (item.reopenedAt ?? item.reportedAt) || authorization?.estimateRevision !== estimate.revision) fail("service_pricing_link_invalid", "Only an unstarted, unreleased current-cycle service job can receive the exact approved and customer-authorized pricing basis.");
+    if (!job || !(item.currentCycleJobIds ?? item.jobIds).includes(job.id) || !execution || execution.serviceSource?.pricing || execution.deploy?.permits?.length || execution.deploy?.reports?.length || execution.design?.releases?.length || !["Chargeable", "Partially covered"].includes(item.coverage) || !estimate || estimate.status !== "Approved" || estimate.requestCycleAt !== (item.reopenedAt ?? item.reportedAt) || authorization?.estimateRevision !== estimate.revision) fail("service_pricing_link_invalid", "Only an unstarted, unreleased current-cycle service job can receive the exact approved and customer-authorized pricing basis.");
     const pricing = { estimateRevision: estimate.revision, policyId: estimate.policySnapshot.id, policyVersion: estimate.policySnapshot.version, currency: authorization.currency, amountMinor: authorization.amountMinor, customerAuthorizationSource: authorization.source };
     updatedRelated = { ...execution, value: `${formatMinor(pricing.amountMinor, pricing.currency)} authorized service basis`, nextAction: "Confirm service execution basis and release", serviceSource: { ...execution.serviceSource!, pricing }, history: [`${now} · Service pricing revision ${estimate.revision} linked by ${actor.name}; execution still requires Design release and Deploy authorization.`, ...execution.history] };
     item.history.push({ at: now, action: "Approved service pricing linked to planning job", actorId: actor.id, note: `${job.id}; estimate revision ${estimate.revision}; customer source ${authorization.source}` }); addEvent("Service pricing linked", job.workId);
@@ -185,29 +200,37 @@ export function applyOperateCommand(work: WorkRecord, all: WorkRecord[], command
     if (plan && plan.nextDue > now.slice(0, 10)) fail("maintenance_not_due", "This maintenance obligation is not due yet.");
     if (plan && plan.mode === "Completion relative" && state.jobs.some((item) => item.planId === plan.id && item.status !== "Completed" && item.status !== "Cancelled")) fail("maintenance_visit_open", "Complete the prior visit before generating the next completion-relative visit.");
     if (req && !["Triaged", "In progress"].includes(req.status)) fail("request_not_triaged", "Triage the request before opening an execution job.");
+    if (req && !["Covered", "Partially covered", "Chargeable"].includes(req.coverage)) fail("coverage_undecided", "Record an applicable coverage or chargeable disposition before creating service work.");
     const due = plan?.nextDue ?? date(command.dueDate), assetId = plan?.assetId ?? req?.assetId;
     if (!due || !assetId) fail("job_incomplete", "A dated obligation and linked asset are required.", 400);
     const duplicate = state.jobs.find((item) => item.planId === plan?.id && item.dueDate === due && !!plan);
     if (duplicate) fail("job_exists", "A job has already been generated for this maintenance due date.");
-    const id = crypto.randomUUID(), jobWorkId = `service-${id}`, name = plan?.title ?? req!.title;
+    const id = crypto.randomUUID(), jobWorkId = `${work.workspace}-${command.commandId.replaceAll("-", "")}`, name = plan?.title ?? req!.title;
     const approved = req?.serviceEstimate;
     const authorized = approved?.status === "Approved" && approved.requestCycleAt === (req?.reopenedAt ?? req?.reportedAt) && req?.serviceAuthorization?.estimateRevision === approved.revision ? req.serviceAuthorization : undefined;
     const pricing = approved && authorized ? { estimateRevision: approved.revision, policyId: approved.policySnapshot.id, policyVersion: approved.policySnapshot.version, currency: authorized.currency, amountMinor: authorized.amountMinor, customerAuthorizationSource: authorized.source } : undefined;
     const job: ServiceJob = { id, workId: jobWorkId, assetIds: [assetId], requestId: req?.id, planId: plan?.id, dueDate: due, status: "Generated", evidence: [], createdAt: now };
     state.jobs.push(job); if (req) { req.currentCycleJobIds ??= [...req.jobIds]; req.jobIds.push(id); req.currentCycleJobIds.push(id); req.status = "In progress"; }
     if (plan) { plan.generatedDates.push(due); if (plan.mode === "Fixed date") { const next = new Date(`${due}T12:00:00Z`); next.setUTCDate(next.getUTCDate() + plan.frequencyDays); plan.nextDue = next.toISOString().slice(0, 10); } }
-    related = { id: jobWorkId, workspace: work.workspace, title: `${name} · ${state.assets.find((item) => item.id === assetId)?.name ?? "supported asset"}`, type: "Lifecycle service", customer: work.customer, site: work.site, stage: "Design", owner: text(command.owner) || req?.owner || plan?.owner || actor.name, nextAction: req?.coverage === "Chargeable" && !pricing ? "Obtain customer service authorization before commercial commitment; confirm execution basis" : "Confirm service execution basis and release", progress: 0, value: pricing ? `${formatMinor(pricing.amountMinor, pricing.currency)} authorized service basis` : "Unpriced service work", status: "attention", proof: [], blockers: [], history: [`${now} · Service job generated from ${work.id}; execution requires Design release and Deploy authorization.`], phaseConfigurationVersionId: work.phaseConfigurationVersionId, serviceSource: { parentWorkId: work.id, assetIds: [assetId], requestId: req?.id, maintenancePlanId: plan?.id, pricing } };
+    related = { id: jobWorkId, workspace: work.workspace, title: `${name} · ${state.assets.find((item) => item.id === assetId)?.name ?? "supported asset"}`, type: "Lifecycle service", customer: work.customer, site: work.site, stage: "Design", owner: text(command.owner) || req?.owner || plan?.owner || actor.name, nextAction: req && ["Chargeable", "Partially covered"].includes(req.coverage) && !pricing ? "Obtain customer service authorization before Design release" : "Confirm service execution basis and release", progress: 0, value: pricing ? `${formatMinor(pricing.amountMinor, pricing.currency)} authorized service basis` : "Unpriced service work", status: "attention", proof: [], blockers: [], history: [`${now} · Service job generated from ${work.id}; execution requires Design release and Deploy authorization.`], phaseConfigurationVersionId: work.phaseConfigurationVersionId, serviceSource: { parentWorkId: work.id, assetIds: [assetId], requestId: req?.id, requestCycleAt: req?.reopenedAt ?? req?.reportedAt, coverage: req?.coverage === "Covered" || req?.coverage === "Partially covered" || req?.coverage === "Chargeable" ? req.coverage : undefined, maintenancePlanId: plan?.id, pricing } };
     addEvent(plan ? "Maintenance job generated" : "Service job generated", jobWorkId);
   } else if (command.action === "link-execution") {
     requireManager(); const job = state.jobs.find((item) => item.id === command.id);
     const execution = all.find((item) => item.id === job?.workId && item.workspace === work.workspace && item.serviceSource?.parentWorkId === work.id && item.serviceSource.requestId === job?.requestId && item.serviceSource.maintenancePlanId === job?.planId && job.assetIds.every((id) => item.serviceSource?.assetIds.includes(id)));
     if (!job || !execution || !execution.deploy) fail("execution_missing", "The linked service Work Record has no Deploy execution history.");
+    if (job.requestId) {
+      const sourceRequest = state.requests.find((item) => item.id === job.requestId);
+      if (!sourceRequest || !(sourceRequest.currentCycleJobIds ?? sourceRequest.jobIds).includes(job.id)
+        || execution.serviceSource?.requestCycleAt !== (sourceRequest.reopenedAt ?? sourceRequest.reportedAt))
+        fail("service_cycle_stale", "This visit belongs to an earlier request cycle. Preserve its history and generate current-cycle work.");
+    }
     if (job.status === "Completed") fail("execution_already_linked", "This completed visit already has a retained execution basis.");
     const reviewed = execution.deploy.reports.filter((report) => {
       if (report.status !== "Reviewed") return false;
       const release = execution.design?.releases.find((item) => item.id === report.releaseId && item.packageId === report.packageId && item.receivedAt && !["Awaiting receipt", "Returned"].includes(item.status));
-      const permit = execution.deploy?.permits.find((item) => item.packageId === report.packageId && item.releaseId === report.releaseId && item.at <= report.capturedAt && item.at <= report.receivedAt);
-      return !!release && !!permit;
+      const permit = execution.deploy?.permits.filter((item) => item.packageId === report.packageId && item.releaseId === report.releaseId && item.at <= report.capturedAt && item.at <= report.receivedAt).at(-1);
+      const authorizedAtCapture = permit?.status === "Authorized" || (permit?.status === "Held" && !!permit.heldAt && report.capturedAt < permit.heldAt);
+      return !!release && authorizedAtCapture;
     });
     if (!reviewed.length) fail("execution_unreviewed", "A reviewed report tied to an accepted Design release and authorized field start is required before updating asset history.");
     const refs = reviewed.map((item) => `${execution.id}:report:${item.id}:r${item.revision}`);
@@ -218,6 +241,22 @@ export function applyOperateCommand(work: WorkRecord, all: WorkRecord[], command
   } else if (command.action === "complete-job") {
     requireOperations(); const job = state.jobs.find((item) => item.id === command.id);
     if (!job || job.status !== "Execution linked" || !job.evidence.length || job.linkedByActorId === actor.id || reason.length < 10) fail("job_completion_invalid", "A different operations authority must review linked execution and record completion basis.");
+    const execution = all.find((item) => item.id === job.workId && item.workspace === work.workspace && item.serviceSource?.parentWorkId === work.id);
+    if (!execution) fail("execution_missing", "The service Work Record is unavailable for completion review.");
+    if (job.requestId) {
+      const sourceRequest = state.requests.find((item) => item.id === job.requestId);
+      if (!sourceRequest || !(sourceRequest.currentCycleJobIds ?? sourceRequest.jobIds).includes(job.id)
+        || execution.serviceSource?.requestCycleAt !== (sourceRequest.reopenedAt ?? sourceRequest.reportedAt))
+        fail("service_cycle_stale", "An earlier service visit cannot complete the reopened request's current cycle.");
+    }
+    const packageIds = [...new Set(execution.design?.releases.map((item) => item.packageId) ?? [])];
+    if (!packageIds.length) fail("job_scope_incomplete", "The service job has no released package scope to complete.");
+    const completions = packageIds.map((packageId) => {
+      const release = currentAcceptedRelease(execution, packageId);
+      return release?.snapshot?.completionBasis ? currentReviewedCompletion(execution, packageId) : null;
+    });
+    if (completions.some((item) => !item)) fail("job_scope_incomplete", "Every service package requires current reviewed completion against its accepted release and verification.");
+    job.completionRefs = completions.map((item) => `${execution.id}:completion:${item!.id}:release:${item!.releaseId}`);
     job.status = "Completed"; job.completedAt = now; job.completedByActorId = actor.id; job.completionReason = reason;
     if (job.planId) { const plan = state.maintenance.find((item) => item.id === job.planId); if (plan?.mode === "Completion relative") { const next = new Date(now); next.setUTCDate(next.getUTCDate() + plan.frequencyDays); plan.nextDue = next.toISOString().slice(0, 10); } }
     addEvent("Service visit completed", job.id);
@@ -254,7 +293,7 @@ export function applyOperateCommand(work: WorkRecord, all: WorkRecord[], command
     if (command.requestId && !state.requests.some((item) => item.id === command.requestId && (!command.assetId || item.assetId === command.assetId))) fail("request_missing", "Select a request linked to this support scope.", 404);
     const basis = `${command.assetId ?? ""}:${command.requestId ?? ""}:${text(command.rationale).toLowerCase()}`;
     if (state.lifecycleLinks.some((item) => command.requestId ? item.requestId === command.requestId : `${item.assetId ?? ""}:${item.requestId ?? ""}:${item.rationale.toLowerCase()}` === basis)) fail("opportunity_exists", "This underlying lifecycle opportunity is already linked.");
-    const id = `lifecycle-${crypto.randomUUID()}`;
+    const id = `${work.workspace}-${command.commandId.replaceAll("-", "")}`;
     related = { id, workspace: work.workspace, title: text(command.title) || `Lifecycle opportunity · ${work.customer}`, type: "Lifecycle service", customer: work.customer, site: work.site, stage: "Qualification", owner: text(command.owner), nextAction: "Qualify lifecycle need in Discover", progress: 0, value: "Indicative value unknown", status: "moving", proof: [], blockers: [], history: [`${now} · Originating Operate Work Record ${work.id}; rationale: ${text(command.rationale)}`], phaseConfigurationVersionId: work.phaseConfigurationVersionId, discovery: { source: "Lifecycle referral", need: text(command.rationale), procurement: "Unknown", phase: "Qualification", fit: "Unassessed", closeDate: "", estimate: { revision: 0, labor: 0, materials: 0, subcontract: 0, travel: 0, contingency: 0, targetMargin: 0, sellPrice: 0, status: "Not started", assumption: "" }, proposal: { status: "Not started", dueDate: "", method: "Customer portal", recipient: "", response: "" } } };
     state.lifecycleLinks.push({ id: crypto.randomUUID(), opportunityWorkId: id, assetId: command.assetId, requestId: command.requestId, rationale: text(command.rationale), owner: text(command.owner), at: now }); addEvent("Lifecycle opportunity opened", id);
   } else if (command.action === "update-finance") {
@@ -274,8 +313,8 @@ export function assertSnapshotOperateIntegrity(before: Record<string, unknown>[]
     const item = next.get(prior.id);
     if (!item && (prior.operate || prior.serviceSource)) fail("protected_operate_deleted", "A Work Record with Operate or service-job history cannot be removed.");
     if (!item) continue;
-    if (JSON.stringify(prior.operate ?? null) !== JSON.stringify(item.operate ?? null)) fail("protected_operate_changed", "Operate records require a governed server command.");
-    if (JSON.stringify(prior.serviceSource ?? null) !== JSON.stringify(item.serviceSource ?? null)) fail("protected_service_source_changed", "A service Work Record's source identity requires a governed server command.");
+    if (!sameJsonValue(prior.operate, item.operate)) fail("protected_operate_changed", "Operate records require a governed server command.");
+    if (!sameJsonValue(prior.serviceSource, item.serviceSource)) fail("protected_service_source_changed", "A service Work Record's source identity requires a governed server command.");
   }
   for (const item of after) if (!before.some((prior) => prior.id === item.id) && (item.operate || item.serviceSource)) fail("protected_operate_import", "A new Work Record cannot import governed Operate or service-job history.");
 }

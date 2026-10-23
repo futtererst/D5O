@@ -6,6 +6,7 @@ import { CrewScheduleView } from "./CrewScheduleView";
 import { hostedD5OTargetReady } from "@/lib/d5o/auth/hosted-target";
 import { hostedWorkerContext } from "@/lib/d5o/hosted/worker-context";
 import { HostedStateError } from "@/lib/d5o/hosted/prototype-context";
+import { WorkerSurfaceStatus } from "./WorkerSurfaceStatus";
 import "./crew-schedule.css";
 import "../settings/notification-settings.css";
 
@@ -18,7 +19,7 @@ export default async function MyCrewSchedulePage() {
     try { person = (await hostedWorkerContext("rybex")).person; }
     catch (error) { failure = error instanceof HostedStateError ? error.code : "worker_unavailable"; }
     if (failure === "unauthenticated") redirect("/auth/sign-in?next=%2Fwork%2Fmy-schedule");
-    if (failure) return <main style={{ maxWidth: 720, margin: "3rem auto", padding: "1rem" }}><h1>My crew schedule is unavailable</h1><p>Your Rybex worker account must have an active crew binding and the hosted worker service must be configured. Ask your scheduler to check your access.</p></main>;
+    if (failure) return <WorkerSurfaceStatus title="My assigned work is unavailable" message="Your account needs an active field-worker role and roster assignment. Ask your System Administrator to check your access." showScheduleLink={false} />;
     return <CrewScheduleView workspace="rybex" person={person} hosted />;
   }
   assertProofEnvironment();

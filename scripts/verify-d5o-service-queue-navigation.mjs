@@ -1,0 +1,23 @@
+import {readFileSync} from 'node:fs';
+import {chromium} from 'playwright';
+if(process.env.D5O_QUEUE_TARGET_URL!=='http://127.0.0.1:56821')throw new Error('disposable_only');
+const users=JSON.parse(readFileSync(process.env.D5O_PILOT_CREDENTIALS_FILE,'utf8')).users;
+const pm=users.find(u=>u.key==='pm');const origin=process.env.D5O_QUEUE_ORIGIN;
+const work='rybex-a8fd95e7e20d4bb3881c3549459c99e0';
+const request='abe94af3-bdc5-435b-b6ad-ca810293988e';
+const browser=await chromium.launch({headless:true});
+try{const page=await browser.newPage();
+ await page.goto(`${origin}/auth/sign-in?next=${encodeURIComponent(`/work?workspace=rybex&view=record&record=${work}&section=Operate`)}`);
+ await page.locator('input[name="email"]').fill(pm.email);await page.locator('input[name="password"]').fill(pm.password);
+ await page.getByRole('button',{name:'Continue to your work'}).click();
+ await page.getByRole('button',{name:'Requests & jobs'}).click();
+ await page.getByText('Synthetic covered monitoring inspection').waitFor();
+ await page.getByRole('button',{name:'Overview',exact:true}).click();
+ await page.getByRole('link',{name:'Open exact request →'}).first().waitFor({timeout:40000});
+ const links=await page.getByRole('link',{name:'Open exact request →'}).evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));
+ if(!links.some(link=>link?.includes(`request=${request}`)&&link.includes('focus=finance')))throw new Error('support_queue_missing_exact_closed_finance_link');
+ await page.goto(`${origin}/work?workspace=rybex&view=record&record=${work}&section=Operate&request=invalid-request&focus=finance`);
+ await page.getByText('This request is not on this Work Record.').waitFor();
+ if(await page.locator('section[aria-label="Service financial disposition"]').count())throw new Error('stale_link_selected_unrelated_request');
+ console.log(JSON.stringify({supportQueue:'closed request retained with finance reassessment',exactLink:true,staleLink:'visible rejection; no unrelated Finance panel',request,otherRequestPresent:true}));
+}finally{await browser.close()}

@@ -44,10 +44,10 @@ export async function POST(request: NextRequest) {
       return reply({ state: prior, synthetic: true, replay: true });
     }
     const inventory = await loadConfigurationInventory(context.workspace!.id);
-    const state = await mutatePrototypeWork(workspace, command.expectedRevision, command.workId, (record) => {
+    const state = await mutatePrototypeWork(workspace, command.expectedRevision, command.workId, (record, current) => {
       const work = record as WorkRecord, config = resolvePublishedPhaseConfiguration(inventory, workspace, work.type, work);
       if (work.phaseConfigurationVersionId && !config) throw new PrototypeWorkError("deploy_policy_unavailable", 409, "The pinned Deploy configuration is unavailable.");
-      return applyDeployCommand(work, command, actor, schedule, undefined, config?.deployControls) as unknown as Record<string, unknown>;
+      return applyDeployCommand(work, command, actor, schedule, undefined, config?.deployControls, current.records as WorkRecord[]) as unknown as Record<string, unknown>;
     });
     if (actor.person) {
       const assignment = schedule.publications.flatMap((item) => item.assignments).find((item) => item.id === command.bookingId && item.workId === command.workId && item.people.includes(actor.person!));
@@ -81,10 +81,10 @@ export async function PUT(request: NextRequest) {
     await mkdir(path.dirname(target), { recursive: true });
     await writeFile(target, bytes, { flag: "wx" });
     const command: DeployCommand = { action: "attach-evidence", workId, packageId, bookingId, expectedRevision, commandId: randomUUID(), purpose, caption };
-    const state = await mutatePrototypeWork(workspace, expectedRevision, workId, (record) => {
+    const state = await mutatePrototypeWork(workspace, expectedRevision, workId, (record, current) => {
       const work = record as WorkRecord, config = resolvePublishedPhaseConfiguration(inventory, workspace, work.type, work);
       if (work.phaseConfigurationVersionId && !config) throw new PrototypeWorkError("deploy_policy_unavailable", 409, "The pinned Deploy configuration is unavailable.");
-      return applyDeployCommand(work, command, actor, schedule, { id, filename: file.name.slice(0, 200), mimeType: file.type, sizeBytes: bytes.length, checksumSha256: createHash("sha256").update(bytes).digest("hex") }, config?.deployControls) as unknown as Record<string, unknown>;
+      return applyDeployCommand(work, command, actor, schedule, { id, filename: file.name.slice(0, 200), mimeType: file.type, sizeBytes: bytes.length, checksumSha256: createHash("sha256").update(bytes).digest("hex") }, config?.deployControls, current.records as WorkRecord[]) as unknown as Record<string, unknown>;
     });
     if (actor.person) {
       const assignment = schedule.publications.flatMap((item) => item.assignments).find((item) => item.id === bookingId && item.workId === workId && item.people.includes(actor.person!));

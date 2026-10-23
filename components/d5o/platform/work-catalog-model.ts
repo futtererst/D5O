@@ -3,6 +3,7 @@ import type { WorkspaceKey } from "./schedule-model";
 /** Shared identity and package ownership for the local D5O prototype. */
 export type CatalogWorkRecord = {
   id: string;
+  canonicalWorkId?: string;
   workspace: WorkspaceKey;
   title: string;
   type: string;
@@ -44,9 +45,9 @@ export type SharedWorkCatalog = {
 };
 
 export type CatalogMutation =
-  | { action: "create-record"; expectedRevision: number; title: string; type: string; phaseConfigurationVersionId: string; customer: string; site: string; value: string; owner: string }
+  | { action: "create-record"; expectedRevision: number; commandId?: string; title: string; type: string; phaseConfigurationVersionId: string; customer: string; site: string; value: string; owner: string; initialDiscovery?: { source: string; need: string; procurement: string; closeDate: string } }
   | { action: "register-record"; expectedRevision: number; record: CatalogWorkRecord }
-  | { action: "create-package"; expectedRevision: number; workId: string; name: string; owner: string };
+  | { action: "create-package"; expectedRevision: number; workId: string; name: string; owner: string; commandId?: string; expectedWorkRevision?: number; expectedHandoffRevision?: number; expectedPackageCount?: number };
 
 export const seededWorkIds: Record<WorkspaceKey, readonly string[]> = {
   rybex: ["rybex-1", "rybex-2", "rybex-3"],

@@ -9,6 +9,10 @@
 .d5o-crew-self-top>div { align-items:end; display:grid; gap:1px; text-align:right; }
 .d5o-crew-self-top>div a { color:#c8d5dd; font-size:12px; }
 .d5o-crew-self-content { margin:auto; max-width:1160px; padding:42px 24px 80px; }
+.d5o-crew-self-nav { display:flex; gap:8px; margin:-16px 0 28px; }
+.d5o-crew-self-nav :is(a,span) { border:1px solid #cbd9df; border-radius:6px; color:#214554; font-size:12px; font-weight:700; padding:9px 13px; text-decoration:none; }
+.d5o-crew-self-nav span[aria-current="page"] { background:#fff; border-bottom:3px solid var(--accent); }
+.d5o-crew-self-nav a:hover { background:#fff; }
 .d5o-crew-self-intro { align-items:end; display:grid; gap:8px; grid-template-columns:1fr auto; margin-bottom:24px; }
 .d5o-crew-self-kicker,.d5o-crew-self-label { color:#8a691c; font-size:10px; font-weight:900; letter-spacing:.12em; }
 .d5o-crew-self-rotork :is(.d5o-crew-self-kicker,.d5o-crew-self-label) { color:#a32335; }
@@ -28,7 +32,12 @@
 .d5o-crew-self-date span,.d5o-crew-self-booking small,.d5o-crew-self-response small { color:#64808c; font-size:11px; }
 .d5o-crew-self-booking h2 { font-size:17px; margin:5px 0 2px; }
 .d5o-crew-self-booking p { color:#4d6875; font-size:12px; margin:0 0 6px; }
+.d5o-crew-self-booking .d5o-crew-self-progress{background:#edf4f7;border-radius:7px;color:#173b51;font-weight:700;line-height:1.5;overflow-wrap:anywhere;padding:7px 9px}
 .d5o-crew-self-response { align-items:start; display:grid; gap:7px; }
+.d5o-crew-self-work-link { border:1px solid #c3d2da; border-radius:6px; color:#214554; display:block; font-size:12px; font-weight:700; padding:11px 13px; text-align:center; text-decoration:none; }
+.d5o-crew-self-work-link.is-primary { background:var(--accent); border-color:var(--accent); color:#111d24; }
+.d5o-crew-self-work-link:hover { filter:brightness(.96); }
+.d5o-crew-self-work-link:focus-visible,.d5o-crew-self-nav a:focus-visible { outline:3px solid #285d83; outline-offset:2px; }
 .d5o-crew-self-response strong { color:#315d4c; font-size:12px; }
 .d5o-crew-self-list article.has-issue .d5o-crew-self-response strong { color:#a84f24; }
 .d5o-crew-self-boundary { color:#607985; font-size:12px; margin:22px 0; }
@@ -42,3 +51,6 @@
 .d5o-crew-self-overlay h2 { font:700 24px/1.2 Georgia,serif; margin:9px 0; }.d5o-crew-self-overlay p { color:#526f7c; font-size:13px; }
 .d5o-crew-self-overlay section>div { display:flex; gap:9px; justify-content:flex-end; margin-top:20px; }
 @media(max-width:760px) { .d5o-crew-self-intro { grid-template-columns:1fr; }.d5o-crew-self-actions { grid-column:1; grid-row:auto; flex-wrap:wrap; }.d5o-crew-self-list article { grid-template-columns:1fr; gap:12px; }.d5o-crew-self-date { border-right:0; border-bottom:1px solid #e2eaee; padding-bottom:10px; }.d5o-crew-self-top { padding:14px 20px; } }
+
+/* Worker tools share the same scale while retaining the simpler field navigation. */
+.d5o-crew-self-content{padding-top:24px}.d5o-crew-self-intro{margin-bottom:18px}.d5o-crew-self-intro h1{font:800 clamp(25px,3vw,32px)/1.15 Arial,Helvetica,sans-serif;letter-spacing:-.035em}.d5o-crew-self-kicker,.d5o-crew-self-label{font-size:12px;letter-spacing:.07em}.d5o-crew-self button,.d5o-crew-self-work-link,.d5o-crew-self-nav :is(a,span){font-size:14px;min-height:44px}.d5o-crew-self-list article{border-radius:10px}.d5o-crew-self-booking p,.d5o-crew-self-response strong{font-size:13px}.d5o-crew-self-overlay h2{font:800 22px/1.2 Arial,Helvetica,sans-serif}

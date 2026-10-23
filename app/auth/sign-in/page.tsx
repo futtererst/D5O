@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { safeInternalRedirectPath } from "@/lib/d5o/auth/redirects";
 import { signInAction } from "./actions";
 
@@ -35,7 +36,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
         </div>
       <form action={signInAction} className="d5o-signin-form">
         <input type="hidden" name="next" value={next} />
-        <label style={{ display: "grid", gap: 6, fontSize: 14, fontWeight: 700 }}>
+        <label>
           Email
           <input
             autoComplete="email"
@@ -44,7 +45,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
             type="email"
           />
         </label>
-        <label style={{ display: "grid", gap: 6, fontSize: 14, fontWeight: 700 }}>
+        <label>
           Password
           <input
             autoComplete="current-password"
@@ -60,6 +61,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
         ) : null}
         <button className="button button-primary" type="submit">Continue to your work</button>
       </form>
+      <p><Link href="/auth/forgot-password">Forgot password?</Link> · <Link href={`/auth/create-account?next=${encodeURIComponent(next)}`}>Create account</Link></p>
       </section>
     </main>
   );

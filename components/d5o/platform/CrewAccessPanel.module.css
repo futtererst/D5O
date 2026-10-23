@@ -1,0 +1,24 @@
+.panel { width:100%; box-sizing:border-box; min-width:0; padding:clamp(1rem,2vw,1.5rem); border:1px solid var(--d5o-hairline,#d9e2e7); border-radius:.7rem; background:#fff; color:#173441; }
+.heading { display:flex; justify-content:space-between; align-items:start; gap:1rem; }
+.heading h2 { margin:0 0 .25rem; font-size:1.25rem; letter-spacing:-.02em; }
+.heading span,.note { color:#51697c; font-size:.85rem; }
+.message { padding:.7rem; border-left:3px solid #d5ac2f; background:#f4f7f8; }
+.panel button { min-height:44px; padding:.55rem .85rem; background:#fff; border:1px solid #bed0da; border-radius:.4rem; color:#173441; font:700 .9rem Arial,Helvetica,sans-serif; cursor:pointer; }
+.panel .primary,.form button[type="submit"],.form button:not([type]) { background:#d4aa2a; border-color:#c69e25; color:#102a43; }
+.panel button:disabled { cursor:not-allowed; opacity:.55; }
+.panel :is(button,input,select,a):focus-visible { outline:3px solid #bf9625; outline-offset:2px; }
+.list { margin:1rem 0; }
+.list > div { display:grid; grid-template-columns:minmax(11rem,2fr) minmax(5rem,.7fr) minmax(10rem,2fr) minmax(5rem,.7fr) minmax(5rem,.7fr) minmax(5rem,.7fr); gap:.65rem; align-items:center; padding:.75rem .4rem; border-bottom:1px solid #e3ebef; min-width:0; overflow-wrap:anywhere; }
+.list .listHead { background:#f4f6f8; color:#51697c; font-size:.75rem; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
+.list a,.detail a { color:#075f83; font-weight:700; }
+.detail,.form { margin:1rem 0; padding:1rem; border:1px solid #d9e2e7; border-radius:.6rem; background:#fbfcfd; }
+.detail h3,.form h3 { margin:0 0 .5rem; font-size:1.06rem; }
+.detail p { overflow-wrap:anywhere; }
+.form { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; align-items:end; }
+.form h3,.form p { grid-column:1/-1; margin:0; }
+.form label { display:grid; gap:.3rem; min-width:0; color:#38536a; font-size:.85rem; font-weight:700; }
+.form input,.form select { width:100%; min-height:44px; padding:.5rem .7rem; border:1px solid #bed0da; border-radius:.4rem; background:#fff; color:#173441; font:inherit; }
+.form button { justify-self:start; }
+.note { margin:1rem 0 0; }
+@media(max-width:1050px) { .list .listHead { display:none; } .list > div { grid-template-columns:repeat(3,minmax(0,1fr)); } .list > div > :first-child { grid-column:1/-1; } }
+@media(max-width:650px) { .heading { display:grid; } .list > div,.form { grid-template-columns:1fr; } .list > div > :first-child,.form h3,.form p { grid-column:auto; } .form button,.heading button { width:100%; } }

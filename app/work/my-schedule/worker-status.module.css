@@ -1,0 +1,7 @@
+.surface { background:#f2f5f7; color:#153141; font:14px/1.5 Arial,Helvetica,sans-serif; min-height:calc(100vh - 68px); padding:clamp(16px,4vw,48px); }
+.surface section { background:#fff; border:1px solid #dbe5e9; border-left:4px solid #d4aa2a; border-radius:10px; margin:auto; max-width:720px; padding:clamp(20px,4vw,32px); }
+.surface section>p:first-child { color:#8a691c; font-size:12px; font-weight:800; letter-spacing:.09em; }
+.surface h1 { font-size:clamp(25px,3vw,32px); line-height:1.15; margin:.3em 0; }
+.surface section>p:not(:first-child) { color:#526e7b; }
+.surface a { border:1px solid #c3d2da; border-radius:7px; color:#214554; display:inline-flex; font-weight:700; min-height:44px; padding:10px 14px; text-decoration:none; }
+.surface a:focus-visible { outline:3px solid #285d83; outline-offset:2px; }

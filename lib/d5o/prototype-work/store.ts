@@ -3,9 +3,12 @@ import { mkdir, open, readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { WorkspaceKey } from "@/components/d5o/platform/schedule-model";
 import { assertSnapshotCommercialIntegrity } from "./commercial-command";
+import { assertSnapshotDefineIntegrity } from "./define-command";
 import { assertSnapshotDesignIntegrity } from "./design-command";
 import { assertSnapshotDeployIntegrity } from "./deploy-command";
 import { assertSnapshotOperateIntegrity } from "./operate-command";
+import { assertSnapshotPositionIntegrity } from "./position-integrity";
+import { loadWorkCatalog } from "@/lib/d5o/work-catalog/store";
 import type { PricingPolicyState } from "@/components/d5o/platform/develop-pricing";
 import { PrototypeWorkError } from "./store-error";
 
@@ -69,14 +72,17 @@ export async function loadPrototypeWork(workspace: WorkspaceKey) {
 }
 
 export async function savePrototypeWork(workspace: WorkspaceKey, expectedRevision: number, records: Record<string, unknown>[]) {
+  const catalog = await loadWorkCatalog(workspace);
   return locked(workspace, async () => {
     const state = await readUnlocked(workspace) ?? initial(workspace);
     if (!Number.isInteger(expectedRevision) || expectedRevision !== state.revision)
       throw new PrototypeWorkError("stale_state", 409, "Another browser changed this workspace. Refresh before saving again.");
     assertSnapshotCommercialIntegrity(state.records, records);
+    assertSnapshotDefineIntegrity(state.records, records);
     assertSnapshotDesignIntegrity(state.records, records);
     assertSnapshotDeployIntegrity(state.records, records);
     assertSnapshotOperateIntegrity(state.records, records);
+    assertSnapshotPositionIntegrity(state.records, records, catalog.records as unknown as Record<string, unknown>[]);
     state.records = records;
     state.revision++;
     await writeUnlocked(workspace, state);

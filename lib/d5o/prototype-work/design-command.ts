@@ -2,16 +2,20 @@ import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import type { PackageCrewDemand } from "@/components/d5o/platform/schedule-model";
 import { assessDesignPackage, designRequirementRefs, designState, documentRef, forecastDesignPackage, type DesignDocument, type DesignMaterial, type DesignPackage, type DesignReview, type DesignRelease } from "@/components/d5o/platform/design-model";
 import { PrototypeWorkError } from "./store-error";
+import { sameJsonValue } from "./semantic-json";
 import { legacyDesignControlPolicy, type DesignControlPolicy } from "@/components/d5o/platform/design-policy";
+import { serviceExecutionBasisIssue } from "./service-execution-basis";
 
 export type DesignCommand = {
-  action: "save-document" | "submit-document" | "approve-document" | "issue-document" | "save-package" | "request-review" | "decide-review" | "record-customer-approval" | "record-change" | "resolve-change" | "acknowledge-hold" | "release-package" | "release-set" | "respond-receipt" | "withdraw-release";
-  workId: string; expectedRevision: number; commandId: string; note?: string;
-  document?: Partial<DesignDocument>; documentId?: string; documentRevision?: number;
+  action: "save-document" | "submit-document" | "return-document" | "approve-document" | "issue-document" | "save-package" | "save-demand" | "request-review" | "decide-review" | "record-customer-approval" | "record-change" | "record-schedule-hold" | "resolve-change" | "acknowledge-hold" | "release-package" | "release-set" | "respond-receipt" | "withdraw-release" | "save-service-basis" | "revise-service-basis" | "submit-service-basis" | "accept-service-basis" | "return-service-basis";
+  workId: string; expectedRevision: number; expectedDecisionRevision?: number; commandId: string; note?: string;
+  expectedOperateRevision?: number; serviceBasis?: { scope: string; coveredScope?: string; uncoveredScope?: string; exclusions: string; completionCriteria: string; verification: string; coverageRationale: string; safety: string; access: string; resources: string; serviceCategory: string };
+  document?: Partial<DesignDocument>; documentId?: string; documentRevision?: number; evidenceId?: string;
   package?: Partial<DesignPackage>; packageId?: string; packageIds?: string[];
+  demand?: PackageCrewDemand;
   discipline?: DesignReview["discipline"]; assignee?: string; dueDate?: string;
   reviewId?: string; decision?: "Approved" | "Returned";
-  releaseId?: string; response?: "Accepted" | "Returned"; receivingOwner?: string;
+  releaseId?: string; proposedDate?: string; response?: "Accepted" | "Returned"; receivingOwner?: string;
   customerParty?: string; authorityBasis?: string; source?: string; approvedAt?: string;
   changeId?: string; reason?: string; affectedRequirementIds?: string[]; affectedDocumentRefs?: string[]; technicalImpact?: string; commercialImpact?: string; scheduleImpact?: string;
 };
@@ -20,7 +24,7 @@ function fail(code: string, message: string, status = 409): never { throw new Pr
 const editable = new Set(["admin", "operations_leader", "project_manager", "field_supervisor"]);
 const engineering = new Set(["admin", "operations_leader", "project_manager"]);
 const delivery = new Set(["admin", "operations_leader", "project_manager"]);
-const same = (a: unknown, b: unknown) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+const same = sameJsonValue;
 const clean = (value: unknown, max = 2000) => typeof value === "string" ? value.trim().slice(0, max) : "";
 const list = (value: unknown) => Array.isArray(value) ? [...new Set(value.filter((item): item is string => typeof item === "string" && !!item.trim()).map((item) => item.trim()))] : [];
 const date = (value: unknown) => typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : "";
@@ -45,7 +49,7 @@ function validatePredecessors(state: ReturnType<typeof designState>, id: string,
   if (predecessors.some((item) => visit(item, new Set([item])))) fail("cyclic_dependency", "Package dependencies cannot form a cycle.", 400);
 }
 
-export function applyDesignCommand(work: WorkRecord, command: DesignCommand, actor: DesignActor, crewDemand: PackageCrewDemand | null = null, policy: DesignControlPolicy = legacyDesignControlPolicy, allDemands: PackageCrewDemand[] = []): WorkRecord {
+export function applyDesignCommand(work: WorkRecord, command: DesignCommand, actor: DesignActor, crewDemand: PackageCrewDemand | null = null, policy: DesignControlPolicy = legacyDesignControlPolicy, allDemands: PackageCrewDemand[] = [], relatedWork: WorkRecord[] = []): WorkRecord {
   if (!editable.has(actor.role) || !actor.id || !actor.membershipId) fail("design_role_denied", "This membership cannot edit Design.", 403);
   if (!(["record-change", "acknowledge-hold"] as string[]).includes(command.action)) requireReceived(work);
   if (!command.commandId || command.commandId.length > 100) fail("invalid_command", "A command identity is required.", 400);
@@ -66,9 +70,10 @@ export function applyDesignCommand(work: WorkRecord, command: DesignCommand, act
     const revision = Math.max(0, ...state.documents.filter((item) => item.id === id).map((item) => item.revision)) + 1;
     state.documents.push({ id, revision, type: clean(input.type, 100), title: clean(input.title, 200), source: clean(input.source), owner: clean(input.owner, 120) || actor.name, packageIds: affected, requirementIds: requirements, status: "Draft", dueDate: date(input.dueDate), createdAt: now });
     record("Document draft saved", undefined, revision);
-  } else if (["submit-document", "approve-document", "issue-document"].includes(command.action)) {
+  } else if (["submit-document", "return-document", "approve-document", "issue-document"].includes(command.action)) {
     const target = document(); if (!target) fail("document_missing", "The exact document revision is unavailable.");
     if (command.action === "submit-document") { if (target.status !== "Draft") fail("document_not_draft", "Only a draft can enter review."); target.status = "In review"; target.submittedByActorId = actor.id; }
+    if (command.action === "return-document") { if (target.status !== "In review" || !engineering.has(actor.role) || target.submittedByActorId === actor.id || note.length < 15) fail("document_return_denied", "A separate reviewer must give a reason for returning this exact revision.", 403); target.status = "Returned"; target.returnNote = note; }
     if (command.action === "approve-document") { if (target.status !== "In review" || !engineering.has(actor.role) || target.submittedByActorId === actor.id) fail("document_review_denied", "A separate authorized engineering reviewer must approve the submitted revision.", 403); target.status = "Approved"; target.approvedByActorId = actor.id; }
     if (command.action === "issue-document") {
       if (target.status !== "Approved" || !engineering.has(actor.role)) fail("document_not_approved", "Approve the exact document revision before issue.", 403);
@@ -90,13 +95,24 @@ export function applyDesignCommand(work: WorkRecord, command: DesignCommand, act
     const requirements = list(input.requirementIds), validRequirements = new Set(designRequirementRefs(work).map((item) => item.id));
     if (requirements.some((ref) => !validRequirements.has(ref))) fail("invalid_requirement_reference", "Select requirement IDs in the received Define baseline.", 400);
     const status = input.materialStatus;
-    if (status && !["Unknown", "Planned", "Ordered", "Supplier confirmed", "Received", "Available"].includes(status)) fail("invalid_material_status", "Select a supported material position.", 400);
+    if (status && !["Unknown", "Planned", "Ordered", "Supplier confirmed", "Received", "Available", "Not required"].includes(status)) fail("invalid_material_status", "Select a supported material position.", 400);
     const materialLines: DesignMaterial[] = (input.materialLines ?? []).map((item) => ({ id: clean(item.id, 100) || crypto.randomUUID(), item: clean(item.item, 200), quantity: Number(item.quantity), unit: clean(item.unit, 40), source: clean(item.source), status: item.status, requiredDate: date(item.requiredDate), forecastDate: date(item.forecastDate), alternative: clean(item.alternative), quoteDate: date(item.quoteDate), quoteExpiry: date(item.quoteExpiry), receivedQuantity: item.receivedQuantity === undefined ? undefined : Number(item.receivedQuantity), availableQuantity: item.availableQuantity === undefined ? undefined : Number(item.availableQuantity), confidence: item.confidence }));
     if (materialLines.some((line) => !Number.isFinite(line.quantity) || line.quantity < 0 || line.receivedQuantity !== undefined && (!Number.isFinite(line.receivedQuantity) || line.receivedQuantity < 0) || line.availableQuantity !== undefined && (!Number.isFinite(line.availableQuantity) || line.availableQuantity < 0) || !["Unknown", "Planned", "Ordered", "Supplier confirmed", "Received", "Available"].includes(line.status) || line.confidence && !["Unknown", "Planning assumption", "Supplier confirmed", "Physically counted"].includes(line.confidence) || line.quoteDate && line.quoteExpiry && line.quoteExpiry < line.quoteDate) || new Set(materialLines.map((line) => line.id)).size !== materialLines.length) fail("invalid_material_line", "Material quantities, quote dates, confidence, IDs, or statuses are invalid.", 400);
+    if (status === "Not required" && (materialLines.length > 0 || clean(input.materials).length < 20 || clean(input.materialSource).length < 8 || date(input.materialRequiredDate) || date(input.materialForecastDate))) fail("no_material_basis_invalid", "A no-material package needs no material lines or delivery dates, plus an explicit reason and approved scope source.", 400);
     const disposition = input.commercialDisposition;
     if (disposition && !["None", "Assessment required", "Routed to Develop"].includes(disposition)) fail("invalid_commercial_disposition", "Design cannot mark a commercial change resolved. Record the revised approval in Develop and receive a new source handoff.", 400);
     if (input.crewDemandRequired === false && (!["admin", "operations_leader"].includes(actor.role) || clean(input.crewExemptionReason).length < 20)) fail("crew_exception_denied", "An authorized leader must explain why this package needs no crew demand.", 403);
     const next: DesignPackage = { packageId: id, revision: (prior?.revision ?? 0) + 1, scope: clean(input.scope), location: clean(input.location), systems: clean(input.systems), requirementIds: requirements, predecessorIds: predecessors, documentRefs: refs, materials: clean(input.materials), materialLines, materialStatus: status ?? "Unknown", materialRequiredDate: date(input.materialRequiredDate), materialForecastDate: date(input.materialForecastDate), materialSource: clean(input.materialSource), access: clean(input.access), permit: clean(input.permit), safetyControls: clean(input.safetyControls), equipment: clean(input.equipment), method: clean(input.method), rollback: clean(input.rollback), verification: clean(input.verification), proof: clean(input.proof), acceptingAuthority: clean(input.acceptingAuthority), windowStart: date(input.windowStart), windowEnd: date(input.windowEnd), targetReleaseDate: date(input.targetReleaseDate), crewDemandRequired: input.crewDemandRequired !== false, crewExemptionReason: input.crewDemandRequired === false ? clean(input.crewExemptionReason) : "", commercialImpact: clean(input.commercialImpact), commercialDisposition: disposition ?? "None", status: "Draft" };
+    if (input.completionBasis?.kind === "Measured") {
+      const plannedQuantity = Number(input.completionBasis.plannedQuantity);
+      const unit = clean(input.completionBasis.unit, 40);
+      if (!Number.isFinite(plannedQuantity) || plannedQuantity <= 0 || !unit) fail("invalid_completion_basis", "Enter a positive planned quantity and unit.", 400);
+      next.completionBasis = { kind: "Measured", plannedQuantity, unit };
+    } else if (input.completionBasis?.kind === "Qualitative") {
+      const criterion = clean(input.completionBasis.criterion);
+      if (criterion.length < 10) fail("invalid_completion_basis", "Describe the qualitative completion criterion.", 400);
+      next.completionBasis = { kind: "Qualitative", criterion };
+    } else if (input.completionBasis) fail("invalid_completion_basis", "Choose a supported completion basis.", 400);
     state.packages = [...state.packages.filter((item) => item.packageId !== id), next];
     record("Package design revision saved", id, next.revision);
   } else if (command.action === "request-review") {
@@ -148,8 +164,10 @@ export function applyDesignCommand(work: WorkRecord, command: DesignCommand, act
     change.status = "Resolved"; change.resolvedAt = now; change.resolvedByActorId = actor.id; change.resolution = note;
     record("Design change resolved against revised package", change.packageId, target.revision);
   } else if (command.action === "release-package" || command.action === "release-set") {
+    const serviceIssue = serviceExecutionBasisIssue(work, relatedWork);
+    if (serviceIssue) fail("service_basis_blocked", serviceIssue);
     if (!delivery.has(actor.role)) fail("release_role_denied", "Delivery release requires an authorized workspace membership.", 403);
-    if (!date(command.dueDate) || !clean(command.receivingOwner)) fail("receiver_required", "Set the receiving owner and receipt deadline.", 400);
+    if (!date(command.dueDate)) fail("receiver_required", "Set the receipt deadline.", 400);
     const sharedIds = packageIds(work);
     const requestedIds = command.action === "release-package" ? [clean(command.packageId, 100)] : list(command.packageIds);
     if (!requestedIds.length || requestedIds.some((id) => !sharedIds.has(id))) fail("invalid_release_set", "Select existing packages on this Work Record.", 400);
@@ -165,7 +183,7 @@ export function applyDesignCommand(work: WorkRecord, command: DesignCommand, act
       const assessment = assessDesignPackage({ ...work, design: state }, id, now, demand, policy, selectedSet);
       if (assessment.recommendation !== "Ready for release") fail("readiness_blocked", `${id}: ${assessment.findings.map((item) => item.message).join(" ")}`);
       if (state.reviews.some((item) => item.packageId === id && item.revision === target.revision && item.discipline === "Engineering" && item.status === "Approved" && item.decidedByActorId === actor.id)) fail("release_separation_required", "The engineering approver cannot also authorize Delivery release.", 403);
-      return { id: crypto.randomUUID(), releaseGroupId, packageId: id, packageRevision: target.revision, documentRefs: [...target.documentRefs], sourceHandoffRevision: work.discovery?.designHandoff?.revision ?? null, definitionRevision: work.definition?.revision ?? null, configurationVersionId: work.phaseConfigurationVersionId ?? "", assessment, issuedAt: now, issuedByActorId: actor.id, issuedByMembershipId: actor.membershipId, receivingOwner: clean(command.receivingOwner), responseDueDate: command.dueDate!, status: "Awaiting receipt" as const, snapshot: structuredClone(target), documentSnapshots: structuredClone(state.documents.filter((item) => target.documentRefs.includes(documentRef(item)))), sourceSnapshot: work.discovery?.designHandoff?.brief ? structuredClone(work.discovery.designHandoff.brief) : null, crewDemandSnapshot: demand ? structuredClone(demand) : null };
+      return { id: crypto.randomUUID(), releaseGroupId, packageId: id, packageRevision: target.revision, documentRefs: [...target.documentRefs], sourceHandoffRevision: work.discovery?.designHandoff?.revision ?? null, definitionRevision: work.definition?.revision ?? null, configurationVersionId: work.phaseConfigurationVersionId ?? "", assessment, issuedAt: now, issuedByActorId: actor.id, issuedByMembershipId: actor.membershipId, receivingOwner: "Configured receiver queue", responseDueDate: command.dueDate!, status: "Awaiting receipt" as const, snapshot: structuredClone(target), documentSnapshots: structuredClone(state.documents.filter((item) => target.documentRefs.includes(documentRef(item)))), sourceSnapshot: work.discovery?.designHandoff?.brief ? structuredClone(work.discovery.designHandoff.brief) : null, crewDemandSnapshot: demand ? structuredClone(demand) : null };
     });
     state.releases.push(...pending);
     for (const release of pending) { state.packages.find((item) => item.packageId === release.packageId)!.status = "Approved"; record(releaseGroupId ? "Package released in Design set" : "Package released to Deploy", release.packageId, release.packageRevision); }
@@ -207,7 +225,7 @@ export function assertSnapshotDesignIntegrity(before: Record<string, unknown>[],
       if (!same(oldRegisters?.[key], newRegisters?.[key])) fail("protected_design_register_changed", "Design register changes require a controlled command.");
     const work = next as unknown as WorkRecord;
     if (work.discovery?.pursuitControl && (work.discovery.outcome !== "Won" || work.discovery.designHandoff?.status !== "accepted")) {
-      if (!same(prior.packages, next.packages) || !same(oldRegisters?.["design.verification_plan"], newRegisters?.["design.verification_plan"])) fail("design_handoff_required", "Accept the Develop handoff before package planning.");
+      if (!same(prior.packages ?? [], next.packages ?? []) || !same(oldRegisters?.["design.verification_plan"], newRegisters?.["design.verification_plan"])) fail("design_handoff_required", "Accept the Develop handoff before package planning.");
     }
     if (work.discovery?.pursuitControl && work.discovery.outcome === "Won") {
       const oldPackages = Array.isArray(prior.packages) ? prior.packages as Array<Record<string, unknown>> : [];

@@ -55,7 +55,11 @@ function optional(value: unknown, max = 200) {
   return value.trim();
 }
 function registeredRecord(value: CatalogWorkRecord, workspace: WorkspaceKey, actor: { id: string; name: string }): CatalogWorkRecord {
-  if (!value || typeof value.id !== "string" || !new RegExp(`^${workspace}-[0-9]{12,}$`).test(value.id)
+  // Earlier Operate prototypes generated service-/lifecycle- UUID identities.
+  // Keep those stable while all newly generated records use tenant-scoped IDs.
+  const compatibleId = typeof value?.id === "string" && (new RegExp(`^${workspace}-[0-9a-f]{12,}$`).test(value.id)
+    || /^(service|lifecycle)-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value.id));
+  if (!value || !compatibleId
       || value.workspace !== workspace || !["attention", "moving", "complete"].includes(value.status)
       || !Number.isFinite(value.progress) || value.progress < 0 || value.progress > 100
       || !Array.isArray(value.proof) || !Array.isArray(value.blockers) || !Array.isArray(value.history)

@@ -27,11 +27,11 @@ export async function POST(request: NextRequest) {
     const demands = command.action === "release-package" || command.action === "release-set" ? (await loadSchedule(workspace)).packageDemands : [];
     const crewDemand = demands.find((item) => item.packageId === command.packageId && item.workId === command.workId) ?? null;
     const inventory = await loadConfigurationInventory(context.workspace!.id);
-    const state = await mutatePrototypeWork(workspace, command.expectedRevision, command.workId, (record) => {
+    const state = await mutatePrototypeWork(workspace, command.expectedRevision, command.workId, (record, current) => {
       const work = record as WorkRecord;
       const config = resolvePublishedPhaseConfiguration(inventory, workspace, work.type, work);
       if (work.discovery?.pursuitControl && !config) throw new PrototypeWorkError("design_policy_unavailable", 409, "The pinned Design configuration is unavailable.");
-      return applyDesignCommand(work, command, actor, crewDemand, config?.designControls, demands) as unknown as Record<string, unknown>;
+      return applyDesignCommand(work, command, actor, crewDemand, config?.designControls, demands, current.records as WorkRecord[]) as unknown as Record<string, unknown>;
     });
     return reply({ state });
   } catch (error) {

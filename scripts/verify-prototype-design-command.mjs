@@ -18,12 +18,14 @@ function source(relative, dependencies = {}) {
 const policy = source("components/d5o/platform/design-policy.ts");
 const model = source("components/d5o/platform/design-model.ts", { "./design-policy": policy });
 const errors = source("lib/d5o/prototype-work/store-error.ts");
-const { applyDesignCommand, assertSnapshotDesignIntegrity } = source("lib/d5o/prototype-work/design-command.ts", { "@/components/d5o/platform/design-model": model, "@/components/d5o/platform/design-policy": policy, "./store-error": errors });
+const serviceBasis = source("lib/d5o/prototype-work/service-execution-basis.ts");
+const { applyDesignCommand, assertSnapshotDesignIntegrity } = source("lib/d5o/prototype-work/design-command.ts", { "@/components/d5o/platform/design-model": model, "@/components/d5o/platform/design-policy": policy, "./store-error": errors, "./service-execution-basis": serviceBasis });
 const actors = {
   engineer: { id: "engineer", name: "Engineer", membershipId: "m-engineer", role: "project_manager" },
   reviewer: { id: "reviewer", name: "Reviewer", membershipId: "m-reviewer", role: "operations_leader" },
   receiver: { id: "receiver", name: "Receiver", membershipId: "m-receiver", role: "field_supervisor" }
 };
+assert.throws(() => applyDesignCommand({ id: "rybex-service", workspace: "rybex", title: "Service", type: "Lifecycle service", history: [], serviceSource: { parentWorkId: "rybex-parent", requestId: "request-1" } }, { action: "release-package", workId: "rybex-service", expectedRevision: 1, commandId: "missing-source", packageId: "p1", receivingOwner: "Receiver", dueDate: "2026-10-31" }, actors.engineer), (error) => error.code === "service_basis_blocked");
 const pin = "configuration-v1";
 let work = {
   id: "work-1", workspace: "rybex", type: "Technical delivery", title: "Synthetic data hall", customer: "Customer", site: "Site", owner: "Engineer", status: "moving", history: [],
@@ -40,7 +42,8 @@ function rejects(action, code, actor) { assert.throws(() => send(action, actor),
 const unawarded = { ...work, discovery: { ...work.discovery, outcome: undefined, designHandoff: undefined } };
 assert.throws(() => applyDesignCommand(unawarded, { action: "save-document", workId: work.id, expectedRevision: 1, commandId: "unawarded", document: { title: "Premature", type: "Drawing", source: "reference" } }, actors.engineer), (error) => error.code === "design_handoff_required");
 
-const draft = { packageId: "p1", scope: "Install and certify fiber", location: "Hall A", systems: "Fiber", requirementIds: ["R1"], predecessorIds: [], documentRefs: [], materials: "3 cable reels", materialStatus: "Planned", materialRequiredDate: "2026-11-01", materialForecastDate: "2026-11-10", materialSource: "Supplier planning", access: "Approved window", permit: "Permit approved", safetyControls: "Isolation and fall protection", equipment: "Lift", method: "MOP-1", rollback: "Restore route", verification: "Certify every strand", proof: "Test results", acceptingAuthority: "Quality lead", windowStart: "2026-11-02", windowEnd: "2026-11-03", targetReleaseDate: "2026-10-30", commercialImpact: "", commercialDisposition: "None" };
+const draft = { packageId: "p1", scope: "Install and certify fiber", location: "Hall A", systems: "Fiber", requirementIds: ["R1"], predecessorIds: [], documentRefs: [], completionBasis: { kind: "Measured", plannedQuantity: 12, unit: "m" }, materials: "3 cable reels", materialStatus: "Planned", materialRequiredDate: "2026-11-01", materialForecastDate: "2026-11-10", materialSource: "Supplier planning", access: "Approved window", permit: "Permit approved", safetyControls: "Isolation and fall protection", equipment: "Lift", method: "MOP-1", rollback: "Restore route", verification: "Certify every strand", proof: "Test results", acceptingAuthority: "Quality lead", windowStart: "2026-11-02", windowEnd: "2026-11-03", targetReleaseDate: "2026-10-30", commercialImpact: "", commercialDisposition: "None" };
+assert(model.assessDesignPackage({ ...work, design: { packages: [{ ...draft, completionBasis: undefined, revision: 1 }], documents: [], reviews: [], releases: [], history: [] } }, "p1").findings.some((item) => item.key === "completion_basis"), "An undefined completion baseline blocks a new release");
 assert.equal(model.assessDesignPackage({ ...unawarded, design: { packages: [{ ...draft, revision: 1 }], documents: [], reviews: [], releases: [], history: [] } }, "p1").findings[0].key, "handoff");
 const legacyBasis = { ...work, definition: { revision: 2, status: "Approved", acceptance: "Signed certification results", scopeControl: { requirements: [] } } };
 assert.equal(model.designRequirementRefs(legacyBasis)[0].id, "legacy-define-acceptance@2");
