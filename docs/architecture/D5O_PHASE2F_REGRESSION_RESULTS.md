@@ -1,0 +1,9 @@
+# Phase 2F regression results
+
+The owned connected test `scripts/p0a/run-phase2f-connected-journey.mjs` passed **45/45** checks against loopback disposable Supabase with actual Auth, RPC, Storage and Next.js routes. Its machine-readable result is `evidence/phase2f-connected-journey-results.json` (`setupError=false`, `cleanupVerified=true`). It includes the Phase 2E command journey through Design plus Phase 2F workforce, Deploy, Operate and a historical configuration-pin check.
+
+Focused static checks passed: `scripts/qa-published-phase-contract.mjs`, `scripts/qa-phase-configuration.mjs`, and `scripts/p0a/verify-readiness-scanner.mjs`. TypeScript `tsc --noEmit` and repository ESLint passed. The default Turbopack build failed because the isolated worktree uses a `node_modules` junction outside its resolved root; the **final** `next build --webpack` completed successfully with 45 routes and pages after the UI correction.
+
+The inherited-suite manifest is `evidence/phase2f-regressions/summary.json`. The initial sequential run passed Phase 1B (13/13), Phase 2A (11/11), Phase 2C (23/23), Phase 2D (27/27), P0-A (16/16), and the three static checks. Phase 1 and Phase 2B initially stopped before assertions when local Supabase Vector failed its container health check. Standalone retries then passed Phase 1 (18/18) and Phase 2B (18/18), each with cleanup verified. The manifest retains the failed setup attempts and the successful retry evidence separately. No assertion failure remains in these inherited suites.
+
+The original sealed M1 `RUN-MANIFEST.json` and historical connected pilot fixture are absent. Their original tests remain **blocked**, regardless of disposable replacement coverage. The full fictional-tenant Work browser journey is also blocked by the retained Rybex/Rotork pilot gate. These are not counted as passes. No production environment was changed.

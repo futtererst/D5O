@@ -105,7 +105,7 @@ export default async function WorkHomePage({ searchParams }: {
             <p>Review the approved initial choices. Publication pins these rules to future Work; it does not approve a customer award, spending, field work or support activation.</p>
             <dl><dt>Work Types</dt><dd>Technical delivery; Lifecycle service</dd>
               <dt>Work creation</dt><dd>Admin; Project Manager</dd>
-              <dt>Phase order</dt><dd>Discover → Define → Develop → Design → Deploy → Operate</dd></dl>
+              <dt>Phase order</dt><dd>Discover → Define → Design → Develop → Deploy → Operate</dd></dl>
             <form action={publishInitialConfiguration}>
               <input type="hidden" name="commandId" value={crypto.randomUUID()} />
               <label>Discover → Define receiving role
