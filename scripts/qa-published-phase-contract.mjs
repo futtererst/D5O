@@ -73,7 +73,10 @@ const current = structuredClone(original);
 current.workTypes[0].phases[1].components.find((item) => item.key === "scope_items").fields[0].label = "Current deliverable";
 assert.deepEqual(Array.from(contract.validatePublishedPhaseContract(old, "rybex")), []);
 assert.deepEqual(Array.from(contract.validatePublishedPhaseContract(current, "rybex")), []);
-const manifest = (phaseContract) => ({ d5oPresentation: { phaseContract } });
+const manifest = (phaseContract) => ({
+  workTypes: phaseContract.workTypes.map((item) => ({ key: item.workTypeKey, status: "active" })),
+  d5oPresentation: { phaseContract },
+});
 const inventory = { status: "ready", activeVersionId: "version-2", versions: [
   { id: "version-1", status: "superseded", config_manifest_json: manifest(old) },
   { id: "version-2", status: "published", config_manifest_json: manifest(current) },

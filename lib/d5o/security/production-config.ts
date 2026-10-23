@@ -58,8 +58,10 @@ export function getProductionReadiness(): ProductionReadinessResult {
     issues.push(blocker("supabase_server_key", "A server-side Supabase key is required for controlled server operations."));
   }
 
-  if (scannerMode === "disabled" || scannerMode === "not_configured") {
-    issues.push(blocker("scanner_mode", "Production evidence scanning must be configured."));
+  // scanner.ts currently instantiates a scanner only for local_service.
+  // Other declared modes return scanner_unavailable and cannot qualify evidence.
+  if (scannerMode !== "local_service") {
+    issues.push(blocker("scanner_mode", "Production evidence scanning requires an implemented scanner adapter."));
   }
 
   if (scannerMode === "local_service" && !process.env.RYBEXOS_SCANNER_URL) {

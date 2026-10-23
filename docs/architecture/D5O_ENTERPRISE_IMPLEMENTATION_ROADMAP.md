@@ -1,5 +1,11 @@
 # D5O enterprise implementation roadmap
 
+## P0-A execution update — 2026-10-23
+
+The original roadmap below is the assessment plan at `84ad7057f1a0e87c7a7745d7d8bbd2ad229ee249`. P0-A now has an isolated branch, disposable local Supabase/Next harness and [16 passing runtime checks with verified cleanup](evidence/p0a-runtime-results.json) [R]. Production `/api/health` was 200 and `/api/readiness` 503 with four missing production settings; [diagnosis and limits](D5O_P0A_PRODUCTION_READINESS.md) [R,C]. The local scanner-readiness validation defect was fixed [C,T]. [Gate A passes; B/C fail on incomplete privileged-path/domain coverage; D is partial due blocked historical pilot regression scripts](D5O_P0A_RUNTIME_QUALIFICATION.md) [R]. **NO-GO for independent commercial tenant rollout.**
+
+The immediate next package is [P0-A coverage closure and P0-B adversarial expansion](D5O_P0A_RELEASE_RECOMMENDATION.md), including legacy opportunity service-role reachability, evidence business routes, membership commands, exports, full domain fixtures and Rybex/Rotork regressions. Production persistence/scanner settings require separately approved changes after non-production qualification. The P1 hosted configuration, tenant-neutral admin and service threshold packages remain dependent on the security gate. The historical “First implementation prompt” at the bottom of this document has been executed only in part; use the new remediation prompt in the release recommendation for the next assignment.
+
 Baseline `origin/main` `4cf881b5`; references below are inspected code/migration **[C]**, test source **[T]**, or prior documentation **[D]**. This is a plan; no implementation, migration or deployment was performed.
 
 ## Critical path
