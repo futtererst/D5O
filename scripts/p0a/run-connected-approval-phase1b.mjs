@@ -295,6 +295,23 @@ try {
     assert.equal(current.data?.status, "approved");
     return { previousApprovalRetained: true, revisedAmountMinor: 1600000, currentStatus: "approved" };
   });
+  await check("Phase 2A role change cannot preserve old approval authority", async () => {
+    const membershipId = sql(`select id from d5o_hosted.memberships where workspace_id=${q(ids.a.workspace)} and actor_user_id=${q(users.a_ops.id)};`);
+    const change = await call("a_admin", "d5o_hosted_org_admin_command_v1", {
+      p_workspace_key: ids.a.key, p_action: "member.role", p_subject_id: membershipId,
+      p_input: { role: "project_manager" }, p_expected_revision: 1,
+      p_reason: "Synthetic authority role change validation", p_command_id: "phase2a-approval-role-change" });
+    assert(!change.error, change.error?.message);
+    const denied = await job("a_pm", "a", "phase2a-stale-role-job");
+    assert.equal(denied.error?.code, "23514");
+    assert.match(denied.error.message, /connected_service_approval_required/);
+    const restore = await call("a_admin", "d5o_hosted_org_admin_command_v1", {
+      p_workspace_key: ids.a.key, p_action: "member.role", p_subject_id: membershipId,
+      p_input: { role: "operations_leader" }, p_expected_revision: 2,
+      p_reason: "Restore synthetic authority for revocation test", p_command_id: "phase2a-approval-role-restore" });
+    assert(!restore.error, restore.error?.message);
+    return { roleChangeDeniedApprovalReuse: true, oldDecisionRetained: true };
+  });
   await check("revoked approval authority fails closed", async () => {
     sql(`update d5o_hosted.memberships set status='suspended' where workspace_id=${q(ids.a.workspace)} and actor_user_id=${q(users.a_ops.id)};`);
     const denied = await job("a_pm", "a", "phase1b-a-revoked-job");

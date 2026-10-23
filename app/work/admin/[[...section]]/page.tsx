@@ -10,6 +10,7 @@ import { AdminAudit } from "@/components/d5o/admin/AdminAudit";
 import { AdminOverview } from "@/components/d5o/admin/AdminOverview";
 import { AdminMobileNav } from "@/components/d5o/admin/AdminMobileNav";
 import { AdminIdentityBoundary } from "@/components/d5o/admin/AdminIdentityBoundary";
+import { OrgAdminPanel } from "@/components/d5o/admin/OrgAdminPanel";
 import { D5OProductHeader } from "@/components/d5o/platform/D5OProductHeader";
 import { customerAdminWorkspaceAllowed } from "@/lib/d5o/admin/customer-workspace";
 import styles from "./admin.module.css";
@@ -21,7 +22,11 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Workspace administration | D5O" };
 
 const sections = [
-  ["overview", "Overview"], ["users", "Users & access"],
+  ["organization", "Organization"], ["organization-settings", "Settings"],
+  ["business-units", "Business units"], ["locations", "Locations"], ["teams", "Teams"],
+  ["people", "People"], ["invitations", "Invitations"], ["roles", "Roles & access"],
+  ["activity", "Administration activity"],
+  ["overview", "Pilot overview"], ["users", "Pilot access"],
   ["workforce", "Workforce"], ["configuration", "Configuration"],
   ["authority", "Authority and rates"], ["audit", "Audit"],
 ] as const;
@@ -36,7 +41,11 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
   if (!customerAdminWorkspaceAllowed(workspace) || (section?.length ?? 0) > 2) notFound();
   const active = section?.[0] ?? "overview";
   if (!sections.some(([key]) => key === active)) notFound();
-  if (workspace !== "rybex" && active !== "configuration") notFound();
+  const newSections = ["organization", "organization-settings", "business-units", "locations",
+    "teams", "people", "invitations", "roles", "activity"];
+  const visibleSections = sections.filter(([key]) => (workspace === "rybex" || key === "configuration" || newSections.includes(key))
+    && !["overview", "users"].includes(key));
+  if (workspace !== "rybex" && active !== "configuration" && !newSections.includes(active)) notFound();
   if (section?.length === 2 && !["users", "workforce"].includes(active)) notFound();
   const selectedId = section?.[1];
   if (selectedId && !/^[0-9a-f-]{36}$/i.test(selectedId)) notFound();
@@ -57,17 +66,20 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
     <div className={styles.frame}>
       <aside className={styles.rail} aria-label="Administration navigation">
         <p className={styles.railLabel}>{workspace === "rybex" ? "Rybex" : "Independent Enterprise Test"} · Administration</p>
-        <nav className={styles.nav} aria-label="Administrator sections">{sections.filter(([key]) => workspace === "rybex" || key === "configuration").map(([key, label]) =>
+        <nav className={styles.nav} aria-label="Administrator sections">{visibleSections.map(([key, label]) =>
           <Link key={key} href={href(key)} aria-current={active === key ? "page" : undefined}>{label}</Link>)}</nav>
         {workspace === "rybex" && <Link className={styles.returnLink} href={`/work?workspace=${workspace}`}>← Return to Work</Link>}
       </aside>
       <div className={styles.mainColumn}>
-        <AdminMobileNav active={active} sections={sections.filter(([key]) => workspace === "rybex" || key === "configuration")} workspace={workspace} />
+        <AdminMobileNav active={active} sections={visibleSections} workspace={workspace} />
         <header className={styles.header}>
           <div><p>Administration / {sections.find(([key]) => key === active)?.[1]}</p><h1>{sections.find(([key]) => key === active)?.[1]}</h1></div>
         </header>
-        <p className={styles.notice}>Synthetic beta workspace · Administrative changes retain their governed decision history.</p>
+        <p className={styles.notice}>Tenant: {workspace} · Administrative changes retain their governed decision history.</p>
     <section className={styles.content}>
+      {newSections.includes(active) && <OrgAdminPanel workspace={workspace} settingsOnly={active === "organization-settings"} kind={
+        active === "organization" || active === "organization-settings" ? "overview" :
+        active === "business-units" ? "units" : active as "locations" | "teams" | "people" | "invitations" | "roles" | "activity"} />}
       {active === "overview" && <AdminOverview workspace="rybex" />}
       {active === "users" && <MemberAccessPanel workspace="rybex" selectedUserId={selectedId}
         initialSearch={(query.search ?? "").slice(0, 120)} initialOffset={offset} />}

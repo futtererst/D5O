@@ -33,7 +33,7 @@ export async function createP0aRuntime(root = process.cwd()) {
     runtime.network = createP0aNetwork(root, projectId);
     const start = run(root, process.execPath, [join(root, "scripts", "run-supabase-loopback.mjs"),
       "start", "--workdir", projectDir, "--network-id", runtime.network, "--yes"]);
-    if (start.status !== 0) throw new Error(`isolated_start_failed:${start.stderr || start.stdout}`);
+    if (start.status !== 0) throw new Error(`isolated_start_failed:api_port=${ports.api}:${start.stderr || start.stdout}`);
     runtime.started = true;
     runtime.bindings = inspectSupabaseProjectBindings(projectId);
     const status = run(root, process.execPath, [join(root, "node_modules", "supabase", "dist", "supabase.js"),
@@ -88,11 +88,15 @@ function freePort() {
 }
 
 async function allowedPilotPort() {
+  const published = run(process.cwd(), "docker", ["ps", "--format", "{{.Ports}}"]).stdout;
   for (const port of [57421, 57621, 57721, 58221, 58521, 57021, 57121, 57221]) {
+    if (new RegExp(`:${port}->`).test(published)) continue;
     try { await new Promise((resolvePort, reject) => {
       const server = createServer();
       server.once("error", reject);
-      server.listen(port, "127.0.0.1", () => server.close(resolvePort));
+      // Docker publishes the gateway on all interfaces. Probing loopback alone
+      // can miss an existing container's port reservation on Windows.
+      server.listen(port, "0.0.0.0", () => server.close(resolvePort));
     }); return port; } catch { /* Existing local stacks retain their port. */ }
   }
   throw new Error("no_free_preapproved_pilot_port");
