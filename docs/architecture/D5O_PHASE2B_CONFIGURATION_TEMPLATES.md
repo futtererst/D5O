@@ -1,0 +1,9 @@
+# Phase 2B configuration templates
+
+The template catalog stores governed **sources**, not live customer policy. `configuration_templates` gives stable identity and retirement state. `configuration_template_versions` holds schema version, manifest, work types, create roles, handoff roles, validation/publication timestamps and publisher. `d5o_platform_template_command_v1` supports create draft, save, validate, publish and retire for active vendor administrators. Published version rows reject update and delete in a trigger. Customer administrators have no command grant through their tenant role.
+
+The initial `Standard D5O` version includes technical delivery and lifecycle service work types; `Service Operations` contains lifecycle service only. Both use the existing hosted phase contract and admin handoffs. They deliberately omit a service-work approval amount. The customer must set and publish an explicit USD threshold in the existing Configuration Center before readiness passes. Neither template can override isolation or vendor permissions; the validator rejects `serviceWorkApproval` in template payloads and restricts template routes to known baseline roles.
+
+Provisioning validates the selected published version and copies its manifest, typed work types, create rights and routes into a new hosted tenant configuration version. `source_template_version_id` retains lineage. The copy is published in the same provisioning transaction, using the existing immutable-version rule via draft then publish. Later template publication or retirement never changes that tenant version. Tenant policy changes continue through `d5o_hosted_configuration_admin_command_v1`; existing work pins continue to use their historical configuration versions.
+
+The platform UI shows version, publication/validation state and usage. Template authoring is supported by the audited vendor RPC and intentionally has no unrestricted browser editor in this package.

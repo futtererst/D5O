@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRybexSupabaseAdminClient, createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
-import { customerAdminWorkspaceAllowed } from "@/lib/d5o/admin/customer-workspace";
+import { customerAdminWorkspaceAuthorized } from "@/lib/d5o/admin/customer-workspace";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 import { isApprovedTestRecipient } from "@/lib/d5o/auth/approved-test-recipient";
 
@@ -13,7 +13,7 @@ const failure = (error: RpcResult["error"]) => reply({ error: error?.message ?? 
     ["23503", "23505", "23514", "23502", "23516"].includes(error?.code ?? "") ? 409 : 503);
 
 async function adminContext(workspace: string) {
-  if (!customerAdminWorkspaceAllowed(workspace)) throw new HostedStateError("invalid_workspace", 400);
+  if (!await customerAdminWorkspaceAuthorized(workspace)) throw new HostedStateError("invalid_workspace", 403);
   const context = await hostedPrototypeContext(workspace);
   if (context.actor.role !== "admin") throw new HostedStateError("admin_membership_required", 403);
   return context;

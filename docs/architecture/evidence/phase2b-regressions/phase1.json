@@ -1,0 +1,195 @@
+{
+  "startedAt": "2026-10-23T13:50:09.824Z",
+  "environment": {
+    "projectId": "d5o-p0a-d0ab96c9-2f2",
+    "apiPort": 57621,
+    "loopbackOnly": true
+  },
+  "tests": [
+    {
+      "name": "vendor directory is distinct from tenant administration",
+      "status": "PASS",
+      "detail": {
+        "visibleTenants": [
+          "enterprise_test",
+          "rybex"
+        ],
+        "tenantAdminDenied": true
+      }
+    },
+    {
+      "name": "a administrator drafts and publishes USD 10000",
+      "status": "PASS",
+      "detail": {
+        "thresholdMinor": 1000000,
+        "activeVersionId": "48d3afc4-d61d-46f0-a9fb-e701593b5bcb",
+        "oldVersionRetained": true
+      }
+    },
+    {
+      "name": "b administrator drafts and publishes USD 25000",
+      "status": "PASS",
+      "detail": {
+        "thresholdMinor": 2500000,
+        "activeVersionId": "98554a26-8971-4709-9897-dc733c827674",
+        "oldVersionRetained": true
+      }
+    },
+    {
+      "name": "authenticated customer configuration screenshots",
+      "status": "PASS",
+      "detail": {
+        "files": [
+          "a-1440.png",
+          "a-390.png",
+          "b-1440.png",
+          "b-390.png",
+          "platform-directory-1440.png",
+          "platform-tenant-detail-1440.png"
+        ],
+        "preview": "http://127.0.0.1:57043/work/admin/configuration?workspace=rybex"
+      }
+    },
+    {
+      "name": "stale and unauthorized publication denied",
+      "status": "PASS",
+      "detail": {
+        "stale": "23505",
+        "nonAdmin": "42501",
+        "crossTenant": "42501"
+      }
+    },
+    {
+      "name": "a service Work pins active version",
+      "status": "PASS",
+      "detail": {
+        "workId": "6271583a-574d-478c-aa61-670f1485a518",
+        "configurationVersionId": "48d3afc4-d61d-46f0-a9fb-e701593b5bcb"
+      }
+    },
+    {
+      "name": "b service Work pins active version",
+      "status": "PASS",
+      "detail": {
+        "workId": "20ea981c-3547-4339-b307-10da57f7222c",
+        "configurationVersionId": "98554a26-8971-4709-9897-dc733c827674"
+      }
+    },
+    {
+      "name": "a authoritative USD 15,000 decision",
+      "status": "PASS",
+      "detail": {
+        "status": "pending",
+        "workId": "6271583a-574d-478c-aa61-670f1485a518",
+        "currency": "USD",
+        "amountMinor": 1500000,
+        "thresholdMinor": 1000000,
+        "approvalRequired": true,
+        "configurationVersionId": "48d3afc4-d61d-46f0-a9fb-e701593b5bcb"
+      }
+    },
+    {
+      "name": "b authoritative USD 15,000 decision",
+      "status": "PASS",
+      "detail": {
+        "status": "not_required",
+        "workId": "20ea981c-3547-4339-b307-10da57f7222c",
+        "currency": "USD",
+        "amountMinor": 1500000,
+        "thresholdMinor": 2500000,
+        "approvalRequired": false,
+        "configurationVersionId": "98554a26-8971-4709-9897-dc733c827674"
+      }
+    },
+    {
+      "name": "cross-tenant, currency, and unauthorized bypass denied",
+      "status": "PASS",
+      "detail": {
+        "crossTenant": "42501",
+        "wrongRole": "42501",
+        "currency": "22023"
+      }
+    },
+    {
+      "name": "independent approver records versioned decision and audit",
+      "status": "PASS",
+      "detail": {
+        "status": "approved",
+        "eventCount": 2,
+        "configurationVersionId": "48d3afc4-d61d-46f0-a9fb-e701593b5bcb"
+      }
+    },
+    {
+      "name": "work-type name edit publishes without repinning historical Work",
+      "status": "PASS",
+      "detail": {
+        "activeVersionId": "24cfe599-5e52-440d-9cde-f3c900016f5f",
+        "workPinnedVersionId": "98554a26-8971-4709-9897-dc733c827674"
+      }
+    },
+    {
+      "name": "customer administrator edits, validates and activates policy in browser",
+      "status": "PASS",
+      "detail": {
+        "activeVersionId": "2355beca-21f6-49c2-8d9c-8ca6f54b8762",
+        "thresholdMinor": 2400000,
+        "screenshot": "docs/architecture/evidence/phase1-admin-ui/tenant-b-draft-1440.png"
+      }
+    },
+    {
+      "name": "browser policy change rolls back through a new version",
+      "status": "PASS",
+      "detail": {
+        "activeVersionId": "acda2c37-1ca3-4cbb-a478-d27e124a058e",
+        "restoredThresholdMinor": 2500000,
+        "historicalDecisionThresholdMinor": 2500000
+      }
+    },
+    {
+      "name": "membership revocation immediately denies authority",
+      "status": "PASS",
+      "detail": {
+        "code": "42501"
+      }
+    },
+    {
+      "name": "safe rollback creates auditable new decision",
+      "status": "PASS",
+      "detail": {
+        "activeVersionId": "64a7a668-0249-432c-aba0-fca9b28e46aa",
+        "activationEvents": 3
+      }
+    },
+    {
+      "name": "historical work keeps pinned policy after rollback",
+      "status": "PASS",
+      "detail": {
+        "pinnedThresholdMinor": 1000000,
+        "status": "superseded"
+      }
+    },
+    {
+      "name": "suspended administrator cannot publish",
+      "status": "PASS",
+      "detail": {
+        "code": "42501"
+      }
+    }
+  ],
+  "cleanup": {
+    "projectId": "d5o-p0a-d0ab96c9-2f2",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "setupError": null,
+  "finishedAt": "2026-10-23T13:52:10.279Z",
+  "summary": {
+    "passed": 18,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  }
+}

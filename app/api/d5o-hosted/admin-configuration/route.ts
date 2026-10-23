@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
-import { customerAdminWorkspaceAllowed } from "@/lib/d5o/admin/customer-workspace";
+import { customerAdminWorkspaceAuthorized } from "@/lib/d5o/admin/customer-workspace";
 
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
@@ -11,7 +11,7 @@ const errorStatus = (error: Rpc["error"]) => error?.code === "42501" ? 403
   : error?.code === "23505" || error?.code === "23514" ? 409
     : error?.code === "22023" ? 400 : 503;
 async function admin(workspace: string) {
-  if (!customerAdminWorkspaceAllowed(workspace)) throw new HostedStateError("invalid_workspace", 400);
+  if (!await customerAdminWorkspaceAuthorized(workspace)) throw new HostedStateError("invalid_workspace", 403);
   const context = await hostedPrototypeContext(workspace);
   if (context.actor.role !== "admin") throw new HostedStateError("admin_membership_required", 403);
 }

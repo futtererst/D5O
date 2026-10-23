@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
-import { customerAdminWorkspaceAllowed } from "@/lib/d5o/admin/customer-workspace";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 
 export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   if (!validLocalScheduleOrigin(request.headers)) return NextResponse.json({ error: "invalid_origin" }, { status: 403 });
   const input = await request.json().catch(() => null) as { workspace?: string; inviteId?: string } | null;
-  if (!input || !customerAdminWorkspaceAllowed(input.workspace ?? "") ||
+  // The database verifies the exact tenant-bound offer and signed-in recipient.
+  if (!input || !/^[a-z][a-z0-9_-]{2,63}$/.test(input.workspace ?? "") ||
     !input.inviteId || input.inviteId.length < 8 || input.inviteId.length > 120)
     return NextResponse.json({ error: "invalid_invitation" }, { status: 400 });
   const client = await createRybexSupabaseServerClient();

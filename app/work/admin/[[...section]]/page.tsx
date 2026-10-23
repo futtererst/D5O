@@ -12,7 +12,7 @@ import { AdminMobileNav } from "@/components/d5o/admin/AdminMobileNav";
 import { AdminIdentityBoundary } from "@/components/d5o/admin/AdminIdentityBoundary";
 import { OrgAdminPanel } from "@/components/d5o/admin/OrgAdminPanel";
 import { D5OProductHeader } from "@/components/d5o/platform/D5OProductHeader";
-import { customerAdminWorkspaceAllowed } from "@/lib/d5o/admin/customer-workspace";
+import { customerAdminWorkspaceAuthorized } from "@/lib/d5o/admin/customer-workspace";
 import styles from "./admin.module.css";
 import "../../enterprise.css";
 import "../../settings/notification-settings.css";
@@ -38,7 +38,7 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
 }) {
   const [{ section }, query] = await Promise.all([params, searchParams]);
   const workspace = query.workspace ?? "rybex";
-  if (!customerAdminWorkspaceAllowed(workspace) || (section?.length ?? 0) > 2) notFound();
+  if (!await customerAdminWorkspaceAuthorized(workspace) || (section?.length ?? 0) > 2) notFound();
   const active = section?.[0] ?? "overview";
   if (!sections.some(([key]) => key === active)) notFound();
   const newSections = ["organization", "organization-settings", "business-units", "locations",
@@ -65,7 +65,7 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
   return <AdminIdentityBoundary userId={context.actor.id}><>{workspace === "rybex" && <D5OProductHeader workspace="rybex" homeHref="/work?workspace=rybex" area="Administration" hostedPreview />}<main className={`${styles.shell} d5o-admin-console`}>
     <div className={styles.frame}>
       <aside className={styles.rail} aria-label="Administration navigation">
-        <p className={styles.railLabel}>{workspace === "rybex" ? "Rybex" : "Independent Enterprise Test"} · Administration</p>
+        <p className={styles.railLabel}>{context.actor.workspaceName ?? workspace} · Administration</p>
         <nav className={styles.nav} aria-label="Administrator sections">{visibleSections.map(([key, label]) =>
           <Link key={key} href={href(key)} aria-current={active === key ? "page" : undefined}>{label}</Link>)}</nav>
         {workspace === "rybex" && <Link className={styles.returnLink} href={`/work?workspace=${workspace}`}>← Return to Work</Link>}

@@ -32,13 +32,13 @@ export async function hostedPrototypeContext(workspace: string) {
   const actor = await call("d5o_hosted_actor_v1", { p_workspace_key: workspace });
   if (actor.error || !actor.data || typeof actor.data !== "object")
     throw new HostedStateError("workspace_forbidden", 403);
-  const identity = actor.data as { role?: string; membershipId?: string };
+  const identity = actor.data as { role?: string; membershipId?: string; workspaceName?: string };
   const role = identity.role ?? "";
   const actorName = userData.user.user_metadata?.display_name;
   return {
     actor: { id: userData.user.id,
       name: typeof actorName === "string" && actorName.trim() ? actorName.trim() : userData.user.email ?? "Workspace member",
-      role, membershipId: identity.membershipId ?? "" },
+      role, membershipId: identity.membershipId ?? "", workspaceName: identity.workspaceName },
     canEdit: editors.has(role),
     async read(key: HostedStateKey): Promise<HostedStateResult> {
       const result = await call("d5o_hosted_prototype_read_v1", {

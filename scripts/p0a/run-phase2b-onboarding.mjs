@@ -1,0 +1,434 @@
+import assert from "node:assert/strict";
+import { randomBytes, randomUUID } from "node:crypto";
+import { spawn, spawnSync } from "node:child_process";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { createServer } from "node:net";
+import { createClient } from "@supabase/supabase-js";
+import { chromium } from "@playwright/test";
+import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
+
+const root = resolve(process.cwd());
+const output = resolve(root, "docs/architecture/evidence/phase2b-two-tenant-results.json");
+const evidence = { baseline: "791cf6b1f5318865dc0cae2a1a322606e7a01b25",
+  startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
+let runtime, server;
+const q = (value) => `'${String(value).replaceAll("'", "''")}'`;
+function sql(query) {
+  const result = spawnSync("docker", ["exec", "-i", runtime.dbContainer, "psql", "-U", "postgres", "-d", "postgres",
+    "-X", "-t", "-A", "-v", "ON_ERROR_STOP=1"], { input: query, encoding: "utf8", shell: false });
+  if (result.status !== 0) throw Error(`sql_failed:${result.stderr.slice(-900)}`);
+  return result.stdout.trim();
+}
+async function check(name, run) {
+  try { evidence.tests.push({ name, status: "PASS", detail: await run() ?? null }); }
+  catch (error) { evidence.tests.push({ name, status: "FAIL", detail: String(error.message).slice(0, 800) }); }
+}
+const freePort = () => new Promise((done, fail) => { const socket = createServer();socket.once("error", fail);
+  socket.listen(0,"127.0.0.1",()=>{const address=socket.address();socket.close(()=>done(address.port));}); });
+async function startNext(url, anon, service) {
+  const port = await freePort();
+  const env = { ...process.env, NODE_ENV: "development", NEXT_TELEMETRY_DISABLED: "1",
+    NEXT_PUBLIC_SUPABASE_URL: url, NEXT_PUBLIC_SUPABASE_ANON_KEY: anon, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: anon,
+    SUPABASE_SECRET_KEY: service, SUPABASE_SERVICE_ROLE_KEY: service, D5O_HOSTED_ENABLED: "1",
+    D5O_ISOLATED_PILOT: "1", D5O_ISOLATED_PILOT_URL: url,
+    D5O_ISOLATED_APP_ORIGIN: `http://127.0.0.1:${port}`, D5O_COMMAND_RUNTIME: "pilot",
+    RYBEXOS_RUNTIME_MODE: "test", RYBEXOS_AUTH_MODE: "supabase", RYBEXOS_DATA_SOURCE: "database" };
+  const handle = spawn(process.execPath, [resolve(root,"node_modules/next/dist/bin/next"),
+    "dev","--webpack","-p",String(port),"-H","127.0.0.1"],{cwd:root,env,stdio:"ignore",shell:false});
+  for(let n=0;n<160;n++) { try { if((await fetch(`http://127.0.0.1:${port}/api/health`)).ok)
+    return {handle,port}; } catch { /* startup */ } await new Promise((done)=>setTimeout(done,500)); }
+  handle.kill();throw Error("next_start_timeout");
+}
+
+try {
+  runtime = await createP0aRuntime(root);
+  const url = runtime.status.API_URL ?? runtime.status.SUPABASE_URL;
+  const anon = runtime.status.ANON_KEY ?? runtime.status.PUBLISHABLE_KEY;
+  const service = runtime.status.SERVICE_ROLE_KEY ?? runtime.status.SECRET_KEY;
+  assert(url === `http://127.0.0.1:${runtime.ports.api}` && anon && service);
+  evidence.environment = { projectId: runtime.projectId, apiPort: runtime.ports.api, loopbackOnly: true };
+  const admin = createClient(url, service, { auth: { persistSession: false } });
+  const users = {};
+  for (const key of ["vendor","a_admin","b_admin","outsider"]) {
+    const email = `phase2b-${key}-${randomUUID().slice(0,8)}@example.test`;
+    const password = randomBytes(24).toString("base64url") + "!";
+    const created = await admin.auth.admin.createUser({email,password,email_confirm:true});
+    assert(!created.error && created.data.user, `create_user:${key}:${created.error?.message}`);
+    users[key] = {id:created.data.user.id,email,password};
+  }
+  // Platform authority is an explicit disposable fixture; no tenant/config/member row is seeded.
+  sql(`insert into d5o_hosted.platform_administrators(actor_user_id,status)
+    values(${q(users.vendor.id)},'active');`);
+  const clients = {};
+  for (const [key,user] of Object.entries(users)) {
+    clients[key] = createClient(url, anon, { auth: { persistSession:false, autoRefreshToken:false } });
+    const login = await clients[key].auth.signInWithPassword({email:user.email,password:user.password});
+    assert(!login.error, `login:${key}`);
+  }
+  const call = (key,name,args={}) => clients[key].rpc(name,args);
+  let template, a, b, versions = {};
+  await check("vendor sees validated immutable template directory", async () => {
+    const read = await call("vendor","d5o_platform_templates_v1");
+    const denied = await call("outsider","d5o_platform_templates_v1");
+    assert(!read.error,read.error?.message);assert.equal(read.data.length,2);
+    assert(read.data.every((item)=>item.status==="published" && item.valid));
+    assert.equal(denied.error?.code,"42501");
+    template=read.data.find((item)=>item.templateKey==="service-operations");
+    assert(template);
+    return {template:template.name,version:template.version,outsiderDenied:true};
+  });
+  const args = (key,user,requestId) => ({p_request_id:requestId,p_workspace_key:key,
+    p_legal_name:key==="tenant_a_test"?"Rybex Test LLC":"Independent Enterprise Test LLC",
+    p_display_name:key==="tenant_a_test"?"Rybex Test":"Independent Enterprise Test",
+    p_admin_email:user.email,p_country:"US",p_time_zone:"America/New_York",p_currency:"USD",
+    p_template_version_id:template.id,p_reason:"Provision fictional customer in disposable test"});
+  const aArgs=args("tenant_a_test",users.a_admin,"phase2b-provision-tenant-a");
+  const bArgs=args("tenant_b_test",users.b_admin,"phase2b-provision-tenant-b");
+  await check("vendor provisions A and B through one authoritative command", async () => {
+    const first=await call("vendor","d5o_platform_provision_v1",aArgs);
+    const second=await call("vendor","d5o_platform_provision_v1",bArgs);
+    assert(!first.error,first.error?.message);assert(!second.error,second.error?.message);
+    a=first.data;b=second.data;
+    assert.notEqual(a.workspaceId,b.workspaceId);assert.notEqual(a.configurationVersionId,b.configurationVersionId);
+    assert.equal(a.lifecycle,"awaiting_admin");assert.equal(b.lifecycle,"awaiting_admin");
+    assert.equal(Number(sql("select count(*) from d5o_hosted.workspaces where workspace_key in ('tenant_a_test','tenant_b_test');")),2);
+    return {A:a.workspaceKey,B:b.workspaceKey,independentVersions:true};
+  });
+  await check("non-vendor and customer cannot provision or mutate template", async () => {
+    const outsider=await call("outsider","d5o_platform_provision_v1",{...aArgs,p_request_id:"phase2b-outsider-denied",p_workspace_key:"evil_tenant"});
+    const customer=await call("a_admin","d5o_platform_provision_v1",{...aArgs,p_request_id:"phase2b-customer-denied",p_workspace_key:"evil_tenant"});
+    const templateWrite=await call("a_admin","d5o_platform_template_command_v1",{
+      p_template_key:"service-operations",p_action:"retire",p_version_id:template.id,
+      p_payload:null,p_command_id:"phase2b-template-denied",p_reason:"Unauthorized template mutation test"});
+    assert.equal(outsider.error?.code,"42501");assert.equal(customer.error?.code,"42501");
+    assert.equal(templateWrite.error?.code,"42501");return {denied:true};
+  });
+  await check("replay, collision and duplicate tenant key preserve one result", async () => {
+    const replay=await call("vendor","d5o_platform_provision_v1",aArgs);
+    const collision=await call("vendor","d5o_platform_provision_v1",{...aArgs,p_display_name:"Changed",});
+    const duplicate=await call("vendor","d5o_platform_provision_v1",{...aArgs,p_request_id:"phase2b-other-key"});
+    assert.deepEqual(replay.data,a);assert.equal(collision.error?.code,"23505");
+    assert.equal(duplicate.error?.code,"23505");return {replay:true,collisionDenied:true};
+  });
+  await check("concurrent identical provisioning creates one tenant",async()=>{
+    const concurrentArgs={...bArgs,p_request_id:"phase2b-concurrent-provision",
+      p_workspace_key:"concurrent_qualification_test",p_display_name:"Concurrent Qualification Test"};
+    const attempts=await Promise.all([
+      call("vendor","d5o_platform_provision_v1",concurrentArgs),
+      call("vendor","d5o_platform_provision_v1",concurrentArgs)]);
+    assert(attempts.every((item)=>!item.error),attempts.map((item)=>item.error?.message).join(","));
+    assert.deepEqual(attempts[0].data,attempts[1].data);
+    assert.equal(Number(sql("select count(*) from d5o_hosted.workspaces where workspace_key='concurrent_qualification_test';")),1);
+    return {sameResult:true,workspaceCount:1};
+  });
+  await check("provider failure remains inactive and vendor recovery replaces only the offer",async()=>{
+    const pendingArgs={...aArgs,p_request_id:"phase2b-provider-failure",
+      p_workspace_key:"provider_failure_test",p_display_name:"Provider Failure Test",
+      p_admin_email:"no-delivery-phase2b@example.test"};
+    const created=await call("vendor","d5o_platform_provision_v1",pendingArgs);
+    assert(!created.error,created.error?.message);
+    assert.equal(created.data.invitationStatus,"pending");
+    const failed=await admin.rpc("d5o_platform_invitation_finish_v1",{
+      p_workspace_key:created.data.workspaceKey,p_invitation_id:created.data.invitationId,
+      p_vendor_user_id:users.vendor.id,p_status:"provider_rejected",p_provider_user_id:null});
+    assert(!failed.error,failed.error?.message);
+    const before=await call("vendor","d5o_platform_provisioning_directory_v1");
+    assert.equal(before.data.find((item)=>item.workspaceKey===created.data.workspaceKey)?.status,"failed");
+    const recovered=await call("vendor","d5o_platform_invitation_recover_v1",{
+      p_workspace_key:created.data.workspaceKey,p_command_id:"phase2b-provider-recovery",
+      p_reason:"Recover rejected disposable provider invitation"});
+    assert(!recovered.error,recovered.error?.message);
+    assert.notEqual(recovered.data.invitationId,created.data.invitationId);
+    assert.equal(Number(sql(`select count(*) from d5o_hosted.memberships where workspace_id=${q(created.data.workspaceId)};`)),0);
+    assert.equal(Number(sql(`select count(*) from d5o_hosted.workspaces where id=${q(created.data.workspaceId)};`)),1);
+    return {failedState:true,recoveredState:recovered.data.lifecycle,duplicateTenant:false,grantCount:0};
+  });
+  await check("expired initial invitation recovers without a duplicate tenant",async()=>{
+    sql(`update d5o_hosted.admin_identity_requests set expires_at=now()-interval '1 minute'
+      where workspace_id=${q(a.workspaceId)} and command_id=${q(a.invitationId)};`);
+    const expired=await call("a_admin","d5o_platform_initial_admin_accept_v1",{
+      p_workspace_key:a.workspaceKey,p_invitation_id:a.invitationId});
+    assert.equal(expired.error?.code,"23514");
+    const oldId=a.invitationId;
+    const recovered=await call("vendor","d5o_platform_invitation_recover_v1",{
+      p_workspace_key:a.workspaceKey,p_command_id:"phase2b-recover-tenant-a",
+      p_reason:"Replace expired fictional invitation safely"});
+    assert(!recovered.error,recovered.error?.message);
+    const replay=await call("vendor","d5o_platform_invitation_recover_v1",{
+      p_workspace_key:a.workspaceKey,p_command_id:"phase2b-recover-tenant-a",
+      p_reason:"Replace expired fictional invitation safely"});
+    assert.deepEqual(replay.data,recovered.data);
+    a.invitationId=recovered.data.invitationId;
+    const stale=await call("a_admin","d5o_platform_initial_admin_accept_v1",{
+      p_workspace_key:a.workspaceKey,p_invitation_id:oldId});
+    assert.equal(stale.error?.code,"42501");
+    assert.equal(Number(sql(`select count(*) from d5o_hosted.workspaces where id=${q(a.workspaceId)};`)),1);
+    return {expiredDenied:true,oldOfferDenied:true,recoveryReplaySafe:true};
+  });
+  await check("governed template version is validated, published, immutable and retired",async()=>{
+    const draft=await call("vendor","d5o_platform_template_command_v1",{
+      p_template_key:"standard-d5o",p_action:"create-draft",p_version_id:null,p_payload:null,
+      p_command_id:"phase2b-template-draft",p_reason:"Create disposable template revision for governance test"});
+    assert(!draft.error,draft.error?.message);
+    const id=draft.data.versionId;
+    const unpublished=await call("vendor","d5o_platform_provision_v1",{
+      ...aArgs,p_request_id:"phase2b-unpublished-template",p_workspace_key:"unpublished_template_tenant",
+      p_template_version_id:id});
+    assert.equal(unpublished.error?.code,"23514");
+    const validate=await call("vendor","d5o_platform_template_command_v1",{
+      p_template_key:"standard-d5o",p_action:"validate",p_version_id:id,p_payload:null,
+      p_command_id:"phase2b-template-validate",p_reason:"Validate disposable template revision"});
+    assert(!validate.error,validate.error?.message);
+    const publish=await call("vendor","d5o_platform_template_command_v1",{
+      p_template_key:"standard-d5o",p_action:"publish",p_version_id:id,p_payload:null,
+      p_command_id:"phase2b-template-publish",p_reason:"Publish disposable template revision"});
+    assert(!publish.error,publish.error?.message);
+    const mutation=await call("vendor","d5o_platform_template_command_v1",{
+      p_template_key:"standard-d5o",p_action:"save",p_version_id:id,p_payload:{},
+      p_command_id:"phase2b-template-mutate",p_reason:"Attempt mutation of published template"});
+    assert.equal(mutation.error?.code,"23514");
+    const immutable=spawnSync("docker",["exec","-i",runtime.dbContainer,"psql","-U","postgres","-d","postgres",
+      "-X","-t","-A","-v","ON_ERROR_STOP=1"],{input:`update d5o_hosted.configuration_template_versions
+      set status='draft' where id=${q(id)};`,encoding:"utf8",shell:false});
+    assert.notEqual(immutable.status,0);
+    const retired=await call("vendor","d5o_platform_template_command_v1",{
+      p_template_key:"standard-d5o",p_action:"retire",p_version_id:null,p_payload:null,
+      p_command_id:"phase2b-template-retire",p_reason:"Retire disposable standard template after test"});
+    assert(!retired.error,retired.error?.message);
+    const refused=await call("vendor","d5o_platform_provision_v1",{
+      ...aArgs,p_request_id:"phase2b-retired-template",p_workspace_key:"retired_template_tenant",
+      p_template_version_id:id});
+    assert.equal(refused.error?.code,"23514");
+    return {publishedVersion:id,immutable:true,unpublishedSelectionDenied:true,retiredSelectionDenied:true};
+  });
+  await check("initial offers are tenant-bound and accepted by exact recipients", async () => {
+    const forged=await call("a_admin","d5o_platform_initial_admin_accept_v1",{
+      p_workspace_key:b.workspaceKey,p_invitation_id:b.invitationId});
+    const wrong=await call("outsider","d5o_platform_initial_admin_accept_v1",{
+      p_workspace_key:a.workspaceKey,p_invitation_id:a.invitationId});
+    assert.equal(forged.error?.code,"42501");assert.equal(wrong.error?.code,"42501");
+    const acceptedA=await call("a_admin","d5o_platform_initial_admin_accept_v1",{
+      p_workspace_key:a.workspaceKey,p_invitation_id:a.invitationId});
+    const acceptedB=await call("b_admin","d5o_platform_initial_admin_accept_v1",{
+      p_workspace_key:b.workspaceKey,p_invitation_id:b.invitationId});
+    assert(!acceptedA.error,acceptedA.error?.message);assert(!acceptedB.error,acceptedB.error?.message);
+    const replay=await call("a_admin","d5o_platform_initial_admin_accept_v1",{
+      p_workspace_key:a.workspaceKey,p_invitation_id:a.invitationId});
+    assert.equal(replay.data.replay,true);
+    return {A:acceptedA.data.status,B:acceptedB.data.status,replaySafe:true};
+  });
+  await check("incomplete tenants cannot create Work or activate", async () => {
+    const work=await call("a_admin","d5o_hosted_create_work_v1",{
+      p_workspace_key:a.workspaceKey,p_command_id:"phase2b-premature-work",
+      p_configuration_version_id:a.configurationVersionId,p_work_type_key:"lifecycle-service",p_title:"Premature"});
+    const activation=await call("vendor","d5o_platform_activate_v1",{
+      p_workspace_key:a.workspaceKey,p_expected_revision:2,p_command_id:"phase2b-premature-activation",
+      p_reason:"Attempt activation before customer setup"});
+    const unauthorized=await call("a_admin","d5o_platform_activate_v1",{
+      p_workspace_key:a.workspaceKey,p_expected_revision:2,p_command_id:"phase2b-unauthorized-activation",
+      p_reason:"Attempt activation without vendor authority"});
+    assert(work.error);assert.equal(activation.error?.code,"23514");
+    assert.equal(unauthorized.error?.code,"42501");
+    return {workDenied:work.error.code,activationDenied:activation.error.code,
+      customerActivationDenied:true};
+  });
+  const config=(who,workspace,action,version,active,revision,input,suffix)=>call(who,
+    "d5o_hosted_configuration_admin_command_v1",{p_workspace_key:workspace,p_action:action,
+      p_version:version,p_expected_active:active,p_expected_revision:revision,p_input:input,
+      p_reason:`Phase 2B customer ${action}`,p_command_id:`phase2b-${who}-${action}-${suffix}`});
+  for(const [who,tenant,threshold] of [["a_admin",a,1000000],["b_admin",b,2500000]]) {
+    await check(`${tenant.workspaceKey} publishes its own USD ${threshold/100} threshold`, async () => {
+      const draft=await config(who,tenant.workspaceKey,"create-draft",tenant.configurationVersionId,
+        tenant.configurationVersionId,1,{},"draft");assert(!draft.error,draft.error?.message);
+      const id=draft.data.versionId;
+      const saved=await config(who,tenant.workspaceKey,"save-policy",id,tenant.configurationVersionId,1,
+        {key:"service-approval",thresholdMinor:threshold,currency:"USD",comparison:"greater_than",
+          authorityRole:"admin",unavailableBehavior:"block"},"save");assert(!saved.error,saved.error?.message);
+      const published=await config(who,tenant.workspaceKey,"validate-publish",id,tenant.configurationVersionId,2,{},"publish");
+      assert(!published.error,published.error?.message);
+      const activated=await config(who,tenant.workspaceKey,"activate",id,tenant.configurationVersionId,3,{},"activate");
+      assert(!activated.error,activated.error?.message);versions[who]=id;
+      return {thresholdMinor:threshold,versionId:id};
+    });
+  }
+  for(const [who,tenant] of [["a_admin",a],["b_admin",b]]) {
+    await check(`${tenant.workspaceKey} confirms readiness and vendor activates`,async()=>{
+      const read=await call(who,"d5o_hosted_onboarding_read_v1",{p_workspace_key:tenant.workspaceKey});
+      assert(!read.error,read.error?.message);assert.equal(read.data.ready,true);
+      const ready=await call(who,"d5o_hosted_onboarding_ready_v1",{
+        p_workspace_key:tenant.workspaceKey,p_expected_revision:read.data.revision,
+        p_command_id:`phase2b-ready-${who}`,p_reason:"Confirm required customer setup is complete"});
+      assert(!ready.error,ready.error?.message);
+      const active=await call("vendor","d5o_platform_activate_v1",{
+        p_workspace_key:tenant.workspaceKey,p_expected_revision:ready.data.revision,
+        p_command_id:`phase2b-activate-${who}`,p_reason:"Activate qualified fictional customer tenant"});
+      assert(!active.error,active.error?.message);
+      const replay=await call("vendor","d5o_platform_activate_v1",{
+        p_workspace_key:tenant.workspaceKey,p_expected_revision:ready.data.revision,
+        p_command_id:`phase2b-activate-${who}`,p_reason:"Activate qualified fictional customer tenant"});
+      assert.deepEqual(replay.data,active.data);
+      const stale=await call("vendor","d5o_platform_activate_v1",{
+        p_workspace_key:tenant.workspaceKey,p_expected_revision:ready.data.revision,
+        p_command_id:`phase2b-activate-stale-${who}`,p_reason:"Reject stale duplicate tenant activation"});
+      assert.equal(stale.error?.code,"23514");
+      return {ready:ready.data.lifecycle,activated:active.data.lifecycle,replaySafe:true,staleDenied:true};
+    });
+  }
+  await check("same Work and approval commands apply distinct tenant policies",async()=>{
+    const decisions=[];
+    for(const [who,tenant] of [["a_admin",a],["b_admin",b]]) {
+      const created=await call(who,"d5o_hosted_create_work_v1",{
+        p_workspace_key:tenant.workspaceKey,p_command_id:`phase2b-work-${who}`,
+        p_configuration_version_id:versions[who],p_work_type_key:"lifecycle-service",
+        p_title:"Equivalent USD 15,000 service request"});
+      assert(!created.error,created.error?.message);
+      const decision=await call(who,"d5o_hosted_service_approval_command_v1",{
+        p_workspace_key:tenant.workspaceKey,p_work_id:created.data.workId,p_action:"request",
+        p_amount_minor:1500000,p_currency:"USD",p_command_id:`phase2b-policy-${who}`});
+      assert(!decision.error,decision.error?.message);
+      decisions.push({tenant:tenant.workspaceKey,required:decision.data.approvalRequired,
+        status:decision.data.status,versionId:versions[who]});
+    }
+    assert.equal(decisions[0].required,true);assert.equal(decisions[1].required,false);
+    return decisions;
+  });
+  await check("audit and cross-tenant configuration access remain isolated",async()=>{
+    const cross=await call("a_admin","d5o_hosted_configuration_admin_read_v1",{p_workspace_key:b.workspaceKey});
+    assert.equal(cross.error?.code,"42501");
+    const crossWrite=await config("a_admin",b.workspaceKey,"create-draft",versions.b_admin,
+      versions.b_admin,1,{},"cross-tenant");
+    assert.equal(crossWrite.error?.code,"42501");
+    const crossOnboarding=await call("a_admin","d5o_hosted_onboarding_read_v1",{p_workspace_key:b.workspaceKey});
+    assert.equal(crossOnboarding.error?.code,"42501");
+    const events=Number(sql(`select count(*) from d5o_hosted.platform_events where workspace_id in (${q(a.workspaceId)},${q(b.workspaceId)});`));
+    assert(events>=6);return {crossTenantDenied:true,platformEvents:events};
+  });
+  await check("suspended initial administrator immediately loses protected access",async()=>{
+    sql(`update d5o_hosted.memberships set status='suspended'
+      where workspace_id=${q(a.workspaceId)} and actor_user_id=${q(users.a_admin.id)};`);
+    try {
+      const denied=await call("a_admin","d5o_hosted_onboarding_read_v1",{p_workspace_key:a.workspaceKey});
+      assert.equal(denied.error?.code,"42501");
+      const deniedWork=await call("a_admin","d5o_hosted_create_work_v1",{
+        p_workspace_key:a.workspaceKey,p_command_id:"phase2b-suspended-work",
+        p_configuration_version_id:versions.a_admin,p_work_type_key:"lifecycle-service",p_title:"Suspended actor"});
+      assert(deniedWork.error);
+      return {onboardingDenied:true,workDenied:true};
+    } finally {
+      sql(`update d5o_hosted.memberships set status='active'
+        where workspace_id=${q(a.workspaceId)} and actor_user_id=${q(users.a_admin.id)};`);
+    }
+  });
+  await check("authenticated vendor and customer onboarding pages render",async()=>{
+    server=await startNext(url,anon,service);
+    const browser=await chromium.launch();const files=[];
+    const dir=resolve(root,"docs/architecture/evidence/phase2b-admin-ui");mkdirSync(dir,{recursive:true});
+    try {
+      for(const [who,path,file,heading] of [
+        ["vendor","/platform-admin","vendor-directory-1440.png","Customer onboarding"],
+        ["vendor",`/platform-admin/tenants/${a.workspaceKey}`,"vendor-tenant-a-1440.png","Rybex Test"],
+        ["a_admin",`/work/onboarding?workspace=${a.workspaceKey}`,"customer-onboarding-1440.png","Set up Rybex Test"]]) {
+        const page=await browser.newPage({viewport:{width:1440,height:900}});
+        await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=${encodeURIComponent(path)}`);
+        await page.getByLabel("Email").fill(users[who].email);
+        await page.getByLabel("Password").fill(users[who].password);
+        await page.getByRole("button",{name:"Continue to your work"}).click();
+        await page.getByRole("heading",{name:heading,exact:true}).waitFor({timeout:30000});
+        await page.screenshot({path:resolve(dir,file),fullPage:true});files.push(file);
+        if(path==="/platform-admin" || who==="a_admin") {
+          await page.setViewportSize({width:390,height:844});
+          const mobile=file.replace("1440","390");
+          await page.screenshot({path:resolve(dir,mobile),fullPage:true});files.push(mobile);
+          await page.setViewportSize({width:1440,height:900});
+        }
+        if(who==="vendor" && path==="/platform-admin") {
+          await page.getByLabel("Legal name").fill("Browser Qualification Test LLC");
+          await page.getByLabel("Display name").fill("Browser Qualification Test");
+          await page.getByLabel("Tenant key").fill("browser_qualification_test");
+          await page.getByLabel("Initial administrator email").fill(users.outsider.email);
+          await page.getByRole("combobox",{name:"Configuration template",exact:true}).selectOption(template.id);
+          await page.getByRole("button",{name:"Review customer setup"}).click();
+          await page.getByRole("heading",{name:"Review before provisioning"}).waitFor();
+          await page.screenshot({path:resolve(dir,"vendor-create-review-1440.png"),fullPage:true});
+          files.push("vendor-create-review-1440.png");
+          await page.getByRole("button",{name:"Provision customer"}).click();
+          await page.getByRole("status").filter({hasText:"was provisioned"}).waitFor({timeout:30000});
+          await page.screenshot({path:resolve(dir,"vendor-create-complete-1440.png"),fullPage:true});
+          files.push("vendor-create-complete-1440.png");
+          assert.equal(Number(sql("select count(*) from d5o_hosted.workspaces where workspace_key='browser_qualification_test';")),1);
+        }
+        if(who==="a_admin") {
+          const denied=await page.request.get(`http://127.0.0.1:${server.port}/api/d5o-platform/provisioning`);
+          assert.equal(denied.status(),403);
+        }
+        await page.close();
+      }
+      const browserTenant=(await call("vendor","d5o_platform_provisioning_directory_v1")).data
+        .find((item)=>item.workspaceKey==="browser_qualification_test");
+      assert(browserTenant?.invitationId && browserTenant?.configurationVersionId);
+      const recipient=await browser.newPage({viewport:{width:1440,height:900}});
+      await recipient.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=${encodeURIComponent(
+        `/work/initial-invitation?workspace=${browserTenant.workspaceKey}&request=${browserTenant.invitationId}`)}`);
+      await recipient.getByLabel("Email").fill(users.outsider.email);
+      await recipient.getByLabel("Password").fill(users.outsider.password);
+      await recipient.getByRole("button",{name:"Continue to your work"}).click();
+      await recipient.getByRole("heading",{name:"Administrator invitation"}).waitFor({timeout:30000});
+      await recipient.getByRole("button",{name:"Accept administrator invitation"}).click();
+      await recipient.getByRole("status").filter({hasText:"is active"}).waitFor({timeout:30000});
+      await recipient.screenshot({path:resolve(dir,"initial-admin-accepted-1440.png"),fullPage:true});
+      files.push("initial-admin-accepted-1440.png");
+      const browserDraft=await config("outsider",browserTenant.workspaceKey,"create-draft",
+        browserTenant.configurationVersionId,browserTenant.configurationVersionId,1,{},"browser-draft");
+      assert(!browserDraft.error,browserDraft.error?.message);
+      const browserVersion=browserDraft.data.versionId;
+      const browserPolicy=await config("outsider",browserTenant.workspaceKey,"save-policy",
+        browserVersion,browserTenant.configurationVersionId,1,
+        {key:"service-approval",thresholdMinor:2000000,currency:"USD",comparison:"greater_than",
+          authorityRole:"admin",unavailableBehavior:"block"},"browser-policy");
+      assert(!browserPolicy.error,browserPolicy.error?.message);
+      const browserPublish=await config("outsider",browserTenant.workspaceKey,"validate-publish",
+        browserVersion,browserTenant.configurationVersionId,2,{},"browser-publish");
+      assert(!browserPublish.error,browserPublish.error?.message);
+      const browserActivateConfig=await config("outsider",browserTenant.workspaceKey,"activate",
+        browserVersion,browserTenant.configurationVersionId,3,{},"browser-config-activate");
+      assert(!browserActivateConfig.error,browserActivateConfig.error?.message);
+      await recipient.getByRole("link",{name:/Continue to customer setup/}).click();
+      await recipient.getByRole("heading",{name:"Set up Browser Qualification Test"}).waitFor({timeout:30000});
+      recipient.once("dialog",(dialog)=>void dialog.accept());
+      await recipient.getByRole("button",{name:"Submit as ready"}).click();
+      await recipient.getByRole("status").filter({hasText:"Setup is ready"}).waitFor({timeout:30000});
+      await recipient.screenshot({path:resolve(dir,"customer-ready-1440.png"),fullPage:true});
+      files.push("customer-ready-1440.png");
+      await recipient.close();
+      const activation=await browser.newPage({viewport:{width:1440,height:900}});
+      const detailPath=`/platform-admin/tenants/${browserTenant.workspaceKey}`;
+      await activation.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=${encodeURIComponent(detailPath)}`);
+      await activation.getByLabel("Email").fill(users.vendor.email);
+      await activation.getByLabel("Password").fill(users.vendor.password);
+      await activation.getByRole("button",{name:"Continue to your work"}).click();
+      await activation.getByRole("heading",{name:"Browser Qualification Test"}).waitFor({timeout:30000});
+      await activation.getByLabel("Decision reason").fill("Activate browser-qualified fictional customer");
+      activation.once("dialog",(dialog)=>void dialog.accept());
+      await activation.getByRole("button",{name:"Activate customer"}).click();
+      await activation.getByRole("definition").filter({hasText:"active"}).first().waitFor({timeout:30000});
+      assert.equal(await activation.getByLabel("Decision reason").count(),0);
+      await activation.screenshot({path:resolve(dir,"vendor-activated-1440.png"),fullPage:true});
+      files.push("vendor-activated-1440.png");
+      await activation.close();
+      return {files,ephemeralPreview:`http://127.0.0.1:${server.port}/platform-admin`};
+    } finally {await browser.close();}
+  });
+} catch(error) {evidence.setupError=String(error.message).slice(-2500);}
+finally {
+  if(server) server.handle.kill();
+  if(runtime) evidence.cleanup=cleanupP0aRuntime(runtime);
+  evidence.finishedAt=new Date().toISOString();
+  evidence.summary={passed:evidence.tests.filter((t)=>t.status==="PASS").length,
+    failed:evidence.tests.filter((t)=>t.status==="FAIL").length,
+    setupError:Boolean(evidence.setupError),cleanupVerified:Boolean(evidence.cleanup?.clean)};
+  mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
+  writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
+  console.log(JSON.stringify({...evidence.summary,output:"docs/architecture/evidence/phase2b-two-tenant-results.json"}));
+  if(evidence.summary.failed||evidence.summary.setupError||!evidence.summary.cleanupVerified) process.exitCode=1;
+}
