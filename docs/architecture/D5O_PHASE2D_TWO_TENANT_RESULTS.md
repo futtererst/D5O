@@ -1,0 +1,14 @@
+# Phase 2D disposable two-tenant results
+
+Source: `scripts/p0a/run-phase2d-six-phase-config.mjs` on the Phase 2C baseline plus the two local Phase 2D migrations. The final isolated project `d5o-p0a-15f8c894-5ec` passed **27/27 checks**, reported zero setup errors, and verified removal of its project directory, containers and loopback network. The full machine-readable result is `evidence/phase2d-two-tenant-results.json`. The environment was local loopback Supabase; no hosted database was changed.
+
+| Tenant | Published version in test | Define risk | Develop option source | Design MOP | Deploy reviewed evidence | Operate documentation review |
+| --- | --- | --- | --- | --- | --- | --- |
+| Rybex Test | `92e5f7f4-d008-474a-9630-8e480298dba5` | Required | Required | Required | Required | Required |
+| Independent Enterprise Test | `3e99bb51-a7fe-4d42-94ba-44419f89234c` | Optional | Optional | Optional | Optional | Optional |
+
+Both used the same vendor provisioning, tenant configuration draft, validation, activation, and connected Work commands. The inherited USD 10,000 versus USD 25,000 approval threshold case also passed: for equivalent USD 15,000 requests, Tenant A returned `approvalRequired: true` and `pending`, while Tenant B returned `approvalRequired: false` and `not_required`. Tenant A's newly pinned Work was denied Define submission with `define_risk_narrative_required`; Tenant B's equivalent incomplete Work reached the original `definition_unavailable` check. Tenant A's Develop submission was denied with `develop_option_evidence_required`; Tenant B reached the original `accepted_define_basis_required` check. These are policy-specific direct RPC decisions, not browser-only validation. Cross-tenant Define RPCs and direct calls to both preserved core functions were denied. Older Work pinned to an earlier version did not acquire the new Define requirement.
+
+The authenticated browser test saved all five draft policy controls, validated, compared, activated, and captured actual application screenshots in `evidence/phase2d-admin-ui/`. It also exercised tenant feature isolation and the inherited onboarding, lifecycle, and administration pages. Policy changes are visible in the published candidate comparison.
+
+**Qualification limit:** The fixture did not complete valid Define, Develop, Design, Deploy, and Operate business transitions. For Design, Deploy, and Operate, the test verified publication of each typed setting and the existing SQL consumer is present, but did not advance a complete package through that consumer. The server-side negative checks for Define and Develop occur before the original command's other prerequisites. Therefore this run does not satisfy the requested positive-and-negative progression for all five phases or justify the label LOCALLY QUALIFIED.

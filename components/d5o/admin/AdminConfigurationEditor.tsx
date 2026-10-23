@@ -14,6 +14,31 @@ type Inventory = { activeVersionId: string; versions: Version[]; history: Histor
 type ServiceApprovalPolicy = { schemaVersion: number; thresholdMinor: number; currency: "USD";
   comparison: "greater_than"; authorityRole: "admin" | "operations_leader"; unavailableBehavior: "block" };
 type DiscoverIntakePolicy = { schemaVersion: 1; requireInitialDiscovery: boolean };
+const phasePolicies = [
+  { phase: "Define", key: "define-risk-narrative", label: "Require a risk narrative",
+    impact: "Define submission and independent review require a documented risk narrative of at least 10 characters." },
+  { phase: "Design", key: "design-require-mop", label: "Require a method of procedure",
+    impact: "A Design package cannot be released without its method of procedure." },
+  { phase: "Develop", key: "develop-option-evidence", label: "Require selected solution evidence",
+    impact: "Solution submission and approval require a supporting source for the selected option." },
+  { phase: "Deploy", key: "deploy-require-reviewed-evidence", label: "Require reviewed completion evidence",
+    impact: "Completion review requires evidence reviewed against the current package release." },
+  { phase: "Operate", key: "operate-require-documentation-review", label: "Require documentation review",
+    impact: "Support acceptance requires the receiving team to record its documentation review." },
+] as const;
+type PhasePolicyKey = typeof phasePolicies[number]["key"];
+function phasePolicyValue(version: Version, key: PhasePolicyKey, typeKey: string): boolean {
+  const manifest = version.manifest;
+  const requirements = (manifest.phase2dRequirements ?? {}) as Record<string, unknown>;
+  if (key === "define-risk-narrative") return requirements.defineRiskNarrative === true;
+  if (key === "develop-option-evidence") return requirements.developOptionEvidence === true;
+  const type = contractTypes(version).find((item) => item.workTypeKey === typeKey) ?? {};
+  const group = key === "design-require-mop" ? "designControls"
+    : key === "deploy-require-reviewed-evidence" ? "deployControls" : "operateControls";
+  const field = key === "design-require-mop" ? "requireMop"
+    : key === "deploy-require-reviewed-evidence" ? "requireReviewedEvidence" : "requireDocumentationReview";
+  return ((type[group] ?? {}) as Record<string, unknown>)[field] === true;
+}
 function discoverIntake(version: Version): DiscoverIntakePolicy | null {
   const policy = version.manifest.discoverIntake;
   return policy && typeof policy === "object" ? policy as DiscoverIntakePolicy : null;
@@ -24,13 +49,12 @@ function serviceApproval(version: Version): ServiceApprovalPolicy | null {
 }
 const routeNames: Record<string, string> = { discoverDefine: "Discover → Define", designDeploy: "Design → Deploy", deployOperate: "Deploy → Operate" };
 const roleNames: Record<string, string> = { admin: "Admin", project_manager: "Project Manager", operations_leader: "Operations Leader" };
-const phases = ["discover", "define", "develop", "design", "deploy", "operate"];
+const phases = ["discover", "define", "design", "develop", "deploy", "operate"];
 const fields = [
   ["phase-label", "Phase label"], ["phase-purpose", "Phase purpose / instruction"],
   ["design-review-lead", "Design review lead, days"], ["design-procurement-buffer", "Design procurement buffer, days"],
   ["design-require-permit", "Design permit required"], ["design-require-access", "Design access confirmation required"],
   ["deploy-start-lead", "Field-start lead, minutes"], ["deploy-max-hours", "Maximum reported hours per shift"],
-  ["deploy-require-reviewed-evidence", "Reviewed evidence before quality approval"],
   ["operate-response-hours", "Operate response hours"], ["operate-timezone", "Operate time zone"],
 ] as const;
 type Field = typeof fields[number][0];
@@ -53,6 +77,15 @@ function valueFor(version: Version, field: Field, typeKey: string, phase: string
 }
 function differences(active: Version, draft: Version) {
   const changes: string[] = [];
+  for (const policy of phasePolicies) {
+    const types = policy.phase === "Define" || policy.phase === "Develop" ? [draft.workTypes[0]] : draft.workTypes;
+    for (const type of types) {
+      if (!type) continue;
+      const before = phasePolicyValue(active, policy.key, type.key);
+      const after = phasePolicyValue(draft, policy.key, type.key);
+      if (before !== after) changes.push(`${policy.phase} / ${policy.label}${types.length > 1 ? ` / ${type.label}` : ""}: ${before ? "required" : "optional"} → ${after ? "required" : "optional"}`);
+    }
+  }
   if (JSON.stringify(discoverIntake(active)) !== JSON.stringify(discoverIntake(draft)))
     changes.push(`Discover intake for connected Work: ${discoverIntake(active)?.requireInitialDiscovery ? "required" : "optional"} → ${discoverIntake(draft)?.requireInitialDiscovery ? "required" : "optional"}`);
   if (JSON.stringify(serviceApproval(active)) !== JSON.stringify(serviceApproval(draft)))
@@ -94,11 +127,12 @@ export function AdminConfigurationEditor({ workspace }: { workspace: string }) {
   const [approvalAmount, setApprovalAmount] = useState("");
   const [approvalRole, setApprovalRole] = useState<"admin" | "operations_leader">("operations_leader");
   const [discoveryChoice, setDiscoveryChoice] = useState<boolean | null>(null);
+  const [phaseChoices, setPhaseChoices] = useState<Record<string, boolean>>({});
   const refresh = useCallback(async () => {
     const response = await fetch(`/api/d5o-hosted/admin-configuration?workspace=${encodeURIComponent(workspace)}`, { cache: "no-store" });
     const body = await response.json() as Inventory & { error?: string };
     if (!response.ok) throw new Error(body.error ?? "Configuration unavailable");
-    setInventory(body); setLoadError("");
+    setInventory(body); setPhaseChoices({}); setLoadError("");
   }, [workspace]);
   const { pending, busy, canRetry, message, execute, reconcile, retry } = useAdminCommand(workspace, refresh);
   useEffect(() => { const timer = window.setTimeout(() => { void refresh().catch((error) => setLoadError(error instanceof Error ? error.message : "Configuration unavailable")); }, 0); return () => window.clearTimeout(timer); }, [refresh]);
@@ -123,23 +157,33 @@ export function AdminConfigurationEditor({ workspace }: { workspace: string }) {
     <header><div><h2>Published policy</h2>
       <span>New Work uses the active version. Existing Work keeps its recorded configuration.</span></div>
       <strong>{active ? `Active v${active.version}` : "Loading active version"}</strong></header>
+    <nav aria-label="Configuration phases" className="d5o-admin-phase-nav">
+      {["Overview","Discover","Define","Design","Develop","Deploy","Operate","Shared policies","Drafts and publication","Version history","Audit activity"].map((item) =>
+        <a key={item} href={`#config-${item.toLowerCase().replaceAll(" ","-")}`}>{item}</a>)}
+    </nav>
     {loadError && <p role="alert">{loadError}</p>}
     <p role="status" aria-live="polite">{message}</p>
     {pending && <p>Command {pending.commandId} awaits reconciliation. <button type="button" disabled={busy} onClick={() => void reconcile()}>Check receipt</button> <button type="button" disabled={busy || !canRetry} onClick={retry}>Retry same command</button></p>}
-    {active && <>
-      <section aria-label="Active service-work approval policy"><h3>Service-work approval</h3>
+    {active && <section id="config-overview">
+      <section id="config-shared-policies" aria-label="Active service-work approval policy"><h3>Service-work approval</h3>
         {serviceApproval(active) ? <p>Additional approval is required when a USD request is greater than ${((serviceApproval(active)?.thresholdMinor ?? 0) / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}. Authority: {roleNames[serviceApproval(active)?.authorityRole ?? ""]}. Unavailable authority blocks the decision.</p>
           : <p>No hosted service-work threshold is published. Service approval requests fail closed until a policy is published.</p>}
       </section>
-      <section aria-label="Active Discover intake policy"><h3>Discover intake</h3>
+      <section id="config-discover" aria-label="Active Discover intake policy"><h3>Discover intake</h3>
         <p>Initial discovery information is {discoverIntake(active)?.requireInitialDiscovery ? "required" : "optional"} when connected Work is created. This applies to new Work only.</p>
       </section>
+      {phasePolicies.map((policy) => <section id={`config-${policy.phase.toLowerCase()}`} key={policy.key}>
+        <h3>{policy.phase}</h3><p>{policy.impact}</p>
+        {policy.phase === "Define" || policy.phase === "Develop"
+          ? <p>Current policy: <strong>{phasePolicyValue(active, policy.key, active.workTypes[0]?.key ?? "") ? "required" : "optional"}</strong></p>
+          : active.workTypes.map((type) => <p key={type.key}>{type.label}: <strong>{phasePolicyValue(active, policy.key, type.key) ? "required" : "optional"}</strong></p>)}
+      </section>)}
       <p>Effective {active.effectiveFrom ? new Date(active.effectiveFrom).toLocaleString() : "not dated"} · {active.workCount} Work Record(s) pinned here. {draft ? `Draft v${draft.version} is being edited.` : candidate ? `Published candidate v${candidate.version} awaits activation.` : "No open draft."}</p>
       <div className="d5o-admin-config-grid">
         <article><h3>Work Types</h3>{active.workTypes.map((item) => <p key={item.key}><strong>{item.label}</strong> · {item.status}<br /><small>Creators: {item.roles.map((role) => roleNames[role] ?? role.replaceAll("_", " ")).join(", ") || "none"}</small><details><summary>Technical details</summary><small>Key: {item.key}</small></details></p>)}</article>
         <article><h3>Receiving roles</h3>{active.routes.map((route) => <p key={route.key}>{routeNames[route.key]}: <strong>{roleNames[route.role] ?? route.role}</strong> · {route.eligibleCount} active member(s)</p>)}</article>
       </div>
-      <details className="d5o-admin-history"><summary>Version history ({inventory?.versions.length ?? 0})</summary>{inventory?.versions.map((version) => <article key={version.id}><strong>v{version.version} · {version.status}</strong> · {version.workCount} pinned Work
+      <details id="config-version-history" className="d5o-admin-history"><summary>Version history ({inventory?.versions.length ?? 0})</summary>{inventory?.versions.map((version) => <article key={version.id}><strong>v{version.version} · {version.status}</strong> · {version.workCount} pinned Work
         <p>Created {new Date(version.createdAt).toLocaleString()}{version.effectiveFrom ? ` · Effective ${new Date(version.effectiveFrom).toLocaleString()}` : ""}</p>
         {(inventory.history ?? []).filter((event) => event.versionId === version.id).map((event) =>
           <p key={event.commandId}>{event.action} · {event.actor} · {new Date(event.occurredAt).toLocaleString()}<br />{event.reason}
@@ -147,9 +191,10 @@ export function AdminConfigurationEditor({ workspace }: { workspace: string }) {
         {version.status === "superseded" && !draft && !candidate && <button type="button" disabled={busy || Boolean(pending) || reason.trim().length < 8}
           onClick={() => { if (window.confirm(`Copy prior v${version.version} into a new draft? The current version stays active until you validate and activate the new one.`)) run("create-draft", active, { sourceVersionId: version.id }); }}>Restore as a new draft</button>}
         <details><summary>Technical details</summary><small>Version ID: {version.id} · Source: {version.sourceSha256}</small></details></article>)}</details>
-      <div className="d5o-admin-config-decision"><label>Reason for the next configuration decision<input value={reason} maxLength={500} onChange={(event) => setReason(event.target.value)} placeholder="Why is this policy change needed?" /></label>
+      <div id="config-drafts-and-publication" className="d5o-admin-config-decision"><label>Reason for the next configuration decision<input value={reason} maxLength={500} onChange={(event) => setReason(event.target.value)} placeholder="Why is this policy change needed?" /></label>
       {!draft && !candidate && <button type="button" disabled={busy || reason.trim().length < 8} onClick={() => run("create-draft", active)}>Create draft from active v{active.version}</button>}</div>
-    </>}
+      <section id="config-audit-activity"><h3>Recent configuration activity</h3>{(inventory?.history ?? []).slice(0,8).map((event) => <p key={event.commandId}>{event.action} · {new Date(event.occurredAt).toLocaleString()} · {event.reason}</p>)}</section>
+    </section>}
     {draft && active && <>
       <h3>Draft v{draft.version} · revision {draft.revision}</h3><p>Saved edits are not effective. This draft started from v{active.version}. Publication validates the combined policy and freezes the candidate.</p>
       <section><h4>Discover intake</h4><p>Require source, customer need, and procurement context when new connected Work is created. Existing Work retains its recorded version.</p>
@@ -158,6 +203,25 @@ export function AdminConfigurationEditor({ workspace }: { workspace: string }) {
           onClick={() => run("save-policy", draft, { key: "discover-intake", requireInitialDiscovery: requireDiscovery })}>Save Discover policy to draft</button>
         <p>Draft: {discoverIntake(draft)?.requireInitialDiscovery ? "required" : "optional"}</p>
       </section>
+      {phasePolicies.map((policy) => {
+        const scoped = policy.phase === "Define" || policy.phase === "Develop" ? null : chosenType;
+        const choiceKey = `${policy.key}:${scoped?.key ?? "tenant"}`;
+        const saved = phasePolicyValue(draft, policy.key, scoped?.key ?? draft.workTypes[0]?.key ?? "");
+        const chosen = phaseChoices[choiceKey] ?? saved;
+        return <section key={policy.key} aria-label={`${policy.phase} draft policy`}>
+          <h4>{policy.phase}</h4><p>{policy.impact} Existing Work keeps its pinned policy version.</p>
+          {scoped && <p>Work type: <strong>{scoped.label}</strong>. Select another Work Type in supported phase policy below.</p>}
+          <label><input type="checkbox" checked={chosen} onChange={(event) =>
+            setPhaseChoices((current) => ({ ...current, [choiceKey]: event.target.checked }))} /> {policy.label}</label>
+          <div><button type="button" disabled={busy || Boolean(pending) || reason.trim().length < 8 || chosen === saved}
+            onClick={() => run("save-policy", draft, policy.phase === "Define" || policy.phase === "Develop"
+              ? { key: policy.key, required: chosen }
+              : { key: policy.key, workTypeKey: scoped?.key, value: String(chosen) })}>Save {policy.phase} draft policy</button>
+            <button type="button" disabled={chosen === saved} onClick={() =>
+              setPhaseChoices((current) => ({ ...current, [choiceKey]: saved }))}>Cancel</button></div>
+          <small>Draft: {saved ? "required" : "optional"} · Active: {phasePolicyValue(active, policy.key, scoped?.key ?? draft.workTypes[0]?.key ?? "") ? "required" : "optional"}</small>
+        </section>;
+      })}
       <section><h4>Approval policy</h4><p>A request above the threshold requires an independent administrator or operations leader. A request at the threshold does not. Only USD is supported; other currencies are rejected.</p>
         <form onSubmit={(event) => { event.preventDefault(); const amount = Number(approvalAmount);
           if (!Number.isFinite(amount) || amount < 0 || !Number.isSafeInteger(Math.round(amount * 100))) return;
