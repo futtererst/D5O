@@ -1,5 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { createRequire } from "node:module";
+import ts from "typescript";
 
 const root = process.cwd();
 const failures = [];
@@ -59,9 +61,19 @@ for (const overview of [
 const nav = readFile("components/layout/PrimaryNav.tsx");
 assert(nav.includes("Other modules"), "PrimaryNav must label contained secondary modules as Other modules.");
 assert(nav.includes("nav-link-contained"), "PrimaryNav must visually demote Other modules.");
-for (const href of ["/command-center", "/field-execution", "/rfis-submittals", "/changes", "/billing", "/closeout"]) {
-  assert(nav.includes(`"${href}"`), `PrimaryNav must keep core operating path visible: ${href}.`);
+// Execute the shared destination model: links are no longer declared in the visual component.
+const modules = evaluateTypeScript("lib/d5o/modules.ts");
+const model = evaluateTypeScript("components/layout/primary-nav-model.ts", {
+  "@/lib/d5o/demo-user": { demoUser: { name: "Test", title: "Test" }, getDemoAccessibleModules: () => modules.primaryNavItems.map((item) => ({ ...item, canAccess: true })) },
+  "@/lib/d5o/modules": modules,
+  "@/lib/d5o/rbac": { canAccessModule: () => true }
+});
+const coreHrefs = ["/command-center", "/field-execution", "/rfis-submittals", "/changes", "/billing", "/closeout"];
+const grouped = model.getPrimaryNavGroups(model.getPrimaryNavItems(undefined), false);
+for (const href of coreHrefs) {
+  assert(grouped.coreItems.some((item) => item.href === href), `PrimaryNav must keep core operating path visible: ${href}.`);
 }
+assert(grouped.otherItems.length > 0, "Secondary modules must remain reachable outside the core operating path.");
 
 const css = readFile("app/globals.css");
 for (const className of [".active-workflow-mode", ".nav-group-label", ".nav-link-contained"]) {
@@ -126,4 +138,14 @@ function before(content, first, second) {
 
 function assert(condition, message) {
   if (!condition) failures.push(message);
+}
+
+function evaluateTypeScript(path, dependencies = {}) {
+  const output = ts.transpileModule(readFile(path), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+  const exports = {};
+  new Function("exports", "require", output)(exports, (name) => {
+    if (!(name in dependencies)) throw new Error(`Unexpected verification dependency: ${name}`);
+    return dependencies[name];
+  });
+  return exports;
 }

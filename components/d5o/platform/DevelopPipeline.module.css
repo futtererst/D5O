@@ -1,1 +1,28 @@
 .surface{width:100%;box-sizing:border-box;margin:18px auto;border:1px solid #d3e0e7;border-radius:10px;background:#fff;color:#163447;overflow:hidden}.surface header{display:flex;justify-content:space-between;gap:18px;padding:20px 24px;border-bottom:1px solid #d3e0e7}.surface header small{font-size:11px;color:#977509;letter-spacing:.1em;font-weight:800}.surface h2{font:700 24px Georgia,serif;margin:5px 0}.surface p{margin:4px 0;color:#55717f}.surface nav,.filters>div{display:flex;align-items:center;gap:5px}.surface button{cursor:pointer}.surface nav button,.filters button{background:#fff;border:1px solid #b9ccd6;border-radius:5px;padding:9px 12px;font-weight:700;color:#163447}.surface .active{background:#ecf3f5}.filters{display:flex;align-items:end;gap:12px;padding:16px 20px;flex-wrap:wrap}.filters label{display:grid;gap:5px;font-size:12px;font-weight:700}.filters input,.filters select{height:37px;min-width:160px;border:1px solid #b9ccd6;border-radius:5px;padding:7px;color:#163447;background:#fff}.filters p{flex:1}.tableWrap{overflow:auto}.tableWrap table{width:100%;border-collapse:collapse;text-align:left}.tableWrap th{background:#eef3f5;color:#456878;font-size:11px;letter-spacing:.06em;text-transform:uppercase}.tableWrap th,.tableWrap td{border-top:1px solid #dbe5e9;padding:13px 17px;vertical-align:top}.tableWrap tr{cursor:pointer}.tableWrap tbody tr:hover,.selected{background:#f3f8f8}.tableWrap td strong,.tableWrap td small{display:block}.tableWrap td small{font-size:11px;color:#5a7180;margin-top:4px}.board{display:flex;gap:12px;overflow:auto;padding:16px}.board>div{min-width:230px;flex:1;background:#f6f8f9;padding:10px;border:1px solid #dbe5e9}.board h3,.contributors h3{font-size:14px}.card{display:grid;gap:5px;width:100%;text-align:left;background:#fff;border:1px solid #cbdce4;border-radius:5px;padding:12px;margin:8px 0;color:#163447}.card span,.card small{color:#587382;font-size:11px}.forecast{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;padding:16px}.forecast button{display:grid;gap:6px;text-align:left;background:#f7fafb;border:1px solid #d3e0e7;border-radius:7px;padding:14px;color:#163447}.forecast span{font-weight:700}.forecast small{color:#5a7180}.contributors{padding:16px;border-top:1px solid #d3e0e7}.empty{padding:20px}@media(max-width:800px){.surface header{display:block}.surface nav{margin-top:12px}.tableWrap table{min-width:850px}}
+.surface{container-type:inline-size;min-width:0}
+.surface :is(strong,small,span,p,h2,h3){overflow-wrap:anywhere}
+@container (max-width:950px){
+  .tableWrap{overflow:visible}
+  .tableWrap table,.tableWrap tbody{display:block;width:100%;min-width:0}
+  .tableWrap thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .tableWrap tbody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;margin:10px;padding:13px;border:1px solid #dbe5e9;border-radius:8px;min-width:0}
+  .tableWrap td{display:block;min-width:0;padding:0;border:0;overflow-wrap:anywhere}
+  .tableWrap td::before{display:block;margin-bottom:2px;color:#526d7b;font-size:11px;font-weight:800}
+  .tableWrap td:nth-child(1){grid-column:1/-1}
+  .tableWrap td:nth-child(1)::before{content:'Opportunity / customer'}
+  .tableWrap td:nth-child(2)::before{content:'Develop position / owner'}
+  .tableWrap td:nth-child(3)::before{content:'Commercial basis'}
+  .tableWrap td:nth-child(4){grid-column:1/-1}
+  .tableWrap td:nth-child(4)::before{content:'Next action'}
+  .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));overflow:visible}
+  .board>div{min-width:0}
+}
+@container (max-width:560px){
+  .surface header{padding:12px}
+  .surface h2{font-size:19px}
+  .filters{display:grid;grid-template-columns:minmax(0,1fr);gap:9px;padding:12px}
+  .filters label,.filters input,.filters select{box-sizing:border-box;min-width:0;width:100%}
+  .tableWrap tbody tr{grid-template-columns:minmax(0,1fr)}
+  .tableWrap td:nth-child(n){grid-column:1}
+  .board,.forecast{display:grid;grid-template-columns:minmax(0,1fr);padding:12px}
+}

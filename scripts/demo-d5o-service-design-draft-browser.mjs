@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { chromium } from "playwright";
+import { chooseDesignSection } from "./d5o-design-browser-nav.mjs";
 
 if (process.env.D5O_ISOLATED_PILOT !== "1" || !process.env.D5O_PILOT_CREDENTIALS_FILE)
   throw new Error("disposable_pilot_only");
@@ -20,7 +21,7 @@ try {
   await page.getByRole("button", { name: "Continue to your work" }).click();
   await page.getByRole("heading", { name: "Receive the service execution basis" }).waitFor({ timeout: 30000 });
   if (!(await page.locator("body").innerText()).includes(`accepted · revision ${partial ? 2 : 1}`)) throw new Error("service_basis_not_accepted");
-  await page.getByRole("button", { name: "Documents", exact: true }).click();
+  await chooseDesignSection(page, "Design documents");
   const documentTitle = partial ? "Monitoring route diagnostic and continuity test method" : "Covered monitoring inspection method and alarm test";
   if (!(await page.locator("body").innerText()).includes(documentTitle)) {
     await page.locator('select[name="type"]').selectOption("Service engineering");
@@ -31,7 +32,7 @@ try {
     await page.getByRole("button", { name: "Save draft for selected package" }).click();
     await page.getByText(`${documentTitle} · rev 1`).waitFor({ timeout: 30000 });
   }
-  await page.getByRole("button", { name: "Packages", exact: true }).click();
+  await chooseDesignSection(page, "Work packages");
   const packageForm = page.locator('form:has(button:has-text("Save new design revision"))');
   if (await packageForm.count() !== 1) throw new Error("service_package_design_form_missing");
   await packageForm.locator('textarea[name="scope"]').fill(partial ? "Inspect the covered monitoring route and perform the separately authorized four-hour fiber continuity diagnostic." : "Inspect the covered monitoring panel, test recorded alarm inputs, and return documented normal operation.");
@@ -56,7 +57,7 @@ try {
   await packageForm.getByRole("button", { name: "Save new design revision" }).click();
   await page.getByText("engineering revision 1").waitFor({ timeout: 30000 });
   await page.reload();
-  await page.getByRole("button", { name: "Packages", exact: true }).click();
+  await chooseDesignSection(page, "Work packages");
   await page.getByText("engineering revision 1").waitFor({ timeout: 30000 });
   console.log(JSON.stringify({ status: "service_design_draft_saved", workId: child, documentRef }));
   await context.close();

@@ -46,13 +46,13 @@ for (const phrase of [
   "billing-v2-process-rail",
   "billing-v2-active-step",
   "billing-v2-context-panel",
-  "Billing Backup Package",
-  "Pay App 003",
+  "Document the package details",
+  "billingPackage.payApplicationLabel",
   "blockedAmount",
   "Commercial Review",
   "billing-v2-outcome-record",
-  "billing-v2-historical-record",
-  "Return to Pilot Mode"
+  "billing-v2-step-outcome",
+  "return-to-pilot-mode"
 ]) {
   if (!billingV2Ui.includes(phrase)) {
     failures.push(`Billing v2 guided UI missing visible phrase or selector: ${phrase}`);
@@ -104,8 +104,13 @@ if (!panel.includes("resetWorkflow")) {
 }
 
 const focusedTask = read("components/d5o/end-user/FocusedTaskPanel.tsx");
-if (!focusedTask.includes("return-to-pilot-mode") || !focusedTask.includes("Return to Pilot Mode")) {
-  failures.push("FocusedTaskPanel must include Return to Pilot Mode behavior.");
+if (!focusedTask.includes("return-to-pilot-mode") || !focusedTask.includes('href="/pilot?refresh=completion"')) {
+  failures.push("FocusedTaskPanel must retain its Pilot Mode return route.");
+}
+
+const billingPage = read("app/billing/page.tsx");
+if (!billingPage.includes("Approval and history") || !billingPage.includes("Resolved billing package:")) {
+  failures.push("Billing must retain the approval and historical package record.");
 }
 
 const pilotQa = read("scripts/qa-pilot-mode.mjs");
@@ -124,6 +129,11 @@ for (const phrase of [
   if (!pilotQa.includes(phrase)) {
     failures.push(`pilot-mode QA missing manual failure regression phrase: ${phrase}`);
   }
+}
+
+const billingQa = read("scripts/qa-billing-v2-workflow.mjs");
+for (const phrase of ["assertSingleActiveStep", "billing-v2-backup-summary-input", "billing-v2-add-reference-", "billing-v2-approve-review", "billing-v2-clear-blocker", "openBillingSupportingRecords", "Resolved billing package:"]) {
+  if (!billingQa.includes(phrase)) failures.push(`Billing v2 browser QA missing guided journey or history check: ${phrase}`);
 }
 
 const workflowQa = read("scripts/qa-workflow-completion.mjs");

@@ -1,5 +1,5 @@
 /** Presentation only. Commands and reads still enforce membership and authority on the server. */
-export type WorkSurface = "discover" | "define" | "develop" | "operate" | "home" | "my-work" | "portfolio" | "decisions" | "crew" | "people" | "execution" | "handoff" | "library" | "insights" | "operating" | "configuration" | "start" | "record";
+export type WorkSurface = "discover" | "define" | "develop" | "operate" | "home" | "my-work" | "portfolio" | "design-queue" | "decisions" | "crew" | "people" | "execution" | "handoff" | "library" | "insights" | "operating" | "configuration" | "start" | "record";
 
 type RolePresentation = {
   primary: readonly WorkSurface[];
@@ -41,6 +41,7 @@ export function presentationForRole(role: string | undefined, hosted: boolean): 
 
 export function canPresentSurface(presentation: RolePresentation, surface: WorkSurface): boolean {
   if (surface === "record") return presentation !== restricted;
+  if (surface === "design-queue") return presentation.phases.includes("design");
   return presentation.primary.includes(surface) || presentation.context.includes(surface) ||
     presentation.phases.includes(surface as RolePresentation["phases"][number]);
 }

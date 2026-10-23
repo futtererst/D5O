@@ -26,8 +26,8 @@ export function ChangeEventTable({ events }: { events: ChangeEvent[] }) {
           </tr>
         </thead>
         <tbody>
-          {events.map((event) => (
-            <tr key={event.id}>
+          {events.map((event, index) => (
+            <tr key={`change-table-${event.id}-${event.changeNumber}-${index}`}>
               <td><strong>{event.changeNumber}</strong><small>{event.title}</small></td>
               <td>{event.projectName}<small>{event.gcContact}</small></td>
               <td><span className={chipClass(changeStatusTone[event.status])}>{changeStatusLabels[event.status]}</span></td>

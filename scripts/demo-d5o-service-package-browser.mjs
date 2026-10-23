@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { chromium } from "playwright";
+import { chooseDesignSection } from "./d5o-design-browser-nav.mjs";
 
 if (process.env.D5O_ISOLATED_PILOT !== "1" || !process.env.D5O_PILOT_CREDENTIALS_FILE)
   throw new Error("disposable_pilot_only");
@@ -18,18 +19,18 @@ try {
   await page.locator('input[name="password"]').fill(pm.password);
   await page.getByRole("button", { name: "Continue to your work" }).click();
   await page.getByRole("heading", { name: "Receive the service execution basis" }).waitFor({ timeout: 30000 });
-  await page.getByRole("button", { name: "Packages", exact: true }).click();
+  await chooseDesignSection(page, "Work packages");
   const name = partial ? "Partially covered monitoring route diagnostic" : "Covered monitoring inspection and alarm test";
   const body = await page.locator("body").innerText();
   if (!body.includes(name)) {
     await page.locator('input[name="package"]').fill(name);
     if (await page.getByRole("button", { name: "Create shared package" }).isDisabled()) throw new Error(`package_creation_blocked:${(await page.locator("body").innerText()).slice(0, 3500)}`);
     await page.getByRole("button", { name: "Create shared package" }).click();
-    await page.getByRole("button", { name: new RegExp(name) }).waitFor({ timeout: 30000 });
+    await page.getByRole("combobox", { name: "Design package" }).locator("option").filter({ hasText: name }).waitFor({ timeout: 30000 });
   }
   await page.reload();
-  await page.getByRole("button", { name: "Packages", exact: true }).click();
-  await page.getByRole("button", { name: new RegExp(name) }).waitFor({ timeout: 30000 });
+  await chooseDesignSection(page, "Work packages");
+  await page.getByRole("combobox", { name: "Design package" }).locator("option").filter({ hasText: name }).waitFor({ timeout: 30000 });
   console.log(JSON.stringify({ status: "service_package_in_shared_catalog", workId: child, packageName: name }));
   await context.close();
 } finally { await browser.close(); }

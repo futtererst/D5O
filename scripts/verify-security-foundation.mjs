@@ -90,12 +90,20 @@ for (const result of scanSourceFiles()) {
       !normalized.startsWith("app/actions/") &&
       !normalized.startsWith("app/api/") &&
       (content.includes('"use client"') || content.includes("'use client'"));
+    const serverOnlyReference = [
+      "lib/d5o/auth/supabase-server.ts",
+      "lib/d5o/security/production-config.ts"
+    ].includes(normalized);
+    if (serverOnlyReference && !content.trimStart().startsWith('import "server-only";')) {
+      failures.push(`Server key module must enforce server-only import: ${normalized}`);
+    }
     const allowedReference =
       normalized.startsWith("docs/") ||
       normalized === ".env.example" ||
       normalized.startsWith("scripts/") ||
       normalized.startsWith("lib/d5o/data/") ||
-      normalized.startsWith("app/actions/");
+      normalized.startsWith("app/actions/") ||
+      serverOnlyReference;
 
     if (isClientComponent) {
       failures.push(`Client component references a Supabase service/secret key: ${normalized}`);

@@ -36,6 +36,18 @@ const pageMap = {
   "app/reports/page.tsx": "reports"
 };
 
+// These pages now use task-first layouts instead of the original summary wrapper.
+// Keep their action and progressive-detail contracts in the repository-wide gate.
+const currentPageContracts = {
+  "app/command-center/page.tsx": ["command-center-c-plus-action-queue", "command-center-visual-triage", "CollapsedDetails"],
+  "app/pipeline/page.tsx": ["pipeline-experience", "pipeline-queue-panel", "rankOpportunities"],
+  "app/field-execution/page.tsx": ["active-workbench-page", "PageHeader", "CollapsedDetails"],
+  "app/rfis-submittals/page.tsx": ["downstream-record-page", "PageHeader", "CollapsedDetails"],
+  "app/changes/page.tsx": ["downstream-record-page", "PageHeader", "CollapsedDetails"],
+  "app/billing/page.tsx": ["active-workbench-page", "BillingV2GuidedWorkflow", "CollapsedDetails"],
+  "app/closeout/page.tsx": ["active-workbench-page", "PageHeader", "CollapsedDetails"]
+};
+
 const failures = [];
 
 for (const file of [...componentFiles, ...utilityFiles, "docs/page-simplification-system.md"]) {
@@ -52,6 +64,13 @@ for (const [file, pageId] of Object.entries(pageMap)) {
   }
 
   const source = readFileSync(absolute, "utf8");
+  const currentContract = currentPageContracts[file];
+  if (currentContract) {
+    for (const marker of currentContract) {
+      if (!source.includes(marker)) failures.push(`${file} missing current action-first or supporting-detail contract: ${marker}.`);
+    }
+    continue;
+  }
   if (!source.includes("PageOperatingLayout") && !source.includes("ActionWorkspaceLayout")) {
     failures.push(`${file} does not use PageOperatingLayout or ActionWorkspaceLayout.`);
   }

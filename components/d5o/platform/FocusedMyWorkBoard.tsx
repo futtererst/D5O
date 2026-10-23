@@ -207,7 +207,7 @@ export function FocusedMyWorkBoard<T extends RecordSummary>({ workspace, page, o
     <span className="d5o-workbench-row-title"><span>{task.category}</span>{task.title}<small>{task.work}</small></span><span aria-hidden="true">→</span>
   </button>;
   return <section className="d5o-focused-work d5o-workbench">
-    <header className="d5o-workbench-top"><div><h1>My work</h1><p>Your next actions, with the scope and information you need.</p></div><button type="button" onClick={() => window.location.reload()}>Refresh tasks</button></header>
+    <header className="d5o-workbench-top"><div><h1>My Work</h1><p>Your next actions, with the scope and information you need.</p></div><button type="button" onClick={() => window.location.reload()}>Refresh tasks</button></header>
     <div className="d5o-workbench-shell"><section className="d5o-workbench-list" aria-label="Worklist" ref={listRef}>
       <nav className="d5o-workbench-tabs" aria-label="Worklist filters"><button type="button" aria-pressed={!waitingOnly} onClick={() => setWaitingOnly(false)}>Action needed <span>{tasks.filter((task) => task.position === "action" || task.position === "preparation").length}</span></button>
         <button type="button" aria-pressed={waitingOnly} onClick={() => setWaitingOnly(true)}>Waiting <span>{tasks.filter((task) => task.position === "waiting").length}</span></button></nav>

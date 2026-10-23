@@ -10,8 +10,8 @@ export function ChangeBackupPanel({ events }: { events: ChangeEvent[] }) {
       <h3>Backup Completeness</h3>
       {gaps.length > 0 ? (
         <ul className="compact-list">
-          {gaps.map((event) => (
-            <li key={event.id}>
+          {gaps.map((event, index) => (
+            <li key={`change-backup-${event.id}-${event.changeNumber}-${index}`}>
               <span className="artifact-state artifact-pending" />
               <span>
                 <strong>{event.changeNumber}: {event.title}</strong>

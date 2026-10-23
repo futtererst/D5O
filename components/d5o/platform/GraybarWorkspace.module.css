@@ -10,3 +10,37 @@
 .top :is(a,button):focus-visible{outline:3px solid #bf9625;outline-offset:2px}
 .footer { overflow-wrap: anywhere; }
 .heading p,.status { overflow-wrap: anywhere; }
+.stepSelect { display: none; }
+@media (max-width: 1250px) {
+  .main { box-sizing: border-box; min-width: 0; }
+  .tableWrap { overflow: visible; min-width: 0; }
+  .tableWrap table, .tableWrap tbody { display: block; width: 100%; min-width: 0; }
+  .tableWrap thead { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .tableWrap tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; min-width: 0; margin-bottom: 12px; padding: 10px 12px; border: 1px solid #d7e3e9; border-radius: 8px; background: #fff; }
+  .tableWrap td { display: grid; align-content: start; gap: 6px; min-width: 0; padding: 9px 0; overflow-wrap: anywhere; }
+  .tableWrap td::before { display: block; color: #496679; font-size: 11px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; }
+  .tableWrap :is(input, select, button) { box-sizing: border-box; width: 100%; max-width: none; min-height: 44px; margin: 0; }
+  .quoteTable td:first-child, .bomTable td:first-child { grid-column: 1 / -1; }
+  .quoteTable td:nth-child(1)::before { content: "Line / SKU"; }
+  .quoteTable td:nth-child(2)::before { content: "Manufacturer / part"; }
+  .quoteTable td:nth-child(3)::before { content: "Description"; }
+  .quoteTable td:nth-child(4)::before { content: "Quantity / unit"; }
+  .quoteTable td:nth-child(5)::before { content: "Pack / basis"; }
+  .quoteTable td:nth-child(6)::before { content: "Net unit USD"; }
+  .quoteTable td:nth-child(7)::before { content: "Supplier statements"; }
+  .quoteTable td:nth-child(8)::before { content: "Extended USD"; }
+  .quoteTable td:nth-child(9)::before { content: "Line action"; }
+  .bomTable td:nth-child(1)::before { content: "Current Design material"; }
+  .bomTable td:nth-child(2)::before { content: "Source offer"; }
+  .bomTable td:nth-child(3)::before { content: "Supply and date"; }
+  .sourceReview, .sourceReview :is(iframe, pre) { min-width: 0; max-width: 100%; }
+}
+@media (max-width: 600px) {
+  .tableWrap tr { grid-template-columns: minmax(0, 1fr); }
+  .tableWrap td, .quoteTable td:first-child, .bomTable td:first-child { grid-column: 1; }
+}
+@media (max-width: 1250px) {
+  .steps { display: none; }
+  .stepSelect { display: grid; gap: 5px; margin-top: 14px; color: #315365; font-size: 12px; font-weight: 800; }
+  .stepSelect select { box-sizing: border-box; width: 100%; min-height: 44px; min-width: 0; border: 1px solid #b9cbd5; border-radius: 7px; background: #fff; color: #163749; padding: 8px 12px; font: inherit; font-size: 16px; }
+}

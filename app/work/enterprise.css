@@ -1059,6 +1059,11 @@
 .d5o-full-app .d5o-resolution-strip li { align-items:center; display:flex; gap:14px; justify-content:space-between; }
 .d5o-full-app .d5o-resolution-strip li b { color:#415c68; font-size:11px; }
 @media (max-width:1050px) { .d5o-full-app .d5o-record-workspace.is-ready { grid-template-columns:1fr; }.d5o-full-app .d5o-record-workspace.is-ready .d5o-decision-rail { grid-column:1; grid-row:1; position:static; }.d5o-full-app .d5o-record-workspace.is-ready .d5o-record-primary { grid-column:1; grid-row:2; } }
+.d5o-full-app .d5o-record-workspace.is-design { display:block; grid-template-columns:minmax(0,1fr); padding:0; }
+.d5o-full-app .d5o-record-workspace.is-design .d5o-record-primary { grid-column:auto; grid-row:auto; width:100%; }
+.d5o-full-app .d5o-design-related-tools { margin:.55rem 0; padding:.45rem .65rem; border:1px solid #dce5e9; border-radius:7px; background:#fff; color:#35576a; font-size:.82rem; }
+.d5o-full-app .d5o-design-related-tools summary { min-height:36px; display:flex; align-items:center; cursor:pointer; font-weight:750; }
+.d5o-full-app .d5o-design-related-tools .d5o-procurement-link { margin:.4rem 0; }
 @media (max-width:700px) { .d5o-full-app .d5o-resolution-heading { padding:17px; }.d5o-full-app .d5o-resolution-guide ol { padding:0 17px 13px; }.d5o-full-app .d5o-resolution-guide li { align-items:start; grid-template-columns:24px 1fr; }.d5o-full-app .d5o-resolution-guide li button { grid-column:2; justify-self:start; }.d5o-full-app .d5o-resolution-guide footer { grid-template-columns:repeat(2,minmax(0,1fr)); padding:13px 17px; }.d5o-full-app .d5o-resolution-strip { grid-template-columns:1fr; }.d5o-full-app .d5o-resolution-strip>button { justify-self:start; } }
 
 /* Task-first Work Record detail: active controls lead, reference information remains available. */

@@ -10,7 +10,7 @@ const billingPage = read("app/billing/page.tsx");
 const capture = read("scripts/capture-journey-state-screenshots.mjs");
 const pageCapture = read("scripts/capture-page-layout-screenshots.mjs");
 const packageJson = JSON.parse(read("package.json"));
-const mobileCss = css.slice(css.indexOf("@media (max-width: 820px)"));
+const mobileCss = cssBlock(css, "@media (max-width: 820px)");
 
 assert(nav.includes("mobile-nav-menu"), "PrimaryNav must expose a compact mobile navigation menu.");
 assert(nav.includes("desktop-nav-shell"), "PrimaryNav must keep desktop navigation separate from mobile navigation.");
@@ -155,4 +155,16 @@ function bodyOf(content) {
 
 function assert(condition, message) {
   if (!condition) failures.push(message);
+}
+
+function cssBlock(source, selector) {
+  const start = source.indexOf(selector);
+  if (start < 0) return "";
+  const opening = source.indexOf("{", start);
+  let depth = 0;
+  for (let index = opening; index < source.length; index += 1) {
+    if (source[index] === "{") depth += 1;
+    if (source[index] === "}" && --depth === 0) return source.slice(start, index + 1);
+  }
+  return "";
 }

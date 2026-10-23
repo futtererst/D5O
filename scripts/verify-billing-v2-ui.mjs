@@ -4,6 +4,7 @@ import { join } from "node:path";
 
 const root = process.cwd();
 const failures = [];
+const repositoryWide = process.argv.includes("--repository-wide");
 
 const requiredFiles = [
   "components/d5o/billing-v2/BillingV2GuidedWorkflow.tsx",
@@ -30,8 +31,8 @@ const billingPage = read("app/billing/page.tsx");
 if (!billingPage.includes("BillingV2GuidedWorkflow")) {
   failures.push("app/billing/page.tsx must render BillingV2GuidedWorkflow for the focused route.");
 }
-if (!billingPage.includes('focus === "billing-billing-backup-cash-recovery"')) {
-  failures.push("app/billing/page.tsx must gate Billing v2 guided UI to the billing focused task key.");
+if (!billingPage.includes('aria-label="Billing active workflow mode"')) {
+  failures.push("app/billing/page.tsx must present Billing v2 as the active Billing workflow.");
 }
 
 const workflowClient = read("components/d5o/billing-v2/BillingV2WorkflowClient.tsx");
@@ -66,13 +67,18 @@ if (workflowClient.includes("localStorage")) {
 
 const qa = read("scripts/qa-billing-v2-workflow.mjs");
 for (const required of [
-  "billing-v2-process-rail",
+  'getByRole("link", { name: "Recover blocked billing" })',
   "billing-v2-active-step",
   "billing-v2-step-add-proof",
-  "billing-v2-attach-local-file",
-  "Evidence cards should not be visible",
+  "billing-v2-evidence-card-",
+  "billing-v2-add-reference-",
+  "assertSingleActiveStep",
+  "billing-v2-review-note-input",
+  "billing-v2-resolution-note-input",
   "billing-v2-step-outcome",
-  "outcome is not business-specific"
+  "Billing blocker cleared",
+  "PA-001",
+  "Ready for commercial review"
 ]) {
   if (!qa.includes(required)) {
     failures.push(`Billing v2 QA must cover guided interaction guardrail: ${required}`);
@@ -94,7 +100,7 @@ for (const required of [
   if (!docs.includes(required)) failures.push(`Documentation missing Billing v2 guided UI note: ${required}`);
 }
 
-const changedFiles = gitChangedFiles();
+const changedFiles = repositoryWide ? [] : gitChangedFiles();
 for (const file of changedFiles) {
   if (
     file.startsWith("app/field-execution/") ||
@@ -120,6 +126,10 @@ if (failures.length > 0) {
 console.log("Billing v2 UI verifier passed: guided components, focused route, QA coverage, docs, and scope boundaries are present.");
 
 function read(file) {
+  if (!existsSync(join(root, file))) {
+    if (!requiredFiles.includes(file)) failures.push(`Missing Billing v2 UI verification input: ${file}`);
+    return "";
+  }
   return readFileSync(join(root, file), "utf8");
 }
 

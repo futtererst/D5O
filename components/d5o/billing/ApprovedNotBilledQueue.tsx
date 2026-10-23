@@ -9,8 +9,8 @@ export function ApprovedNotBilledQueue({ changeEvents }: { changeEvents: ChangeE
       <h3>Approved Not Billed</h3>
       {items.length > 0 ? (
         <ul className="compact-list">
-          {items.map((event) => (
-            <li key={event.id}>
+          {items.map((event, index) => (
+            <li key={`approved-not-billed-${event.id}-${event.changeNumber}-${index}`}>
               <span className="artifact-state artifact-missing" />
               <span>
                 <strong>{event.changeNumber}: {event.title}</strong>

@@ -647,10 +647,10 @@
   .root { grid-template-columns: 216px minmax(0, 1fr); }
 }
 @media (max-width: 700px) {
-  .root { display: block; overflow-x: clip; }
+  .root { display: block; }
   .root :global(.d5o-full-sidebar) { padding: 8px 14px; }
   .root :global(.d5o-full-content) { padding: 0 14px 36px; }
-  .root :global(.d5o-surface-host) { min-width: 0; overflow-x: clip; }
+  .root :global(.d5o-surface-host) { min-width: 0; }
   .root :global(.d5o-app-topbar) { margin: 0 -14px 12px; padding: 8px 14px; }
   .root :global(.d5o-task-frame) { margin: 8px auto; padding: 16px; }
   .root :global(.d5o-task-frame-header) { display: grid; gap: 12px; }
@@ -688,7 +688,14 @@
 .root :global(.d5o-app-topbar) { margin:0 calc(-1 * clamp(14px, 1.5vw, 26px)) 12px; padding:0 clamp(14px, 1.5vw, 26px); }
 .root :global(.d5o-surface-host) { max-width:none; }
 .root :global(.d5o-has-task-inbox) { display:grid; grid-template-columns: minmax(255px, 300px) minmax(0, 1fr); align-items:start; gap:0; min-height:calc(100vh - 75px); background:#fff; border:1px solid var(--d5o-border); border-radius:11px; overflow:clip; }
-.root :global(.d5o-task-main) { min-width:0; }
+.root :global(.d5o-task-main) {
+  box-sizing:border-box;
+  container-type:inline-size;
+  margin-inline:auto;
+  max-width:var(--d5o-content-max);
+  min-width:0;
+  width:100%;
+}
 .root :global(.d5o-has-task-inbox .d5o-task-main) { padding:12px clamp(16px, 2vw, 32px) 32px; }
 .root :global(.d5o-has-task-inbox .d5o-task-frame), .root :global(.d5o-has-task-inbox .d5o-focused-record-header), .root :global(.d5o-has-task-inbox .d5o-asset-task) { max-width:100%; }
 .root :global(.d5o-task-inbox-rail) { position:sticky; top:62px; align-self:start; display:flex; flex-direction:column; min-width:0; height:calc(100vh - 63px); border-right:1px solid var(--d5o-border); background:#fbfcfd; }
@@ -747,6 +754,11 @@
 .root :global(.d5o-selected-work-main > div:first-child > span) { color:#587181; display:block; font-size:13px; overflow-wrap:anywhere; }
 .root :global(.d5o-selected-work-actions) { align-items:center; display:flex; flex:0 0 auto; gap:9px; }
 .root :global(.d5o-selected-work-actions .d5o-stage-badge) { min-height:42px; min-width:145px; padding:6px 10px; }
+@media (min-width:801px) and (max-width:1199px) {
+  .root :global(.d5o-selected-work-main) { flex-wrap:wrap; }
+  .root :global(.d5o-selected-work-main > div:first-child) { flex:1 1 100%; }
+  .root :global(.d5o-selected-work-actions) { flex-wrap:wrap; width:100%; }
+}
 .root :global(.d5o-header-record-switch) { background:#fff; border:1px solid #b9cbd5; border-radius:7px; color:#153b53; cursor:pointer; font:inherit; font-size:12px; font-weight:750; min-height:42px; padding:8px 11px; white-space:nowrap; }
 .root :global(.d5o-header-record-switch span) { margin-left:10px; }
 .root :global(.d5o-record-full > .d5o-work-phase-nav),
@@ -769,4 +781,295 @@
   .root :global(.d5o-selected-work-main) { align-items:flex-start; flex-direction:column; gap:10px; }
   .root :global(.d5o-selected-work-actions) { flex-wrap:wrap; width:100%; }
   .root :global(.d5o-work-phase-nav button) { min-width:94px; }
+}
+
+/* Adaptive D5O navigation: one set of destinations, scaled to available width. */
+.root :global(.d5o-journey-selectors),
+.root :global(.d5o-selected-work-details) { display:none; }
+.root :global(.d5o-nav-drawer) { max-height:100dvh; overscroll-behavior:contain; }
+.root :global(.d5o-nav-drawer-heading) { position:sticky; top:-16px; z-index:2; background:#102b42; padding-top:12px; }
+.root :global(.d5o-nav-drawer-heading button) { min-width:44px; min-height:44px; }
+.root :global(.d5o-rail-links button), .root :global(.d5o-rail-bottom button), .root :global(.d5o-rail-bottom a) { min-height:44px; }
+.root :global(.d5o-record-surface-nav button) { min-height:44px; }
+.root :global(.d5o-header-record-switch), .root :global(.d5o-selected-work-crumb button) { min-height:44px; }
+.root :global(.d5o-journey-selectors) { gap:10px; margin:8px 0 12px; }
+.root :global(.d5o-journey-selectors label) { color:#425f70; display:grid; font-size:12px; font-weight:800; gap:5px; min-width:0; }
+.root :global(.d5o-journey-selectors select) { background:#fff; border:1px solid #b9cbd5; border-radius:7px; color:#163749; font:inherit; font-size:16px; min-height:44px; padding:8px 12px; width:100%; }
+.root :global(.d5o-journey-selectors select:focus-visible) { outline:3px solid var(--d5o-accent); outline-offset:2px; }
+.root :global(.d5o-full-content), .root :global(.d5o-task-main), .root :global(.d5o-surface-host) { min-width:0; }
+.root :global(.d5o-task-main .d5o-table-wrap), .root :global(.d5o-task-main table) { max-width:100%; }
+@media (min-width:1050px) and (max-width:1279px) {
+  .root { grid-template-columns:184px minmax(0,1fr); }
+  .root :global(.d5o-nav-rail) { width:184px; align-items:stretch; }
+  .root :global(.d5o-rail-links button), .root :global(.d5o-rail-bottom button), .root :global(.d5o-rail-bottom a) { align-items:center; display:flex; justify-content:flex-start; font-size:13px; gap:10px; padding:8px 12px; text-align:left; }
+  .root :global(.d5o-nav-rail .d5o-full-brand) { justify-content:flex-start; width:100%; }
+  .root :global(.d5o-nav-drawer) { left:184px; }
+}
+@media (max-width:1049px) {
+  .root :global(.d5o-work-phase-nav), .root :global(.d5o-record-surface-nav) { display:none !important; }
+  .root :global(.d5o-journey-selectors) { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .root :global(.d5o-selected-work-main) { align-items:start; }
+  .root :global(.d5o-selected-work-header) { padding:10px 12px; }
+  .root :global(.d5o-record-summary), .root :global(.d5o-overview-grid) { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (min-width:601px) and (max-width:780px) {
+  .root { display:grid; grid-template-columns:76px minmax(0,1fr); }
+  .root :global(.d5o-nav-rail) { position:sticky; top:0; flex-direction:column; align-items:center; width:76px; height:100dvh; padding:12px 6px 10px; }
+  .root :global(.d5o-nav-rail .d5o-full-brand) { margin:0 0 18px; }
+  .root :global(.d5o-rail-links) { display:grid; flex:none; gap:5px; width:100%; overflow:visible; }
+  .root :global(.d5o-rail-links button:nth-child(n)) { display:grid; }
+  .root :global(.d5o-rail-links button span), .root :global(.d5o-rail-bottom button span), .root :global(.d5o-rail-bottom a span) { display:inline; }
+  .root :global(.d5o-rail-bottom) { display:grid; width:100%; margin-top:auto; }
+  .root :global(.d5o-nav-drawer) { left:76px; width:min(340px,calc(100vw - 76px)); }
+}
+@media (max-width:600px) {
+  .root { display:block; min-height:100dvh; }
+  .root :global(.d5o-nav-rail) { position:fixed; top:auto; bottom:0; left:0; right:0; z-index:15; display:flex; align-items:center; width:100%; height:calc(58px + env(safe-area-inset-bottom)); padding:2px 4px env(safe-area-inset-bottom); background:#102b42; border-top:1px solid rgb(255 255 255 / 20%); }
+  .root :global(.d5o-nav-rail .d5o-full-brand), .root :global(.d5o-rail-bottom), .root :global(.d5o-rail-build) { display:none; }
+  .root :global(.d5o-rail-links) { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); width:100%; gap:0; overflow:visible; }
+  .root :global(.d5o-rail-links button:nth-child(n)) { display:grid; }
+  .root :global(.d5o-rail-links button) { min-width:0; min-height:52px; gap:2px; padding:4px 1px; font-size:10px; }
+  .root :global(.d5o-rail-links button span) { display:inline; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .root :global(.d5o-rail-links button svg) { width:20px; height:20px; }
+  .root :global(.d5o-full-content) { padding:0 12px calc(116px + env(safe-area-inset-bottom)); }
+  .root :global(.d5o-full-content :is(button, input, select, textarea)) { min-height:44px; }
+  .root :global(.d5o-full-content .d5o-surface-host :is(.d5o-primary, .d5o-outline, .d5o-quiet)) { min-height:44px; }
+  .root :global(.d5o-app-topbar) { min-height:48px; margin:0 -12px 8px; padding:4px 12px; }
+  .root :global(.d5o-app-topbar .d5o-top-actions) { gap:4px; }
+  .root :global(.d5o-app-topbar .d5o-top-actions > button) { display:none; }
+  .root :global(.d5o-selected-work-crumb) { margin-bottom:3px; }
+  .root :global(.d5o-selected-work-main) { display:grid; gap:6px; }
+  .root :global(.d5o-selected-work-main h1) { font-size:18px; line-height:1.25; }
+  .root :global(.d5o-selected-work-main p) { margin-bottom:1px; }
+  .root :global(.d5o-selected-work-meta) { display:none !important; }
+  .root :global(.d5o-selected-work-details) { display:block; color:#4e6979; font-size:12px; }
+  .root :global(.d5o-selected-work-details summary) { cursor:pointer; min-height:44px; display:flex; align-items:center; }
+  .root :global(.d5o-selected-work-details p) { font-size:12px; line-height:1.4; }
+  .root :global(.d5o-selected-work-actions) { display:grid; grid-template-columns:1fr auto; align-items:center; gap:6px; }
+  .root :global(.d5o-selected-work-actions .d5o-stage-badge) { min-width:0; min-height:44px; }
+  .root :global(.d5o-header-record-switch) { max-width:130px; overflow:hidden; text-overflow:ellipsis; }
+  .root :global(.d5o-journey-selectors) { grid-template-columns:1fr; gap:6px; }
+  .root :global(.d5o-record-summary), .root :global(.d5o-overview-grid), .root :global(.d5o-facts) { grid-template-columns:1fr; }
+  .root :global(.d5o-has-task-inbox .d5o-task-inbox-rail) { max-height:180px; overflow:auto; }
+  .root :global(.d5o-nav-drawer) { left:0; bottom:calc(58px + env(safe-area-inset-bottom)); width:min(340px,100vw); }
+  .root :global(.d5o-nav-scrim) { bottom:0; }
+}
+@media (max-width:600px) and (max-height:650px) {
+  .root :global(.d5o-nav-rail) { position:static; height:auto; padding-bottom:4px; }
+  .root :global(.d5o-full-content) { padding-bottom:20px; }
+}
+
+.root :global(.d5o-header-menu) { display:none; }
+.root :global(.d5o-responsive-section-select) { display:none; }
+.root :global(.d5o-menu-workspace) { display:flex; align-items:center; min-height:44px; color:#fff; font-size:13px; font-weight:800; padding:8px 12px; }
+.root :global(.d5o-menu-account) { padding:12px 8px; }
+@container (max-width:1100px) {
+  .root :global(.d5o-responsive-section-select) { display:grid; gap:5px; min-width:0; padding:10px 12px; color:#36576a; font-size:12px; font-weight:800; }
+  .root :global(.d5o-responsive-section-select select) { box-sizing:border-box; min-height:44px; min-width:0; width:100%; border:1px solid #b9cbd5; border-radius:7px; background:#fff; color:#163749; font:inherit; font-size:16px; padding:8px 12px; }
+  .root :global([data-responsive-sections]) { display:none !important; }
+}
+@media (max-width:1049px) {
+  .root :global(.d5o-header-menu) { display:inline-flex; align-items:center; justify-content:center; min-height:44px; }
+}
+@media (max-width:600px) {
+  .root :global(.d5o-app-topbar .d5o-top-actions > .d5o-header-menu) { display:inline-flex; }
+  .root :global(.d5o-app-topbar .d5o-top-actions > a), .root :global(.d5o-app-topbar .d5o-top-actions > :not(.d5o-header-menu):not(button)) { display:none; }
+}
+
+.root :global(.d5o-menu-start) { background:var(--d5o-accent); border:0; border-radius:7px; color:var(--d5o-on-accent); cursor:pointer; font:inherit; font-size:13px; font-weight:850; min-height:44px; width:100%; }
+.root :global(.d5o-full-content:focus) { outline:none; }
+@media (max-width:600px) {
+  .root :global(.d5o-journey-selectors) { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .root :global(.d5o-journey-selectors select) { padding-inline:6px; }
+}
+
+.root :global(.d5o-resolution-strip) { background:#fff; border:1px solid var(--d5o-border); border-left:4px solid var(--d5o-accent); border-radius:8px; display:flex; align-items:center; justify-content:space-between; gap:12px; margin:16px 0; padding:12px 15px; }
+.root :global(.d5o-resolution-strip > div) { display:grid; gap:4px; min-width:0; }
+.root :global(.d5o-resolution-strip span) { color:#637b88; font-size:11px; font-weight:850; letter-spacing:.04em; }
+.root :global(.d5o-resolution-strip strong) { color:#153847; font-size:14px; line-height:1.4; }
+.root :global(.d5o-resolution-strip details) { flex:none; }
+.root :global(.d5o-resolution-strip summary) { align-items:center; color:#225b79; cursor:pointer; display:flex; font-size:12px; font-weight:800; min-height:44px; }
+.root :global(.d5o-resolution-strip ol) { color:#365668; font-size:12px; line-height:1.5; padding-left:20px; }
+.root :global(.d5o-resolution-strip li) { padding-block:5px; }
+.root :global(.d5o-resolution-strip li button) { background:none; border:0; color:#225b79; cursor:pointer; font:inherit; font-weight:800; min-height:44px; }
+@media (max-width:600px) { .root :global(.d5o-resolution-strip) { align-items:stretch; display:grid; gap:0; margin:12px 0; padding:10px 12px; } }
+
+@media (max-width:1049px) {
+  .root :global(button:not(.d5o-nav-scrim)), .root :global(select), .root :global(input:not([type=checkbox]):not([type=radio]):not([type=hidden])) { min-height:44px; }
+  .root :global(.d5o-portfolio-table), .root :global(.d5o-crew-list), .root :global(.table-wrap) { max-width:100%; overflow-x:auto; overscroll-behavior-inline:contain; }
+}
+@media (max-width:600px) {
+  .root:has(:global(input:focus)) :global(.d5o-nav-rail),
+  .root:has(:global(textarea:focus)) :global(.d5o-nav-rail) { display:none; }
+}
+
+.root :global(.d5o-register-scroll-hint) { display:none; }
+@media (max-width:1100px) {
+  .root :global(.d5o-register-scroll-hint) { background:#eef5f8; color:#31566b; display:block; font-size:12px; font-weight:750; line-height:1.4; margin:0; padding:9px 16px; }
+  .root :global(.d5o-portfolio-register) { scrollbar-width:auto; }
+  .root :global(.d5o-portfolio-register:focus-visible) { outline:3px solid var(--d5o-accent); outline-offset:-3px; }
+}
+
+@media (min-width:601px) {
+  .root :global(.d5o-nav-rail) { height:100dvh; max-height:100dvh; overflow-y:auto; }
+}
+
+.root :global(.d5o-mobile-wordmark) { display:none; }
+@media (max-width:600px) {
+  .root :global(.d5o-app-topbar > div:first-child) { display:flex !important; gap:7px; min-width:0; }
+  .root :global(.d5o-mobile-wordmark) { display:inline; color:#16394a; font-size:15px; font-weight:900; }
+  .root :global(.d5o-app-topbar > div:first-child span), .root :global(.d5o-app-topbar > div:first-child i) { display:none; }
+  .root :global(.d5o-app-topbar > div:first-child strong) { font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .root :global(.d5o-app-topbar .d5o-top-actions) { justify-content:flex-end !important; margin-left:auto; width:auto !important; }
+}
+
+.root :global(.d5o-menu-account .d5o-account-trigger) { background:rgb(255 255 255 / 10%); border:1px solid rgb(255 255 255 / 25%); border-radius:7px; color:#fff; cursor:pointer; font:inherit; font-size:13px; font-weight:800; min-height:44px; padding:8px 12px; }
+.root :global(.d5o-menu-account .d5o-account-popover) { max-width:calc(100vw - 50px); }
+
+/* The same Work rows become a compact reading list when four columns cannot fit. */
+.root :global(.d5o-portfolio-consol) { container-type:inline-size; }
+.root :global(.d5o-portfolio-mobile-controls),
+.root :global(.d5o-portfolio-mobile-filter-fields),
+.root :global(.d5o-portfolio-record-open),
+.root :global(.d5o-portfolio-next-label) { display:none; }
+.root :global(.d5o-portfolio-applied) { color:#36576a; font-size:12px; margin:0; padding:0 17px 10px; }
+.root :global(.d5o-portfolio-record) { min-width:0; }
+.root :global(.d5o-portfolio-record > div) { min-width:0; overflow-wrap:anywhere; }
+.root :global(.d5o-nav-drawer .d5o-full-nav) { display:grid; grid-template-columns:1fr; }
+.root :global(.d5o-nav-drawer .d5o-nav-disclosure summary) { min-height:44px; cursor:pointer; }
+.root :global(.d5o-nav-drawer) { padding-bottom:calc(16px + env(safe-area-inset-bottom)); padding-top:calc(16px + env(safe-area-inset-top)); }
+
+@container (max-width:900px) {
+  .root :global(.d5o-portfolio-register) { overflow:visible; }
+  .root :global(.d5o-portfolio-colhead) { display:none; }
+  .root :global(.d5o-portfolio-register > .d5o-portfolio-record) {
+    display:grid; grid-template-columns:minmax(0,1fr) auto; gap:7px 12px;
+    min-width:0; min-height:0; margin:0; padding:13px 15px; width:100%;
+  }
+  .root :global(.d5o-portfolio-record-identity) { grid-column:1/-1; }
+  .root :global(.d5o-portfolio-record-identity small) { margin:0 0 3px; }
+  .root :global(.d5o-portfolio-record-identity strong) { font-size:15px; line-height:1.25; }
+  .root :global(.d5o-portfolio-record-identity span) { font-size:12px; margin-top:3px; }
+  .root :global(.d5o-portfolio-record-position) { align-items:center; display:flex; flex-wrap:wrap; gap:5px 8px; grid-column:1/-1; }
+  .root :global(.d5o-portfolio-record-position span) { color:#36566b; font-size:12px; margin:0; }
+  .root :global(.d5o-portfolio-record-action) { grid-column:1/-1; }
+  .root :global(.d5o-portfolio-next-label) { color:#6b7f89; display:block; font-size:10px; font-weight:800; letter-spacing:.04em; margin:0 0 2px; text-transform:uppercase; }
+  .root :global(.d5o-portfolio-record-action strong) { font-size:13px; line-height:1.3; }
+  .root :global(.d5o-portfolio-record-action span) { font-size:12px; margin-top:3px; }
+  .root :global(.d5o-portfolio-record-action span::before) { content:"Owner: "; }
+  .root :global(.d5o-portfolio-crew-context) { display:none; }
+  .root :global(.d5o-portfolio-record-value) { align-items:baseline; display:flex; flex-wrap:wrap; gap:3px 8px; grid-column:1; }
+  .root :global(.d5o-portfolio-record-value strong), .root :global(.d5o-portfolio-record-value span) { font-size:11px; margin:0; }
+  .root :global(.d5o-portfolio-record-open) { align-self:end; color:#215e7c; display:block; font-size:11px; font-weight:800; grid-column:2; white-space:nowrap; }
+}
+
+@media (max-width:900px) {
+  .root :global(.d5o-portfolio-concept) { gap:7px; }
+  .root :global(.d5o-portfolio-concept > header) { align-items:start; display:grid; gap:6px; }
+  .root :global(.d5o-portfolio-concept > header p), .root :global(.d5o-portfolio-concept > header > div:first-child > span) { display:none; }
+  .root :global(.d5o-portfolio-concept > header h1) { font-size:23px; line-height:1.15; }
+  .root :global(.d5o-portfolio-summary) { display:flex; flex-wrap:wrap; gap:5px 13px; }
+  .root :global(.d5o-portfolio-summary article) { align-items:baseline; background:transparent; border:0; display:flex; gap:4px; min-width:0; padding:0; }
+  .root :global(.d5o-portfolio-summary strong) { font-size:13px; }
+  .root :global(.d5o-portfolio-summary span) { font-size:11px!important; }
+  .root :global(.d5o-portfolio-toolbar) { padding:5px 12px; }
+  .root :global(.d5o-portfolio-toolbar .d5o-portfolio-filter) { display:none; }
+  .root :global(.d5o-portfolio-view button) { min-height:44px; }
+  .root :global(.d5o-portfolio-mobile-controls) { display:flex; gap:8px; padding:0 12px 7px; }
+  .root :global(.d5o-portfolio-mobile-controls button) { background:#f4f8fa; border:1px solid #c6d7df; border-radius:7px; color:#24536a; font:inherit; font-size:12px; font-weight:800; min-height:44px; padding:7px 10px; }
+  .root :global(.d5o-portfolio-mobile-filter-fields) { display:grid; gap:7px; padding:0 12px 9px; }
+  .root :global(.d5o-portfolio-mobile-filter-fields input), .root :global(.d5o-portfolio-mobile-filter-fields select) { border:1px solid #b9cbd5; border-radius:7px; font:inherit; font-size:16px; min-height:44px; padding:8px 10px; width:100%; }
+  .root :global(.d5o-portfolio-page-status) { padding:4px 12px 7px; }
+}
+
+@media (max-width:600px) {
+  .root :global(.d5o-nav-drawer) { bottom:0; width:100vw; max-height:100dvh; }
+  .root :global(.d5o-portfolio-mobile-controls) { justify-content:space-between; }
+  .root :global(.d5o-portfolio-concept > header) { padding:0 2px; }
+  .root :global(.d5o-portfolio-view) { width:100%; }
+  .root :global(.d5o-portfolio-view button) { flex:1; }
+  .root :global(.d5o-selected-work-header) { margin-top:2px; padding:7px 10px; }
+  .root :global(.d5o-selected-work-main > div:first-child > p) { display:none; }
+  .root :global(.d5o-selected-work-main) { gap:2px; }
+  .root :global(.d5o-selected-work-actions) { display:block; }
+  .root :global(.d5o-selected-work-actions .d5o-stage-badge) { gap:2px; padding:5px 8px; }
+  .root :global(.d5o-selected-work-actions .d5o-header-record-switch) { display:none; }
+  .root :global(.d5o-selected-work-details summary) { min-height:44px; }
+}
+
+@media (max-width:900px) {
+  .root :global(.d5o-task-main:has(.d5o-discover-list-open) > .d5o-selected-work-header) { display:none; }
+  .root :global(.d5o-task-main:has(.d5o-discover-detail-open) > .d5o-selected-work-header) { display:none; }
+  .root :global(.d5o-task-main:has(.d5o-discover-detail-open) .d5o-header-record-switch) { display:none; }
+}
+
+/* My Work and the six governed phases share one destination model at every width. */
+.root :global(.d5o-mobile-phase-trigger),
+.root :global(.d5o-mobile-work-trigger),
+.root :global(.d5o-mobile-more-trigger) { display:none; }
+.root :global(.d5o-rail-links .d5o-mobile-phase-trigger),
+.root :global(.d5o-rail-links .d5o-mobile-work-trigger),
+.root :global(.d5o-rail-links .d5o-mobile-more-trigger) { display:none !important; }
+.root :global(.d5o-app-topbar .d5o-header-menu) { display:none !important; }
+.root :global(.d5o-work-phase-nav) { display:none !important; }
+.root :global(.d5o-journey-selectors label:first-child) { display:none; }
+.root :global(.d5o-journey-selectors) { grid-template-columns:minmax(0,1fr); }
+.root :global(.d5o-phase-menu) { display:grid; gap:4px; padding:12px 0; }
+.root :global(.d5o-phase-menu button) { align-items:center; background:transparent; border:0; border-radius:8px; color:#d7e5ed; cursor:pointer; display:flex; gap:12px; min-height:52px; padding:9px 12px; text-align:left; }
+.root :global(.d5o-phase-menu button[aria-current=page]) { background:#29465b; box-shadow:inset 3px 0 var(--d5o-accent); color:#fff; }
+.root :global(.d5o-phase-menu button:disabled) { cursor:not-allowed; opacity:.45; }
+.root :global(.d5o-phase-menu button svg) { flex:none; height:22px; width:22px; }
+.root :global(.d5o-phase-menu button span) { display:grid; gap:2px; }
+.root :global(.d5o-phase-menu button strong) { font-size:14px; }
+.root :global(.d5o-phase-menu button small) { color:#b8cad4; font-size:11px; }
+@media (max-width:600px) {
+  .root :global(.d5o-rail-links) { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .root :global(.d5o-nav-drawer .d5o-menu-records-link) { display:none; }
+  .root :global(.d5o-rail-links .d5o-rail-phase) { display:none !important; }
+  .root :global(.d5o-rail-links .d5o-mobile-phase-trigger),
+  .root :global(.d5o-rail-links .d5o-mobile-work-trigger),
+  .root :global(.d5o-rail-links .d5o-mobile-more-trigger) { display:grid !important; }
+  .root :global(.d5o-rail-links button[aria-expanded=true]) { background:#29465b; color:#fff; }
+}
+
+/* Supporting Work information is opened on demand, separate from phase navigation. */
+.root :global(.d5o-work-details-trigger) { background:#fff; border:1px solid #9fb8c7; border-radius:7px; color:#123950; cursor:pointer; font:inherit; font-size:13px; font-weight:800; min-height:44px; padding:8px 14px; }
+.root :global(.d5o-work-details-trigger:focus-visible),
+.root :global(.d5o-work-details-panel button:focus-visible),
+.root :global(.d5o-work-details-panel summary:focus-visible) { outline:3px solid var(--d5o-accent); outline-offset:2px; }
+.root :global(.d5o-work-details-overlay) { position:fixed; inset:0; z-index:100; }
+.root :global(.d5o-work-details-overlay[hidden]),
+.root :global(.d5o-work-details-content > [hidden]) { display:none !important; }
+.root :global(.d5o-work-details-scrim) { position:absolute; inset:0; background:rgb(9 29 43 / 55%); border:0; cursor:default; width:100%; }
+.root :global(.d5o-work-details-panel) { background:#f6f8f9; box-shadow:-12px 0 36px rgb(7 28 43 / 24%); color:#102b42; display:flex; flex-direction:column; height:100dvh; max-height:100dvh; overflow:hidden; position:absolute; right:0; top:0; width:min(640px, 48vw); }
+.root :global(.d5o-work-details-heading) { align-items:start; background:#fff; border-bottom:1px solid #d8e2e8; display:flex; flex:none; gap:12px; justify-content:space-between; padding:calc(16px + env(safe-area-inset-top)) 18px 13px; }
+.root :global(.d5o-work-details-heading span) { color:#617c8a; font-size:11px; font-weight:850; letter-spacing:.08em; }
+.root :global(.d5o-work-details-heading h2) { font-size:22px; line-height:1.15; margin:4px 0; }
+.root :global(.d5o-work-details-heading p) { font-size:13px; line-height:1.35; margin:0; overflow-wrap:anywhere; }
+.root :global(.d5o-work-details-heading button) { background:#f2f6f8; border:1px solid #bdced8; border-radius:7px; color:#173a50; flex:none; font:inherit; font-weight:800; min-height:44px; padding:8px 12px; }
+.root :global(.d5o-work-details-groups) { background:#fff; border-bottom:1px solid #d8e2e8; display:grid; flex:none; grid-template-columns:repeat(4,minmax(0,1fr)); padding:4px 10px; }
+.root :global(.d5o-work-details-groups button) { background:transparent; border:0; border-bottom:3px solid transparent; color:#415e70; cursor:pointer; font:inherit; font-size:12px; font-weight:750; min-height:48px; padding:6px; }
+.root :global(.d5o-work-details-groups button[aria-current=page]) { border-bottom-color:var(--d5o-accent); color:#102b42; }
+.root :global(.d5o-work-details-content) { flex:1; min-height:0; overflow:auto; overscroll-behavior:contain; padding:16px 18px calc(28px + env(safe-area-inset-bottom)); }
+.root :global(.d5o-work-details-content > div) { min-width:0; }
+.root :global(.d5o-work-details-summary > p) { color:#526f80; font-size:13px; line-height:1.45; margin:0 0 12px; }
+.root :global(.d5o-work-details-summary > details) { background:#fff; border:1px solid #d7e2e8; border-radius:8px; margin-bottom:9px; min-width:0; }
+.root :global(.d5o-work-details-summary > details > summary) { align-items:center; cursor:pointer; display:flex; font-size:14px; font-weight:800; min-height:48px; padding:10px 14px; }
+.root :global(.d5o-work-details-summary > details > :not(summary)) { margin:0 12px 14px; }
+.root :global(.d5o-work-details-content .d5o-gate-grid),
+.root :global(.d5o-work-details-content .d5o-gate-bottom),
+.root :global(.d5o-work-details-content .d5o-inline-form) { grid-template-columns:minmax(0,1fr); }
+.root :global(.d5o-work-details-content input),
+.root :global(.d5o-work-details-content select),
+.root :global(.d5o-work-details-content textarea) { max-width:100%; min-width:0; }
+@media (max-width:1100px) { .root :global(.d5o-work-details-panel) { width:min(560px, 70vw); } }
+@media (max-width:600px) {
+  .root :global(.d5o-work-details-panel) { left:0; width:100vw; }
+  .root :global(.d5o-work-details-heading) { padding-inline:12px; }
+  .root :global(.d5o-work-details-heading h2) { font-size:19px; }
+  .root :global(.d5o-work-details-groups) { gap:2px; grid-template-columns:repeat(2,minmax(0,1fr)); padding:4px 8px; }
+  .root :global(.d5o-work-details-groups button) { min-height:44px; }
+  .root :global(.d5o-work-details-content) { padding:12px 10px calc(32px + env(safe-area-inset-bottom)); }
+  .root :global(.d5o-selected-work-actions) { display:grid; grid-template-columns:minmax(0,1fr) auto; }
+  .root :global(.d5o-work-details-trigger) { white-space:nowrap; }
 }
