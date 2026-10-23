@@ -6,6 +6,7 @@ import { HostedStateError, hostedPrototypeContext } from "@/lib/d5o/hosted/proto
 import { hostedWorkerContext } from "@/lib/d5o/hosted/worker-context";
 import type { SharedSchedule } from "@/components/d5o/platform/schedule-model";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
+import { d5oCommandRuntime } from "@/lib/d5o/auth/hosted-target";
 
 export const dynamic = "force-dynamic";
 const bucket = "d5o-deploy-evidence";
@@ -17,7 +18,12 @@ const pathFor = (workspace: string, workId: string, id: string) =>
 
 async function target(request: NextRequest) {
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
-  if (!["rybex", "rotork"].includes(workspace)) return null;
+  const isolatedOrigin = process.env.D5O_ISOLATED_APP_ORIGIN;
+  const isolatedCustomer = process.env.NODE_ENV === "development" &&
+    d5oCommandRuntime() === "pilot" && !!isolatedOrigin &&
+    request.headers.get("origin") === isolatedOrigin &&
+    new URL(isolatedOrigin).hostname === "127.0.0.1";
+  if (!["rybex", "rotork"].includes(workspace) && !isolatedCustomer) return null;
   const context = await hostedPrototypeContext(workspace);
   if (!["admin", "project_manager", "operations_leader"].includes(context.actor.role)) return null;
   const workId = request.nextUrl.searchParams.get("workId") ?? "";
@@ -98,6 +104,7 @@ export async function POST(request: NextRequest) {
     return reply(data);
   } catch (error) {
     if (uploadedPath) await createRybexSupabaseAdminClient().storage.from(bucket).remove([uploadedPath]);
+    if (error instanceof HostedStateError) return reply({ error: error.code }, error.status);
     if (error instanceof Error && error.message === "unauthenticated") return reply({ error: "unauthenticated" }, 401);
     return reply({ error: "design_document_upload_unavailable" }, 503);
   }

@@ -1,0 +1,140 @@
+{
+  "baseline": "448c00be9d09e4b527aa7f3a3c89d99ce5ceda6f",
+  "startedAt": "2026-10-23T17:23:11.148Z",
+  "tests": [
+    {
+      "name": "tenant administrators see only their own organization",
+      "status": "PASS",
+      "detail": {
+        "own": true,
+        "foreignDenied": true,
+        "nonAdminDenied": true
+      }
+    },
+    {
+      "name": "A and B create independent structures with stable identities",
+      "status": "PASS",
+      "detail": {
+        "a": {
+          "units": 2,
+          "locations": 2,
+          "teams": 3
+        },
+        "b": {
+          "units": 2,
+          "locations": 2,
+          "teams": 2
+        }
+      }
+    },
+    {
+      "name": "cross-tenant manager, unit and record writes are denied",
+      "status": "PASS",
+      "detail": {
+        "managerDenied": true,
+        "unitDenied": true,
+        "recordDenied": true,
+        "nonAdminDenied": true
+      }
+    },
+    {
+      "name": "business-unit hierarchy supports a parent and rejects cycles",
+      "status": "PASS",
+      "detail": {
+        "childParent": "5a5e6c15-d8c0-419b-8630-ecbce2cd0b85",
+        "cycleDenied": true
+      }
+    },
+    {
+      "name": "revision conflicts, retirement dependencies and code uniqueness are enforced",
+      "status": "PASS",
+      "detail": {
+        "stableId": "5a5e6c15-d8c0-419b-8630-ecbce2cd0b85",
+        "staleDenied": true,
+        "inUseDenied": true,
+        "duplicateDenied": true
+      }
+    },
+    {
+      "name": "team assignments and workforce associations stay tenant-owned",
+      "status": "PASS",
+      "detail": {
+        "memberAssignedToTwoTeams": true,
+        "workforceLinked": true,
+        "crossTenantDenied": true
+      }
+    },
+    {
+      "name": "membership roles, suspension, reactivation and removal enforce authority",
+      "status": "PASS",
+      "detail": {
+        "roleChanged": true,
+        "selfPromotionDenied": true,
+        "suspensionImmediate": true,
+        "removedDenied": true
+      }
+    },
+    {
+      "name": "invitations are scoped, accepted once, and auditable",
+      "status": "PASS",
+      "detail": {
+        "accepted": true,
+        "replaySafe": true,
+        "foreignDenied": true,
+        "role": "project_manager"
+      }
+    },
+    {
+      "name": "revoked and expired invitations cannot grant access",
+      "status": "PASS",
+      "detail": {
+        "revokedDenied": true,
+        "expiredDenied": true
+      }
+    },
+    {
+      "name": "receipt replay, concurrent writes and audit remain consistent",
+      "status": "PASS",
+      "detail": {
+        "oneUnit": true,
+        "oneReceipt": true,
+        "auditVisible": true,
+        "directTableDenied": true
+      }
+    },
+    {
+      "name": "authenticated administration UI and API work for both tenants",
+      "status": "PASS",
+      "detail": {
+        "files": [
+          "a-organization-1440.png",
+          "a-business-units-1440.png",
+          "a-invitations-1440.png",
+          "a-invitation-accepted-1440.png",
+          "a-organization-390.png",
+          "b-organization-1440.png",
+          "b-business-units-1440.png"
+        ],
+        "tenantIsolationInApi": true,
+        "authenticatedUiWrites": true,
+        "ephemeralPreview": "http://127.0.0.1:64552/work/admin/organization?workspace=rybex"
+      }
+    }
+  ],
+  "setupError": null,
+  "cleanup": {
+    "projectId": "d5o-p0a-447c941b-5ec",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "finishedAt": "2026-10-23T17:25:32.979Z",
+  "summary": {
+    "passed": 11,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  }
+}

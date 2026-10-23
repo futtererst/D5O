@@ -12,4 +12,8 @@
 | Full six-phase pilot and authenticated Operate browser journey absent | End-to-end behavior remains unqualified | Pilot workflow owner | Complete an authenticated journey and retain evidence | Inherited release blocker |
 | Production readiness failures remain | `billing_persistence`, `field_issue_persistence`, `closeout_persistence`, `scanner_mode` | Separate readiness package | Correct underlying behavior and rerun readiness checks | Separate production blocker |
 
+## Phase 2E update
+
+The owned disposable fixture now proves connected positive transitions through Define, Develop and Design for two tenants, including independent reviews, customer award, Design document custody and package receipt. The graph still executes Develop solution approval before Design handoff; no historical state was rewritten. Deploy completion, Operate support acceptance, a complete two-tenant six-phase browser journey and the original sealed M1 pilot assertions remain unverified. See `D5O_PHASE2E_RELEASE_RECOMMENDATION.md` and the Phase 2E machine-readable evidence. The remaining items above stay open until their exact verification requirements pass.
+
 Blocked checks do not count as passing. No Phase 2D work changes production or hosted state.

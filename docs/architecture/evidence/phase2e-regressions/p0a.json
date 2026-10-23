@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-23T17:27:41.198Z",
+  "baseline": "unrecorded",
+  "environment": {
+    "projectId": "d5o-p0a-753ceab6-94d",
+    "apiPort": 57621,
+    "dbPort": 63273,
+    "containerCount": 11,
+    "loopbackOnly": true
+  },
+  "tests": [
+    {
+      "name": "authenticated own actor and cross-tenant denial",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "independent B and nonmember actor denial",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "multi-membership remains explicit",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "direct DB RLS work-record isolation",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "direct authenticated and anonymous mutation denied",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "direct configuration and audit tables remain closed",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "invalid bearer token is rejected by authenticated RPC",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "RPC work read and cross-record isolation",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "configuration admin scope and ordinary-user denial",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "admin replay, conflict, and cross-tenant command denial",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "concurrent B draft and stale default",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "revoked membership and role change take effect",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "storage direct access and cross-object denial",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "API rejects anonymous and forged workspace",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "API prevents cross-tenant work ID and admin escalation",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "independent configuration enabled only in disposable pilot",
+      "status": "PASS",
+      "detail": null
+    }
+  ],
+  "migrationLineage": {
+    "localCount": 224,
+    "appliedCount": 223,
+    "localDigest": "51c581f9124eb937771047185377376d5abf8e06aec70ec7e994d2f1c2fec698",
+    "appliedVersionDigest": "c79df564e8154bf5ca136248666f532e98008fd1082a40d99320aa1271171cb8",
+    "duplicateVersions": [
+      "0016"
+    ],
+    "exactVersionSet": true
+  },
+  "cleanup": {
+    "projectId": "d5o-p0a-753ceab6-94d",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "gates": {},
+  "finishedAt": "2026-10-23T17:29:36.892Z",
+  "summary": {
+    "passed": 16,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  }
+}
