@@ -13,6 +13,7 @@ import { AdminIdentityBoundary } from "@/components/d5o/admin/AdminIdentityBound
 import { OrgAdminPanel } from "@/components/d5o/admin/OrgAdminPanel";
 import { D5OProductHeader } from "@/components/d5o/platform/D5OProductHeader";
 import { customerAdminWorkspaceAuthorized } from "@/lib/d5o/admin/customer-workspace";
+import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import styles from "./admin.module.css";
 import "../../enterprise.css";
 import "../../settings/notification-settings.css";
@@ -61,17 +62,24 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
     throw error;
   }
   if (context.actor.role !== "admin") notFound();
+  const featureClient = await createRybexSupabaseServerClient();
+  const featureResult = await (featureClient.rpc as unknown as (name: string, args: Record<string,unknown>) =>
+    Promise<{ data: unknown; error: unknown }>)("d5o_hosted_capability_read_v1", {p_workspace_key:workspace});
+  const connectedWorkAvailable = !featureResult.error &&
+    (featureResult.data as {connectedWork?:boolean}|null)?.connectedWork === true;
   const href = (key: string) => `/work/admin/${key}?workspace=${workspace}`;
   return <AdminIdentityBoundary userId={context.actor.id}><>{workspace === "rybex" && <D5OProductHeader workspace="rybex" homeHref="/work?workspace=rybex" area="Administration" hostedPreview />}<main className={`${styles.shell} d5o-admin-console`}>
     <div className={styles.frame}>
       <aside className={styles.rail} aria-label="Administration navigation">
         <p className={styles.railLabel}>{context.actor.workspaceName ?? workspace} · Administration</p>
         <nav className={styles.nav} aria-label="Administrator sections">{visibleSections.map(([key, label]) =>
-          <Link key={key} href={href(key)} aria-current={active === key ? "page" : undefined}>{label}</Link>)}</nav>
+          <Link key={key} href={href(key)} aria-current={active === key ? "page" : undefined}>{label}</Link>)}
+          {connectedWorkAvailable && <Link href={`/work/connected-work?workspace=${workspace}`}>Start connected Work</Link>}</nav>
         {workspace === "rybex" && <Link className={styles.returnLink} href={`/work?workspace=${workspace}`}>← Return to Work</Link>}
       </aside>
       <div className={styles.mainColumn}>
         <AdminMobileNav active={active} sections={visibleSections} workspace={workspace} />
+        {connectedWorkAvailable && <p><Link href={`/work/connected-work?workspace=${workspace}`}>Start connected Work</Link></p>}
         <header className={styles.header}>
           <div><p>Administration / {sections.find(([key]) => key === active)?.[1]}</p><h1>{sections.find(([key]) => key === active)?.[1]}</h1></div>
         </header>

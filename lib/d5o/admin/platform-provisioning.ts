@@ -12,6 +12,9 @@ export type ProvisionedTenant = { workspaceId: string; workspaceKey: string; nam
   invitationExpiresAt: string | null; configurationVersion: number | null;
   configurationVersionId: string | null; createdAt: string; failureCode: string | null;
   serviceApproval: { thresholdMinor?: number; currency?: string } | null;
+  connectedWorkEntitlement: boolean | null; connectedWorkEntitlementRevision: number;
+  connectedWorkFlag: boolean | null; connectedWorkFlagRevision: number;
+  connectedWorkAvailable: boolean;
   audit: Array<{ action: string; actorUserId: string; occurredAt: string; reason: string }> };
 
 export async function loadPlatformProvisioning(): Promise<{

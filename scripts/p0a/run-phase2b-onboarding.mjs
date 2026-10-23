@@ -412,7 +412,8 @@ try {
       activation.once("dialog",(dialog)=>void dialog.accept());
       await activation.getByRole("button",{name:"Activate customer"}).click();
       await activation.getByRole("definition").filter({hasText:"active"}).first().waitFor({timeout:30000});
-      assert.equal(await activation.getByLabel("Decision reason").count(),0);
+      // Phase 2C retains vendor capability controls after activation.
+      assert.equal(await activation.getByLabel("Decision reason").count(),1);
       await activation.screenshot({path:resolve(dir,"vendor-activated-1440.png"),fullPage:true});
       files.push("vendor-activated-1440.png");
       await activation.close();

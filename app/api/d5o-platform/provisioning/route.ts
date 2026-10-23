@@ -50,6 +50,16 @@ export async function POST(request: NextRequest) {
   else if (input.action === "activate") result = await rpc("d5o_platform_activate_v1", {
     p_workspace_key: input.workspaceKey, p_expected_revision: input.expectedRevision,
     p_command_id: input.commandId, p_reason: input.reason });
+  else if (input.action === "suspend" || input.action === "reactivate")
+    result = await rpc("d5o_platform_lifecycle_command_v1", {
+      p_workspace_key: input.workspaceKey, p_action: input.action,
+      p_expected_revision: input.expectedRevision, p_command_id: input.commandId,
+      p_reason: input.reason });
+  else if (input.action === "entitlement" || input.action === "flag")
+    result = await rpc("d5o_platform_capability_command_v1", {
+      p_workspace_key: input.workspaceKey, p_kind: input.action,
+      p_enabled: input.enabled, p_expected_revision: input.expectedRevision,
+      p_command_id: input.commandId, p_reason: input.reason });
   else if (input.action === "template") result = await rpc("d5o_platform_template_command_v1", {
     p_template_key: input.templateKey, p_action: input.templateAction,
     p_version_id: input.templateVersionId ?? null, p_payload: input.payload ?? null,

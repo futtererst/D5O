@@ -35,7 +35,10 @@ export default async function PlatformTenantPage({ params }: { params: Promise<{
       {tenant.failureCode && <p role="alert">Provisioning issue: {tenant.failureCode}</p>}
       {tenant.invitationId && <p>Initial administrator acceptance: <Link href={`/work/initial-invitation?workspace=${encodeURIComponent(workspace)}&request=${encodeURIComponent(tenant.invitationId)}`}>Open invitation page</Link></p>}
       <PlatformTenantActions tenant={tenant} />
-      <section className={styles.section}><h2>Provisioning activity</h2>
+      <section className={styles.section}><h2>Archival eligibility</h2>
+        <p>Archival is unavailable until a retention and recovery policy is qualified. Suspension is the supported reversible operational control.</p>
+      </section>
+      <section className={styles.section}><h2>Platform activity</h2>
         {tenant.audit.length ? <div className={styles.tableWrap}><table><thead><tr><th scope="col">When</th><th scope="col">Action</th><th scope="col">Reason</th></tr></thead>
           <tbody>{tenant.audit.map((event, index) => <tr key={`${event.action}-${event.occurredAt}-${index}`}>
             <td>{new Date(event.occurredAt).toLocaleString()}</td><td>{event.action}</td><td>{event.reason}</td></tr>)}</tbody></table></div>

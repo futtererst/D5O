@@ -1,0 +1,89 @@
+{
+  "baseline": "b4a4e5c43c3e3a78dc07191019dd0ba638bf4a63",
+  "startedAt": "2026-10-23T15:03:09.307Z",
+  "suites": {
+    "phase1": {
+      "script": "scripts/p0a/run-service-approval-phase1.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 18,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "stdout": "{\"passed\":18,\"failed\":0,\"setupError\":false,\"cleanupVerified\":true,\"output\":\"docs/architecture/evidence/phase1-two-tenant-results.json\"}",
+      "stderr": ""
+    },
+    "phase1b": {
+      "script": "scripts/p0a/run-connected-approval-phase1b.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 13,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "stdout": "{\"passed\":13,\"failed\":0,\"setupError\":false,\"cleanupVerified\":true,\"output\":\"docs/architecture/evidence/phase1b-connected-results.json\"}",
+      "stderr": ""
+    },
+    "phase2a": {
+      "script": "scripts/p0a/run-phase2a-organization.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 11,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "stdout": "{\"passed\":11,\"failed\":0,\"setupError\":false,\"cleanupVerified\":true,\"output\":\"docs/architecture/evidence/phase2a-two-tenant-results.json\"}",
+      "stderr": ""
+    },
+    "phase2b": {
+      "script": "scripts/p0a/run-phase2b-onboarding.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 18,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "stdout": "{\"passed\":18,\"failed\":0,\"setupError\":false,\"cleanupVerified\":true,\"output\":\"docs/architecture/evidence/phase2b-two-tenant-results.json\"}",
+      "stderr": ""
+    },
+    "p0a": {
+      "script": "scripts/p0a/run-runtime-qualification.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 16,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "finishedAt": "2026-10-23T15:15:05.856Z",
+      "initialAttempt": {
+        "exitCode": 1,
+        "setupError": "next_dev_exited:1 while another browser dev server was running",
+        "cleanupVerified": true
+      },
+      "rerun": "Standalone disposable run after the overlapping dev server finished"
+    }
+  },
+  "staticChecks": {
+    "phaseContract": {
+      "exitCode": 0,
+      "stdout": "Published phase contract: tenant isolation, version pinning, legacy preservation, configured Rybex/Rotork decision checks, label invariance, protected rules, malformed version fail-closed PASS",
+      "stderr": ""
+    },
+    "phaseConfiguration": {
+      "exitCode": 0,
+      "stdout": "Phase configuration contract: 4 workspace/work-type packs, 6 phases, exact Work Type resolution, structured register validation, draft/approved source guard, label invariance and collision guard PASS",
+      "stderr": ""
+    },
+    "scannerInvariant": {
+      "exitCode": 0,
+      "stdout": "PASS: unsupported scanner modes remain readiness blockers; configured adapter passes configuration check",
+      "stderr": ""
+    }
+  },
+  "finishedAt": "2026-10-23T15:15:05.856Z"
+}
