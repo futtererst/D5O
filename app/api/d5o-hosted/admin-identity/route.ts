@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isAuthRetryableFetchError } from "@supabase/supabase-js";
 import { createRybexSupabaseAdminClient } from "@/lib/d5o/auth/supabase-server";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
-import { isApprovedTestRecipient } from "@/lib/d5o/auth/approved-test-recipient";
+import { invitationDeliveryPolicy, isApprovedTestRecipient } from "@/lib/d5o/auth/approved-test-recipient";
 
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
+const providerOutcome = (error: unknown): "provider_accepted" | "provider_rejected" | "uncertain" =>
+  !error ? "provider_accepted" : isAuthRetryableFetchError(error) ? "uncertain" : "provider_rejected";
 type Rpc = { data: { fresh?: boolean; status?: string; providerRequired?: boolean } | null; error: { code?: string } | null };
 const invitationRoles = new Set(["executive","operations_leader","business_development_lead",
   "project_manager","billing_commercial_lead","field_supervisor","closeout_lead","read_only_auditor","field_worker"]);
@@ -42,7 +45,7 @@ export async function POST(request: NextRequest) {
       || input.approvedRecipient !== true) return reply({ error: "invalid_identity_request" }, 400);
     const context = await hostedPrototypeContext(input.workspace);
     if (context.actor.role !== "admin") return reply({ error: "admin_membership_required" }, 403);
-    if (!isApprovedTestRecipient(input.email))
+    if (input.action === "recovery" && !isApprovedTestRecipient(input.email))
       return reply({ error: "approved_test_mailbox_required", message: "Email delivery is limited to the configured test recipient." }, 409);
     // Next can reconstruct nextUrl with localhost even when the browser used
     // 127.0.0.1. The origin header was already checked against the Host header.
@@ -63,18 +66,27 @@ export async function POST(request: NextRequest) {
       message: input.role === "field_worker"
         ? "This sign-in account is already confirmed. Use Workforce to create or select a fictional roster person, record qualifications and capacity, and bind the account. No invitation email or worker membership was created."
         : "This sign-in account is already confirmed. Review its current workspace access and assign the selected role through the separate membership decision. No invitation email was sent." });
+    if (input.action === "invite" && invitationDeliveryPolicy() === "approved_test_recipients"
+      && !isApprovedTestRecipient(input.email)) {
+      const restricted = await rpc("d5o_hosted_admin_identity_finish_v1", { ...basis,
+        p_status: "provider_rejected", p_provider_user_id: null,
+        p_provider_message: "Recipient is outside this environment's approved test-mail list" });
+      if (restricted.error) return reply({ status: "uncertain", message: "The test-mail restriction could not be recorded. No email was sent." }, 503);
+      return reply({ error: "approved_test_mailbox_required", status: "provider_rejected",
+        message: "This environment sends invitations only to configured test recipients. No email was sent. Existing confirmed accounts can be assigned through the separate access form." }, 409);
+    }
     let outcome: "provider_accepted" | "provider_rejected" | "uncertain" = "uncertain";
     let providerUserId: string | null = null;
     try {
       if (input.action === "invite") {
         const sent = await admin.auth.admin.inviteUserByEmail(input.email.trim().toLowerCase(),
           { redirectTo });
-        outcome = sent.error ? "provider_rejected" : "provider_accepted";
+        outcome = providerOutcome(sent.error);
         providerUserId = sent.data.user?.id ?? null;
       } else {
         const sent = await admin.auth.resetPasswordForEmail(input.email.trim().toLowerCase(),
           { redirectTo });
-        outcome = sent.error ? "provider_rejected" : "provider_accepted";
+        outcome = providerOutcome(sent.error);
       }
     } catch { outcome = "uncertain"; }
     const finished = await rpc("d5o_hosted_admin_identity_finish_v1", { ...basis,

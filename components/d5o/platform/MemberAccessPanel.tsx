@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import type { WorkspaceKey } from "./work-types";
 import { assignableWorkspaceRoles } from "./role-presentation";
@@ -17,12 +17,25 @@ type Invitation = { commandId: string; email: string; requestedRole: string | nu
   status: string; confirmed: boolean; membershipRole: string | null;
   membershipStatus: string | null; createdAt: string; setupCompletedAt: string | null };
 type Pending = { commandId: string; payload: Record<string, unknown> };
+function invitationState(item: Invitation) {
+  if (item.membershipStatus === "active") return "Workspace access assigned";
+  if (item.membershipStatus === "suspended") return "Workspace access suspended";
+  if (item.status === "provider_rejected") return "Invitation rejected · no delivery claimed";
+  if (item.status === "uncertain" || item.status === "pending") return "Unresolved · check retained request before retrying";
+  if (item.status === "setup_completed" || item.status === "existing_confirmed") return "Ready for membership decision";
+  if (item.confirmed) return "Account confirmed · setup receipt pending";
+  return "Awaiting recipient setup · delivery unverified";
+}
 
-export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: WorkspaceKey; selectedUserId?: string }) {
+export function MemberAccessPanel({ workspace, selectedUserId, initialSearch = "", initialOffset = 0,
+  invitationPolicy = "approved_test_recipients" }: {
+  workspace: WorkspaceKey; selectedUserId?: string; initialSearch?: string; initialOffset?: number;
+  invitationPolicy?: "administrator_approved" | "approved_test_recipients";
+}) {
   const [directory, setDirectory] = useState<Directory | null>(null);
-  const [search, setSearch] = useState("");
-  const [submittedSearch, setSubmittedSearch] = useState("");
-  const [offset, setOffset] = useState(0);
+  const [search, setSearch] = useState(initialSearch);
+  const [submittedSearch, setSubmittedSearch] = useState(initialSearch);
+  const [offset, setOffset] = useState(initialOffset);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("project_manager");
   const [reason, setReason] = useState("");
@@ -33,13 +46,32 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
   const [approvedRecipient, setApprovedRecipient] = useState(false);
   const [identityPending, setIdentityPending] = useState("");
   const [message, setMessage] = useState("");
+  const [assignedUserId, setAssignedUserId] = useState("");
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState<Pending | null>(null);
   const [retryReady, setRetryReady] = useState(false);
   const [flow, setFlow] = useState<"invite" | "assign" | null>(null);
+  const inviteHeading = useRef<HTMLHeadingElement>(null);
+  const assignHeading = useRef<HTMLHeadingElement>(null);
+  const identityInFlight = useRef(false);
+  const assignmentInFlight = useRef(false);
+  useEffect(() => { if (flow === "invite") inviteHeading.current?.focus();
+    if (flow === "assign") assignHeading.current?.focus(); }, [flow]);
+  const openFlow = (next: "invite" | "assign") => {
+    setFlow(next); setMessage(""); setAssignedUserId("");
+    if (flow === next) (next === "invite" ? inviteHeading : assignHeading).current?.focus();
+  };
+  const listHref = `/work/admin/users?workspace=${encodeURIComponent(workspace)}${submittedSearch ? `&search=${encodeURIComponent(submittedSearch)}` : ""}${offset ? `&offset=${offset}` : ""}`;
+  const syncListUrl = (nextSearch: string, nextOffset: number) => {
+    const url = new URL(window.location.href);
+    if (nextSearch) url.searchParams.set("search", nextSearch); else url.searchParams.delete("search");
+    if (nextOffset) url.searchParams.set("offset", String(nextOffset)); else url.searchParams.delete("offset");
+    window.history.replaceState(window.history.state, "", url);
+  };
   const endpoint = `/api/d5o-hosted/membership-access?workspace=${encodeURIComponent(workspace)}`;
   const refresh = useCallback(async () => {
-    const query = new URLSearchParams({ workspace, search: submittedSearch, offset: String(offset), limit: "25" });
+    const query = new URLSearchParams({ workspace, search: selectedUserId ? "" : submittedSearch,
+      offset: selectedUserId ? "0" : String(offset), limit: "25" });
     if (selectedUserId) query.set("userId", selectedUserId);
     const response = await fetch(`/api/d5o-hosted/admin-directory?${query}`, { cache: "no-store" });
     const body = await response.json() as Directory & { error?: string };
@@ -83,7 +115,7 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
       }
       const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...pending.payload, commandId: pending.commandId }) });
-      const body = await response.json() as { error?: string; message?: string };
+      const body = await response.json() as { error?: string; message?: string; assignment?: { userId?: string; action?: string } };
       if (!response.ok) {
         if (response.status === 503) throw new Error("The retry outcome is uncertain.");
         setPending(null); await refresh();
@@ -102,20 +134,27 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
     } finally { setBusy(false); }
   }
   async function change(payload: Record<string, unknown>) {
+    if (assignmentInFlight.current) return;
     if (pending) { setMessage("Resolve the pending command before starting a different access change."); return; }
+    assignmentInFlight.current = true;
     const command: Pending = { commandId: crypto.randomUUID(), payload };
     setPending(command); setRetryReady(false); setBusy(true); setMessage("");
     try {
       const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...payload, commandId: command.commandId }) });
-      const body = await response.json() as { error?: string; message?: string };
+      const body = await response.json() as { error?: string; message?: string; assignment?: { userId?: string; action?: string } };
       if (!response.ok) {
         if (response.status === 503) throw new Error("The response is uncertain; check the command receipt before retrying.");
         setPending(null); await refresh();
-        setMessage(body.message ?? `${body.error ?? "Change rejected"}. Your input remains available; compare current access before submitting again.`);
+        setMessage(body.message ?? (body.error === "stale_or_conflicting_assignment"
+          ? "This account already has access or its membership changed. Search the workspace directory and review the current role before trying again; your input remains available."
+          : `${body.error ?? "Change rejected"}. Your input remains available; compare current access before submitting again.`));
         return;
       }
-      await refresh(); setPending(null); setMessage("Workspace access saved. Sign-in account and roster person remain separate.");
+      await refresh(); setPending(null); setMessage(body.assignment?.action === "already_assigned"
+        ? "This account already has active access to Rybex Delivery."
+        : "Workspace access saved. The account can open Rybex Delivery after refreshing its session.");
+      if (flow === "assign" && body.assignment?.userId) setAssignedUserId(body.assignment.userId);
       if (payload.action !== "suspend") setEmail("");
     } catch {
       try {
@@ -123,7 +162,7 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
         if (current.found) { await refresh(); setPending(null); setMessage("The change committed despite the lost response. No duplicate was sent."); }
         else setMessage("Save outcome uncertain. Your input is retained; recheck the receipt before retrying.");
       } catch { setMessage("Save and receipt checks are unavailable. Your input and command identity are retained; do not submit a new command yet."); }
-    } finally { setBusy(false); }
+    } finally { setBusy(false); assignmentInFlight.current = false; }
   }
   function assign(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -132,6 +171,8 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
       expectedStatus: existing?.status ?? null, reason: reason.trim() });
   }
   async function identity(action: "invite" | "recovery", address: string) {
+    if (identityInFlight.current) return;
+    identityInFlight.current = true;
     const commandId = identityPending || crypto.randomUUID();
     setIdentityPending(commandId); setBusy(true); setMessage("");
     try {
@@ -142,7 +183,10 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
           commandId,
         }) });
       const body = await response.json() as { status?: string; message?: string; error?: string };
-      if (!response.ok && response.status !== 503) { setIdentityPending(""); setMessage(body.message ?? body.error ?? "Request rejected"); return; }
+      if (!response.ok && response.status !== 503) {
+        setIdentityPending(""); setMessage(body.message ?? body.error ?? "Request rejected");
+        void refreshInvitations().catch(() => {}); return;
+      }
       setMessage(body.message ?? "Provider outcome unresolved. Do not send another request.");
       if (body.status && body.status !== "uncertain") setIdentityPending("");
       if (body.status === "existing_confirmed" && inviteRole !== "field_worker") {
@@ -150,15 +194,15 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
       }
       void refreshInvitations().catch(() => setMessage("Request result retained, but the invitation list could not be refreshed. Reload or inspect Audit before another request."));
     } catch { setMessage("Provider response was lost. Check this command in Audit or with the administrator before any new request."); }
-    finally { setBusy(false); }
+    finally { setBusy(false); identityInFlight.current = false; }
   }
   const selected = selectedUserId ? directory?.items.find((item) => item.userId === selectedUserId) : null;
   return <section className={styles.panel} aria-label="Workspace users and access">
     <div className={styles.heading}><div><h2>{selected ? (selected.displayName || selected.email) : "Workspace accounts"}</h2>
-      <span>{selected ? selected.email : "Search the workspace directory, then open a person to manage their access."}</span></div>
-      {!selectedUserId && <div className={styles.actions}><button type="button" onClick={() => setFlow(flow === "invite" ? null : "invite")}>Invite user</button><button type="button" onClick={() => setFlow(flow === "assign" ? null : "assign")}>Assign existing account</button></div>}</div>
-    {selectedUserId && <p><Link href={`/work/admin/users?workspace=${workspace}`}>← All users</Link></p>}
-    <p role="status" aria-live="polite">{message}</p>
+      <span>{selected ? selected.displayName && selected.displayName !== selected.email ? selected.email : "Account access and sign-in" : "Search the workspace directory, then open a person to manage their access."}</span></div>
+      {!selectedUserId && <div className={styles.actions}><button type="button" aria-expanded={flow === "invite"} aria-controls="d5o-invite-form" onClick={() => openFlow("invite")}>Invite user</button><button type="button" aria-expanded={flow === "assign"} aria-controls="d5o-assign-form" onClick={() => openFlow("assign")}>Assign existing account</button></div>}</div>
+    {selectedUserId && <p><Link href={listHref}>← All users</Link></p>}
+    {((message && !flow) || !directory) && <p role="status" aria-live="polite">{message || "Loading workspace accounts…"}</p>}
     {pending && <div><p>Pending command {pending.commandId}. Its original input remains retained in this tab.</p>
       <button type="button" disabled={busy} onClick={() => void reconcile()}>Check original command receipt</button>
       {retryReady && <button type="button" disabled={busy} onClick={() => void retryOriginal()}>Retry original command</button>}</div>}
@@ -168,38 +212,46 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
           setMessage("The provider outcome remains unresolved. Check the approved mailbox or Auth provider before initiating another request.");
         else { setMessage(`Retained provider status: ${current.result?.status}. Delivery is not proven by this status.`); setIdentityPending(""); }
       }).catch(() => setMessage("Receipt unavailable. Do not repeat the email request."))}>Check identity request</button></div>}
-    {!selectedUserId && <><form onSubmit={(event) => { event.preventDefault(); setOffset(0); setSubmittedSearch(search); }} className={styles.toolbar}>
-      <label>Search workspace accounts<input value={search} onChange={(event) => setSearch(event.target.value)} maxLength={120} placeholder="Email or roster name" /></label>
-      <button type="submit">Search</button><span>Searches workspace accounts; 25 results per page.</span></form>
-      {flow === "assign" && <div className={styles.actionPanel}><h3>Assign access to a confirmed account</h3><p>The sign-in account must already exist and be confirmed. A roster person is managed separately in Workforce.</p><form onSubmit={assign} className={styles.form}>
+    {!selectedUserId && flow === "assign" && <section id="d5o-assign-form" className={styles.actionPanel} aria-labelledby="d5o-assign-heading">
+      <h3 id="d5o-assign-heading" ref={assignHeading} tabIndex={-1}>Assign an existing account</h3>
+      <p><strong>Workspace: Rybex Delivery.</strong> The sign-in account must already be confirmed. It need not appear in this member directory. A roster person is managed separately in Workforce.</p>
+      <form onSubmit={assign} className={styles.form}>
         <label>Existing confirmed sign-in email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required /></label>
         <label>Workspace role<select value={role} onChange={(event) => setRole(event.target.value)}>{assignableWorkspaceRoles.map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
         <label>Reason for access change<input value={reason} onChange={(event) => setReason(event.target.value)} minLength={8} maxLength={500} required /></label>
-        <button type="submit" disabled={busy || Boolean(pending)}>{busy ? "Saving…" : "Assign or change role"}</button>
-      </form></div>}</>}
-    {!selectedUserId && flow === "invite" && <section className={styles.actionPanel} aria-label="Invite a user"><h3>Invite a user</h3>
-      <p>Select the proposed workspace role. The Auth provider sends the setup email; an administrator makes a separate membership decision after recipient verification. Existing confirmed accounts use that membership decision without another Auth account or invitation email.</p>
+        <button type="submit" disabled={busy || Boolean(pending) || !directory}>{busy ? "Saving…" : "Assign workspace access"}</button>
+      </form>{message && <p role="status" aria-live="polite">{message}</p>}
+      {assignedUserId && <p><Link href={`/work/admin/users/${assignedUserId}?workspace=${encodeURIComponent(workspace)}`}>Open assigned membership →</Link> <span>Use this link if the current search hides the account.</span></p>}
+    </section>}
+    {!selectedUserId && flow === "invite" && <section id="d5o-invite-form" className={styles.actionPanel} aria-labelledby="d5o-invite-heading"><h3 id="d5o-invite-heading" ref={inviteHeading} tabIndex={-1}>Invite a new account</h3>
+      <p><strong>Workspace: Rybex Delivery.</strong> The recipient sets up a sign-in account first. An administrator then makes a separate membership decision.</p>
+      {invitationPolicy === "approved_test_recipients" && <p>This environment sends invitation email only to configured test recipients. Confirmed accounts can be assigned without email.</p>}
+      {invitationPolicy === "administrator_approved" && <p>Administrators may request an invitation for an approved recipient. Email delivery and account setup must be checked separately.</p>}
       <form className={styles.form} onSubmit={(event) => { event.preventDefault(); void identity("invite", identityEmail.trim()); }}>
-        <label>Approved test recipient<input type="email" required value={identityEmail} onChange={(event) => setIdentityEmail(event.target.value)} /></label>
+        <label>Recipient email<input type="email" required value={identityEmail} onChange={(event) => setIdentityEmail(event.target.value)} /></label>
         <label>Proposed workspace role<select value={inviteRole} onChange={(event) => setInviteRole(event.target.value)}>
           {assignableWorkspaceRoles.map(([key, label]) => <option key={key} value={key}>{label}</option>)}
           <option value="field_worker">Field worker · roster binding required</option>
         </select></label>
         <label>Reason<input required minLength={8} value={identityReason} onChange={(event) => setIdentityReason(event.target.value)} /></label>
-        <label><input type="checkbox" checked={approvedRecipient} onChange={(event) => setApprovedRecipient(event.target.checked)} required /> I confirm this recipient authorized a test email.</label>
+        <label className={styles.consent}><input type="checkbox" checked={approvedRecipient} onChange={(event) => setApprovedRecipient(event.target.checked)} required /> I confirm this recipient is approved for a D5O invitation email.</label>
         <button disabled={busy || Boolean(identityPending)}>Request invitation</button>
-      </form><small>Provider acceptance is not proof of email delivery. Invitation tokens are never shown here or retained in the audit.</small>
+      </form>{message && <p role="status" aria-live="polite">{message}</p>}
+      <small>Provider acceptance is not proof of delivery or account setup. After setup, return here to assign membership. Invitation tokens are never shown here or retained in the audit.</small>
     </section>}
+    {!selectedUserId && <form onSubmit={(event) => { event.preventDefault(); setOffset(0); setSubmittedSearch(search); syncListUrl(search, 0); }} className={styles.toolbar}>
+      <label>Search workspace accounts<input value={search} onChange={(event) => setSearch(event.target.value)} maxLength={120} placeholder="Email or roster name" /></label>
+      <button type="submit">Search</button><span>Searches workspace accounts; 25 results per page.</span></form>}
     {!selectedUserId && <details className={styles.history}><summary>Invitation history ({invitations.length})</summary><section aria-label="Recent invitation requests">
       <h3>Recent invitations</h3>
       <button type="button" disabled={busy} onClick={() => void refreshInvitations().catch(() => setMessage("Invitation status could not be refreshed."))}>Refresh status</button>
       {invitations.length === 0 && <p>No invitation requests recorded.</p>}
       {invitations.map((item) => <div key={item.commandId}>
-        <strong>{item.email}</strong> · proposed {item.requestedRole?.replaceAll("_", " ") ?? "unknown"} · {item.status.replaceAll("_", " ")}
+        <strong>{item.email}</strong> · proposed {item.requestedRole?.replaceAll("_", " ") ?? "unknown"} · {invitationState(item)}
         {item.membershipStatus ? ` · current access: ${item.membershipRole?.replaceAll("_", " ")} (${item.membershipStatus})` : " · no workspace membership"}
-        {(item.status === "setup_completed" || item.status === "existing_confirmed") && item.requestedRole === "field_worker"
+        {(item.status === "setup_completed" || item.status === "existing_confirmed" || item.confirmed) && item.requestedRole === "field_worker"
           && !item.membershipStatus && <p>Account setup is confirmed. Create or select a fictional roster person in Workforce, record qualifications and capacity, then bind this confirmed account. The invitation alone grants no worker access.</p>}
-        {(item.status === "setup_completed" || item.status === "existing_confirmed") && item.requestedRole
+        {(item.status === "setup_completed" || item.status === "existing_confirmed" || item.confirmed) && item.requestedRole
           && item.requestedRole !== "field_worker" && !item.membershipStatus && <button type="button" onClick={() => {
             setEmail(item.email); setRole(item.requestedRole!); setFlow("assign");
             setMessage("Recipient identity is confirmed. Review the role and reason, then submit the separate membership decision.");
@@ -235,14 +287,15 @@ export function MemberAccessPanel({ workspace, selectedUserId }: { workspace: Wo
           onClick={() => { if (window.confirm(`Grant administrator access to ${selected.email}?`)) void change({ action: "succession", email: selected.email, reason: reason.trim() }); }}>
           Add administrator</button></details>}
       <p><Link href={`/work/admin/audit?workspace=${workspace}&subject=${selected.userId}`}>Inspect retained changes →</Link></p>
-    </article> : selectedUserId ? <p role="status">No member with this identity is visible in this workspace.</p> : <>
-      <div className={styles.members}><div className={styles.memberHead}><span>Account</span><span>Workspace role</span><span>Access / sign-in</span><span>Workforce</span><span>Details</span></div>{directory?.items.map((member) => <div key={member.userId}>
-        <strong>{member.displayName || member.email}<small>{member.displayName ? member.email : ""}</small></strong><span>{member.role.replaceAll("_", " ")}</span>
-        <span>{member.status} · {member.confirmed ? "confirmed" : "unconfirmed"}</span><span>{member.displayName ? `Bound: ${member.displayName}` : "Not bound"}</span>
-        <Link href={`/work/admin/users/${member.userId}?workspace=${workspace}`}>Details →</Link>
-      </div>)}{directory?.items.length === 0 && <p>No matching workspace members.</p>}</div>
-      <div><button type="button" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - 25))}>Previous</button>
-        <span> {directory?.total ?? 0} members </span><button type="button" disabled={!directory || offset + 25 >= directory.total} onClick={() => setOffset(offset + 25)}>Next</button></div>
+    </article> : selectedUserId ? directory ? <p role="status">No member with this identity is visible in this workspace.</p> : null : <>
+      {directory && <div className={styles.members}><div className={styles.memberHead}><span>Account</span><span>Workspace role</span><span>Access / sign-in</span><span>Workforce</span><span>Details</span></div>{directory.items.map((member) => <div key={member.userId}>
+        <strong data-label="Account">{member.displayName || member.email}<small>{member.displayName ? member.email : ""}</small></strong><span data-label="Workspace role">{member.role.replaceAll("_", " ")}</span>
+        <span data-label="Access / sign-in">{member.status} · {member.confirmed ? "confirmed" : "unconfirmed"}</span><span data-label="Workforce">{member.displayName ? `Bound: ${member.displayName}` : "Not bound"}</span>
+        <Link data-label="Details" href={`/work/admin/users/${member.userId}?workspace=${workspace}${submittedSearch ? `&search=${encodeURIComponent(submittedSearch)}` : ""}${offset ? `&offset=${offset}` : ""}`}>Details →</Link>
+      </div>)}{directory.items.length === 0 && <p>No matching workspace members.</p>}</div>}
+      {directory && <div><button type="button" disabled={offset === 0} onClick={() => { const next=Math.max(0,offset-25); setOffset(next); syncListUrl(submittedSearch,next); }}>Previous</button>
+        <span> {directory.total} members </span><button type="button" disabled={offset + 25 >= directory.total} onClick={() => { const next=offset+25; setOffset(next); syncListUrl(submittedSearch,next); }}>Next</button></div>
+      }
     </>}
     <small>Member assignment requires an existing confirmed account. Business Development can work in Discover; Closeout currently has a read-only hosted view. Neither gains administrative rights.</small>
   </section>;

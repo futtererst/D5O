@@ -8,8 +8,10 @@ import { SpendingDelegationAdmin } from "@/components/d5o/platform/SpendingDeleg
 import { DesignInternalRateControl } from "@/components/d5o/platform/DesignInternalRateControl";
 import { AdminAudit } from "@/components/d5o/admin/AdminAudit";
 import { AdminOverview } from "@/components/d5o/admin/AdminOverview";
+import { AdminMobileNav } from "@/components/d5o/admin/AdminMobileNav";
 import { AdminIdentityBoundary } from "@/components/d5o/admin/AdminIdentityBoundary";
 import { D5OProductHeader } from "@/components/d5o/platform/D5OProductHeader";
+import { invitationDeliveryPolicy } from "@/lib/d5o/auth/approved-test-recipient";
 import styles from "./admin.module.css";
 import "../../enterprise.css";
 import "../../settings/notification-settings.css";
@@ -26,7 +28,8 @@ const sections = [
 
 export default async function WorkspaceAdminPage({ params, searchParams }: {
   params: Promise<{ section?: string[] }>;
-  searchParams: Promise<{ workspace?: string; subject?: string }>;
+  searchParams: Promise<{ workspace?: string; subject?: string; search?: string; offset?: string;
+    actor?: string; action?: string; from?: string; to?: string }>;
 }) {
   const [{ section }, query] = await Promise.all([params, searchParams]);
   const workspace = query.workspace ?? "rybex";
@@ -36,6 +39,7 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
   if (section?.length === 2 && !["users", "workforce"].includes(active)) notFound();
   const selectedId = section?.[1];
   if (selectedId && !/^[0-9a-f-]{36}$/i.test(selectedId)) notFound();
+  const offset = Math.max(0, Math.min(10000, Number.parseInt(query.offset ?? "0", 10) || 0));
   let context: Awaited<ReturnType<typeof hostedPrototypeContext>>;
   try { context = await hostedPrototypeContext(workspace); }
   catch (error) {
@@ -57,24 +61,25 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
         <Link className={styles.returnLink} href={`/work?workspace=${workspace}`}>← Return to Work</Link>
       </aside>
       <div className={styles.mainColumn}>
-        <details className={styles.mobileNav}><summary>Admin sections · {sections.find(([key]) => key === active)?.[1]}</summary>
-          <nav aria-label="Administrator sections on small screens">{sections.map(([key, label]) =>
-            <Link key={key} href={href(key)} aria-current={active === key ? "page" : undefined}>{label}</Link>)}</nav>
-          <Link href={`/work?workspace=${workspace}`}>← Return to Work</Link>
-        </details>
+        <AdminMobileNav active={active} sections={sections} workspace={workspace} />
         <header className={styles.header}>
-          <div><p>RYBEX / ADMINISTRATION</p><h1>{sections.find(([key]) => key === active)?.[1]}</h1></div>
+          <div><p>Administration / {sections.find(([key]) => key === active)?.[1]}</p><h1>{sections.find(([key]) => key === active)?.[1]}</h1></div>
         </header>
-        <p className={styles.notice}>Synthetic beta workspace · Administrative changes retain their governed decision history. Build {(process.env.D5O_SOURCE_SHA ?? "source-unidentified").slice(0, 12)}.</p>
+        <p className={styles.notice}>Synthetic beta workspace · Administrative changes retain their governed decision history.</p>
     <section className={styles.content}>
       {active === "overview" && <AdminOverview workspace="rybex" />}
-      {active === "users" && <MemberAccessPanel workspace="rybex" selectedUserId={selectedId} />}
+      {active === "users" && <MemberAccessPanel workspace="rybex" selectedUserId={selectedId}
+        initialSearch={(query.search ?? "").slice(0, 120)} initialOffset={offset}
+        invitationPolicy={invitationDeliveryPolicy()} />}
       {active === "workforce" && <CrewAccessPanel selectedPersonId={selectedId} />}
       {active === "configuration" && <AdminConfigurationEditor workspace="rybex" />}
       {active === "authority" && <div className={styles.authority}><SpendingDelegationAdmin workspace="rybex" />
         <DesignInternalRateControl workspace="rybex" role="admin" /></div>}
-      {active === "audit" && <AdminAudit workspace="rybex" initialSubject={query.subject ?? ""} />}
+      {active === "audit" && <AdminAudit workspace="rybex" initialOffset={offset} initialFilters={{
+        actor:(query.actor ?? "").slice(0,120), action:(query.action ?? "").slice(0,120),
+        subject:(query.subject ?? "").slice(0,120), from:query.from ?? "", to:query.to ?? "" }} />}
     </section>
+        <footer className={styles.diagnostic}>Build {(process.env.D5O_SOURCE_SHA ?? "source-unidentified").slice(0, 12)}</footer>
       </div>
     </div>
   </main></></AdminIdentityBoundary>;
