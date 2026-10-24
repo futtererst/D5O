@@ -21,7 +21,9 @@ async function target(request: NextRequest) {
   const isolatedOrigin = process.env.D5O_ISOLATED_APP_ORIGIN;
   const isolatedCustomer = process.env.NODE_ENV === "development" &&
     d5oCommandRuntime() === "pilot" && !!isolatedOrigin &&
-    request.headers.get("origin") === isolatedOrigin &&
+    (request.headers.get("origin") === isolatedOrigin ||
+      (request.method === "GET" && request.headers.get("host") === new URL(isolatedOrigin).host
+        && request.headers.get("sec-fetch-site") === "same-origin")) &&
     new URL(isolatedOrigin).hostname === "127.0.0.1";
   if (!["rybex", "rotork"].includes(workspace) && !isolatedCustomer) return null;
   const context = await hostedPrototypeContext(workspace);

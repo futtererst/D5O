@@ -7,7 +7,7 @@ type Receipt = { evidenceId: string; checksumSha256: string; filename: string;
 
 export function DesignDocumentEvidence({ workspace, workId, documentId, revision,
   canUpload, onEvidence }: { workspace: string; workId: string; documentId: string;
-  revision: number; canUpload: boolean; onEvidence?: (id: string) => void }) {
+  revision: number; canUpload: boolean; onEvidence?: (id: string, documentId: string) => void }) {
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
@@ -17,12 +17,13 @@ export function DesignDocumentEvidence({ workspace, workId, documentId, revision
   useEffect(() => {
     let active = true;
     fetch(endpoint, { cache: "no-store" }).then(async (response) => {
-      if (!active || !response.ok) return;
+      if (!active) return;
+      if (!response.ok) { setMessage("Document custody could not be loaded. Refresh before submitting for review."); return; }
       const found = await response.json() as Receipt;
-      if (active && found.evidenceId) { setReceipt(found); onEvidence?.(found.evidenceId); }
-    }).catch(() => undefined);
+      if (active && found.evidenceId) { setReceipt(found); onEvidence?.(found.evidenceId, documentId); }
+    }).catch(() => { if (active) setMessage("Document custody could not be loaded. Refresh before submitting for review."); });
     return () => { active = false; };
-  }, [endpoint, onEvidence]);
+  }, [endpoint, onEvidence, documentId]);
   async function upload() {
     if (!file || busy) return;
     setBusy(true); setMessage("");
@@ -34,7 +35,7 @@ export function DesignDocumentEvidence({ workspace, workId, documentId, revision
       setReceipt({ evidenceId: result.evidenceId,checksumSha256: result.checksumSha256,
         filename: result.filename ?? file.name,sizeBytes: file.size,
         uploadedBy: "Current signed-in user",uploadedAt: new Date().toISOString() });
-      onEvidence?.(result.evidenceId); setFile(null);
+      onEvidence?.(result.evidenceId, documentId); setFile(null);
       setMessage("Private PDF retained for this exact draft revision. Independent review is still required.");
     } catch (error) { setMessage(error instanceof Error ? error.message : "Upload failed"); }
     finally { setBusy(false); }

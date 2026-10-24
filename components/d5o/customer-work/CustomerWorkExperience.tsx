@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { CustomerDefineDraftForm } from "./CustomerDefineDraftForm";
+import { CustomerDesignActions } from "./CustomerDesignActions";
+import type { CustomerDesignAction } from "@/lib/d5o/hosted/customer-design-contract";
 import type { DefineDraftInput } from "@/lib/d5o/hosted/customer-define-draft";
 
 const phases = ["Discover", "Define", "Design", "Develop", "Deploy", "Operate"] as const;
@@ -19,10 +21,14 @@ type CustomerTask = { id: string; workId: string; title: string; phase: string;
   status: "available" | "view_only"; revision: number; packageId?: string;
   releaseId?: string; dueDate?: string; action?: string; reviewRole?: string };
 type WorkDetail = WorkSummary & { canonicalWorkId: string; workspace: string;
+  discovery?: { designHandoff?: { status?: string; revision?: number } };
   definition?: { status?: string; authorityRevision?: number;
+    scopeControl?: { requirements?: Array<{ id: string; state?: string; description?: string }> };
     reviews?: { commercial?: string; delivery?: string };
     developHandoff?: { status?: string } }; develop?: { review?: { status?: string } };
-  design?: { authorityRevision?: number; packages?: Array<{ packageId: string; name?: string }>;
+  design?: { authorityRevision?: number; packages?: Array<{ packageId: string; name?: string; method?: string; revision?: number }>;
+    documents?: Array<{ id: string; revision: number; title: string; status: string; evidenceId?: string; packageIds?: string[] }>;
+    reviews?: Array<{ id: string; packageId: string; discipline: string; status: string }>;
     releases?: Array<{ packageId: string; status: string }> };
   deploy?: { authorityRevision?: number; workAcceptance?: { receipt?: string; id?: string;
     revision?: number } }; operate?: { authorityRevision?: number;
@@ -31,7 +37,8 @@ type WorkDetail = WorkSummary & { canonicalWorkId: string; workspace: string;
 type ListResponse = { workspaceName: string; role: string; records: WorkSummary[];
   tasks: CustomerTask[]; error?: string };
 type DetailResponse = { workspaceName: string; role: string; canEdit: boolean;
-  revision: number; record: WorkDetail; phaseStatus: PhaseStatus;
+  revision: number; catalogRevision: number; record: WorkDetail; phaseStatus: PhaseStatus;
+  connectedPackages: Array<{ packageId: string; name?: string }>;
   defineActions: CustomerTask[]; designActions: CustomerTask[]; error?: string };
 
 const statusLabel: Record<string, string> = {
@@ -97,62 +104,59 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
   const projection = detail?.phaseStatus?.projection;
   const role = detail?.role ?? list?.role ?? "";
   const canOperate = role === "operations_leader" && detail?.canEdit;
-  async function saveDefineDraft(fields: DefineDraftInput) {
-    if (!detail || busy) return;
+  async function postAction(endpoint: string, payload: Record<string, unknown>, fallback: string) {
+    if (!detail || busy) return false;
     setBusy(true); setError("");
     try {
-      const response = await fetch(`/api/d5o-hosted/customer-work?workspace=${encodeURIComponent(workspace)}`, {
+      const response = await fetch(`${endpoint}?workspace=${encodeURIComponent(workspace)}`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workId: detail.record.id, command: "define-draft",
-          commandId: crypto.randomUUID(), arguments: {
-            p_expected_source_revision: detail.revision, fields } }) });
+        body: JSON.stringify({ workId: detail.record.id, commandId: crypto.randomUUID(), ...payload }) });
       const result = await response.json() as { error?: string };
-      if (!response.ok) throw Error(result.error ?? "Define draft could not be saved");
+      if (!response.ok) throw Error(result.error ?? fallback);
       await load();
-    } catch (cause) { setError(readableError(cause instanceof Error ? cause.message : "Draft failed")); }
-    finally { setBusy(false); }
+      return true;
+    } catch (cause) {
+      setError(readableError(cause instanceof Error ? cause.message : fallback));
+      return false;
+    } finally { setBusy(false); }
+  }
+  async function saveDefineDraft(fields: DefineDraftInput) {
+    if (!detail || busy) return;
+    await postAction("/api/d5o-hosted/customer-work", { command: "define-draft",
+      arguments: { p_expected_source_revision: detail.revision, fields } }, "Define draft could not be saved");
   }
   async function command(action: string, input: Record<string, unknown>, domain: "define" | "operate" = "operate") {
     if (!detail || busy) return;
-    setBusy(true); setError("");
-    try {
-      const source = detail.revision;
-      const args: Record<string, unknown> = domain === "define"
+    const source = detail.revision;
+    const args: Record<string, unknown> = domain === "define"
         ? { p_action: action, p_review_role: input.role ?? null,
           p_reason: reason.trim(), p_expected_source_revision: source,
           p_expected_decision_revision: detail.record.definition?.authorityRevision ?? 0 }
         : { p_action: action, p_input: input, p_expected_source_revision: source,
           p_expected_deploy_revision: detail.record.deploy?.authorityRevision ?? 0,
           p_expected_operate_revision: detail.record.operate?.authorityRevision ?? 0 };
-      const response = await fetch(`/api/d5o-hosted/customer-work?workspace=${encodeURIComponent(workspace)}`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workId: detail.record.id, command: domain,
-          commandId: crypto.randomUUID(), arguments: args }) });
-      const result = await response.json() as { error?: string };
-      if (!response.ok) throw Error(result.error ?? "Decision was not recorded");
-      setReason("");
-      await load();
-    } catch (cause) { setError(readableError(cause instanceof Error ? cause.message : "Decision failed")); }
-    finally { setBusy(false); }
+    if (await postAction("/api/d5o-hosted/customer-work", { command: domain, arguments: args },
+      "Decision was not recorded")) setReason("");
   }
   async function respondDesignReceipt(releaseId: string, responseValue: "Accepted" | "Returned") {
     if (!detail || busy || designNote.trim().length < 15) return;
-    setBusy(true); setError("");
-    try {
-      const response = await fetch(`/api/d5o-hosted/customer-work?workspace=${encodeURIComponent(workspace)}`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workId: detail.record.id, command: "design-receipt",
-          commandId: crypto.randomUUID(), arguments: {
+    if (await postAction("/api/d5o-hosted/customer-work", { command: "design-receipt",
+      arguments: {
             p_action: "respond-receipt",
             p_input: { releaseId, response: responseValue, note: designNote.trim() },
             p_expected_source_revision: detail.revision,
-            p_expected_decision_revision: detail.record.design?.authorityRevision ?? 0 } }) });
-      const result = await response.json() as { error?: string };
-      if (!response.ok) throw Error(result.error ?? "Package receipt could not be recorded");
-      setDesignNote("");
-      await load();
-    } catch (cause) { setError(readableError(cause instanceof Error ? cause.message : "Receipt failed")); }
-    finally { setBusy(false); }
+            p_expected_decision_revision: detail.record.design?.authorityRevision ?? 0 } },
+      "Package receipt could not be recorded")) setDesignNote("");
+  }
+  async function executeDesign(action: CustomerDesignAction, input: Record<string, unknown>) {
+    if (!detail || busy) return;
+    await postAction("/api/d5o-hosted/customer-design-action", { action, input,
+          sourceRevision: detail.revision,
+          catalogRevision: detail.catalogRevision,
+          packageCount: detail.connectedPackages?.length ?? 0,
+          handoffRevision: detail.record.discovery?.designHandoff?.revision,
+          designRevision: detail.record.design?.authorityRevision ?? 0 },
+      "Design action could not be recorded");
   }
   return <section className="d5o-customer-work-content">
     <aside className="d5o-customer-work-list"><div><strong>{list?.workspaceName ?? workspace}</strong>
@@ -216,6 +220,9 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
                     detail.record.definition?.developHandoff?.status === "submitted" ? "accept-handoff" : "submit-handoff", {}, "define")}>{detail.record.definition?.developHandoff?.status === "submitted" ? "Receive approved scope" : "Send approved scope"}</button>}
               </div>}</>}
           {phase === "Design" && <><p>{detail.record.design?.packages?.length ?? 0} package(s); {detail.record.design?.releases?.filter((item) => item.status === "Accepted").length ?? 0} accepted release(s).</p>
+            {detail.phaseStatus.replayMatches && <CustomerDesignActions workspace={workspace}
+              work={detail.record} connectedPackages={detail.connectedPackages ?? []}
+              role={role} busy={busy} onAction={executeDesign} />}
             {detail.phaseStatus.replayMatches && detail.designActions?.length > 0 &&
               <div className="d5o-customer-actions"><label htmlFor="design-receipt-note">Package receipt reason</label>
                 <input id="design-receipt-note" value={designNote} onChange={(event) => setDesignNote(event.target.value)}

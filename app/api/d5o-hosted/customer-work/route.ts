@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 import { customerWorkScope, type CustomerRpcError } from "@/lib/d5o/hosted/customer-work-scope";
 import { HostedStateError } from "@/lib/d5o/hosted/prototype-context";
-import { defineTasks, designReceiptTasks, type CustomerWorkTask } from "@/lib/d5o/hosted/customer-work-tasks";
+import { defineTasks, designTasks, designReceiptTasks, type CustomerWorkTask } from "@/lib/d5o/hosted/customer-work-tasks";
 import { buildCustomerDefineDraft, parseDefineDraft } from "@/lib/d5o/hosted/customer-define-draft";
 
 export const dynamic = "force-dynamic";
@@ -13,6 +13,9 @@ type WorkRow = { id: string; canonicalWorkId?: string; title: string;
   type?: string; workspace?: string;
   discovery?: { pursuitControl?: { handoff?: { status?: string } } };
   design?: { authorityRevision?: number;
+    packages?: Array<{ packageId: string }>;
+    documents?: Array<{ id: string; status: string; submittedByActorId?: string }>;
+    reviews?: Array<{ id: string; packageId: string; discipline: string; status: string; requestedByActorId?: string }>;
     releases?: Array<{ id: string; packageId: string; status: string; issuedByActorId?: string }> };
   definition?: { status?: string; authorityRevision?: number;
     reviews?: { commercial?: string; delivery?: string };
@@ -36,12 +39,16 @@ export async function GET(request: NextRequest) {
     const records = Array.isArray(loaded.state?.records) ? loaded.state.records as WorkRow[] : [];
     if (!workId) {
       const visible = records.filter((work) => work.workspace === workspace && work.canonicalWorkId);
+      const catalog = await context.read("catalog");
+      const connectedPackages = Array.isArray(catalog.state?.packages)
+        ? catalog.state.packages as Array<{ id?: string; workId?: string }> : [];
       const queued = await call("d5o_hosted_role_actions_v1", { p_workspace_key: workspace });
       if (queued.error || !Array.isArray(queued.data))
         return reply({ error: queued.error?.message ?? "task_queue_unavailable" }, 503);
       const visibleIds = new Set(visible.map((item) => item.id));
       const roleTasks = (queued.data as Array<Record<string, unknown>>)
-        .filter((item) => typeof item.workId === "string" && visibleIds.has(item.workId))
+        .filter((item) => typeof item.workId === "string" && visibleIds.has(item.workId)
+          && item.phase !== "Design")
         .map((item): CustomerWorkTask => ({ id: `role:${item.workId}:${item.kind}:${item.packageId ?? ""}:${item.revision}`,
           workId: item.workId as string, title: String(item.title ?? item.kind ?? "Review Work"),
           phase: String(item.phase ?? "Work"), status: "view_only",
@@ -51,6 +58,7 @@ export async function GET(request: NextRequest) {
       return reply({ workspace, workspaceName: context.actor.workspaceName ?? workspace,
       role: context.actor.role, revision: loaded.revision,
       tasks: [...defineTasks(visible, context.actor.role, context.actor.id),
+        ...designTasks(visible, context.actor.role, context.actor.id, connectedPackages),
         ...designReceiptTasks(visible, context.actor.role, context.actor.id), ...roleTasks],
       records: visible
         .map(({ id, title, customer, site, owner, type, phaseConfigurationVersionId }) =>
@@ -62,9 +70,14 @@ export async function GET(request: NextRequest) {
     const status = await call("d5o_hosted_phase_status_read_v1",
       { p_workspace_key: workspace, p_presentation_id: workId });
     if (status.error) return reply({ error: status.error.message }, errorStatus(status.error));
+    const catalog = await context.read("catalog");
+    const connectedPackages = (Array.isArray(catalog.state?.packages) ? catalog.state.packages as
+      Array<{ id?: string; workId?: string; name?: string }> : [])
+      .filter((item) => item.workId === workId).map((item) => ({ packageId: item.id, name: item.name }));
     return reply({ workspace, workspaceName: context.actor.workspaceName ?? workspace,
       role: context.actor.role, canEdit: context.canEdit, revision: loaded.revision,
-      record, defineActions: defineTasks([record], context.actor.role, context.actor.id),
+      record, connectedPackages, catalogRevision: catalog.revision,
+      defineActions: defineTasks([record], context.actor.role, context.actor.id),
       designActions: designReceiptTasks([record], context.actor.role, context.actor.id),
       phaseStatus: status.data });
   } catch (error) {
