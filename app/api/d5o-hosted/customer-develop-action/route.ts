@@ -85,6 +85,9 @@ export async function POST(request: NextRequest) {
     if (raw.length > 20000) return reply({ error: "command_too_large" }, 413);
     body = JSON.parse(raw) as Input;
   } catch { return reply({ error: "invalid_command" }, 400); }
+  if (body && (Object.hasOwn(body, "configurationVersionId")
+    || Object.hasOwn(body, "policyVersionId")))
+    return reply({ error: "client_configuration_override_forbidden" }, 400);
   if (!body || !body.workId || !/^[0-9a-f-]{36}$/i.test(body.commandId ?? "")
     || !Number.isInteger(body.expectedRevision)
     || !["save-booking", "publish-week", "respond-booking", "authorize-start"].includes(body.action ?? ""))

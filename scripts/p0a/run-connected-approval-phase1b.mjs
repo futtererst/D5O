@@ -7,7 +7,10 @@ import { createClient } from "@supabase/supabase-js";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
-const output = resolve(root, "docs/architecture/evidence/phase1b-connected-results.json");
+const phase2ht = process.env.D5O_PHASE2HT_APPROVAL_GATE === "1";
+const output = resolve(root, phase2ht
+  ? "docs/architecture/evidence/phase2ht-approval-gate-results.json"
+  : "docs/architecture/evidence/phase1b-connected-results.json");
 const evidence = { sourceCommit: "7b8a629d57f4652acd7545ac244555e228a563d4",
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
 let runtime;
@@ -168,6 +171,41 @@ try {
     assert.equal(decided.data.status, "approved");
     return { status: decided.data.status, wrongActorDenied: true, crossTenantDenied: true };
   });
+  if(phase2ht) await check("material scope change invalidates old approval before authorization and job",async()=>{
+    const previous=await readApproval("a_ops","a");
+    assert.equal(previous.data?.status,"approved");
+    const oldId=previous.data?.approvalId;
+    sql(`update d5o_hosted.connected_operate_states set state=jsonb_set(state,
+      '{requests,0,serviceEstimate,input,lines,0,description}',
+      ${q(JSON.stringify("Expanded module replacement and independent testing"))}::jsonb)
+      where workspace_id=${q(ids.a.workspace)} and work_id=${q(ids.a.work)};`);
+    const stale=await readApproval("a_ops","a");
+    assert.equal(stale.data?.status,"stale");
+    const before=JSON.parse(sql(`select pg_catalog.jsonb_build_object('jobs',state->'jobs',
+      'revision',decision_revision)::text from d5o_hosted.connected_operate_states
+      where workspace_id=${q(ids.a.workspace)} and work_id=${q(ids.a.work)};`));
+    const [authorization,creation]=await Promise.all([
+      pricing("a_ops","a","phase2ht-stale-scope-auth"),
+      job("a_pm","a","phase2ht-stale-scope-job")]);
+    for(const result of [authorization,creation]) {
+      assert.equal(result.error?.code,"23514",JSON.stringify(result));
+      assert.match(result.error.message,/connected_service_approval_required/);
+    }
+    const after=JSON.parse(sql(`select pg_catalog.jsonb_build_object('jobs',state->'jobs',
+      'revision',decision_revision)::text from d5o_hosted.connected_operate_states
+      where workspace_id=${q(ids.a.workspace)} and work_id=${q(ids.a.work)};`));
+    assert.deepEqual(after,before);
+    const requested=await approve("a_pm","a","request","phase2ht-scope-request");
+    assert(!requested.error,requested.error?.message);
+    const renewed=await approve("a_ops","a","approve","phase2ht-scope-approve");
+    assert(!renewed.error,renewed.error?.message);
+    assert.notEqual(renewed.data.approvalId,oldId);
+    const current=await readApproval("a_ops","a");
+    assert.equal(current.data?.status,"approved");
+    return {oldApprovalId:oldId,newApprovalId:renewed.data.approvalId,
+      staleAuthorization:authorization.error.code,staleJob:creation.error.code,
+      unchangedOperateState:true};
+  });
   await check("A valid approval authorizes customer decision and creates job", async () => {
     const passed = JSON.parse(sql(`select d5o_hosted.require_connected_service_approval_v1(${q(ids.a.workspace)},${q(ids.a.work)},${q(ids.a.request)})::text;`));
     assert.equal(passed.approvalRequired, true);
@@ -287,9 +325,10 @@ try {
     const approved = await approve("a_ops", "a", "approve", "phase1b-a-revised-approve");
     assert(!approved.error, approved.error?.message);
     const rows = JSON.parse(sql(`select json_agg(json_build_object('id',approval_id,'amount',amount_minor,'status',status) order by amount_minor) from d5o_hosted.service_approval_requests where work_id=${q(ids.a.work)} and service_request_id=${q(ids.a.request)};`));
-    assert.equal(rows.length, 2);
+    assert.equal(rows.length, phase2ht ? 3 : 2);
     assert.notEqual(rows[0].id, rows[1].id);
-    assert.deepEqual(rows.map((row) => row.amount), [1500000, 1600000]);
+    assert.deepEqual(rows.map((row) => row.amount), phase2ht
+      ? [1500000,1500000,1600000] : [1500000,1600000]);
     assert(rows.every((row) => row.status === "approved"));
     const current = await readApproval("a_ops", "a");
     assert.equal(current.data?.status, "approved");
@@ -332,11 +371,12 @@ try {
   });
   await check("decision audit retains tenant and pinned version", async () => {
     const rows = JSON.parse(sql(`select json_agg(json_build_object('workspace',workspace_id,'version',configuration_version_id,'actor',actor_user_id,'approval',approval_id)) from d5o_hosted.service_approval_events where work_id=${q(ids.a.work)};`));
-    assert.equal(rows.length, 4);
+    assert.equal(rows.length,phase2ht?6:4);
     assert(rows.every((row) => row.workspace === ids.a.workspace && row.version === ids.a.version && row.approval));
     return { eventCount: rows.length, tenant: "A", pinnedVersion: ids.a.version };
   });
-} catch (error) { evidence.setupError = String(error.message).slice(0, 1400); }
+} catch (error) { evidence.setupError = String(error.message).slice(phase2ht ? -2500 : 0,
+  phase2ht ? undefined : 1400); }
 finally {
   if (runtime) evidence.cleanup = cleanupP0aRuntime(runtime);
   evidence.finishedAt = new Date().toISOString();
@@ -345,6 +385,8 @@ finally {
     setupError: Boolean(evidence.setupError), cleanupVerified: Boolean(evidence.cleanup?.clean) };
   mkdirSync(resolve(root, "docs/architecture/evidence"), { recursive: true });
   writeFileSync(output, `${JSON.stringify(evidence, null, 2)}\n`);
-  console.log(JSON.stringify({ ...evidence.summary, output: "docs/architecture/evidence/phase1b-connected-results.json" }));
+  console.log(JSON.stringify({ ...evidence.summary, output: phase2ht
+    ? "docs/architecture/evidence/phase2ht-approval-gate-results.json"
+    : "docs/architecture/evidence/phase1b-connected-results.json" }));
   if (evidence.setupError || evidence.summary.failed || !evidence.summary.cleanupVerified) process.exitCode = 1;
 }

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 import { customerWorkScope, type CustomerRpcError } from "@/lib/d5o/hosted/customer-work-scope";
 import { HostedStateError } from "@/lib/d5o/hosted/prototype-context";
-import { defineTasks, designTasks, designReceiptTasks, developTasks, type CustomerWorkTask } from "@/lib/d5o/hosted/customer-work-tasks";
+import { defineTasks, designTasks, designReceiptTasks, developTasks, serviceTasks,
+  type ServiceTaskWork, type ServiceApprovalTaskState, type CustomerWorkTask } from "@/lib/d5o/hosted/customer-work-tasks";
 import { buildCustomerDefineDraft, parseDefineDraft } from "@/lib/d5o/hosted/customer-define-draft";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +19,8 @@ type WorkRow = { id: string; canonicalWorkId?: string; title: string;
     reviews?: Array<{ id: string; packageId: string; discipline: string; status: string; requestedByActorId?: string }>;
     releases?: Array<{ id: string; packageId: string; status: string; issuedByActorId?: string }> };
   deploy?: { permits?: Array<{ packageId?: string; status?: string }> };
+  operate?: { activation?: { status?: string }; requests?: Array<{
+    id: string; status?: string; serviceEstimate?: { status?: string } }> };
   definition?: { status?: string; authorityRevision?: number;
     reviews?: { commercial?: string; delivery?: string };
     decisions?: Array<{ action?: string; actorId?: string; reviewRole?: string }>;
@@ -68,13 +71,24 @@ export async function GET(request: NextRequest) {
           workId: item.workId as string, title: String(item.kind ?? "Review execution authority"),
           phase: "Develop", status: "available", revision: Number(item.revision) || 0,
           action: String(item.focus ?? "review") })));
+      const serviceApprovals: Record<string, ServiceApprovalTaskState> = {};
+      await Promise.all(visible.flatMap((work) => (work.operate?.requests ?? [])
+        .filter((item) => item.serviceEstimate?.status === "Approved")
+        .map(async (item) => {
+          const result = await call("d5o_hosted_connected_service_approval_read_v1", {
+            p_workspace_key: workspace, p_parent_presentation_id: work.id,
+            p_request_id: item.id });
+          if (!result.error && result.data && typeof result.data === "object")
+            serviceApprovals[`${work.id}:${item.id}`] = result.data as ServiceApprovalTaskState;
+        })));
       return reply({ workspace, workspaceName: context.actor.workspaceName ?? workspace,
       role: context.actor.role, revision: loaded.revision,
       tasks: [...defineTasks(visible, context.actor.role, context.actor.id),
         ...designTasks(visible, context.actor.role, context.actor.id, connectedPackages),
         ...designReceiptTasks(visible, context.actor.role, context.actor.id),
         ...developTasks(visible, context.actor.role, schedule.state),
-        ...authorityTasks, ...roleTasks],
+        ...authorityTasks, ...serviceTasks(visible as ServiceTaskWork[], context.actor.role,
+          serviceApprovals), ...roleTasks],
       records: visible
         .map(({ id, title, customer, site, owner, type, phaseConfigurationVersionId }) =>
           ({ id, title, customer, site, owner, type, phaseConfigurationVersionId })) });

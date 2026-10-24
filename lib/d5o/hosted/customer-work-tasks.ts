@@ -18,6 +18,56 @@ export type CustomerTaskWork = { id: string;
   developHandoff?: { status?: string; submittedByActorId?: string } };
   deploy?: { permits?: Array<{ packageId?: string; status?: string }> } };
 
+export type ServiceTaskWork = CustomerTaskWork & { operate?: {
+  activation?: { status?: string };
+  requests?: Array<{ id: string; title?: string; status?: string; coverage?: string;
+    serviceEstimate?: { status?: string; revision?: number };
+    serviceAuthorization?: { estimateRevision?: number } }>;
+  jobs?: Array<{ requestId?: string; status?: string }> } };
+export type ServiceApprovalTaskState = { status?: string; canRequest?: boolean;
+  canDecide?: boolean; canAuthorize?: boolean; canCreateJob?: boolean };
+
+export function serviceTasks(records: ServiceTaskWork[], role: string,
+  approvals: Record<string, ServiceApprovalTaskState>): CustomerWorkTask[] {
+  return records.flatMap((work) => {
+    const operate = work.operate;
+    if (operate?.activation?.status !== "Active") return [];
+    if ((operate.requests ?? []).length === 0 && role === "project_manager")
+      return [{ id: `service:${work.id}:open-request`, workId: work.id, phase: "Operate",
+        title: "Open connected service request", status: "available", revision: 0,
+        action: "open-request" }];
+    return (operate.requests ?? []).flatMap((request) => {
+      const approval = approvals[`${work.id}:${request.id}`];
+      const task = (action: string, title: string): CustomerWorkTask => ({
+        id: `service:${work.id}:${request.id}:${action}:${request.serviceEstimate?.revision ?? 0}`,
+        workId: work.id, phase: "Operate", title, status: "available",
+        revision: request.serviceEstimate?.revision ?? 0, action
+      });
+      if (request.status === "New" && role === "operations_leader")
+        return [task("triage-request", `Triage service request: ${request.title ?? "Service request"}`)];
+      if (!["Triaged", "In progress"].includes(request.status ?? "")) return [];
+      if (["Chargeable", "Partially covered"].includes(request.coverage ?? "")) {
+        if ((!request.serviceEstimate || request.serviceEstimate.status === "Draft")
+          && role === "project_manager") return [task("prepare-estimate", "Prepare service estimate")];
+        if (request.serviceEstimate?.status === "Pricing review" && role === "operations_leader")
+          return [task("approve-pricing", "Review priced service")];
+        if (request.serviceEstimate?.status !== "Approved") return [];
+        if (approval?.canDecide) return [task("decide-approval", "Decide service threshold approval")];
+        if (approval?.canRequest) return [task("request-approval", "Request service threshold approval")];
+        if (!request.serviceAuthorization && approval?.canAuthorize)
+          return [task("authorize-service", "Record customer service authorization")];
+        if (request.serviceAuthorization?.estimateRevision !== request.serviceEstimate.revision)
+          return [];
+        if (!approval?.canCreateJob) return [];
+      }
+      if (role === "project_manager" && !(operate.jobs ?? []).some((job) =>
+        job.requestId === request.id && job.status !== "Cancelled"))
+        return [task("create-job", "Create executable service job")];
+      return [];
+    });
+  });
+}
+
 type DevelopSchedule = { assignments?: Array<{ id?: string; workId?: string; packageId?: string }>;
   publications?: Array<{ id?: string; assignments?: Array<{ id?: string }> }>;
   receipts?: Array<{ assignmentId?: string; publicationId?: string; response?: string }> };

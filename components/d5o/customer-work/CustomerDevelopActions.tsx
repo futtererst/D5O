@@ -14,6 +14,7 @@ type Schedule = { revision: number; state: { anchorDate?: string; assignments?: 
   publications?: Publication[]; receipts?: Array<{ assignmentId: string; publicationId: string;
     response?: string }> } };
 type Person = { person: string; displayName: string; qualifications: string[];
+  qualificationExpiresOn?: Record<string, string>;
   weeklyCapacityHours: number; active: boolean; bound: boolean };
 type Snapshot = { sourceRevision: number; role: string; work: Work;
   schedule: Schedule; workforce: { people: Person[] } };
@@ -56,6 +57,8 @@ export function CustomerDevelopActions({ workspace, workId, role, onChanged }: {
       || overnight && block.date === nextDate));
   const qualified = useMemo(() => (snapshot?.workforce.people ?? []).filter((item) =>
     item.active && item.bound && item.qualifications.includes(demand?.qualification ?? "")
+    && (!item.qualificationExpiresOn?.[demand?.qualification ?? ""]
+      || item.qualificationExpiresOn[demand?.qualification ?? ""] >= (overnight ? nextDate : slot?.date ?? ""))
     && !(snapshot?.schedule.state.availabilityBlocks ?? []).some((block) =>
       block.person === item.person && (block.date === slot?.date
         || overnight && block.date === nextDate))

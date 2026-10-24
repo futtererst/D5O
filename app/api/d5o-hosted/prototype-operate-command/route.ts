@@ -8,18 +8,20 @@ import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import { hostedConfigurationInventory } from "@/lib/d5o/hosted/configuration-inventory";
 import { resolvePublishedPhaseConfiguration } from "@/components/d5o/platform/published-phase-configuration";
 import { createRybexSupabaseAdminClient, createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
+import { customerWorkScope } from "@/lib/d5o/hosted/customer-work-scope";
 
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 export async function POST(request: NextRequest) {
   if (!validLocalScheduleOrigin(request.headers)) return reply({ error: "invalid_origin" }, 403);
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
-  if (!["rybex", "rotork"].includes(workspace)) return reply({ error: "invalid_workspace" }, 400);
+  const pilot = ["rybex", "rotork"].includes(workspace);
   try {
     const raw = await request.text(); if (raw.length > 100_000) return reply({ error: "command_too_large" }, 413);
     const command = JSON.parse(raw) as OperateCommand;
     if (!command?.workId || !command.action || !command.commandId || !Number.isInteger(command.expectedRevision)) return reply({ error: "invalid_command" }, 400);
-    const context = await hostedPrototypeContext(workspace);
+    const context = pilot ? await hostedPrototypeContext(workspace)
+      : (await customerWorkScope(workspace)).context;
     if (!context.canEdit && !(command.action === "update-finance" && context.actor.role === "billing_commercial_lead"))
       return reply({ error: "workspace_forbidden" }, 403);
     const loaded = await context.read("work"), records = loaded.state?.records as WorkRecord[] | undefined;

@@ -2,20 +2,27 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
 import { customerAdminWorkspaceAllowed } from "@/lib/d5o/admin/customer-workspace";
+import { customerWorkScope } from "@/lib/d5o/hosted/customer-work-scope";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
+const approvalWorkspaceAllowed = (workspace: string) => customerAdminWorkspaceAllowed(workspace)
+  || (workspace !== "rotork" && /^[a-z][a-z0-9_-]{2,63}$/.test(workspace));
+async function approvalScope(workspace: string) {
+  if (workspace === "rybex" || workspace === "rotork") await hostedPrototypeContext(workspace);
+  else await customerWorkScope(workspace);
+}
 
 export async function GET(request: NextRequest) {
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
   const parentPresentationId = request.nextUrl.searchParams.get("parentPresentationId") ?? "";
   const requestId = request.nextUrl.searchParams.get("requestId") ?? "";
-  if (!customerAdminWorkspaceAllowed(workspace) || !parentPresentationId
+  if (!approvalWorkspaceAllowed(workspace) || !parentPresentationId
     || parentPresentationId.length > 160 || !requestId || requestId.length > 120)
     return reply({ error: "invalid_service_approval_read" }, 400);
   try {
-    await hostedPrototypeContext(workspace);
+    await approvalScope(workspace);
     const client = await createRybexSupabaseServerClient();
     const { data, error } = await (client.rpc as unknown as (name: string, args: Record<string, unknown>) =>
       Promise<{ data: unknown; error: { code?: string; message: string } | null }>)(
@@ -40,7 +47,7 @@ export async function POST(request: NextRequest) {
       amountMinor?: number; currency?: string; commandId?: string;
       parentPresentationId?: string; requestId?: string };
     const connected = input.parentPresentationId !== undefined || input.requestId !== undefined;
-    if (!input.workspace || !customerAdminWorkspaceAllowed(input.workspace)
+    if (!input.workspace || !approvalWorkspaceAllowed(input.workspace)
       || (connected ? typeof input.parentPresentationId !== "string"
         || input.parentPresentationId.length < 1 || input.parentPresentationId.length > 160
         || typeof input.requestId !== "string" || input.requestId.length < 1
@@ -51,7 +58,7 @@ export async function POST(request: NextRequest) {
       || typeof input.commandId !== "string"
       || input.commandId.length < 8 || input.commandId.length > 120)
       return reply({ error: "invalid_service_approval_command" }, 400);
-    await hostedPrototypeContext(input.workspace);
+    await approvalScope(input.workspace);
     const client = await createRybexSupabaseServerClient();
     const { data, error } = await (client.rpc as unknown as (name: string, args: Record<string, unknown>) =>
       Promise<{ data: unknown; error: { code?: string; message: string } | null }>)(

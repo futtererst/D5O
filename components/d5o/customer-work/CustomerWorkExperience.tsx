@@ -5,6 +5,8 @@ import { CustomerDefineDraftForm } from "./CustomerDefineDraftForm";
 import { CustomerDesignActions } from "./CustomerDesignActions";
 import { CustomerDevelopActions } from "./CustomerDevelopActions";
 import { CustomerDevelopAuthority } from "./CustomerDevelopAuthority";
+import { CustomerServiceActions } from "./CustomerServiceActions";
+import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import type { CustomerDesignAction } from "@/lib/d5o/hosted/customer-design-contract";
 import type { DefineDraftInput } from "@/lib/d5o/hosted/customer-define-draft";
 
@@ -244,7 +246,10 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
             <CustomerDevelopActions workspace={workspace} workId={detail.record.id} role={role}
               onChanged={() => load()} /></>}
           {phase === "Deploy" && <p>Whole-Work customer acceptance: {detail.record.deploy?.workAcceptance?.receipt ?? "Pending"}.</p>}
-          {phase === "Operate" && <p>Support {status.supportStatus ?? "Pending"}; financial closeout {status.financialCloseout ?? "Pending"}.</p>}
+          {phase === "Operate" && <><p>Support {status.supportStatus ?? "Pending"}; financial closeout {status.financialCloseout ?? "Pending"}.</p>
+            {detail.phaseStatus.replayMatches && detail.record.operate?.activation?.status === "Active" &&
+              <CustomerServiceActions work={detail.record as unknown as WorkRecord}
+                sourceRevision={detail.revision} role={role} onChanged={() => load()} />}</>}
           {canOperate && detail.phaseStatus.replayMatches && phase === "Operate" && status.status === "active" &&
             detail.record.deploy?.workAcceptance?.receipt === "Accepted" &&
             <div className="d5o-customer-actions">
