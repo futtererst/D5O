@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 import { customerWorkScope, type CustomerRpcError } from "@/lib/d5o/hosted/customer-work-scope";
 import { HostedStateError } from "@/lib/d5o/hosted/prototype-context";
-import { defineTasks, designTasks, designReceiptTasks, type CustomerWorkTask } from "@/lib/d5o/hosted/customer-work-tasks";
+import { defineTasks, designTasks, designReceiptTasks, developTasks, type CustomerWorkTask } from "@/lib/d5o/hosted/customer-work-tasks";
 import { buildCustomerDefineDraft, parseDefineDraft } from "@/lib/d5o/hosted/customer-define-draft";
 
 export const dynamic = "force-dynamic";
@@ -17,6 +17,7 @@ type WorkRow = { id: string; canonicalWorkId?: string; title: string;
     documents?: Array<{ id: string; status: string; submittedByActorId?: string }>;
     reviews?: Array<{ id: string; packageId: string; discipline: string; status: string; requestedByActorId?: string }>;
     releases?: Array<{ id: string; packageId: string; status: string; issuedByActorId?: string }> };
+  deploy?: { permits?: Array<{ packageId?: string; status?: string }> };
   definition?: { status?: string; authorityRevision?: number;
     reviews?: { commercial?: string; delivery?: string };
     decisions?: Array<{ action?: string; actorId?: string; reviewRole?: string }>;
@@ -42,6 +43,7 @@ export async function GET(request: NextRequest) {
       const catalog = await context.read("catalog");
       const connectedPackages = Array.isArray(catalog.state?.packages)
         ? catalog.state.packages as Array<{ id?: string; workId?: string }> : [];
+      const schedule = await context.read("schedule");
       const queued = await call("d5o_hosted_role_actions_v1", { p_workspace_key: workspace });
       if (queued.error || !Array.isArray(queued.data))
         return reply({ error: queued.error?.message ?? "task_queue_unavailable" }, 503);
@@ -55,11 +57,24 @@ export async function GET(request: NextRequest) {
           revision: Number(item.revision) || 0,
           dueDate: typeof item.dueDate === "string" ? item.dueDate : undefined,
           packageId: typeof item.packageId === "string" ? item.packageId : undefined }));
+      const authorityQueues = await Promise.all([
+        call("d5o_purchase_authority_actions_v1", { p_workspace_key: workspace }),
+        call("d5o_labor_authority_actions_v1", { p_workspace_key: workspace })]);
+      if (authorityQueues.some((item) => item.error || !Array.isArray(item.data)))
+        return reply({ error: "authority_queue_unavailable" }, 503);
+      const authorityTasks = authorityQueues.flatMap((queue) => (queue.data as Array<Record<string, unknown>>)
+        .filter((item) => typeof item.workId === "string" && visibleIds.has(item.workId))
+        .map((item): CustomerWorkTask => ({ id: `develop:${item.workId}:${item.kind}:${item.revision}`,
+          workId: item.workId as string, title: String(item.kind ?? "Review execution authority"),
+          phase: "Develop", status: "available", revision: Number(item.revision) || 0,
+          action: String(item.focus ?? "review") })));
       return reply({ workspace, workspaceName: context.actor.workspaceName ?? workspace,
       role: context.actor.role, revision: loaded.revision,
       tasks: [...defineTasks(visible, context.actor.role, context.actor.id),
         ...designTasks(visible, context.actor.role, context.actor.id, connectedPackages),
-        ...designReceiptTasks(visible, context.actor.role, context.actor.id), ...roleTasks],
+        ...designReceiptTasks(visible, context.actor.role, context.actor.id),
+        ...developTasks(visible, context.actor.role, schedule.state),
+        ...authorityTasks, ...roleTasks],
       records: visible
         .map(({ id, title, customer, site, owner, type, phaseConfigurationVersionId }) =>
           ({ id, title, customer, site, owner, type, phaseConfigurationVersionId })) });

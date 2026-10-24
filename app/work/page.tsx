@@ -36,7 +36,9 @@ export default async function WorkHomePage({ searchParams }: {
     const selected = params?.workspace;
     if (selected && entries.length === 0) redirect("/work");
     if (!selected && entries.length === 1 && entries[0].role === "field_worker")
-      redirect(`/work/my-schedule?workspace=${encodeURIComponent(entries[0].workspaceKey)}`);
+      redirect(entries[0].workspaceKey === "rybex" || entries[0].workspaceKey === "rotork"
+        ? `/work/my-schedule?workspace=${encodeURIComponent(entries[0].workspaceKey)}`
+        : `/work/customer/${encodeURIComponent(entries[0].workspaceKey)}/assignments`);
     if (!selected) return <main className={styles.entry}>
       <div className={styles.brand}>D5O <span>System of work</span></div>
       <section className={styles.intro}>
@@ -48,7 +50,9 @@ export default async function WorkHomePage({ searchParams }: {
         data-workspace={entry.workspaceKey} key={entry.workspaceKey}
         href={entry.workspaceKey === "rybex" || entry.workspaceKey === "rotork"
           ? `/work?workspace=${encodeURIComponent(entry.workspaceKey)}`
-          : `/work/customer/${encodeURIComponent(entry.workspaceKey)}`}>
+          : entry.role === "field_worker"
+            ? `/work/customer/${encodeURIComponent(entry.workspaceKey)}/assignments`
+            : `/work/customer/${encodeURIComponent(entry.workspaceKey)}`}>
         <span className={styles.marker} aria-hidden="true" />
         <div><small>WORKSPACE</small><h2>{entry.workspaceName}</h2>
           <p>{entry.workspaceKey === "rybex" ? "Technical delivery and controlled turnover"

@@ -1,0 +1,136 @@
+{
+  "baseline": "d1537c2070eee6926ad227c69dcdc43418bb381d",
+  "generatedAt": "2026-10-24T13:01:53.173Z",
+  "gateA": {
+    "passed": 37,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  },
+  "gateB": {
+    "passed": 40,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  },
+  "initialInheritedSweep": {
+    "phase1": {
+      "exitCode": 0,
+      "summary": {
+        "passed": 18,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    },
+    "phase1b": {
+      "exitCode": 0,
+      "summary": {
+        "passed": 13,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    },
+    "phase2a": {
+      "exitCode": 0,
+      "summary": {
+        "passed": 11,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    },
+    "phase2b": {
+      "exitCode": 1,
+      "summary": {
+        "passed": 17,
+        "failed": 1,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    },
+    "phase2c": {
+      "exitCode": 1,
+      "summary": {
+        "passed": 21,
+        "failed": 2,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    },
+    "phase2d": {
+      "exitCode": 0,
+      "summary": {
+        "passed": 27,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    },
+    "p0a": {
+      "exitCode": 0,
+      "summary": {
+        "passed": 16,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    }
+  },
+  "correctedReruns": {
+    "phase2b": {
+      "passed": 18,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true
+    },
+    "phase2c": {
+      "passed": 23,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true
+    }
+  },
+  "connectedPhase2g": {
+    "passed": 48,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  },
+  "phase1b": {
+    "passed": 13,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  },
+  "staticChecks": {
+    "phaseContract": {
+      "exitCode": 0
+    },
+    "phaseConfiguration": {
+      "exitCode": 0
+    },
+    "scannerInvariant": {
+      "exitCode": 0
+    }
+  },
+  "actionCoverage": {
+    "BROWSER QUALIFIED": 32,
+    "BACKEND ONLY": 18,
+    "DUPLICATE INVENTORY ENTRY": 2,
+    "UI EXISTS BUT UNVERIFIED": 2,
+    "requiredActions": 54,
+    "browserCoveragePercent": 59,
+    "mandatoryDesignActions": 14,
+    "browserQualifiedMandatoryDesign": 14,
+    "mandatoryDevelopActions": 14,
+    "browserQualifiedMandatoryDevelop": 10
+  },
+  "historicalBlocked": [
+    "original sealed M1 RUN-MANIFEST.json",
+    "historical connected pilot fixture",
+    "full Deploy/Operate employee browser journey"
+  ],
+  "cleanupVerified": true
+}

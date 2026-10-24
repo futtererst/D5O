@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { CustomerDefineDraftForm } from "./CustomerDefineDraftForm";
 import { CustomerDesignActions } from "./CustomerDesignActions";
+import { CustomerDevelopActions } from "./CustomerDevelopActions";
+import { CustomerDevelopAuthority } from "./CustomerDevelopAuthority";
 import type { CustomerDesignAction } from "@/lib/d5o/hosted/customer-design-contract";
 import type { DefineDraftInput } from "@/lib/d5o/hosted/customer-define-draft";
 
@@ -21,7 +23,9 @@ type CustomerTask = { id: string; workId: string; title: string; phase: string;
   status: "available" | "view_only"; revision: number; packageId?: string;
   releaseId?: string; dueDate?: string; action?: string; reviewRole?: string };
 type WorkDetail = WorkSummary & { canonicalWorkId: string; workspace: string;
-  discovery?: { designHandoff?: { status?: string; revision?: number } };
+  discovery?: { outcome?: string; proposal?: { package?: { revision?: number } };
+    designHandoff?: { status?: string; revision?: number; authorityRevision?: number;
+      submittedByActorId?: string } };
   definition?: { status?: string; authorityRevision?: number;
     scopeControl?: { requirements?: Array<{ id: string; state?: string; description?: string }> };
     reviews?: { commercial?: string; delivery?: string };
@@ -154,7 +158,9 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
           sourceRevision: detail.revision,
           catalogRevision: detail.catalogRevision,
           packageCount: detail.connectedPackages?.length ?? 0,
-          handoffRevision: detail.record.discovery?.designHandoff?.revision,
+          handoffRevision: (detail.record.discovery?.designHandoff?.revision ?? 0) +
+            (action === "submit-handoff" ? 1 : 0),
+          handoffDecisionRevision: detail.record.discovery?.designHandoff?.authorityRevision ?? 0,
           designRevision: detail.record.design?.authorityRevision ?? 0 },
       "Design action could not be recorded");
   }
@@ -232,6 +238,11 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
                   <button disabled={busy || designNote.trim().length < 15} onClick={() => void respondDesignReceipt(task.releaseId ?? "", "Accepted")}>Accept released package</button>
                   <button disabled={busy || designNote.trim().length < 15} onClick={() => void respondDesignReceipt(task.releaseId ?? "", "Returned")}>Return released package</button>
                 </div>)}</div>}</>}
+          {phase === "Develop" && detail.phaseStatus.replayMatches &&
+            <><CustomerDevelopAuthority workspace={workspace} workId={detail.record.id} role={role}
+              onChanged={() => load()} />
+            <CustomerDevelopActions workspace={workspace} workId={detail.record.id} role={role}
+              onChanged={() => load()} /></>}
           {phase === "Deploy" && <p>Whole-Work customer acceptance: {detail.record.deploy?.workAcceptance?.receipt ?? "Pending"}.</p>}
           {phase === "Operate" && <p>Support {status.supportStatus ?? "Pending"}; financial closeout {status.financialCloseout ?? "Pending"}.</p>}
           {canOperate && detail.phaseStatus.replayMatches && phase === "Operate" && status.status === "active" &&

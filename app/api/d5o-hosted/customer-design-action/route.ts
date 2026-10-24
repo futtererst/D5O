@@ -10,10 +10,12 @@ const reply = (value: unknown, status = 200) => NextResponse.json(value,
 const statusFor = (error: CustomerRpcError) => error.code === "42501" ? 403
   : error.code === "23505" ? 409 : ["23514", "22023"].includes(error.code ?? "") ? 422 : 503;
 type Body = { workId?: string; action?: string; commandId?: string;
-  sourceRevision?: number; designRevision?: number; catalogRevision?: number;
+  sourceRevision?: number; designRevision?: number; handoffDecisionRevision?: number;
+  catalogRevision?: number;
   packageCount?: number; handoffRevision?: number; input?: Record<string, unknown> };
 type Work = { id: string; workspace?: string; canonicalWorkId?: string;
-  discovery?: { designHandoff?: { status?: string; revision?: number } };
+  discovery?: { designHandoff?: { status?: string; revision?: number };
+    proposal?: { package?: { revision?: number } } };
   design?: { authorityRevision?: number } };
 
 export async function POST(request: NextRequest) {
@@ -40,14 +42,28 @@ export async function POST(request: NextRequest) {
     if (!record) return reply({ error: "work_unavailable" }, 404);
     // Hosted commands compare revisions inside the same transaction and check
     // idempotency receipts first. Prechecking here would reject a safe replay.
-    if (record.discovery?.designHandoff?.status !== "accepted")
+    const handoffAction = body.action === "submit-handoff" || body.action === "accept-handoff";
+    if (!handoffAction && record.discovery?.designHandoff?.status !== "accepted")
       return reply({ error: "design_handoff_required" }, 409);
     const basis = { p_workspace_key: workspace, p_presentation_id: body.workId,
       p_command_id: body.commandId };
     let args: Record<string, unknown>;
-    if (body.action === "create-package") {
+    if (handoffAction) {
+      if (!Number.isInteger(body.handoffDecisionRevision)
+        || !Number.isInteger(body.handoffRevision)
+        || !Number.isInteger(record.discovery?.proposal?.package?.revision))
+        return reply({ error: "invalid_handoff_basis" }, 400);
+      args = { ...basis,
+        p_action: body.action === "submit-handoff" ? "submit-design-handoff" : "accept-design-handoff",
+        p_due_date: body.action === "submit-handoff" ? body.input.dueDate : null,
+        p_reason: body.action === "accept-handoff" ? body.input.reason : null,
+        p_expected_source_revision: body.sourceRevision,
+        p_expected_decision_revision: body.handoffDecisionRevision,
+        p_offer_revision: record.discovery?.proposal?.package?.revision,
+        p_handoff_revision: body.handoffRevision };
+    } else if (body.action === "create-package") {
       if (!Number.isInteger(body.catalogRevision) || !Number.isInteger(body.packageCount)
-        || body.handoffRevision !== record.discovery.designHandoff.revision)
+        || body.handoffRevision !== record.discovery?.designHandoff?.revision)
         return reply({ error: "invalid_package_basis" }, 400);
       args = { ...basis, p_name: body.input.name, p_owner: body.input.owner,
         p_expected_work_revision: body.sourceRevision, p_expected_catalog_revision: body.catalogRevision,

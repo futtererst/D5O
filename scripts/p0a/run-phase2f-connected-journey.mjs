@@ -10,10 +10,16 @@ import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
 const phase2g = process.env.D5O_PHASE2G === "1";
-const phase2hr = process.env.D5O_PHASE2HR === "1";
+const phase2hsGateB = process.env.D5O_PHASE2HS_GATE_B === "1";
+const phase2hsGateA = process.env.D5O_PHASE2HS_GATE_A === "1" || phase2hsGateB;
+const phase2hr = process.env.D5O_PHASE2HR === "1" || phase2hsGateA;
 const phase2hCompletion = process.env.D5O_PHASE2H_COMPLETION === "1" || phase2hr;
 const phase2h = process.env.D5O_PHASE2H === "1" || phase2hCompletion;
-const output = resolve(root, phase2hr
+const output = resolve(root, phase2hsGateB
+  ? "docs/architecture/evidence/phase2hs-develop-gate-results.json"
+  : phase2hsGateA
+  ? "docs/architecture/evidence/phase2hs-design-gate-results.json"
+  : phase2hr
   ? "docs/architecture/evidence/phase2hr-design-browser-results.json"
   : phase2hCompletion
   ? "docs/architecture/evidence/phase2h-completion-define-results.json"
@@ -22,19 +28,35 @@ const output = resolve(root, phase2hr
   : phase2g
   ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
   : "docs/architecture/evidence/phase2f-connected-journey-results.json");
-const evidence = { baseline: phase2hr ? "f53aa89192b776221067cc6a761248e87259f82e" : phase2g
+const evidence = { baseline: phase2hsGateA ? "d1537c2070eee6926ad227c69dcdc43418bb381d" : phase2hr ? "f53aa89192b776221067cc6a761248e87259f82e" : phase2g
     ? "dae8e1fa975bc47ef6d1180b512399683e3c9613"
     : "8d536b4ce74282fe6c3a0e2dbb66b1752ca51ec2",
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
 // Field start checks the real shift clock. The disposable journey uses today's
 // local business date so that its schedule is actually eligible for execution.
-const executionDate = new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York",
+let executionDate = new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York",
   year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 const executionDay = new Date(`${executionDate}T12:00:00Z`).getUTCDay();
-if(executionDay===0 || executionDay===6) throw Error("business_day_required_for_field_start");
+const currentFridayOvernight = (phase2hsGateB || phase2g) && executionDay===6;
+if(executionDay===0 || executionDay===6) {
+  if(!phase2hsGateA && !currentFridayOvernight)
+    throw Error("business_day_required_for_field_start");
+  if(currentFridayOvernight) {
+    // A real Friday overnight shift remains current on Saturday morning.
+    // The field-start command checks the actual clock and timezone.
+    const priorFriday=new Date(`${executionDate}T12:00:00Z`);
+    priorFriday.setUTCDate(priorFriday.getUTCDate()-1);
+    executionDate=priorFriday.toISOString().slice(0,10);
+  } else {
+    const nextBusinessDay=new Date(`${executionDate}T12:00:00Z`);
+    nextBusinessDay.setUTCDate(nextBusinessDay.getUTCDate()+(executionDay===6?2:1));
+    executionDate=nextBusinessDay.toISOString().slice(0,10);
+  }
+}
 const executionHour = Number(new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York",
   hour:"2-digit",hourCycle:"h23"}).format(new Date()));
-const executionShift = `${String(Math.max(0,executionHour-2)).padStart(2,"0")}:00–${String(Math.min(23,executionHour+6)).padStart(2,"0")}:59`;
+const executionShift = currentFridayOvernight ? "23:00–10:59"
+  : `${String(Math.max(0,executionHour-2)).padStart(2,"0")}:00–${String(Math.min(23,executionHour+6)).padStart(2,"0")}:59`;
 let runtime, server, designBrowser;
 const q = (value) => `'${String(value).replaceAll("'", "''")}'`;
 function sql(query) {
@@ -45,7 +67,8 @@ function sql(query) {
 }
 async function check(name, run) {
   try { evidence.tests.push({ name, status: "PASS", detail: await run() ?? null }); }
-  catch (error) { evidence.tests.push({ name, status: "FAIL", detail: String(error.message).slice(0, 800) }); }
+  catch (error) { evidence.tests.push({ name, status: "FAIL", detail: String(error.message).slice(0,
+    phase2hsGateB ? 3600 : 800) }); }
   console.log(JSON.stringify({test:name,status:evidence.tests.at(-1).status,
     ...(evidence.tests.at(-1).status==="FAIL"?{detail:evidence.tests.at(-1).detail}:{})}));
 }
@@ -182,6 +205,101 @@ try {
       await form.getByLabel("Execution start").fill(executionDate);
       await form.getByLabel("Execution end").fill(executionDate);
     });
+  }
+  const developActionEvidence=[];
+  if(phase2hsGateB) evidence.developActions=developActionEvidence;
+  async function developPage(actor,tenant,workId) {
+    if(!server) server=await startNext(url,anon,service);
+    if(!designBrowser) designBrowser=await chromium.launch();
+    let page=designPages.get(actor);
+    if(!page) {
+      page=await designBrowser.newPage({viewport:{width:1440,height:900}});
+      await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in`);
+      await page.getByLabel("Email").fill(users[actor].email);
+      await page.getByLabel("Password").fill(users[actor].password);
+      await page.getByRole("button",{name:"Continue to your work"}).click();
+      await page.waitForURL((location)=>!location.pathname.startsWith("/auth/sign-in"),{timeout:30000});
+      designPages.set(actor,page);
+    }
+    const target=`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}?work=${workId}#phase-develop`;
+    await page.goto(target);
+    // A hash-only navigation can preserve an older Work snapshot from another
+    // employee's decision. Reload before asserting the current task/action.
+    await page.reload();
+    await page.getByRole("heading",{name:"Develop actions"}).waitFor({timeout:30000});
+    await page.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
+    return page;
+  }
+  async function browserDevelopAction(actor,tenant,workId,button,prepare=async()=>{},
+    endpoint="customer-develop-action",expected=200) {
+    const page=await developPage(actor,tenant,workId);
+    const taskTitles={
+      "Submit economic authority":"Prepare Work economic authority",
+      "Approve economic authority":"Review Work economic authority",
+      "Submit labor authority":"Prepare field labor authority",
+      "Approve labor authority":"Review field labor authority",
+      "Save crew booking":"Assign qualified crew",
+      "Publish crew week":"Publish crew assignment",
+      "Authorize field start":"Authorize field start"
+    };
+    const task=page.locator('.d5o-customer-work-list a[href*="#phase-develop"]')
+      .filter({hasText:taskTitles[button]??button});
+    await task.waitFor({state:"visible",timeout:30000});
+    const taskHref=await task.getAttribute("href");
+    await task.click();
+    await page.waitForURL((location)=>location.hash==="#phase-develop",{timeout:15000});
+    try { await prepare(page); }
+    catch(error) {
+      const panels=await page.locator(".d5o-customer-design-actions").allTextContents();
+      const probe=await page.evaluate(async({workspace,workId})=>{
+        const urls=["customer-develop-action","customer-develop-authority"];
+        return Promise.all(urls.map(async(name)=>{
+          const response=await fetch(`/api/d5o-hosted/${name}?workspace=${workspace}&workId=${workId}`);
+          return {name,status:response.status,body:await response.json()};
+        }));
+      },{workspace:tenant.workspaceKey,workId});
+      const relevant=panels.filter((item)=>item.startsWith("Execution authority")
+        || item.startsWith("Develop actions"));
+      throw Error(`${actor}:${button}:prepare:${error.message}:${JSON.stringify({panels:relevant,probe}).slice(0,2800)}`);
+    }
+    const taskBefore=await page.locator('.d5o-customer-work-list a[href*="#phase-develop"]')
+      .allTextContents();
+    const control=page.getByRole("button",{name:button,exact:true});
+    await control.waitFor({state:"visible",timeout:15000});
+    await control.click({trial:true});
+    if(button==="Authorize field start") page.once("dialog",(dialog)=>dialog.accept());
+    const [response]=await Promise.all([
+      page.waitForResponse((item)=>item.url().includes(`/api/d5o-hosted/${endpoint}`)
+        && item.request().method()==="POST",{timeout:30000}),
+      control.click()
+    ]);
+    const body=await response.json();
+    const requestBody=response.request().postDataJSON();
+    assert.equal(response.status(),expected,`${actor}:${button}:${JSON.stringify(body)}`);
+    await page.reload();
+    await page.getByRole("heading",{name:"Develop actions"}).waitFor({timeout:30000});
+    const taskAfter=await page.locator('.d5o-customer-work-list a[href*="#phase-develop"]')
+      .allTextContents();
+    const status=await page.evaluate(async({workspace,workId})=>{
+      const result=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}&workId=${workId}`);
+      const detail=await result.json();
+      return {phase:detail.phaseStatus?.projection?.currentPhase,
+        develop:detail.phaseStatus?.projection?.phases?.Develop?.status,
+        pin:detail.record?.phaseConfigurationVersionId,
+        replay:detail.phaseStatus?.replayMatches};
+    },{workspace:tenant.workspaceKey,workId});
+    const dir=resolve(root,"docs/architecture/evidence/phase2hs-develop-browser");
+    mkdirSync(dir,{recursive:true});
+    const screenshot=`${actor}-${button.toLowerCase().replaceAll(/[^a-z0-9]+/g,"-")}.png`;
+    await page.screenshot({path:resolve(dir,screenshot),fullPage:true});
+    developActionEvidence.push({tenant:tenant.workspaceKey,workId,actor,button,
+      origin:"authenticated_browser_control",httpStatus:response.status(),
+      openedFromMyWork:true,taskHref,request:requestBody,
+      commandId:requestBody.commandId,result:body.result??body.error??null,
+      taskBefore,taskAfter,phaseAfter:status.phase,developStatus:status.develop,
+      configurationVersionId:status.pin,replayMatches:status.replay,screenshot,
+      timestamp:new Date().toISOString()});
+    return {page,body,requestBody};
   }
   let template, a, b, versions = {};
   await check("vendor sees validated immutable template directory", async () => {
@@ -1269,6 +1387,23 @@ try {
       assert(!current.error,current.error?.message);
       const record=current.data.state.records.find((item)=>item.title==="Phase 2D policy qualification");
       assert(record);
+      if(phase2hsGateA) {
+        await browserDesignAction(owner,tenant,record.id,"Send awarded Design handoff",async(page)=>{
+          await page.getByLabel("Handoff due date").fill("2026-12-01");
+        });
+        await browserDesignAction(ops,tenant,record.id,"Accept awarded Design handoff",async(page)=>{
+          await page.getByLabel("Receipt reason").fill("Independently received the exact fictional award and reviewed scope");
+        });
+        const browserResult=await call(owner,"d5o_hosted_prototype_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+        assert(!browserResult.error,browserResult.error?.message);
+        const handoff=browserResult.data.state.records.find((item)=>item.id===record.id)
+          .discovery.designHandoff;
+        assert.equal(handoff.status,"accepted");
+        outcomes.push({tenant:tenant.workspaceKey,workId:record.canonicalWorkId,
+          status:handoff.status,browser:true});
+        continue;
+      }
       const base={p_workspace_key:tenant.workspaceKey,p_presentation_id:record.id,
         p_expected_source_revision:current.data.revision,
         p_offer_revision:record.discovery.proposal.package.revision,
@@ -1336,6 +1471,35 @@ try {
         designActionEvidence.push({tenant:tenant.workspaceKey,workId,actor:owner,
           button:"Retain private PDF",origin:"authenticated_browser_control",httpStatus:upload.status(),
           result:uploadBody.evidenceId,timestamp:new Date().toISOString()});
+        if(phase2hsGateA) {
+          const before=await call(owner,"d5o_hosted_prototype_read_v1",{
+            p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+          assert(!before.error,before.error?.message);
+          const current=before.data.state.records.find((item)=>item.id===workId);
+          const document=current.design.documents[0];
+          const wrongIds=[{kind:"nonexistent",id:randomUUID()},
+            ...(prefix==="b"?[{kind:"foreign-tenant-and-work",id:outcomes[0].evidenceId}]:[])];
+          for(const wrong of wrongIds) {
+            const denied=await page.evaluate(async({workspace,workId,revision,designRevision,
+              documentId,evidenceId})=>{
+              const response=await fetch(`/api/d5o-hosted/customer-design-action?workspace=${workspace}`,{
+                method:"POST",headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({workId,action:"submit-document",commandId:crypto.randomUUID(),
+                  sourceRevision:revision,designRevision,input:{documentId,documentRevision:1,
+                    evidenceId,note:"Invalid private PDF reference must not submit"}})});
+              return {status:response.status,body:await response.json()};
+            },{workspace:tenant.workspaceKey,workId,revision:before.data.revision,
+              designRevision:current.design.authorityRevision,documentId:document.id,
+              evidenceId:wrong.id});
+            assert.equal(denied.status,422,`${prefix}:${wrong.kind}:${JSON.stringify(denied)}`);
+            const after=await call(owner,"d5o_hosted_prototype_read_v1",{
+              p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+            assert.equal(after.data.state.records.find((item)=>item.id===workId)
+              .design.authorityRevision,current.design.authorityRevision);
+            evidence.gateA ??= {};
+            evidence.gateA[`${prefix}${wrong.kind}`]=denied.status;
+          }
+        }
         await page.getByRole("button",{name:"Submit document for independent review"}).waitFor({state:"visible"});
         await browserDesignAction(owner,tenant,workId,"Submit document for independent review");
         await browserDesignAction(ops,tenant,workId,"Approve document",async(reviewPage)=>{
@@ -1470,6 +1634,7 @@ try {
           await page.getByLabel("Receipt due date").fill("2026-12-08");
           await page.getByLabel("Release reason").fill("Release fictional service package after independent review");
         };
+        let demandRaceDone=false;
         const prepareRelease=async()=>{ await browserDesignAction(owner,tenant,workId,"Save dated crew demand",async(page)=>{
           await page.getByLabel("Qualification").fill("Service technician");
           await page.getByLabel("Minimum people").fill("1");
@@ -1478,6 +1643,55 @@ try {
           await page.getByLabel("Required date").fill(executionDate);
           await page.getByLabel("Shift").fill(executionShift);
         });
+        if(phase2hsGateA && !demandRaceDone) {
+          demandRaceDone=true;
+          const before=await call(owner,"d5o_hosted_prototype_read_v1",{
+            p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+          assert(!before.error,before.error?.message);
+          const current=before.data.state.records.find((item)=>item.id===workId);
+          const eventCount=Number(sql(`select count(*) from d5o_hosted.connected_design_events
+            where workspace_id=${q(tenant.workspaceId)} and work_id=${q(current.canonicalWorkId)}
+              and action='save-demand';`));
+          const page=await designPage(owner,tenant,workId);
+          const base={workId,action:"save-demand",sourceRevision:before.data.revision,
+            designRevision:current.design.authorityRevision};
+          const responses=await page.evaluate(async({workspace,base,packageId,date,shift})=>
+            Promise.all([1,2].map(async(people)=>{
+              const response=await fetch(`/api/d5o-hosted/customer-design-action?workspace=${workspace}`,{
+                method:"POST",headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({...base,commandId:crypto.randomUUID(),input:{
+                  workId:base.workId,packageId,qualification:"Service technician",
+                  minimumPeople:people,estimatedPersonHours:8,priority:"High",
+                  prerequisite:"Accepted Design release",crewSchedulable:true,
+                  requiredSlots:[{date,shift}]}})});
+              return {status:response.status,body:await response.json()};
+            })),{workspace:tenant.workspaceKey,base,
+              packageId:current.design.packages[0].packageId,date:executionDate,shift:executionShift});
+          assert.deepEqual(responses.map((item)=>item.status).sort(),[200,409],
+            `${prefix}:conflicting-demand:${JSON.stringify(responses)}`);
+          const after=await call(owner,"d5o_hosted_prototype_read_v1",{
+            p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+          assert.equal(after.data.state.records.find((item)=>item.id===workId)
+            .design.authorityRevision,current.design.authorityRevision+1);
+          assert.equal(Number(sql(`select count(*) from d5o_hosted.connected_design_events
+            where workspace_id=${q(tenant.workspaceId)} and work_id=${q(current.canonicalWorkId)}
+              and action='save-demand';`)),eventCount+1);
+          evidence.gateA ??= {};
+          evidence.gateA[`${prefix}ConcurrentDemand`]=responses.map((item)=>item.status);
+          // The concurrency probe can legitimately leave the two-person demand
+          // as the winner. Restore the one-person connected fixture through the
+          // same authenticated Design form before accepting the package.
+          if(responses[1].status===200) {
+            await browserDesignAction(owner,tenant,workId,"Save dated crew demand",async(page)=>{
+              await page.getByLabel("Qualification").fill("Service technician");
+              await page.getByLabel("Minimum people").fill("1");
+              await page.getByLabel("Estimated person hours").fill("8");
+              await page.getByLabel("Prerequisite").fill("Accepted Design release");
+              await page.getByLabel("Required date").fill(executionDate);
+              await page.getByLabel("Shift").fill(executionShift);
+            });
+          }
+        }
         for(const discipline of ["Engineering","Delivery","Safety","Quality"]) {
           await browserDesignAction(owner,tenant,workId,`Request ${discipline} review`,async(page)=>{
             const form=page.locator("form").filter({has:page.getByRole("heading",{name:`${discipline} review`})});
@@ -1724,6 +1938,142 @@ try {
       crossTenantEvidence:foreignEvidence.status,
       unchangedDesignRevision:final.record.design.authorityRevision};
   });
+  if(phase2hsGateA && !phase2hsGateB) await check("private Design evidence rejects forged, foreign, deleted and unreviewed references",async()=>{
+    const tenant=a,owner="a_admin",reviewer="a_ops";
+    const read=async()=>{
+      const result=await call(owner,"d5o_hosted_prototype_read_v1",{
+        p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+      assert(!result.error,result.error?.message);
+      return {revision:result.data.revision,record:result.data.state.records.find((item)=>
+        item.title==="Phase 2D policy qualification")};
+    };
+    let current=await read();
+    const catalog=await call(owner,"d5o_hosted_prototype_read_v1",{
+      p_workspace_key:tenant.workspaceKey,p_state_key:"catalog"});
+    assert(!catalog.error,catalog.error?.message);
+    const second=await call(owner,"d5o_hosted_create_connected_package_v2",{
+      p_workspace_key:tenant.workspaceKey,p_presentation_id:current.record.id,
+      p_name:"Synthetic negative-reference package",p_owner:"Fictional Design Lead",
+      p_command_id:randomUUID(),p_expected_work_revision:current.revision,
+      p_expected_catalog_revision:catalog.data.revision,
+      p_expected_handoff_revision:current.record.discovery.designHandoff.revision,
+      p_expected_package_count:catalog.data.state.packages
+        .filter((item)=>item.workId===current.record.id).length});
+    assert(!second.error,`negative-reference-package:${second.error?.message}`);
+    const secondPackageId=second.data.created.id;
+    current=await read();
+    const docId=`negative-ref-${randomUUID()}`;
+    const doc=await call(owner,"d5o_hosted_design_draft_command_v1",{
+      p_workspace_key:tenant.workspaceKey,p_presentation_id:current.record.id,
+      p_action:"save-document",p_input:{document:{id:docId,type:"Method statement",
+        title:"Synthetic negative reference review",source:"SYNTHETIC-NEGATIVE-REFERENCE",
+        packageIds:[secondPackageId],requirementIds:current.record.definition.scopeControl.requirements
+          .filter((item)=>item.state==="Confirmed").map((item)=>item.id),
+        dueDate:"2026-12-10"},note:"Isolated evidence boundary test"},
+      p_command_id:randomUUID(),p_expected_source_revision:current.revision,
+      p_expected_decision_revision:current.record.design.authorityRevision});
+    assert(!doc.error,`negative-reference-document:${doc.error?.message}`);
+    current=await read();
+    const page=await designPage(owner,tenant,current.record.id);
+    const pdf=await page.evaluate(async({workspace,workId,documentId})=>{
+      const form=new FormData();
+      form.append("file",new File(["%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF"],
+        "phase2hs-negative.pdf",{type:"application/pdf"}));
+      const query=new URLSearchParams({workspace,workId,documentId,revision:"1"});
+      const response=await fetch(`/api/d5o-hosted/design-document-evidence?${query}`,{
+        method:"POST",body:form});
+      return {status:response.status,body:await response.json()};
+    },{workspace:tenant.workspaceKey,workId:current.record.id,documentId:docId});
+    assert.equal(pdf.status,200,JSON.stringify(pdf));
+    const evidenceId=pdf.body.evidenceId;
+    const receipt=await admin.rpc("d5o_hosted_design_document_evidence_read_v1",{
+      p_workspace_key:tenant.workspaceKey,p_presentation_id:current.record.id,
+      p_document_id:docId,p_document_revision:1});
+    assert(!receipt.error && receipt.data?.objectPath,"registered private receipt required");
+    const privateRead=await page.evaluate(async({workspace,workId,documentId})=>{
+      const query=new URLSearchParams({workspace,workId,documentId,revision:"1"});
+      const meta=await fetch(`/api/d5o-hosted/design-document-evidence?${query}`);
+      const download=await fetch(`/api/d5o-hosted/design-document-evidence?${query}&download=1`);
+      return {metadata:meta.status,download:download.status,
+        contentType:download.headers.get("content-type"),
+        bytes:await download.arrayBuffer().then((value)=>value.byteLength)};
+    },{workspace:tenant.workspaceKey,workId:current.record.id,documentId:docId});
+    assert.equal(privateRead.metadata,200);
+    assert.equal(privateRead.download,200);
+    assert.equal(privateRead.contentType,"application/pdf");
+    assert(privateRead.bytes>0);
+    const bRead=await call("b_admin","d5o_hosted_prototype_read_v1",{
+      p_workspace_key:b.workspaceKey,p_state_key:"work"});
+    const foreign=bRead.data.state.records.find((item)=>item.title==="Phase 2D policy qualification")
+      .design.documents[0].evidenceId;
+    const original=current.record.design.documents[0].evidenceId;
+    const unregistered=randomUUID();
+    const unregisteredPath=`${tenant.workspaceKey}/${createHash("sha256")
+      .update(current.record.id).digest("hex")}/design-documents/${unregistered}`;
+    const stored=await admin.storage.from("d5o-deploy-evidence").upload(unregisteredPath,
+      Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF"),
+      {contentType:"application/pdf",upsert:false});
+    assert(!stored.error,stored.error?.message);
+    const denied=[];
+    for(const [kind,badId] of [["nonexistent",randomUUID()],
+      ["other-package-and-document",original],["other-tenant-and-work",foreign],
+      ["storage-without-receipt",unregistered]]) {
+      current=await read();
+      const attempted=await page.evaluate(async({workspace,workId,documentId,revision,
+        designRevision,evidenceId})=>{
+        const response=await fetch(`/api/d5o-hosted/customer-design-action?workspace=${workspace}`,{
+          method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({workId,action:"submit-document",commandId:crypto.randomUUID(),
+            sourceRevision:revision,designRevision,input:{documentId,
+              documentRevision:1,evidenceId,note:"Invalid evidence must not submit"}})});
+        return {status:response.status,body:await response.json()};
+      },{workspace:tenant.workspaceKey,workId:current.record.id,documentId:docId,
+        revision:current.revision,designRevision:current.record.design.authorityRevision,
+        evidenceId:badId});
+      assert.equal(attempted.status,422,`${kind}:${JSON.stringify(attempted)}`);
+      const after=await read();
+      assert.equal(after.record.design.authorityRevision,current.record.design.authorityRevision);
+      denied.push({kind,status:attempted.status});
+    }
+    await admin.storage.from("d5o-deploy-evidence").remove([unregisteredPath]);
+    current=await read();
+    const submitted=await call(owner,"d5o_hosted_design_review_command_v1",{
+      p_workspace_key:tenant.workspaceKey,p_presentation_id:current.record.id,
+      p_action:"submit-document",p_input:{documentId:docId,documentRevision:1,evidenceId,
+        note:"Submit exact private PDF for independent review"},p_command_id:randomUUID(),
+      p_expected_source_revision:current.revision,
+      p_expected_decision_revision:current.record.design.authorityRevision});
+    assert(!submitted.error,submitted.error?.message);
+    current=await read();
+    const premature=await call(owner,"d5o_hosted_design_review_command_v1",{
+      p_workspace_key:tenant.workspaceKey,p_presentation_id:current.record.id,
+      p_action:"issue-document",p_input:{documentId:docId,documentRevision:1,evidenceId,
+        note:"Premature issue must fail"},p_command_id:randomUUID(),
+      p_expected_source_revision:current.revision,
+      p_expected_decision_revision:current.record.design.authorityRevision});
+    assert.equal(premature.error?.code,"42501");
+    const removed=await admin.storage.from("d5o-deploy-evidence").remove([receipt.data.objectPath]);
+    assert(!removed.error,removed.error?.message);
+    const unavailable=await page.evaluate(async({workspace,workId,documentId})=>{
+      const query=new URLSearchParams({workspace,workId,documentId,revision:"1"});
+      return (await fetch(`/api/d5o-hosted/design-document-evidence?${query}`)).status;
+    },{workspace:tenant.workspaceKey,workId:current.record.id,documentId:docId});
+    assert.equal(unavailable,404);
+    const deleted=await call(reviewer,"d5o_hosted_design_review_command_v1",{
+      p_workspace_key:tenant.workspaceKey,p_presentation_id:current.record.id,
+      p_action:"approve-document",p_input:{documentId:docId,documentRevision:1,
+        note:"Deleted object must never approve"},p_command_id:randomUUID(),
+      p_expected_source_revision:current.revision,
+      p_expected_decision_revision:current.record.design.authorityRevision});
+    assert.equal(deleted.error?.code,"23514",JSON.stringify(deleted));
+    const after=await read();
+    assert.equal(after.record.design.authorityRevision,current.record.design.authorityRevision);
+    assert.equal(after.record.design.documents.find((item)=>item.id===docId).status,"In review");
+    return {privateRead,denied,prematureIssueCode:premature.error.code,
+      deletedObjectRead:unavailable,deletedObjectReviewCode:deleted.error.code,
+      unchangedRevision:after.record.design.authorityRevision};
+  });
+  if(!phase2hsGateA || phase2hsGateB) {
   const connectedBasis = async (prefix,tenant) => {
     const workRead=await call(`${prefix}_admin`,"d5o_hosted_prototype_read_v1",{
       p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
@@ -1755,6 +2105,52 @@ try {
       .toISOString().slice(0,10);
     for(const [prefix,tenant] of [["a",a],["b",b]]) {
       const basis=await connectedBasis(prefix,tenant);
+      if(phase2hsGateB) {
+        const validUntil=new Date(Date.parse(`${executionDate}T12:00:00Z`)+30*86400000)
+          .toISOString().slice(0,10);
+        const fill=async(page,button,values)=>{
+          const form=page.locator("form").filter({has:page.getByRole("button",{name:button})});
+          for(const [name,value] of Object.entries(values))
+            await form.locator(`[name="${name}"]`).fill(String(value));
+        };
+        await browserDevelopAction(`${prefix}_pm`,tenant,basis.work.id,
+          "Submit economic authority",(page)=>fill(page,"Submit economic authority",{
+            parentCapMinor:"1000000",purchaseCapMinor:"0",validFrom:executionDate,
+            validUntil,purchasingEntity:"Fictional procurement entity",
+            graybarAccountReference:`SYNTH-${prefix.toUpperCase()}-NO-PURCHASE`,
+            scope:"Labor only fictional service restoration authorization",
+            fundingSource:"Fictional customer award funding",
+            sourceReference:`SYNTH-${prefix.toUpperCase()}-AWARD`,
+            conditions:"No physical purchasing; subcontract capacity remains unused"
+          }),"customer-develop-authority");
+        await browserDevelopAction(`${prefix}_admin`,tenant,basis.work.id,
+          "Approve economic authority",(page)=>fill(page,"Approve economic authority",{
+            reason:"Independent approval of fictional labor only parent cap"}),
+          "customer-develop-authority");
+        await browserDevelopAction(`${prefix}_pm`,tenant,basis.work.id,
+          "Submit labor authority",(page)=>fill(page,"Submit labor authority",{
+            capMinor:"500000",rateMinor:"10000",rateVersion:"TEST-2026",
+            rateSource:"Fictional labor rate card",
+            rateBasis:"Hourly rate for qualified service technician",
+            scope:"Fictional service restoration and independent inspection",
+            conditions:"Only published eligible crew and reviewed hours may consume cap",
+            validFrom:executionDate,validUntil
+          }),"customer-develop-authority");
+        await browserDevelopAction(`${prefix}_admin`,tenant,basis.work.id,
+          "Approve labor authority",(page)=>fill(page,"Approve labor authority",{
+            reason:"Independent fictional qualified labor authority review"}),
+          "customer-develop-authority");
+        const purchase=await call(`${prefix}_pm`,"d5o_purchase_authority_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
+        const labor=await call(`${prefix}_pm`,"d5o_labor_authority_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
+        assert(!purchase.error && purchase.data.parentCapMinor,`${prefix}:purchase-not-approved`);
+        assert(!labor.error && labor.data.laborAuthorityId,`${prefix}:labor-not-approved`);
+        outcomes.push({tenant:tenant.workspaceKey,workId:basis.work.canonicalWorkId,
+          purchaseAuthorityId:purchase.data.authorities.findLast((item)=>item.status==="Approved")?.id,
+          laborAuthorityId:labor.data.laborAuthorityId,browserQualified:true});
+        continue;
+      }
       const purchasing=await call(`${prefix}_pm`,"d5o_purchase_authority_read_v1",{
         p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
       assert(!purchasing.error,`${prefix}:purchase-read:${purchasing.error?.message}`);
@@ -1818,7 +2214,7 @@ try {
       const first=await connectedBasis(prefix,tenant);
       const anchor=Date.parse(`${first.schedule.state.anchorDate}T00:00:00Z`);
       const week=Math.floor((Date.parse(`${executionDate}T00:00:00Z`)-anchor)/604800000);
-      const day=(executionDay+6)%7;
+      const day=(new Date(`${executionDate}T12:00:00Z`).getUTCDay()+6)%7;
       const assignment={id:`phase2f-${prefix}-booking`,crew:`Fictional ${prefix.toUpperCase()} crew`,
         people:[person],workId:first.work.id,packageId:first.packageId,week,day,
         date:executionDate,shift:executionShift,personHoursPerWorker:2};
@@ -1841,21 +2237,101 @@ try {
         p_expected_revision:profile.data.revision,
         p_expected_schedule_revision:first.schedule.revision});
       assert(!bound.error,`${prefix}:bind:${bound.error?.message}`);
-      const booked=await crewCommand(prefix,tenant,"save-booking",{assignment},"save-booking");
-      assert(!booked.error,`${prefix}:booking:${booked.error?.message}`);
-      const published=await crewCommand(prefix,tenant,"publish-week",{week},"publish-week");
-      assert(!published.error,`${prefix}:publish:${published.error?.message}`);
+      if(phase2hsGateB) {
+        const current=await connectedBasis(prefix,tenant);
+        const blocked=await call(`${prefix}_admin`,"d5o_hosted_availability_command_v1",{
+          p_workspace_key:tenant.workspaceKey,p_action:"record-unavailability",
+          p_input:{person,week,day,date:executionDate,note:"Synthetic absence denial probe"},
+          p_command_id:randomUUID(),p_expected_revision:current.schedule.revision});
+        assert(!blocked.error,`${prefix}:absence:${blocked.error?.message}`);
+        const unavailable=await crewCommand(prefix,tenant,"save-booking",{assignment},"unavailable-booking");
+        assert.equal(unavailable.error?.code,"23514",`${prefix}:unavailable:${unavailable.error?.message}`);
+        assert.match(unavailable.error.message,/worker_unavailable_for_shift/);
+        const block=blocked.data.state.availabilityBlocks.find((item)=>item.person===person
+          && item.date===executionDate);
+        assert(block,`${prefix}:absence-record-missing`);
+        const cleared=await call(`${prefix}_admin`,"d5o_hosted_availability_command_v1",{
+          p_workspace_key:tenant.workspaceKey,p_action:"clear-unavailability",
+          p_input:{id:block.id},p_command_id:randomUUID(),
+          p_expected_revision:blocked.data.revision});
+        assert(!cleared.error,`${prefix}:clear-absence:${cleared.error?.message}`);
+        const low=await call(`${prefix}_admin`,"d5o_hosted_workforce_impact_command_v1",{
+          p_workspace_key:tenant.workspaceKey,p_action:"save-person",
+          p_input:{id:profile.data.id,person,displayName:person,
+            qualifications:["Service technician"],weeklyCapacityHours:1},
+          p_command_id:randomUUID(),p_expected_revision:bound.data.revision,
+          p_expected_schedule_revision:cleared.data.revision});
+        assert(!low.error,`${prefix}:low-capacity:${low.error?.message}`);
+        const insufficient=await crewCommand(prefix,tenant,"save-booking",{assignment},"capacity-booking");
+        assert.equal(insufficient.error?.code,"23514",`${prefix}:capacity:${insufficient.error?.message}`);
+        assert.match(insufficient.error.message,/worker_weekly_capacity_exceeded/);
+        const restored=await call(`${prefix}_admin`,"d5o_hosted_workforce_impact_command_v1",{
+          p_workspace_key:tenant.workspaceKey,p_action:"save-person",
+          p_input:{id:profile.data.id,person,displayName:person,
+            qualifications:["Service technician"],weeklyCapacityHours:40},
+          p_command_id:randomUUID(),p_expected_revision:low.data.revision,
+          p_expected_schedule_revision:cleared.data.revision});
+        assert(!restored.error,`${prefix}:restore-capacity:${restored.error?.message}`);
+      }
+      if(phase2hsGateB) {
+        await browserDevelopAction(`${prefix}_ops`,tenant,first.work.id,
+          "Save crew booking",async(page)=>{
+            const form=page.locator("form").filter({has:page.getByRole("button",{name:"Save crew booking"})});
+            await form.locator("select").selectOption([person]);
+          });
+        await browserDevelopAction(`${prefix}_ops`,tenant,first.work.id,"Publish crew week");
+      } else {
+        const booked=await crewCommand(prefix,tenant,"save-booking",{assignment},"save-booking");
+        assert(!booked.error,`${prefix}:booking:${booked.error?.message}`);
+        const published=await crewCommand(prefix,tenant,"publish-week",{week},"publish-week");
+        assert(!published.error,`${prefix}:publish:${published.error?.message}`);
+      }
       const current=await connectedBasis(prefix,tenant);
       const publication=current.schedule.state.publications.at(-1);
-      assert(publication?.assignments.some((item)=>item.id===assignment.id));
-      const response=await call(`${prefix}_worker`,"d5o_hosted_crew_command_v1",{
-        p_workspace_key:tenant.workspaceKey,p_action:"respond-booking",
-        p_input:{publicationId:publication.id,assignmentId:assignment.id,response:"acknowledged"},
-        p_command_id:`phase2f-${prefix}-acknowledge-booking`,
-        p_expected_revision:current.schedule.revision});
-      assert(!response.error,`${prefix}:acknowledge:${response.error?.message}`);
+      const assigned=publication?.assignments.find((item)=>item.workId===first.work.id
+        && item.packageId===first.packageId);
+      assert(assigned,`${prefix}:published-assignment-missing`);
+      if(phase2hsGateB) {
+        if(!designBrowser) designBrowser=await chromium.launch();
+        const actor=`${prefix}_worker`;
+        let page=designPages.get(actor);
+        if(!page) {
+          page=await designBrowser.newPage({viewport:{width:1440,height:900}});
+          await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in`);
+          await page.getByLabel("Email").fill(users[actor].email);
+          await page.getByLabel("Password").fill(users[actor].password);
+          await page.getByRole("button",{name:"Continue to your work"}).click();
+          await page.waitForURL((location)=>!location.pathname.startsWith("/auth/sign-in"),{timeout:30000});
+          designPages.set(actor,page);
+        }
+        await page.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}/assignments`);
+        const control=page.getByRole("button",{name:"Acknowledge assignment"});
+        await control.waitFor({state:"visible",timeout:30000});
+        const [ackResponse]=await Promise.all([
+          page.waitForResponse((item)=>item.url().includes("/api/d5o-hosted/customer-develop-action")
+            && item.request().method()==="POST",{timeout:30000}),control.click()]);
+        const result=await ackResponse.json();
+        assert.equal(ackResponse.status(),200,`${prefix}:browser-ack:${JSON.stringify(result)}`);
+        await page.reload();
+        await page.getByText("Acknowledged by you").waitFor({timeout:30000});
+        const dir=resolve(root,"docs/architecture/evidence/phase2hs-develop-browser");
+        mkdirSync(dir,{recursive:true});
+        const screenshot=`${actor}-acknowledged-assignment.png`;
+        await page.screenshot({path:resolve(dir,screenshot),fullPage:true});
+        developActionEvidence.push({tenant:tenant.workspaceKey,workId:first.work.id,actor,
+          button:"Acknowledge assignment",origin:"authenticated_browser_control",
+          httpStatus:ackResponse.status(),commandId:ackResponse.request().postDataJSON().commandId,
+          result:result.result??null,screenshot,timestamp:new Date().toISOString()});
+      } else {
+        const response=await call(`${prefix}_worker`,"d5o_hosted_crew_command_v1",{
+          p_workspace_key:tenant.workspaceKey,p_action:"respond-booking",
+          p_input:{publicationId:publication.id,assignmentId:assigned.id,response:"acknowledged"},
+          p_command_id:`phase2f-${prefix}-acknowledge-booking`,
+          p_expected_revision:current.schedule.revision});
+        assert(!response.error,`${prefix}:acknowledge:${response.error?.message}`);
+      }
       outcomes.push({tenant:tenant.workspaceKey,workId:first.work.canonicalWorkId,
-        packageId:first.packageId,bookingId:assignment.id,publicationId:publication.id,
+        packageId:first.packageId,bookingId:assigned.id,publicationId:publication.id,
         workerId:users[`${prefix}_worker`].id,unqualifiedDenied:true});
     }
     return outcomes;
@@ -1889,19 +2365,137 @@ try {
       assert.equal(unauthorized.error?.code,"42501",`${prefix}:unauthorized:${unauthorized.error?.message}`);
       const cross=await fieldStart(prefix,tenant,`${prefix==="a"?"b":"a"}_ops`,"cross-start");
       assert.equal(cross.error?.code,"42501",`${prefix}:cross:${cross.error?.message}`);
-      const authorized=await fieldStart(prefix,tenant,`${prefix}_ops`,"authorize-start");
-      assert(!authorized.error,`${prefix}:field-start:${authorized.error?.message}`);
+      if(phase2hsGateB) {
+        await browserDevelopAction(`${prefix}_ops`,tenant,basis.work.id,
+          "Authorize field start",async(page)=>{
+            const form=page.locator("form").filter({has:page.getByRole("button",{name:"Authorize field start"})});
+            await form.locator("textarea").fill(
+              "Qualified crew and current accepted package checked for fictional field work");
+          });
+      } else {
+        const authorized=await fieldStart(prefix,tenant,`${prefix}_ops`,"authorize-start");
+        assert(!authorized.error,`${prefix}:field-start:${authorized.error?.message}`);
+      }
       const current=await connectedBasis(prefix,tenant);
       const permit=current.deploy.state.permits?.find((item)=>
         item.packageId===current.packageId && item.status==="Authorized");
       assert(permit,`${prefix}:permit-missing`);
       assert.equal(current.work.phaseConfigurationVersionId,versions[`${prefix}_admin`]);
+      if(phase2hsGateB) {
+        const status=await call(`${prefix}_ops`,"d5o_hosted_phase_status_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
+        assert(!status.error,`${prefix}:phase-status:${status.error?.message}`);
+        assert.equal(status.data.projection.phases.Develop.status,"completed");
+        assert.equal(status.data.replayMatches,true);
+        const page=designPages.get(`${prefix}_worker`);
+        await page.reload();
+        await page.getByText("Your next responsibility is Deploy execution",{exact:false})
+          .waitFor({timeout:30000});
+        const dir=resolve(root,"docs/architecture/evidence/phase2hs-develop-browser");
+        await page.screenshot({path:resolve(dir,`${prefix}-deploy-responsibility.png`),fullPage:true});
+      }
       outcomes.push({tenant:tenant.workspaceKey,workId:current.work.canonicalWorkId,
         permitId:permit.id,releaseId:permit.releaseId,configurationVersionId:current.work.phaseConfigurationVersionId,
         unauthorizedDenied:true,crossTenantDenied:true});
     }
     return outcomes;
   });
+  if(phase2hsGateB) await check("Develop API and direct RPC reject forged, cross-tenant, stale and disabled-feature mutations",async()=>{
+    const aBasis=await connectedBasis("a",a);
+    const bBasis=await connectedBasis("b",b);
+    const bPage=designPages.get("b_ops");
+    const aPage=designPages.get("a_ops");
+    assert(aPage&&bPage,"authenticated Develop actor pages required");
+    const cross=await bPage.evaluate(async({workspace,workId})=>{
+      const response=await fetch(`/api/d5o-hosted/customer-develop-action?workspace=${workspace}&workId=${workId}`);
+      return {status:response.status,body:await response.json()};
+    },{workspace:a.workspaceKey,workId:aBasis.work.id});
+    assert.equal(cross.status,403,JSON.stringify(cross));
+    const forged=await bPage.evaluate(async({workspace,packageId,revision})=>{
+      const response=await fetch(`/api/d5o-hosted/customer-develop-action?workspace=${workspace}`,{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({action:"publish-week",workId:"00000000-0000-0000-0000-000000000000",
+          packageId,week:0,expectedRevision:revision,commandId:crypto.randomUUID()})});
+      return {status:response.status,body:await response.json()};
+    },{workspace:b.workspaceKey,packageId:bBasis.packageId,revision:bBasis.schedule.revision});
+    assert.equal(forged.status,404,JSON.stringify(forged));
+    const wrongPackage=await bPage.evaluate(async({workspace,workId,revision})=>{
+      const response=await fetch(`/api/d5o-hosted/customer-develop-action?workspace=${workspace}`,{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({action:"publish-week",workId,
+          packageId:"00000000-0000-0000-0000-000000000000",week:0,
+          expectedRevision:revision,commandId:crypto.randomUUID()})});
+      return {status:response.status,body:await response.json()};
+    },{workspace:b.workspaceKey,workId:bBasis.work.id,revision:bBasis.schedule.revision});
+    assert.equal(wrongPackage.status,409,JSON.stringify(wrongPackage));
+    const aScheduleBefore=aBasis.schedule.revision;
+    const day=(new Date(`${executionDate}T12:00:00Z`).getUTCDay()+6)%7;
+    const week=Math.floor((Date.parse(`${executionDate}T00:00:00Z`)
+      -Date.parse(`${aBasis.schedule.state.anchorDate}T00:00:00Z`))/604800000);
+    const foreignResource=await crewCommand("a",a,"save-booking",{
+      assignment:{id:`cross-tenant-worker-${randomUUID()}`,
+        crew:"Forbidden cross-tenant crew",people:["Fictional B Technician"],
+        workId:aBasis.work.id,packageId:aBasis.packageId,week,day,
+        date:executionDate,shift:executionShift,personHoursPerWorker:2}
+    },"foreign-worker-booking");
+    assert.equal(foreignResource.error?.code,"23514",JSON.stringify(foreignResource));
+    assert.match(foreignResource.error.message,/qualified_bound_worker_required/);
+    assert.equal((await connectedBasis("a",a)).schedule.revision,aScheduleBefore);
+    const stale=await call("b_admin","d5o_hosted_crew_command_v1",{
+      p_workspace_key:b.workspaceKey,p_action:"publish-week",p_input:{week:0},
+      p_command_id:randomUUID(),p_expected_revision:bBasis.schedule.revision-1});
+    assert.equal(stale.error?.code,"23505",JSON.stringify(stale));
+    const permitAction=developActionEvidence.find((item)=>item.actor==="a_ops"
+      && item.button==="Authorize field start");
+    assert(permitAction?.request,"browser field-start command receipt missing");
+    const duplicate=await aPage.evaluate(async({workspace,request})=>{
+      const response=await fetch(`/api/d5o-hosted/customer-develop-action?workspace=${workspace}`,{
+        method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(request)});
+      return {status:response.status,body:await response.json()};
+    },{workspace:a.workspaceKey,request:permitAction.request});
+    assert.equal(duplicate.status,200,JSON.stringify(duplicate));
+    const aAfterReplay=await connectedBasis("a",a);
+    assert.equal(aAfterReplay.deploy.revision,aBasis.deploy.revision,
+      "duplicate field-start changed authoritative Deploy revision");
+    const directory=await call("vendor","d5o_platform_provisioning_directory_v1");
+    assert(!directory.error,directory.error?.message);
+    const tenant=directory.data.find((item)=>item.workspaceKey===b.workspaceKey);
+    const off=await call("vendor","d5o_platform_capability_command_v1",{
+      p_workspace_key:b.workspaceKey,p_kind:"flag",p_enabled:false,
+      p_expected_revision:tenant.connectedWorkFlagRevision,p_command_id:randomUUID(),
+      p_reason:"Deny direct Develop command while synthetic rollout is disabled"});
+    assert(!off.error,off.error?.message);
+    const workforce=await call("b_admin","d5o_hosted_workforce_read_v1",{
+      p_workspace_key:b.workspaceKey});
+    assert(!workforce.error,workforce.error?.message);
+    const direct=await call("b_admin","d5o_hosted_workforce_impact_command_v1",{
+      p_workspace_key:b.workspaceKey,p_action:"save-person",
+      p_input:{person:"Forbidden disabled resource",displayName:"Forbidden disabled resource",
+        qualifications:["Service technician"],weeklyCapacityHours:40},
+      p_command_id:randomUUID(),p_expected_revision:workforce.data.revision,
+      p_expected_schedule_revision:bBasis.schedule.revision});
+    assert.equal(direct.error?.code,"42501",JSON.stringify(direct));
+    const disabled=await bPage.evaluate(async({workspace,workId})=>{
+      const response=await fetch(`/api/d5o-hosted/customer-develop-action?workspace=${workspace}&workId=${workId}`);
+      return {status:response.status,body:await response.json()};
+    },{workspace:b.workspaceKey,workId:bBasis.work.id});
+    assert.equal(disabled.status,403,JSON.stringify(disabled));
+    const afterWorkforce=await call("b_admin","d5o_hosted_workforce_read_v1",{
+      p_workspace_key:b.workspaceKey});
+    assert.equal(afterWorkforce.data.revision,workforce.data.revision);
+    const on=await call("vendor","d5o_platform_capability_command_v1",{
+      p_workspace_key:b.workspaceKey,p_kind:"flag",p_enabled:true,
+      p_expected_revision:off.data.revision,p_command_id:randomUUID(),
+      p_reason:"Restore synthetic rollout after disabled Develop command test"});
+    assert(!on.error,on.error?.message);
+    return {crossTenantHttp:cross.status,forgedWorkHttp:forged.status,
+      wrongPackageHttp:wrongPackage.status,foreignResourceRpc:foreignResource.error.code,
+      staleSchedulingRpc:stale.error.code,duplicateStartHttp:duplicate.status,
+      unchangedDeployRevision:aAfterReplay.deploy.revision,
+      disabledFeatureRpc:direct.error.code,disabledFeatureHttp:disabled.status,
+      unchangedWorkforceRevision:afterWorkforce.data.revision};
+  });
+  if(!phase2hsGateB) {
   const deployCommand=async(prefix,tenant,actor,action,input,id,
     functionName="d5o_hosted_field_fact_command_v1")=>{
     const basis=await connectedBasis(prefix,tenant);
@@ -2422,6 +3016,8 @@ try {
       return {files,ephemeralPreview:`http://127.0.0.1:${server.port}/work/connected-work`};
     } finally {await browser.close();}
   });
+  }
+  }
   if(phase2hr) await check("Design adapter denies suspended and removed membership, disabled flag and tenant",async()=>{
     const aPage=designPages.get("a_ops"),bPage=designPages.get("b_ops");
     assert(aPage&&bPage,"signed-in Design actor sessions required");
@@ -2441,8 +3037,15 @@ try {
             documentRevision:1,evidenceId:"invalid-evidence",note:"Synthetic denied decision"}})});
       return response.status;
     },{tenant:tenant.workspaceKey,workId});
+    const evidenceProbe=async(page,tenant,record)=>page.evaluate(async({workspace,workId,
+      documentId,revision})=>{
+      const query=new URLSearchParams({workspace,workId,documentId,revision:String(revision)});
+      return (await fetch(`/api/d5o-hosted/design-document-evidence?${query}`)).status;
+    },{workspace:tenant.workspaceKey,workId:record.id,
+      documentId:record.design.documents[0].id,revision:record.design.documents[0].revision});
     assert.notEqual(await probe(aPage,a,work.id),403,"active Operations member reaches business validation");
     assert.notEqual(await probe(bPage,b,foreignWork.id),403,"active Operations member reaches business validation");
+    if(phase2hsGateA) assert.equal(await evidenceProbe(aPage,a,work),200);
     const people=await call("a_admin","d5o_hosted_org_admin_read_v1",{
       p_workspace_key:a.workspaceKey,p_kind:"people",p_search:"",p_offset:0,p_limit:25});
     assert(!people.error,people.error?.message);
@@ -2456,6 +3059,7 @@ try {
     assert(!suspended.error,suspended.error?.message);
     const suspendedHttp=await probe(aPage,a,work.id);
     assert.equal(suspendedHttp,403);
+    if(phase2hsGateA) assert.equal(await evidenceProbe(aPage,a,work),403);
     const suspendedRpc=await call("a_ops","d5o_hosted_design_review_command_v1",{
       p_workspace_key:a.workspaceKey,p_presentation_id:work.id,p_action:"approve-document",
       p_input:{},p_command_id:randomUUID(),p_expected_source_revision:source.data.revision,
@@ -2467,6 +3071,7 @@ try {
     assert(!removed.error,removed.error?.message);
     const removedHttp=await probe(aPage,a,work.id);
     assert.equal(removedHttp,403);
+    if(phase2hsGateA) assert.equal(await evidenceProbe(aPage,a,work),403);
     const directory=async()=>{
       const result=await call("vendor","d5o_platform_provisioning_directory_v1");
       assert(!result.error,result.error?.message);
@@ -2480,6 +3085,30 @@ try {
     assert(!flagOff.error,flagOff.error?.message);
     const disabledHttp=await probe(bPage,b,foreignWork.id);
     assert.equal(disabledHttp,403);
+    if(phase2hsGateA) assert.equal(await evidenceProbe(bPage,b,foreignWork),403);
+    let disabledRpcCode=null;
+    if(phase2hsGateA) {
+      const before=await call("b_admin","d5o_hosted_prototype_read_v1",{
+        p_workspace_key:b.workspaceKey,p_state_key:"work"});
+      assert(!before.error,before.error?.message);
+      const current=before.data.state.records.find((item)=>item.id===foreignWork.id);
+      const direct=await call("b_admin","d5o_hosted_design_draft_command_v1",{
+        p_workspace_key:b.workspaceKey,p_presentation_id:foreignWork.id,
+        p_action:"save-document",p_input:{document:{id:`flag-denial-${randomUUID()}`,
+          type:"Method statement",title:"Forbidden disabled-feature Design draft",
+          source:"SYNTHETIC-DISABLED-FEATURE",packageIds:[current.design.packages[0].packageId],
+          requirementIds:current.definition.scopeControl.requirements
+            .filter((item)=>item.state==="Confirmed").map((item)=>item.id),
+          dueDate:"2026-12-10"},note:"Direct disabled-feature RPC test"},
+        p_command_id:randomUUID(),p_expected_source_revision:before.data.revision,
+        p_expected_decision_revision:current.design.authorityRevision});
+      disabledRpcCode=direct.error?.code??null;
+      assert.equal(disabledRpcCode,"42501",JSON.stringify(direct));
+      const after=await call("b_admin","d5o_hosted_prototype_read_v1",{
+        p_workspace_key:b.workspaceKey,p_state_key:"work"});
+      assert.equal(after.data.state.records.find((item)=>item.id===foreignWork.id)
+        .design.authorityRevision,current.design.authorityRevision);
+    }
     const flagOn=await call("vendor","d5o_platform_capability_command_v1",{
       p_workspace_key:b.workspaceKey,p_kind:"flag",p_enabled:true,
       p_expected_revision:flagOff.data.revision,p_command_id:randomUUID(),
@@ -2492,12 +3121,14 @@ try {
     assert(!tenantOff.error,tenantOff.error?.message);
     const tenantHttp=await probe(bPage,b,foreignWork.id);
     assert.equal(tenantHttp,403);
+    if(phase2hsGateA) assert.equal(await evidenceProbe(bPage,b,foreignWork),403);
     const tenantOn=await call("vendor","d5o_platform_lifecycle_command_v1",{
       p_workspace_key:b.workspaceKey,p_action:"reactivate",p_expected_revision:tenantOff.data.revision,
       p_command_id:randomUUID(),p_reason:"Restore synthetic tenant after Design adapter regression"});
     assert(!tenantOn.error,tenantOn.error?.message);
     return {suspendedMembershipHttp:suspendedHttp,suspendedMembershipRpc:suspendedRpc.error.code,
       removedMembershipHttp:removedHttp,disabledFlagHttp:disabledHttp,
+      disabledFeatureDirectRpc:disabledRpcCode,
       suspendedTenantHttp:tenantHttp,tenantReactivated:tenantOn.data.lifecycle};
   });
 } catch(error) {evidence.setupError=String(error.message).slice(-2500);}
@@ -2511,7 +3142,9 @@ finally {
     setupError:Boolean(evidence.setupError),cleanupVerified:Boolean(evidence.cleanup?.clean)};
   mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
-  console.log(JSON.stringify({...evidence.summary,output:phase2hr
+  console.log(JSON.stringify({...evidence.summary,output:phase2hsGateB
+    ? "docs/architecture/evidence/phase2hs-develop-gate-results.json" : phase2hsGateA
+    ? "docs/architecture/evidence/phase2hs-design-gate-results.json" : phase2hr
     ? "docs/architecture/evidence/phase2hr-design-browser-results.json"
     : phase2hCompletion
     ? "docs/architecture/evidence/phase2h-completion-define-results.json"

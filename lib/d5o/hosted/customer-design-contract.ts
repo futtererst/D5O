@@ -1,5 +1,6 @@
 /** The tenant-neutral Design surface delegates decisions to existing hosted commands. */
 export const designActions = [
+  "submit-handoff", "accept-handoff",
   "create-package", "save-document", "save-package", "save-demand",
   "submit-document", "return-document", "approve-document", "issue-document",
   "request-review", "decide-review", "release-package", "respond-receipt"
@@ -11,6 +12,7 @@ export function isCustomerDesignAction(value: unknown): value is CustomerDesignA
 }
 
 export function designCommandFor(action: CustomerDesignAction) {
+  if (action === "submit-handoff" || action === "accept-handoff") return "d5o_hosted_design_handoff_command_v1";
   if (action === "create-package") return "d5o_hosted_create_connected_package_v2";
   if (action === "save-document" || action === "save-package") return "d5o_hosted_design_draft_command_v1";
   if (action === "save-demand") return "d5o_hosted_design_demand_command_v1";
@@ -19,6 +21,8 @@ export function designCommandFor(action: CustomerDesignAction) {
 }
 
 export function designActionRole(action: CustomerDesignAction, role: string) {
+  if (action === "accept-handoff") return role === "operations_leader";
+  if (action === "submit-handoff") return role === "admin" || role === "project_manager";
   if (action === "approve-document" || action === "return-document" || action === "decide-review")
     return role === "operations_leader";
   if (action === "submit-document" || action === "issue-document" || action === "request-review"

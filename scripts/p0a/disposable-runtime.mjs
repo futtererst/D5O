@@ -43,8 +43,13 @@ export async function createP0aRuntime(root = process.cwd()) {
     runtime.dbContainer = `supabase_db_${projectId}`;
     return runtime;
   } catch (error) {
-    const cleanup = cleanupP0aRuntime(runtime);
-    throw new Error(`${error.message}\ncleanup=${JSON.stringify(cleanup)}`);
+    try {
+      const cleanup = cleanupP0aRuntime(runtime);
+      throw new Error(`${error.message}\ncleanup=${JSON.stringify(cleanup)}`);
+    } catch (cleanupError) {
+      if (cleanupError.message.includes("\ncleanup=")) throw cleanupError;
+      throw new Error(`${error.message}\ncleanup_error=${cleanupError.message}`);
+    }
   }
 }
 

@@ -1,5 +1,7 @@
 # Phase 2H-R release blocker register
 
+> Historical Phase 2H-R snapshot. Phase 2H-S closed the Design adapter security and private PDF gaps, and completed the bounded Develop field-start browser journey. Current unresolved gates are maintained in `D5O_PHASE2HS_RELEASE_BLOCKERS.md`; the table below records the earlier baseline and should not be treated as current status.
+
 | Item | Impact | Required verification | Release consequence |
 | --- | --- | --- | --- |
 | New Design adapter security matrix incomplete | Direct cross-tenant, forged Work, wrong-role/reviewer, evidence, stale, suspended/removed membership, disabled flag, tenant suspension, and duplicate release/receipt checks pass. Invalid PDF reference, concurrent different decisions, and direct disabled-feature Design RPC are not fully exercised. | Execute those remaining requests with actual identities; verify unchanged hosted state and exact HTTP/RPC results. | Blocks Phase 2H-R local qualification and production promotion. |

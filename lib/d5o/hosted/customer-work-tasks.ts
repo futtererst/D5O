@@ -3,7 +3,8 @@ export type CustomerWorkTask = { id: string; workId: string; title: string; phas
   dueDate?: string; action?: string; reviewRole?: string };
 
 export type CustomerTaskWork = { id: string;
-  discovery?: { pursuitControl?: { handoff?: { status?: string } }; designHandoff?: { status?: string } };
+  discovery?: { pursuitControl?: { handoff?: { status?: string } }; outcome?: string;
+    designHandoff?: { status?: string; submittedByActorId?: string } };
   design?: { authorityRevision?: number;
     packages?: Array<{ packageId: string; revision?: number }>;
     documents?: Array<{ id: string; status: string; submittedByActorId?: string }>;
@@ -14,7 +15,41 @@ export type CustomerTaskWork = { id: string;
   definition?: { status?: string; authorityRevision?: number;
   reviews?: { commercial?: string; delivery?: string };
   decisions?: Array<{ action?: string; actorId?: string; reviewRole?: string }>;
-  developHandoff?: { status?: string; submittedByActorId?: string } } };
+  developHandoff?: { status?: string; submittedByActorId?: string } };
+  deploy?: { permits?: Array<{ packageId?: string; status?: string }> } };
+
+type DevelopSchedule = { assignments?: Array<{ id?: string; workId?: string; packageId?: string }>;
+  publications?: Array<{ id?: string; assignments?: Array<{ id?: string }> }>;
+  receipts?: Array<{ assignmentId?: string; publicationId?: string; response?: string }> };
+
+export function developTasks(records: CustomerTaskWork[], role: string,
+  schedule: DevelopSchedule | null): CustomerWorkTask[] {
+  if (!["admin", "project_manager", "operations_leader"].includes(role)) return [];
+  return records.flatMap((record) => (record.design?.releases ?? [])
+    .filter((release) => release.status === "Accepted" && release.packageId)
+    .flatMap((release) => {
+      const packageId = release.packageId;
+      if (record.deploy?.permits?.some((item) => item.packageId === packageId
+        && item.status === "Authorized")) return [];
+      const booking = (schedule?.assignments ?? []).find((item) => item.workId === record.id
+        && item.packageId === packageId);
+      const publication = (schedule?.publications ?? []).findLast((item) =>
+        (item.assignments ?? []).some((assignment) => assignment.id === booking?.id));
+      const acknowledged = (schedule?.receipts ?? []).some((item) =>
+        item.assignmentId === booking?.id && item.publicationId === publication?.id
+          && item.response === "acknowledged");
+      const action = !booking ? "save-booking" : !publication ? "publish-week"
+        : !acknowledged ? "await-acknowledgment" : "authorize-start";
+      if (action === "authorize-start" && role !== "operations_leader") return [];
+      return [{ id: `develop:${record.id}:${packageId}:${action}`,
+        workId: record.id, packageId, phase: "Develop", action,
+        title: ({ "save-booking": "Assign qualified crew", "publish-week": "Publish crew assignment",
+          "await-acknowledgment": "Await employee assignment response",
+          "authorize-start": "Authorize field start" } as Record<string, string>)[action],
+        status: action === "await-acknowledgment" ? "view_only" as const : "available" as const,
+        revision: record.design?.authorityRevision ?? 0 }];
+    }));
+}
 
 export function defineTasks(records: CustomerTaskWork[], role: string, actorId: string): CustomerWorkTask[] {
   return records.flatMap((record) => {
@@ -74,7 +109,20 @@ export function designReceiptTasks(records: CustomerTaskWork[], role: string,
 export function designTasks(records: CustomerTaskWork[], role: string,
   actorId: string, connectedPackages: Array<{ id?: string; workId?: string }> = []): CustomerWorkTask[] {
   return records.flatMap((record) => {
-    if (record.discovery?.designHandoff?.status !== "accepted") return [];
+    if (record.discovery?.designHandoff?.status !== "accepted") {
+      if (record.discovery?.outcome !== "Won") return [];
+      if (role === "operations_leader" && record.discovery?.designHandoff?.status === "submitted"
+        && record.discovery.designHandoff.submittedByActorId !== actorId)
+        return [{ id: `design:${record.id}:handoff-receipt`, workId: record.id,
+          title: "Receive awarded Design handoff", phase: "Design", status: "available" as const,
+          revision: 0, action: "accept-handoff" }];
+      if (["admin", "project_manager"].includes(role)
+        && record.discovery?.designHandoff?.status !== "submitted")
+        return [{ id: `design:${record.id}:handoff-submit`, workId: record.id,
+          title: "Send awarded Design handoff", phase: "Design", status: "available" as const,
+          revision: 0, action: "submit-handoff" }];
+      return [];
+    }
     const revision = record.design?.authorityRevision ?? 0;
     const task = (id: string, title: string, action: string): CustomerWorkTask => ({
       id: `design:${record.id}:${id}:${revision}`, workId: record.id,

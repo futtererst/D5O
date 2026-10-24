@@ -16,7 +16,7 @@ type Package = { packageId: string; name?: string; revision?: number;
   completionBasis?: { unit?: string; criterion?: string } };
 type DesignWork = { id: string; owner?: string; design?: { packages?: Package[]; documents?: Document[];
   reviews?: Review[]; releases?: Array<{ packageId: string; status: string }> };
-  discovery?: { designHandoff?: { status?: string } };
+  discovery?: { outcome?: string; designHandoff?: { status?: string; submittedByActorId?: string } };
   definition?: { scopeControl?: { requirements?: Array<{ id: string; state?: string; description?: string }> } } };
 type Props = { workspace: string; work: DesignWork; connectedPackages: Package[]; role: string; busy: boolean;
   onAction: (action: CustomerDesignAction, input: Record<string, unknown>) => Promise<void> };
@@ -49,7 +49,23 @@ export function CustomerDesignActions({ workspace, work, connectedPackages, role
   }
   if (work.discovery?.designHandoff?.status !== "accepted")
     return <div className="d5o-customer-design-actions"><h4>Design actions</h4>
-      <p role="status">The awarded Design handoff must be independently accepted before package preparation begins.</p></div>;
+      <p role="status">The awarded Design handoff must be independently accepted before package preparation begins.</p>
+      {owner && work.discovery?.outcome === "Won" &&
+        work.discovery?.designHandoff?.status !== "submitted" &&
+        <form onSubmit={(event) => void submit(event, "submit-handoff", (data) => ({
+          dueDate: str(data, "dueDate") }))}>
+          <h5>Awarded Design handoff</h5>
+          <label>Handoff due date<input name="dueDate" type="date" required /></label>
+          <button disabled={busy}>Send awarded Design handoff</button>
+        </form>}
+      {reviewer && work.discovery?.designHandoff?.status === "submitted" &&
+        <form onSubmit={(event) => void submit(event, "accept-handoff", (data) => ({
+          reason: str(data, "reason") }))}>
+          <h5>Independent Design handoff receipt</h5>
+          <label>Receipt reason<textarea name="reason" minLength={20} required /></label>
+          <button disabled={busy}>Accept awarded Design handoff</button>
+        </form>}
+    </div>;
   return <div className="d5o-customer-design-actions">
     <h4>Design actions</h4>
     <p>Each decision is checked against your role, the accepted handoff, this Work record, and its current revision.</p>
