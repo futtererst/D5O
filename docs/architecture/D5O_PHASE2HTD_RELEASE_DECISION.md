@@ -1,0 +1,19 @@
+# Phase 2H-TD release decision
+
+**PARTIAL — local Phase 2H-TD qualification remains open.** This is not authorization for production promotion.
+
+The [focused TD run](evidence/phase2htd-targeted-results.json) passed 60/60 with cleanup. Its 44-case [finite register](evidence/phase2htd-closure-register.json) has 43 PASS and one NOT APPLICABLE (individual employee reassignment does not exist in the role-derived connected-service queue). Suspended and removed users, suspended tenants, disabled entitlement/flag, wrong role, and cross-tenant actors were denied. Stale approval and customer evidence could not authorize work. Pending conflicts produced one authoritative decision or one job. The final [My Work browser regression](evidence/phase2htd-final-browser-regression.json) passed 52/52 with cleanup, preserving Tenant A's USD 10,000 threshold approval, Tenant B's USD 25,000 no-additional-approval outcome, and one executable job each.
+
+The local blocker is the inherited Phase 2H-TB Gate B suite. Three finite attempts each passed 50/51 and cleaned up. The same `authenticated tenant-neutral Work UI and API isolation` browser case failed at the connected Work creation receipt. The first attempt timed out awaiting the POST response; later attempts did not observe the visible success receipt. The browser harness now requires the success receipt and persisted Work, and retries only if no POST was sent. The equivalent case passed in the focused TD run and final TC browser run, but that does not convert the failed Gate B run to a pass. The exact request, response, validation and hydration sequence for the Gate B variant remains unverified. See [all attempts and suite counts](evidence/phase2htd-regression-summary.json).
+
+Other executed regressions passed: Phase 1B approval 13/13, Phase 2H-T approval controls 14/14, Phase 2H-S Develop security 40/40, TC calendar 13/13, P0-A isolation 16/16, Rybex/Rotork published phase contract, TypeScript, ESLint, and local production build. The build required local unsandboxed execution because Windows Turbopack must create junctions in the isolated `.next` cache. No application build error remained. The Develop suite's earlier date and local-startup attempts and the Gate B failures are retained as retry evidence, not counted as passes.
+
+## Required local remediation
+
+Instrument only the failing Gate B browser creation case to retain the attempted POST, HTTP result/body, page alert, hydration state, and final Work list. Determine whether the command was not sent, was rejected, or succeeded without rendering the receipt. Correct the specific UI or test synchronization defect, then run Gate B once with its persisted Work and cleanup assertions. Recheck the focused TD security run only if production code or the protected command path changes. Until Gate B passes, report Phase 2H-TD as PARTIAL and do not start Deploy employee execution under Phase 2H-U.
+
+## Separate production-promotion gates
+
+Approved staging migration and recovery, original sealed M1 and historical connected pilot provenance, live commercial invitation delivery, general-customer production routing, historical phase-projection verification, and existing production-readiness failures remain open. The original historical fixtures were not fabricated. Local disposable coverage does not establish those historical claims.
+
+The migration in this branch is local only; it has not been applied to a hosted or production database. Rollback before promotion is to omit this unapplied migration. After application in a future isolated staging rehearsal, rollback requires restoring the prior public command functions and dropping the capability wrappers in a transaction; the older private functions are retained by the migration for that purpose. No production database, environment setting, deployment, push, merge, pilot allowlist, or historical record was changed by this assignment.

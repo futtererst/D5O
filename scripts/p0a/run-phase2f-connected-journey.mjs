@@ -9,7 +9,8 @@ import { chromium } from "@playwright/test";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
-const phase2htc = process.env.D5O_PHASE2HTC === "1";
+const phase2htd = process.env.D5O_PHASE2HTD === "1";
+const phase2htc = process.env.D5O_PHASE2HTC === "1" || phase2htd;
 const phase2htGateA = process.env.D5O_PHASE2HT_GATE_A === "1";
 const phase2htGateB = process.env.D5O_PHASE2HT_GATE_B === "1" || phase2htc;
 const phase2g = process.env.D5O_PHASE2G === "1";
@@ -18,7 +19,9 @@ const phase2hsGateA = process.env.D5O_PHASE2HS_GATE_A === "1" || phase2hsGateB;
 const phase2hr = process.env.D5O_PHASE2HR === "1" || phase2hsGateA;
 const phase2hCompletion = process.env.D5O_PHASE2H_COMPLETION === "1" || phase2hr;
 const phase2h = process.env.D5O_PHASE2H === "1" || phase2hCompletion;
-const output = resolve(root, phase2htc
+const output = resolve(root, phase2htd
+  ? "docs/architecture/evidence/phase2htd-targeted-results.json"
+  : phase2htc
   ? "docs/architecture/evidence/phase2htc-two-tenant-results.json"
   : phase2htGateA
   ? "docs/architecture/evidence/phase2ht-gate-a-results.json"
@@ -37,22 +40,25 @@ const output = resolve(root, phase2htc
   : phase2g
   ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
   : "docs/architecture/evidence/phase2f-connected-journey-results.json");
-const evidence = { baseline: phase2htc ? "6e28685f44795b1a3f6b19877d575b609be43729"
+const evidence = { baseline: phase2htd ? "88381435a965050402dcd423b4856115246459a3"
+  : phase2htc ? "6e28685f44795b1a3f6b19877d575b609be43729"
   : phase2htGateA || phase2htGateB ? "82d9b1c4131d3154da3d0e53e15a8d22365fec35"
   : phase2hsGateA ? "d1537c2070eee6926ad227c69dcdc43418bb381d" : phase2hr ? "f53aa89192b776221067cc6a761248e87259f82e" : phase2g
     ? "dae8e1fa975bc47ef6d1180b512399683e3c9613"
     : "8d536b4ce74282fe6c3a0e2dbb66b1752ca51ec2",
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
-const browserEvidenceDir = (legacyPath) => resolve(root,phase2htc
+const browserEvidenceDir = (legacyPath) => resolve(root,phase2htd
+  ? "docs/architecture/evidence/phase2htd-browser" : phase2htc
   ? "docs/architecture/evidence/phase2htc-browser" : phase2htGateB
   ? "docs/architecture/evidence/phase2ht-gate-b-browser" : legacyPath);
 if(phase2htGateA) evidence.gateASecurity=[];
 // Field start checks the real shift clock. The disposable journey uses today's
 // local business date so that its schedule is actually eligible for execution.
-let executionDate = (phase2htGateA || phase2htGateB) ? "2026-10-26" : new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York",
+const useQualificationClock=phase2hsGateB || phase2htGateA || phase2htGateB;
+let executionDate = useQualificationClock ? "2026-10-26" : new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York",
   year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 const executionDay = new Date(`${executionDate}T12:00:00Z`).getUTCDay();
-const executionHour = (phase2htGateA || phase2htGateB) ? 10 : Number(new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York",
+const executionHour = useQualificationClock ? 10 : Number(new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York",
   hour:"2-digit",hourCycle:"h23"}).format(new Date()));
 const currentFridayOvernight = (phase2hsGateB || phase2g || phase2htGateB) && executionDay===6
   && executionHour<11;
@@ -78,7 +84,7 @@ const executionShift = currentFridayOvernight ? "23:00–10:59"
 // Economic and labor authorities are checked against the database's real
 // current_date. Their validity can begin today while the disposable field
 // shift is evaluated under its controlled qualification clock.
-const authorityValidFrom = (phase2htGateA || phase2htGateB)
+const authorityValidFrom = useQualificationClock
   ? new Date().toISOString().slice(0,10) : executionDate;
 let runtime, server, designBrowser;
 const q = (value) => `'${String(value).replaceAll("'", "''")}'`;
@@ -142,7 +148,7 @@ async function startNext(url, anon, service) {
 
 try {
   runtime = await createP0aRuntime(root);
-  if(phase2htGateA || phase2htGateB) installDisposableQualificationClock();
+  if(useQualificationClock) installDisposableQualificationClock();
   const url = runtime.status.API_URL ?? runtime.status.SUPABASE_URL;
   const anon = runtime.status.ANON_KEY ?? runtime.status.PUBLISHABLE_KEY;
   const service = runtime.status.SERVICE_ROLE_KEY ?? runtime.status.SECRET_KEY;
@@ -207,6 +213,8 @@ try {
   }
   const serviceTaskEvidence=[];
   if(phase2htc) evidence.serviceTaskNavigation=serviceTaskEvidence;
+  if(phase2htd) evidence.tdCases=[];
+  const tdCase=(id,actual)=>{if(phase2htd) evidence.tdCases.push({id,status:"PASS",actual});};
   const lastServiceTask=new Map();
   async function openServiceTask(actor,tenant,workId,action) {
     const page=await designPage(actor,tenant,workId);
@@ -224,8 +232,13 @@ try {
     if(previous) {
       assert(!(current.body.tasks??[]).some((item)=>item.id===previous.id),
         `${actor}:stale_my_work_task:${previous.action}`);
-      assert.equal(await page.locator('.d5o-customer-work-list a')
-        .filter({hasText:previous.title}).count(),0,`${actor}:stale_my_work_link`);
+      // A later revision can legitimately create a new responsibility with
+      // the same plain-language title and Work URL. The task ID is the exact
+      // stale-task assertion; link absence applies only if no successor exists.
+      if(!(current.body.tasks??[]).some((item)=>item.workId===workId
+        && item.title===previous.title))
+        assert.equal(await page.locator('.d5o-customer-work-list a')
+          .filter({hasText:previous.title}).count(),0,`${actor}:stale_my_work_link`);
       previous.resolved=true;
     }
     const task=(current.body.tasks??[]).find((item)=>item.workId===workId
@@ -272,8 +285,10 @@ try {
     assert.equal(current.status,200);
     assert(!(current.body.tasks??[]).some((item)=>item.id===prior.id),
       `${actor}:service_task_still_actionable:${prior.action}`);
-    assert.equal(await page.locator('.d5o-customer-work-list a')
-      .filter({hasText:prior.title}).count(),0,`${actor}:service_task_link_stale`);
+    if(!(current.body.tasks??[]).some((item)=>item.workId===workId
+      && item.title===prior.title))
+      assert.equal(await page.locator('.d5o-customer-work-list a')
+        .filter({hasText:prior.title}).count(),0,`${actor}:service_task_link_stale`);
     prior.resolved=true;
   }
   async function browserDesignAction(actor,tenant,workId,button,prepare=async()=>{},expected=200) {
@@ -2212,8 +2227,9 @@ try {
       deletedObjectRead:unavailable,deletedObjectReviewCode:deleted.error.code,
       unchangedRevision:after.record.design.authorityRevision};
   });
+  let connectedBasis, operateCommand;
   if(!phase2hsGateA || phase2hsGateB) {
-  const connectedBasis = async (prefix,tenant) => {
+  connectedBasis = async (prefix,tenant) => {
     const workRead=await call(`${prefix}_admin`,"d5o_hosted_prototype_read_v1",{
       p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
     const scheduleRead=await call(`${prefix}_admin`,"d5o_hosted_prototype_read_v1",{
@@ -2837,7 +2853,7 @@ try {
       p_workspace_key:b.workspaceKey});
     assert.equal(afterWorkforce.data.revision,workforce.data.revision);
     let unrelatedCapabilities=null;
-    if(phase2htGateA) {
+    if(phase2htGateA || phase2htd) {
       const unit=await call("b_admin","d5o_hosted_org_admin_command_v1",{
         p_workspace_key:b.workspaceKey,p_action:"unit.create",p_subject_id:null,
         p_input:{code:`SVC${randomUUID().slice(0,5).toUpperCase()}`,
@@ -3070,7 +3086,7 @@ try {
     }
     return outcomes;
   });
-  const operateCommand=async(prefix,tenant,actor,action,input,id)=>{
+  operateCommand=async(prefix,tenant,actor,action,input,id)=>{
     const basis=await connectedBasis(prefix,tenant);
     return call(actor,"d5o_hosted_operate_command_v1",{
       p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id,
@@ -3781,20 +3797,45 @@ try {
           await page.goto(`http://127.0.0.1:${server.port}/work/connected-work?workspace=${tenant.workspaceKey}`);
           await page.getByRole("button",{name:"Create connected Work"}).waitFor({timeout:30000});
           const browserWork=`Phase 2G browser Work ${prefix.toUpperCase()}`;
-          await page.getByLabel("Work name").fill(browserWork);
-          await page.getByLabel("Customer",{exact:true}).fill("Fictional browser customer");
-          await page.getByLabel("Site").fill("Fictional browser site");
-          await page.getByLabel("Accountable owner").fill("Fictional owner");
-          await page.getByLabel("Demand source").fill("Fictional customer request");
-          await page.getByLabel("Customer need").fill("A fictional connected service need created through the authenticated application.");
-          await page.getByLabel("Procurement route").fill("Customer authorization required");
-          const createdResponse=page.waitForResponse((response)=>response.url().includes("/api/d5o-hosted/connected-work")
-            && response.request().method()==="POST");
-          await page.getByRole("button",{name:"Create connected Work"}).click();
-          const createdResult=await createdResponse;
+          const fillBrowserWork=async()=>{
+            await page.getByLabel("Work name").fill(browserWork);
+            await page.getByLabel("Customer",{exact:true}).fill("Fictional browser customer");
+            await page.getByLabel("Site").fill("Fictional browser site");
+            await page.getByLabel("Accountable owner").fill("Fictional owner");
+            await page.getByLabel("Demand source").fill("Fictional customer request");
+            await page.getByLabel("Customer need").fill("A fictional connected service need created through the authenticated application.");
+            await page.getByLabel("Procurement route").fill("Customer authorization required");
+          };
+          let createdResult=null;
+          for(let attempt=0;attempt<2;attempt++) {
+            await fillBrowserWork();
+            // Next dev may replace this route during hydration. Retry only when
+            // the browser never sent a POST, so no business command can repeat.
+            let posted=false;
+            const onRequest=(request)=>{if(request.url().includes("/api/d5o-hosted/connected-work")
+              && request.method()==="POST")posted=true;};
+            page.on("request",onRequest);
+            const response=page.waitForResponse((item)=>item.url().includes("/api/d5o-hosted/connected-work")
+              && item.request().method()==="POST",{timeout:10000}).catch(()=>null);
+            await page.getByRole("button",{name:"Create connected Work"}).click();
+            createdResult=await response;
+            page.off("request",onRequest);
+            if(createdResult && createdResult.status()!==201) {
+              const body=await createdResult.text().catch(()=>"response body unavailable");
+              assert.equal(createdResult.status(),201,`browser-work-create:${body}`);
+            }
+            const receipt=page.getByRole("status")
+              .filter({hasText:`Connected Work created: ${browserWork}`});
+            if(await receipt.isVisible().catch(()=>false))break;
+            if(posted)await receipt.waitFor({timeout:30000});
+            else if(attempt===0) {
+              await page.goto(`http://127.0.0.1:${server.port}/work/connected-work?workspace=${tenant.workspaceKey}`);
+              await page.getByRole("button",{name:"Create connected Work"}).waitFor({timeout:30000});
+            } else throw Error(`browser_work_post_not_sent:${page.url()}`);
+          }
           // Chromium may discard the response body after a successful route
           // transition. Only request it when diagnosing a non-201 response.
-          if(createdResult.status()!==201) {
+          if(createdResult && createdResult.status()!==201) {
             const body=await createdResult.text().catch(()=>"response body unavailable");
             assert.equal(createdResult.status(),201,`browser-work-create:${body}`);
           }
@@ -4073,6 +4114,931 @@ try {
       unchangedScheduleRevision:after.data.revision});
     return http;
   });
+  if(phase2htd && evidence.gateBJobs?.length===2) await check(
+    "TD pending threshold approval race leaves one terminal decision",async()=>{
+    const workId=evidence.gateBJobs[0].workId;
+    const prior=await connectedBasis("a",a);
+    const asset=prior.operate.state.assets[0];
+    const opened=await operateCommand("a",a,"a_pm","open-request",{
+      assetId:asset.id,title:"Synthetic approval race incident",
+      description:"Fictional monitored equipment requires inspected service repair",
+      contact:"Fictional customer representative",impact:"Standard",
+      note:"Open pending approval concurrency fixture"},`td-approval-race-${randomUUID()}`);
+    assert(!opened.error,opened.error?.message);
+    let basis=await connectedBasis("a",a);
+    const request=basis.operate.state.requests.at(-1);
+    const triaged=await operateCommand("a",a,"a_ops2","triage-request",{
+      requestId:request.id,serviceCategory:"Monitoring fault"},
+      `td-approval-race-triage-${randomUUID()}`);
+    assert(!triaged.error,triaged.error?.message);
+    basis=await connectedBasis("a",a);
+    const original=basis.operate.state.requests.find((item)=>item.id===evidence.gateBJobs[0].requestId);
+    const pricingInput=structuredClone(original.serviceEstimate.input);
+    pricingInput.lines[0].scopeRef=request.id;
+    const pricing=(actor,action,input,at)=>call(actor,
+      "d5o_hosted_service_pricing_command_v1",{
+        p_workspace_key:a.workspaceKey,p_parent_presentation_id:workId,
+        p_request_id:request.id,p_action:action,p_input:input,
+        p_command_id:randomUUID(),p_expected_work_revision:at.source.revision,
+        p_expected_operate_revision:at.operate.revision});
+    let result=await pricing("a_pm","save-service-estimate",{
+      pricingInput,note:"Save exact race estimate"},basis);
+    assert(!result.error,result.error?.message);
+    basis=await connectedBasis("a",a);
+    const estimate=basis.operate.state.requests.at(-1).serviceEstimate;
+    result=await pricing("a_pm","submit-service-pricing",{
+      estimateRevision:estimate.revision,note:"Submit race estimate"},basis);
+    assert(!result.error,result.error?.message);
+    basis=await connectedBasis("a",a);
+    result=await pricing("a_ops","approve-service-pricing",{
+      estimateRevision:estimate.revision,note:"Independent approval of race estimate"},basis);
+    assert(!result.error,result.error?.message);
+    const approval=(action,commandId)=>call("a_admin",
+      "d5o_hosted_connected_service_approval_command_v1",{
+        p_workspace_key:a.workspaceKey,p_parent_presentation_id:workId,
+        p_request_id:request.id,p_action:action,p_command_id:commandId});
+    const requested=await call("a_pm","d5o_hosted_connected_service_approval_command_v1",{
+      p_workspace_key:a.workspaceKey,p_parent_presentation_id:workId,
+      p_request_id:request.id,p_action:"request",p_command_id:randomUUID()});
+    assert(!requested.error,requested.error?.message);
+    assert.equal(requested.data.status,"pending");
+    const approveId=randomUUID(),rejectId=randomUUID();
+    const [approved,rejected]=await Promise.all([
+      approval("approve",approveId),approval("reject",rejectId)]);
+    const accepted=[approved,rejected].filter((item)=>!item.error);
+    const denied=[approved,rejected].filter((item)=>item.error);
+    assert.equal(accepted.length,1,JSON.stringify({approved,rejected}));
+    assert.equal(denied.length,1);
+    assert.equal(denied[0].error.code,"23514");
+    const rows=JSON.parse(sql(`select pg_catalog.jsonb_build_object(
+      'status',(select status from d5o_hosted.service_approval_requests
+        where workspace_id=${q(a.workspaceId)} and service_request_id=${q(request.id)}),
+      'terminalEvents',(select count(*) from d5o_hosted.service_approval_events e
+        join d5o_hosted.service_approval_requests r on r.approval_id=e.approval_id
+        where r.workspace_id=${q(a.workspaceId)} and r.service_request_id=${q(request.id)}
+          and e.action in ('approve','reject')),
+      'jobs',(select count(*) from d5o_hosted.connected_operate_states o,
+        lateral pg_catalog.jsonb_array_elements(o.state->'jobs') j
+        where o.workspace_id=${q(a.workspaceId)} and o.work_id=${q(basis.work.canonicalWorkId)}
+          and j->>'requestId'=${q(request.id)}))::text;`));
+    assert(["approved","rejected"].includes(rows.status));
+    assert.equal(rows.terminalEvents,1);
+    assert.equal(rows.jobs,0);
+    tdCase("C03",{acceptedStatus:rows.status,deniedCode:denied[0].error.code,
+      terminalEvents:rows.terminalEvents,jobs:rows.jobs,
+      approvalId:requested.data.approvalId});
+    return {requestId:request.id,acceptedStatus:rows.status,
+      rejectedCode:denied[0].error.code,terminalEvents:rows.terminalEvents};
+  });
+  if(phase2htd && evidence.gateBJobs?.length===2) await check(
+    "TD open approval tasks invalidate on amount and scope revision",async()=>{
+    const race=evidence.tests.find((item)=>item.name===
+      "TD pending threshold approval race leaves one terminal decision"&&item.status==="PASS");
+    assert(race?.detail?.requestId,"approval_race_request_required");
+    const requestId=race.detail.requestId,workId=evidence.gateBJobs[0].workId;
+    const pricing=(actor,action,input,at)=>call(actor,
+      "d5o_hosted_service_pricing_command_v1",{
+        p_workspace_key:a.workspaceKey,p_parent_presentation_id:workId,
+        p_request_id:requestId,p_action:action,p_input:input,
+        p_command_id:randomUUID(),p_expected_work_revision:at.source.revision,
+        p_expected_operate_revision:at.operate.revision});
+    const updateEstimate=async(change)=>{
+      let current=await connectedBasis("a",a);
+      const old=current.operate.state.requests.find((item)=>item.id===requestId).serviceEstimate;
+      const pricingInput=structuredClone(old.input);
+      change(pricingInput);
+      let result=await pricing("a_pm","save-service-estimate",{
+        pricingInput,note:"Update exact synthetic approval basis"},current);
+      assert(!result.error,result.error?.message);
+      current=await connectedBasis("a",a);
+      const next=current.operate.state.requests.find((item)=>item.id===requestId).serviceEstimate;
+      result=await pricing("a_pm","submit-service-pricing",{
+        estimateRevision:next.revision,note:"Submit revised synthetic estimate"},current);
+      assert(!result.error,result.error?.message);
+      current=await connectedBasis("a",a);
+      result=await pricing("a_ops","approve-service-pricing",{
+        estimateRevision:next.revision,note:"Independent revised estimate review"},current);
+      assert(!result.error,result.error?.message);
+      current=await connectedBasis("a",a);
+      const approved=current.operate.state.requests.find((item)=>item.id===requestId).serviceEstimate;
+      assert.equal(approved.status,"Approved");
+      return {basis:current,estimate:approved};
+    };
+    const requestApproval=()=>call("a_pm","d5o_hosted_connected_service_approval_command_v1",{
+      p_workspace_key:a.workspaceKey,p_parent_presentation_id:workId,
+      p_request_id:requestId,p_action:"request",p_command_id:randomUUID()});
+    const staleDecision=(page)=>page.evaluate(async({workspace,workId,requestId})=>{
+      const response=await fetch("/api/d5o-hosted/service-approval",{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({workspace,parentPresentationId:workId,requestId,
+          action:"approve",commandId:crypto.randomUUID()})});
+      return {status:response.status,body:await response.json()};
+    },{workspace:a.workspaceKey,workId,requestId});
+    const revisionOne=await updateEstimate((input)=>{input.lines[0].quantity="106";});
+    let requested=await requestApproval();
+    assert(!requested.error,requested.error?.message);
+    const page=await openServiceTask("a_admin",a,workId,"decide-approval");
+    const amountTaskUrl=page.url();
+    const amountTaskId=lastServiceTask.get(`a_admin:${workId}`)?.id;
+    const revisionTwo=await updateEstimate((input)=>{input.lines[0].quantity="107";});
+    assert.notEqual(revisionTwo.estimate.evaluation.proposedPriceMinor,
+      revisionOne.estimate.evaluation.proposedPriceMinor);
+    const amountDenied=await staleDecision(page);
+    assert.equal(amountDenied.status,409,JSON.stringify(amountDenied));
+    const oldAmount=sql(`select status from d5o_hosted.service_approval_requests
+      where workspace_id=${q(a.workspaceId)} and service_request_id=${q(requestId)}
+        and estimate_revision=${revisionOne.estimate.revision};`);
+    assert.equal(oldAmount,"pending");
+    const queue=await page.evaluate(async(workspace)=>{
+      const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`);
+      return {status:response.status,body:await response.json()};
+    },a.workspaceKey);
+    assert.equal(queue.status,200);
+    assert(!(queue.body.tasks??[]).some((item)=>item.id===amountTaskId));
+    tdCase("B02",{oldAmount:revisionOne.estimate.evaluation.proposedPriceMinor,
+      newAmount:revisionTwo.estimate.evaluation.proposedPriceMinor,
+      staleApprovalHttp:amountDenied.status,oldDecisionRetained:oldAmount});
+    tdCase("D06",{taskId:amountTaskId,taskRemoved:true,
+      staleApprovalHttp:amountDenied.status,oldTaskUrl:amountTaskUrl});
+    requested=await requestApproval();
+    assert(!requested.error,requested.error?.message);
+    await openServiceTask("a_admin",a,workId,"decide-approval");
+    const scopeTaskId=lastServiceTask.get(`a_admin:${workId}`)?.id;
+    const scopeBefore=revisionTwo.estimate.evaluation.proposedPriceMinor;
+    const revisionThree=await updateEstimate((input)=>{
+      input.lines[0].description="Revised synthetic scope with identical quantity";
+    });
+    assert.equal(revisionThree.estimate.evaluation.proposedPriceMinor,scopeBefore);
+    const scopeDenied=await staleDecision(page);
+    assert.equal(scopeDenied.status,409,JSON.stringify(scopeDenied));
+    const scopeQueue=await page.evaluate(async(workspace)=>{
+      const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`);
+      return {status:response.status,body:await response.json()};
+    },a.workspaceKey);
+    assert.equal(scopeQueue.status,200);
+    assert(!(scopeQueue.body.tasks??[]).some((item)=>item.id===scopeTaskId));
+    tdCase("B03",{amountUnchanged:scopeBefore,
+      oldScopeRevision:revisionTwo.estimate.revision,
+      newScopeRevision:revisionThree.estimate.revision,
+      staleApprovalHttp:scopeDenied.status});
+    tdCase("D07",{taskId:scopeTaskId,taskRemoved:true,
+      staleApprovalHttp:scopeDenied.status});
+    requested=await requestApproval();
+    assert(!requested.error,requested.error?.message);
+    await openServiceTask("a_admin",a,workId,"decide-approval");
+    const currentTaskId=lastServiceTask.get(`a_admin:${workId}`)?.id;
+    const otherPage=await designBrowser.newPage({viewport:{width:1440,height:900}});
+    await otherPage.goto(`http://127.0.0.1:${server.port}/auth/sign-in`);
+    await otherPage.getByLabel("Email").fill(users.a_admin.email);
+    await otherPage.getByLabel("Password").fill(users.a_admin.password);
+    await otherPage.getByRole("button",{name:"Continue to your work"}).click();
+    await otherPage.waitForURL((location)=>!location.pathname.startsWith("/auth/sign-in"));
+    const approvedOther=await staleDecision(otherPage);
+    assert.equal(approvedOther.status,200,JSON.stringify(approvedOther));
+    const duplicate=await staleDecision(page);
+    assert.equal(duplicate.status,409,JSON.stringify(duplicate));
+    await assertServiceTaskResolved("a_admin",a,workId);
+    tdCase("D08",{otherSessionHttp:approvedOther.status,
+      originalSessionStaleHttp:duplicate.status,taskId:currentTaskId,
+      taskRemoved:true});
+    await otherPage.close();
+    const historic=JSON.parse(sql(`select pg_catalog.jsonb_build_object(
+      'rows',count(*),'events',(select count(*) from d5o_hosted.service_approval_events
+        where workspace_id=${q(a.workspaceId)} and work_id=${q(revisionThree.basis.work.canonicalWorkId)}
+          and approval_id in (select approval_id from d5o_hosted.service_approval_requests
+            where workspace_id=${q(a.workspaceId)} and service_request_id=${q(requestId)})))::text
+      from d5o_hosted.service_approval_requests
+      where workspace_id=${q(a.workspaceId)} and service_request_id=${q(requestId)};`));
+    assert(historic.rows>=4 && historic.events>=4);
+    assert.equal(revisionThree.basis.work.phaseConfigurationVersionId,
+      evidence.gateBJobs[0].configurationVersionId);
+    tdCase("B06",{approvalRows:historic.rows,approvalEvents:historic.events,
+      configurationVersionId:revisionThree.basis.work.phaseConfigurationVersionId});
+    return {amountDenied:amountDenied.status,scopeDenied:scopeDenied.status,
+      otherSessionApproved:approvedOther.status,duplicate:duplicate.status,
+      historicalApprovalRows:historic.rows};
+  });
+  if(phase2htd && evidence.gateBJobs?.length===2) await check(
+    "TD approval and customer evidence cannot cross child or parent Work",async()=>{
+    const race=evidence.tests.find((item)=>item.name===
+      "TD pending threshold approval race leaves one terminal decision"&&item.status==="PASS");
+    const stale=evidence.tests.find((item)=>item.name===
+      "TD open approval tasks invalidate on amount and scope revision"&&item.status==="PASS");
+    assert(race?.detail?.requestId && stale,"approved additional request required");
+    const primaryWorkId=evidence.gateBJobs[0].workId;
+    let basis=await connectedBasis("a",a);
+    const raceRequest=basis.operate.state.requests.find((item)=>item.id===race.detail.requestId);
+    assert.equal(raceRequest.serviceEstimate.status,"Approved");
+    const raceApproval=sql(`select status from d5o_hosted.service_approval_requests
+      where workspace_id=${q(a.workspaceId)} and service_request_id=${q(raceRequest.id)}
+        and estimate_revision=${raceRequest.serviceEstimate.revision};`);
+    assert.equal(raceApproval,"approved");
+    const catalog=await call("a_admin","d5o_hosted_prototype_read_v1",{
+      p_workspace_key:a.workspaceKey,p_state_key:"catalog"});
+    assert(!catalog.error,catalog.error?.message);
+    const activeVersion=evidence.tests.find((item)=>item.name===
+      "new published tenant policy does not repin completed connected Work"&&item.status==="PASS")
+      ?.detail?.newActiveVersion;
+    assert(activeVersion,"active_configuration_version_required");
+    const second=await admin.rpc("d5o_hosted_create_connected_work_v1",{
+      p_workspace_key:a.workspaceKey,p_command_id:`td-second-work-${randomUUID()}`,
+      p_expected_work_revision:basis.source.revision,
+      p_expected_catalog_revision:catalog.data.revision,
+      p_configuration_version_id:activeVersion,p_work_type_key:"lifecycle-service",
+      p_title:"Synthetic second parent Work",p_customer:"Fictional Customer",
+      p_site:"Test location",p_owner:"Test owner",p_actor_user_id:users.a_pm.id,
+      p_membership_id:sql(`select id from d5o_hosted.memberships
+        where workspace_id=${q(a.workspaceId)} and actor_user_id=${q(users.a_pm.id)};`),
+      p_initial_discovery:{source:"Test",need:"Need service",procurement:"Direct",closeDate:""}});
+    assert(!second.error,second.error?.message);
+    const secondWorkId=sql(`select presentation_id from d5o_hosted.work_identity_links
+      where workspace_id=${q(a.workspaceId)} and work_id=${q(second.data.workId)};`);
+    assert(secondWorkId);
+    const wrongParent=await call("a_admin","d5o_hosted_connected_service_approval_command_v1",{
+      p_workspace_key:a.workspaceKey,p_parent_presentation_id:secondWorkId,
+      p_request_id:raceRequest.id,p_action:"approve",p_command_id:randomUUID()});
+    assert.equal(wrongParent.error?.code,"23514",JSON.stringify(wrongParent));
+    tdCase("B05",{wrongParentRpc:wrongParent.error.code,
+      originalWorkId:primaryWorkId,otherWorkId:secondWorkId});
+    basis=await connectedBasis("a",a);
+    const asset=basis.operate.state.assets[0];
+    const opened=await operateCommand("a",a,"a_pm","open-request",{
+      assetId:asset.id,title:"Synthetic other child approval probe",
+      description:"Fictional monitored equipment requires inspected service repair",
+      contact:"Fictional customer representative",impact:"Standard",
+      note:"Open other child approval isolation fixture"},`td-other-child-${randomUUID()}`);
+    assert(!opened.error,opened.error?.message);
+    basis=await connectedBasis("a",a);
+    const child=basis.operate.state.requests.at(-1);
+    const triaged=await operateCommand("a",a,"a_ops2","triage-request",{
+      requestId:child.id,serviceCategory:"Monitoring fault"},
+      `td-other-child-triage-${randomUUID()}`);
+    assert(!triaged.error,triaged.error?.message);
+    basis=await connectedBasis("a",a);
+    const pricingInput=structuredClone(raceRequest.serviceEstimate.input);
+    pricingInput.lines[0].scopeRef=child.id;
+    const pricing=(actor,action,input,requestId,at)=>call(actor,
+      "d5o_hosted_service_pricing_command_v1",{
+        p_workspace_key:a.workspaceKey,p_parent_presentation_id:primaryWorkId,
+        p_request_id:requestId,p_action:action,p_input:input,
+        p_command_id:randomUUID(),p_expected_work_revision:at.source.revision,
+        p_expected_operate_revision:at.operate.revision});
+    let result=await pricing("a_pm","save-service-estimate",{
+      pricingInput,note:"Save other child exact estimate"},child.id,basis);
+    assert(!result.error,result.error?.message);
+    basis=await connectedBasis("a",a);
+    const estimate=basis.operate.state.requests.find((item)=>item.id===child.id).serviceEstimate;
+    result=await pricing("a_pm","submit-service-pricing",{
+      estimateRevision:estimate.revision,note:"Submit other child estimate"},child.id,basis);
+    assert(!result.error,result.error?.message);
+    basis=await connectedBasis("a",a);
+    result=await pricing("a_ops","approve-service-pricing",{
+      estimateRevision:estimate.revision,note:"Independent other child estimate review"},child.id,basis);
+    assert(!result.error,result.error?.message);
+    basis=await connectedBasis("a",a);
+    const authInput=(evidenceId,revision)=>({estimateRevision:revision,evidenceId,
+      customerParty:"Fictional authorized customer",
+      customerOrganization:"Fictional customer organization",
+      customerRole:"Authorized buyer",authorityBasis:"Signed service order authority",
+      outcome:"Authorized",note:"Reviewed exact synthetic customer decision source"});
+    const wrongChild=await pricing("a_ops","record-service-authorization",
+      authInput(evidence.gateBJobs[0].customerEvidenceId,estimate.revision),child.id,basis);
+    assert.equal(wrongChild.error?.code,"23514",JSON.stringify(wrongChild));
+    assert.equal(Number(sql(`select count(*) from d5o_hosted.service_approval_requests
+      where workspace_id=${q(a.workspaceId)} and service_request_id=${q(child.id)};`)),0);
+    tdCase("B04",{wrongChildRpc:wrongChild.error.code,
+      approvedChild:raceRequest.id,unapprovedChild:child.id,
+      approvalRowsForUnapprovedChild:0});
+    const requestedChild=await call("a_pm","d5o_hosted_connected_service_approval_command_v1",{
+      p_workspace_key:a.workspaceKey,p_parent_presentation_id:primaryWorkId,
+      p_request_id:child.id,p_action:"request",p_command_id:randomUUID()});
+    assert(!requestedChild.error,requestedChild.error?.message);
+    const rejectedChild=await call("a_admin","d5o_hosted_connected_service_approval_command_v1",{
+      p_workspace_key:a.workspaceKey,p_parent_presentation_id:primaryWorkId,
+      p_request_id:child.id,p_action:"reject",p_command_id:randomUUID()});
+    assert(!rejectedChild.error,rejectedChild.error?.message);
+    const rejectedAuthorization=await pricing("a_ops","record-service-authorization",
+      authInput(evidence.gateBJobs[0].customerEvidenceId,estimate.revision),child.id,basis);
+    assert.equal(rejectedAuthorization.error?.code,"23514",JSON.stringify(rejectedAuthorization));
+    assert.equal(sql(`select status from d5o_hosted.service_approval_requests
+      where workspace_id=${q(a.workspaceId)} and service_request_id=${q(child.id)};`),"rejected");
+    tdCase("B15",{rejectedApprovalId:requestedChild.data.approvalId,
+      authorizationRpc:rejectedAuthorization.error.code,rejectedHistoryRetained:true});
+    const foreignEvidenceId=randomUUID();
+    const foreignPdf=Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF");
+    const foreignPath=`${a.workspaceKey}/${createHash("sha256").update(secondWorkId).digest("hex")}/customer-decisions/${foreignEvidenceId}`;
+    const uploaded=await admin.storage.from("d5o-deploy-evidence").upload(
+      foreignPath,foreignPdf,{contentType:"application/pdf",upsert:false});
+    assert(!uploaded.error,uploaded.error?.message);
+    const estimateBasis=raceRequest.serviceEstimate;
+    const registered=await admin.rpc("d5o_hosted_register_customer_decision_evidence_v1",{
+      p_workspace_key:a.workspaceKey,p_presentation_id:secondWorkId,
+      p_evidence_id:foreignEvidenceId,p_purpose:"service-authorization",
+      p_scope_id:raceRequest.id,p_scope_revision:estimateBasis.revision,
+      p_basis:{estimateRevision:estimateBasis.revision,
+        amountMinor:estimateBasis.evaluation.proposedPriceMinor,
+        currency:estimateBasis.evaluation.currency,
+        requestCycleAt:raceRequest.reopenedAt??raceRequest.reportedAt},
+      p_checksum_sha256:createHash("sha256").update(foreignPdf).digest("hex"),
+      p_filename:"synthetic-other-work.pdf",p_uploader_id:users.a_ops.id});
+    assert(!registered.error,registered.error?.message);
+    basis=await connectedBasis("a",a);
+    const wrongWorkEvidence=await pricing("a_ops","record-service-authorization",
+      authInput(foreignEvidenceId,estimateBasis.revision),raceRequest.id,basis);
+    assert.equal(wrongWorkEvidence.error?.code,"23514",JSON.stringify(wrongWorkEvidence));
+    const final=await connectedBasis("a",a);
+    assert.equal(final.operate.revision,basis.operate.revision);
+    assert.equal(final.operate.state.jobs.filter((item)=>item.requestId===raceRequest.id).length,0);
+    tdCase("B10",{otherWorkEvidenceRpc:wrongWorkEvidence.error.code,
+      evidenceId:foreignEvidenceId,otherWorkId:secondWorkId,
+      targetWorkId:primaryWorkId,unchangedOperateRevision:final.operate.revision});
+    return {wrongParent:wrongParent.error.code,wrongChild:wrongChild.error.code,
+      otherWorkEvidence:wrongWorkEvidence.error.code,
+      originalApprovalRetained:true};
+  });
+  if(phase2htd && evidence.gateBJobs?.length===2) await check(
+    "TD revoking the exact approver invalidates new authorization without deleting history",async()=>{
+    const race=evidence.tests.find((item)=>item.name===
+      "TD pending threshold approval race leaves one terminal decision"&&item.status==="PASS");
+    const requestId=race?.detail?.requestId;
+    assert(requestId,"approved_child_request_required");
+    const basis=await connectedBasis("a",a);
+    const request=basis.operate.state.requests.find((item)=>item.id===requestId);
+    assert.equal(request.serviceEstimate.status,"Approved");
+    const approval=JSON.parse(sql(`select pg_catalog.jsonb_build_object(
+      'status',status,'decidedBy',decided_by,'id',approval_id)::text
+      from d5o_hosted.service_approval_requests
+      where workspace_id=${q(a.workspaceId)} and service_request_id=${q(requestId)}
+        and estimate_revision=${request.serviceEstimate.revision};`));
+    assert.equal(approval.status,"approved");
+    assert.equal(approval.decidedBy,users.a_admin.id);
+    // The customer admin command deliberately forbids suspending the sole
+    // initial administrator. Model that external revocation as a disposable
+    // membership-state fixture; the business attempt remains a real RPC.
+    sql(`update d5o_hosted.memberships set status='suspended',revision=revision+1
+      where workspace_id=${q(a.workspaceId)} and actor_user_id=${q(users.a_admin.id)};`);
+    let denied;
+    try {
+      denied=await call("a_ops","d5o_hosted_service_pricing_command_v1",{
+        p_workspace_key:a.workspaceKey,p_parent_presentation_id:basis.work.id,
+        p_request_id:requestId,p_action:"record-service-authorization",
+        p_input:{estimateRevision:request.serviceEstimate.revision,
+          evidenceId:evidence.gateBJobs[0].customerEvidenceId,
+          customerParty:"Fictional authorized customer",
+          customerOrganization:"Fictional customer organization",
+          customerRole:"Authorized buyer",authorityBasis:"Signed service order authority",
+          outcome:"Authorized",note:"Revoked approver denial probe"},
+        p_command_id:randomUUID(),p_expected_work_revision:basis.source.revision,
+        p_expected_operate_revision:basis.operate.revision});
+      assert.equal(denied.error?.code,"23514",JSON.stringify(denied));
+      const during=JSON.parse(sql(`select pg_catalog.jsonb_build_object(
+        'revision',decision_revision,
+        'jobs',pg_catalog.jsonb_array_length(state->'jobs'))::text
+        from d5o_hosted.connected_operate_states
+        where workspace_id=${q(a.workspaceId)} and work_id=${q(basis.work.canonicalWorkId)};`));
+      assert.equal(during.revision,basis.operate.revision);
+      assert.equal(during.jobs,basis.operate.state.jobs.length);
+    } finally {
+      sql(`update d5o_hosted.memberships set status='active',revision=revision+1
+        where workspace_id=${q(a.workspaceId)} and actor_user_id=${q(users.a_admin.id)};`);
+    }
+    const preserved=sql(`select status from d5o_hosted.service_approval_requests
+      where approval_id=${q(approval.id)};`);
+    assert.equal(preserved,"approved");
+    tdCase("B14",{approvalId:approval.id,approverSuspendedFixture:true,
+      authorizationRpc:denied.error.code,approvedHistoryRetained:true,
+      unchangedOperateRevision:basis.operate.revision});
+    return {authorizationRpc:denied.error.code,approvalId:approval.id,
+      approvedHistoryRetained:true};
+  });
+  if(phase2htd && evidence.gateBJobs?.length===2) await check(
+    "TD pending pricing decisions and command receipts serialize",async()=>{
+    const workId=evidence.gateBJobs[1].workId;
+    const beforeOpen=await connectedBasis("b",b);
+    const asset=beforeOpen.operate.state.assets[0];
+    const opened=await operateCommand("b",b,"b_pm","open-request",{
+      assetId:asset.id,title:"Synthetic concurrent pricing request",
+      description:"Fictional monitored equipment requires inspected service repair",
+      contact:"Fictional customer representative",impact:"Standard",
+      note:"Open a pending pricing concurrency fixture"},`td-concurrent-${randomUUID()}`);
+    assert(!opened.error,opened.error?.message);
+    const afterOpen=await connectedBasis("b",b);
+    const request=afterOpen.operate.state.requests.at(-1);
+    assert(request?.id && request.id!==beforeOpen.operate.state.requests.at(-1)?.id);
+    const triaged=await operateCommand("b",b,"b_ops2","triage-request",{
+      requestId:request.id,serviceCategory:"Monitoring fault"},
+      `td-concurrent-triage-${randomUUID()}`);
+    assert(!triaged.error,triaged.error?.message);
+    let basis=await connectedBasis("b",b);
+    const original=basis.operate.state.requests.find((item)=>item.id===evidence.gateBJobs[1].requestId);
+    assert(original?.serviceEstimate?.input?.lines?.length===1);
+    const pricingInput=structuredClone(original.serviceEstimate.input);
+    pricingInput.lines[0].scopeRef=request.id;
+    const pricing=(actor,action,input,commandId,at=basis)=>call(actor,
+      "d5o_hosted_service_pricing_command_v1",{
+        p_workspace_key:b.workspaceKey,p_parent_presentation_id:workId,
+        p_request_id:request.id,p_action:action,p_input:input,
+        p_command_id:commandId,p_expected_work_revision:at.source.revision,
+        p_expected_operate_revision:at.operate.revision});
+    const wrongCurrency=await pricing("b_pm","save-service-estimate",{
+      pricingInput:{...pricingInput,currency:"EUR"},note:"Wrong currency denied"},randomUUID());
+    assert.equal(wrongCurrency.error?.code,"23514",JSON.stringify(wrongCurrency));
+    assert.equal((await connectedBasis("b",b)).operate.revision,basis.operate.revision);
+    tdCase("B01",{rpc:wrongCurrency.error.code,unchangedOperateRevision:basis.operate.revision});
+    const sameId=randomUUID();
+    const saveInput={pricingInput,note:"Concurrent identical estimate save"};
+    const [saveOne,saveTwo]=await Promise.all([
+      pricing("b_pm","save-service-estimate",saveInput,sameId),
+      pricing("b_pm","save-service-estimate",saveInput,sameId)]);
+    assert(!saveOne.error,JSON.stringify(saveOne));
+    assert(!saveTwo.error,JSON.stringify(saveTwo));
+    assert.deepEqual(saveOne.data,saveTwo.data);
+    const saved=await connectedBasis("b",b);
+    assert.equal(saved.operate.revision,basis.operate.revision+1);
+    const conflicting=await pricing("b_pm","save-service-estimate",{
+      pricingInput:{...pricingInput,riskBasis:"Different assumption for same command ID"},
+      note:"Conflicting idempotency payload"},sameId,basis);
+    assert.equal(conflicting.error?.code,"23505",JSON.stringify(conflicting));
+    assert.equal((await connectedBasis("b",b)).operate.revision,saved.operate.revision);
+    tdCase("C06",{sameCommandId:sameId,identicalReceipts:true,revision:saved.operate.revision});
+    tdCase("C07",{sameCommandId:sameId,conflict:conflicting.error.code,
+      unchangedRevision:saved.operate.revision});
+    basis=saved;
+    const estimate=basis.operate.state.requests.find((item)=>item.id===request.id).serviceEstimate;
+    const submitted=await pricing("b_pm","submit-service-pricing",{
+      estimateRevision:estimate.revision,note:"Submit pending concurrency review"},randomUUID());
+    assert(!submitted.error,submitted.error?.message);
+    basis=await connectedBasis("b",b);
+    const pending=basis.operate.state.requests.find((item)=>item.id===request.id).serviceEstimate;
+    assert.equal(pending.status,"Pricing review");
+    const [approve,returnDecision]=await Promise.all([
+      pricing("b_ops","approve-service-pricing",{
+        estimateRevision:pending.revision,note:"Independent approval of concurrent estimate"},randomUUID(),basis),
+      pricing("b_ops2","return-service-pricing",{
+        estimateRevision:pending.revision,note:"Independent return of concurrent estimate"},randomUUID(),basis)]);
+    const successes=[approve,returnDecision].filter((item)=>!item.error);
+    const rejected=[approve,returnDecision].filter((item)=>item.error);
+    assert.equal(successes.length,1,JSON.stringify({approve,returnDecision}));
+    assert.equal(rejected.length,1);
+    assert.equal(rejected[0].error.code,"23505",JSON.stringify(rejected[0]));
+    const final=await connectedBasis("b",b);
+    assert.equal(final.operate.revision,basis.operate.revision+1);
+    const finalRequest=final.operate.state.requests.find((item)=>item.id===request.id);
+    assert(["Approved","Returned"].includes(finalRequest.serviceEstimate.status));
+    const finalDecisions=finalRequest.history.filter((item)=>
+      ["approve-service-pricing","return-service-pricing"].includes(item.action));
+    assert.equal(finalDecisions.length,1);
+    const receiptCount=Number(sql(`select count(*) from d5o_hosted.connected_operate_receipts
+      where workspace_id=${q(b.workspaceId)} and work_id=${q(final.work.canonicalWorkId)}
+      and command_id=${q(sameId)};`));
+    assert.equal(receiptCount,1);
+    tdCase("C01",{accepted:finalRequest.serviceEstimate.status,
+      rejectedCode:rejected[0].error.code,decisionEvents:finalDecisions.length,
+      finalOperateRevision:final.operate.revision});
+    return {wrongCurrency:wrongCurrency.error.code,identicalReplay:true,
+      conflictingReuse:conflicting.error.code,acceptedDecision:finalRequest.serviceEstimate.status,
+      rejectedDecision:rejected[0].error.code,receiptCount};
+  });
+  if(phase2htd && evidence.gateBJobs?.length===2) await check(
+    "TD pending customer evidence is exact, retained and independently accepted",async()=>{
+    const workId=evidence.gateBJobs[1].workId;
+    const prior=await connectedBasis("b",b);
+    const asset=prior.operate.state.assets[0];
+    const opened=await operateCommand("b",b,"b_pm","open-request",{
+      assetId:asset.id,title:"Synthetic evidence integrity incident",
+      description:"Fictional monitored equipment requires inspected service repair",
+      contact:"Fictional customer representative",impact:"Standard",
+      note:"Open pending evidence integrity fixture"},`td-evidence-${randomUUID()}`);
+    assert(!opened.error,opened.error?.message);
+    let basis=await connectedBasis("b",b);
+    const request=basis.operate.state.requests.at(-1);
+    const triaged=await operateCommand("b",b,"b_ops2","triage-request",{
+      requestId:request.id,serviceCategory:"Monitoring fault"},
+      `td-evidence-triage-${randomUUID()}`);
+    assert(!triaged.error,triaged.error?.message);
+    basis=await connectedBasis("b",b);
+    const original=basis.operate.state.requests.find((item)=>item.id===evidence.gateBJobs[1].requestId);
+    const pricingInput=structuredClone(original.serviceEstimate.input);
+    pricingInput.lines[0].scopeRef=request.id;
+    const pricing=(actor,action,input,at)=>call(actor,
+      "d5o_hosted_service_pricing_command_v1",{
+        p_workspace_key:b.workspaceKey,p_parent_presentation_id:workId,
+        p_request_id:request.id,p_action:action,p_input:input,
+        p_command_id:randomUUID(),p_expected_work_revision:at.source.revision,
+        p_expected_operate_revision:at.operate.revision});
+    let result=await pricing("b_pm","save-service-estimate",{
+      pricingInput,note:"Save exact evidence estimate"},basis);
+    assert(!result.error,result.error?.message);
+    basis=await connectedBasis("b",b);
+    const estimate=basis.operate.state.requests.at(-1).serviceEstimate;
+    result=await pricing("b_pm","submit-service-pricing",{
+      estimateRevision:estimate.revision,note:"Submit evidence estimate"},basis);
+    assert(!result.error,result.error?.message);
+    basis=await connectedBasis("b",b);
+    result=await pricing("b_ops2","approve-service-pricing",{
+      estimateRevision:estimate.revision,note:"Independent approval of evidence estimate"},basis);
+    assert(!result.error,result.error?.message);
+    basis=await connectedBasis("b",b);
+    const stableRevision=basis.operate.revision;
+    const authInput=(evidenceId)=>({estimateRevision:estimate.revision,
+      evidenceId,customerParty:"Fictional authorized customer",
+      customerOrganization:"Fictional customer organization",
+      customerRole:"Authorized buyer",authorityBasis:"Signed service order authority",
+      outcome:"Authorized",note:"Reviewed exact synthetic customer decision source"});
+    const authorize=(evidenceId)=>pricing("b_ops2","record-service-authorization",
+      authInput(evidenceId),basis);
+    const absent=await authorize(null);
+    assert.equal(absent.error?.code,"23514",JSON.stringify(absent));
+    const wrongChild=await authorize(evidence.gateBJobs[1].customerEvidenceId);
+    assert.equal(wrongChild.error?.code,"23514",JSON.stringify(wrongChild));
+    const foreign=await authorize(evidence.gateBJobs[0].customerEvidenceId);
+    assert.equal(foreign.error?.code,"23514",JSON.stringify(foreign));
+    const forged=await authorize(randomUUID());
+    assert.equal(forged.error?.code,"23514",JSON.stringify(forged));
+    assert.equal((await connectedBasis("b",b)).operate.revision,stableRevision);
+    for(const id of ["B08","B09","B11","B12"]) tdCase(id,{
+      rpc:"23514",requestId:request.id,unchangedOperateRevision:stableRevision});
+    const page=await designPage("b_ops2",b,workId);
+    const uploaded=await page.evaluate(async({workspace,workId,requestId})=>{
+      const form=new FormData();
+      form.append("workId",workId);form.append("purpose","service-authorization");
+      form.append("scopeId",requestId);
+      form.append("file",new File(["%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF"],
+        "synthetic-unaccepted-service.pdf",{type:"application/pdf"}));
+      const response=await fetch(`/api/d5o-hosted/customer-decision-evidence?workspace=${workspace}`,
+        {method:"POST",body:form});
+      return {status:response.status,body:await response.json()};
+    },{workspace:b.workspaceKey,workId,requestId:request.id});
+    assert.equal(uploaded.status,200,JSON.stringify(uploaded));
+    assert(uploaded.body.evidenceId);
+    const stillPending=await connectedBasis("b",b);
+    assert(!stillPending.operate.state.requests.find((item)=>item.id===request.id)
+      .serviceAuthorization);
+    const pmPage=await designPage("b_pm",b,workId);
+    const prematureJob=await pmPage.evaluate(async({workspace,workId,requestId,sourceRevision,
+      operateRevision,deployRevision})=>{
+      const response=await fetch(`/api/d5o-hosted/prototype-operate-command?workspace=${workspace}`,{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({action:"create-job",workId,requestId,
+          dueDate:new Date().toISOString().slice(0,10),expectedRevision:sourceRevision,
+          expectedDecisionRevision:operateRevision,expectedDeployRevision:deployRevision,
+          commandId:crypto.randomUUID()})});
+      return {status:response.status,body:await response.json()};
+    },{workspace:b.workspaceKey,workId,requestId:request.id,
+      sourceRevision:basis.source.revision,operateRevision:stableRevision,
+      deployRevision:basis.deploy.revision});
+    assert.equal(prematureJob.status,409,JSON.stringify(prematureJob));
+    tdCase("B13",{pdfRetained:true,authorizationAbsent:true,
+      prematureJobHttp:prematureJob.status});
+    const path=sql(`select object_path from d5o_hosted.customer_decision_evidence
+      where id=${q(uploaded.body.evidenceId)} and workspace_id=${q(b.workspaceId)};`);
+    assert(path);
+    const deleted=await admin.storage.from("d5o-deploy-evidence").remove([path]);
+    assert(!deleted.error,deleted.error?.message);
+    const deletedDecision=await authorize(uploaded.body.evidenceId);
+    assert.equal(deletedDecision.error?.code,"23514",JSON.stringify(deletedDecision));
+    const final=await connectedBasis("b",b);
+    assert.equal(final.operate.revision,stableRevision);
+    assert.equal(final.operate.state.jobs.length,basis.operate.state.jobs.length);
+    tdCase("B07",{deletedEvidenceId:uploaded.body.evidenceId,
+      rpc:deletedDecision.error.code,unchangedOperateRevision:stableRevision});
+    const validUpload=await page.evaluate(async({workspace,workId,requestId})=>{
+      const form=new FormData();
+      form.append("workId",workId);form.append("purpose","service-authorization");
+      form.append("scopeId",requestId);
+      form.append("file",new File(["%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF"],
+        "synthetic-accepted-service.pdf",{type:"application/pdf"}));
+      const response=await fetch(`/api/d5o-hosted/customer-decision-evidence?workspace=${workspace}`,
+        {method:"POST",body:form});
+      return {status:response.status,body:await response.json()};
+    },{workspace:b.workspaceKey,workId,requestId:request.id});
+    assert.equal(validUpload.status,200,JSON.stringify(validUpload));
+    const [authorizationOne,authorizationTwo]=await Promise.all([
+      pricing("b_ops","record-service-authorization",authInput(validUpload.body.evidenceId),basis),
+      pricing("b_ops2","record-service-authorization",authInput(validUpload.body.evidenceId),basis)]);
+    const accepted=[authorizationOne,authorizationTwo].filter((item)=>!item.error);
+    const denied=[authorizationOne,authorizationTwo].filter((item)=>item.error);
+    assert.equal(accepted.length,1,JSON.stringify({authorizationOne,authorizationTwo}));
+    assert.equal(denied.length,1);
+    assert(["23505","23514"].includes(denied[0].error.code));
+    const authorized=await connectedBasis("b",b);
+    const exact=authorized.operate.state.requests.find((item)=>item.id===request.id);
+    assert.equal(exact.serviceAuthorization?.estimateRevision,estimate.revision);
+    assert.equal(exact.history.filter((item)=>item.action==="record-service-authorization").length,1);
+    tdCase("C02",{accepted:1,denied:denied[0].error.code,
+      authorizationEvents:1,operateRevision:authorized.operate.revision});
+    tdCase("C04",{accepted:1,denied:denied[0].error.code,
+      authorizationEvents:1,requestId:request.id});
+    const catalog=await call("b_admin","d5o_hosted_prototype_read_v1",{
+      p_workspace_key:b.workspaceKey,p_state_key:"catalog"});
+    assert(!catalog.error,catalog.error?.message);
+    const job=(commandId)=>call("b_pm","d5o_hosted_service_job_command_v1",{
+      p_workspace_key:b.workspaceKey,p_parent_presentation_id:workId,
+      p_request_id:request.id,p_due_date:executionDate,p_owner:"Fictional service owner",
+      p_command_id:commandId,p_expected_work_revision:authorized.source.revision,
+      p_expected_catalog_revision:catalog.data.revision,
+      p_expected_operate_revision:authorized.operate.revision});
+    const [jobOne,jobTwo]=await Promise.all([job(randomUUID()),job(randomUUID())]);
+    const created=[jobOne,jobTwo].filter((item)=>!item.error);
+    const refused=[jobOne,jobTwo].filter((item)=>item.error);
+    assert.equal(created.length,1,JSON.stringify({jobOne,jobTwo}));
+    assert.equal(refused.length,1);
+    assert(["23505","23514"].includes(refused[0].error.code));
+    const afterJobs=await connectedBasis("b",b);
+    const executable=afterJobs.operate.state.jobs.filter((item)=>item.requestId===request.id
+      && item.status!=="Cancelled");
+    assert.equal(executable.length,1);
+    tdCase("C05",{accepted:1,denied:refused[0].error.code,
+      requestId:request.id,jobId:executable[0].id,executableJobs:1});
+    return {requestId:request.id,missing:absent.error.code,
+      wrongChild:wrongChild.error.code,foreign:foreign.error.code,
+      forged:forged.error.code,deleted:deletedDecision.error.code,
+      prematureJob:prematureJob.status,unchangedOperateRevision:stableRevision,
+      authorizationRace:[accepted.length,denied[0].error.code],
+      concurrentJob:[created.length,refused[0].error.code]};
+  });
+  if(phase2htd && evidence.gateBJobs?.length===2) await check(
+    "TD bidirectional service authorization adapters deny foreign tenants",async()=>{
+    const [aJob,bJob]=evidence.gateBJobs;
+    const aPage=await designPage("a_ops",a,aJob.workId);
+    const bPage=await designPage("b_ops",b,bJob.workId);
+    const beforeA=await connectedBasis("a",a),beforeB=await connectedBasis("b",b);
+    const probe=(page,workspace,command)=>page.evaluate(async({workspace,command})=>{
+      const response=await fetch(`/api/d5o-hosted/prototype-operate-command?workspace=${workspace}`,{
+        method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(command)});
+      return {status:response.status,body:await response.json()};
+    },{workspace,command:{...command,commandId:randomUUID()}});
+    const [aToB,bToA]=await Promise.all([
+      probe(aPage,b.workspaceKey,bJob.authorizationCommand),
+      probe(bPage,a.workspaceKey,aJob.authorizationCommand)]);
+    assert.equal(aToB.status,403,JSON.stringify(aToB));
+    assert.equal(bToA.status,403,JSON.stringify(bToA));
+    const scoped=[];
+    for(const [actor,page,foreign,job,foreignBasis] of [
+      ["a_ops",aPage,b,bJob,beforeB],["b_ops",bPage,a,aJob,beforeA]]) {
+      const api=await page.evaluate(async({workspace,workId,requestId,evidenceId,jobCommand})=>{
+        const send=async(path,body)=>{
+          const response=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(body)});
+          return response.status;
+        };
+        const approval=await send("/api/d5o-hosted/service-approval",{
+          workspace,parentPresentationId:workId,requestId,action:"approve",
+          commandId:crypto.randomUUID()});
+        const pricing=await send(`/api/d5o-hosted/prototype-operate-command?workspace=${workspace}`,{
+          action:"approve-service-pricing",workId,requestId,estimateRevision:1,
+          note:"Foreign tenant pricing denial probe",expectedRevision:1,
+          expectedDecisionRevision:1,expectedDeployRevision:1,
+          commandId:crypto.randomUUID()});
+        const job=await send(`/api/d5o-hosted/prototype-operate-command?workspace=${workspace}`,{
+          ...jobCommand,commandId:crypto.randomUUID()});
+        const evidence=await fetch(`/api/d5o-hosted/customer-decision-evidence?workspace=${workspace}`+
+          `&workId=${encodeURIComponent(workId)}&evidenceId=${evidenceId}`);
+        return {approval,pricing,job,evidence:evidence.status};
+      },{workspace:foreign.workspaceKey,workId:job.workId,requestId:job.requestId,
+        evidenceId:job.customerEvidenceId,jobCommand:job.jobCommand});
+      for(const code of Object.values(api)) assert.equal(code,403,JSON.stringify(api));
+      const approvalRpc=await call(actor,"d5o_hosted_connected_service_approval_command_v1",{
+        p_workspace_key:foreign.workspaceKey,p_parent_presentation_id:job.workId,
+        p_request_id:job.requestId,p_action:"approve",p_command_id:randomUUID()});
+      const pricingRpc=await call(actor,"d5o_hosted_service_pricing_command_v1",{
+        p_workspace_key:foreign.workspaceKey,p_parent_presentation_id:job.workId,
+        p_request_id:job.requestId,p_action:"approve-service-pricing",
+        p_input:{estimateRevision:1,note:"Foreign pricing denial probe"},
+        p_command_id:randomUUID(),p_expected_work_revision:foreignBasis.source.revision,
+        p_expected_operate_revision:foreignBasis.operate.revision});
+      const jobRpc=await call(actor,"d5o_hosted_service_job_command_v1",{
+        p_workspace_key:foreign.workspaceKey,p_parent_presentation_id:job.workId,
+        p_request_id:job.requestId,p_due_date:executionDate,p_owner:"Foreign test owner",
+        p_command_id:randomUUID(),p_expected_work_revision:foreignBasis.source.revision,
+        p_expected_catalog_revision:1,
+        p_expected_operate_revision:foreignBasis.operate.revision});
+      for(const result of [approvalRpc,pricingRpc,jobRpc])
+        assert.equal(result.error?.code,"42501",JSON.stringify(result));
+      scoped.push({actor,foreignTenant:foreign.workspaceKey,api,
+        rpc:{approval:approvalRpc.error.code,pricing:pricingRpc.error.code,
+          job:jobRpc.error.code}});
+    }
+    const afterA=await connectedBasis("a",a),afterB=await connectedBasis("b",b);
+    assert.equal(afterA.operate.revision,beforeA.operate.revision);
+    assert.equal(afterB.operate.revision,beforeB.operate.revision);
+    assert.equal(afterA.operate.state.jobs.filter((item)=>item.requestId===aJob.requestId
+      && item.status!=="Cancelled").length,1);
+    assert.equal(afterB.operate.state.jobs.filter((item)=>item.requestId===bJob.requestId
+      && item.status!=="Cancelled").length,1);
+    tdCase("CROSS-TENANT-AUTH-BOTH-WAYS",{aToB:aToB.status,bToA:bToA.status,
+      scoped,unchangedRevisions:[afterA.operate.revision,afterB.operate.revision]});
+    return {aToB:aToB.status,bToA:bToA.status,scoped,unchanged:true};
+  });
+  if(phase2htd && evidence.gateBJobs?.length===2) await check(
+    "TD stale service task enforces membership, tenant and feature authority",async()=>{
+    const workId=evidence.gateBJobs[1].workId;
+    const newRequest=async(label)=>{
+      const before=await connectedBasis("b",b);
+      const asset=before.operate.state.assets[0];
+      assert(asset?.id,"service_asset_missing");
+      const opened=await operateCommand("b",b,"b_pm","open-request",{
+        assetId:asset.id,title:`Synthetic ${label} service incident`,
+        description:"Fictional monitored equipment requires inspected service repair",
+        contact:"Fictional customer representative",impact:"Standard",
+        note:`Open ${label} service security fixture`},`td-open-${label}-${randomUUID()}`);
+      assert(!opened.error,`open_request:${opened.error?.message}`);
+      const after=await connectedBasis("b",b);
+      const request=after.operate.state.requests.at(-1);
+      assert(request?.id && request.id!==before.operate.state.requests.at(-1)?.id);
+      return request;
+    };
+    const request=await newRequest("stale task");
+    const page=await openServiceTask("b_ops",b,workId,"triage-request");
+    const openedUrl=page.url();
+    const basis=await connectedBasis("b",b);
+    const staleCommand={action:"triage-request",workId,requestId:request.id,
+      serviceCategory:"Monitoring fault",expectedRevision:basis.source.revision,
+      expectedDeployRevision:basis.deploy.revision,
+      expectedDecisionRevision:basis.operate.revision,commandId:randomUUID()};
+    const post=async(command)=>page.evaluate(async({workspace,command})=>{
+      const response=await fetch(`/api/d5o-hosted/prototype-operate-command?workspace=${workspace}`,{
+        method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(command)});
+      return {status:response.status,body:await response.json()};
+    },{workspace:b.workspaceKey,command});
+    const readQueue=()=>page.evaluate(async(workspace)=>(await fetch(
+      `/api/d5o-hosted/customer-work?workspace=${workspace}`)).status,b.workspaceKey);
+    const unchanged=async()=>{
+      const now=JSON.parse(sql(`select pg_catalog.jsonb_build_object(
+        'revision',decision_revision,'jobs',pg_catalog.jsonb_array_length(state->'jobs'))::text
+        from d5o_hosted.connected_operate_states where workspace_id=${q(b.workspaceId)}
+          and work_id=${q(basis.work.canonicalWorkId)};`));
+      assert.equal(now.revision,basis.operate.revision);
+      assert.equal(now.jobs,basis.operate.state.jobs.length);
+    };
+    const people=await call("b_admin","d5o_hosted_org_admin_read_v1",{
+      p_workspace_key:b.workspaceKey,p_kind:"people",p_search:"",p_offset:0,p_limit:25});
+    assert(!people.error,people.error?.message);
+    const member=people.data.items.find((item)=>item.actor_user_id===users.b_ops.id);
+    assert(member,"b_ops_membership_missing");
+    const memberCommand=(action,revision)=>call("b_admin","d5o_hosted_org_admin_command_v1",{
+      p_workspace_key:b.workspaceKey,p_action:action,p_subject_id:member.id,p_input:{},
+      p_expected_revision:revision,p_reason:`TD ${action} stale service responsibility check`,
+      p_command_id:randomUUID()});
+    const suspended=await memberCommand("member.suspend",member.revision);
+    assert(!suspended.error,suspended.error?.message);
+    const suspendedHttp=await post(staleCommand);
+    assert.equal(suspendedHttp.status,403,JSON.stringify(suspendedHttp));
+    assert.equal(await readQueue(),403);
+    const direct=await call("b_ops","d5o_hosted_operate_command_v1",{
+      p_workspace_key:b.workspaceKey,p_presentation_id:workId,p_action:"triage-request",
+      p_input:{requestId:request.id,serviceCategory:"Monitoring fault"},
+      p_command_id:randomUUID(),p_expected_source_revision:basis.source.revision,
+      p_expected_deploy_revision:basis.deploy.revision,
+      p_expected_operate_revision:basis.operate.revision});
+    assert.equal(direct.error?.code,"42501",JSON.stringify(direct));
+    await unchanged();
+    tdCase("ID-SUSPENDED-SESSION",{api:suspendedHttp.status,rpc:direct.error.code,
+      queue:403,unchangedOperateRevision:basis.operate.revision});
+    const restored=await memberCommand("member.reactivate",suspended.data.record.revision);
+    assert(!restored.error,restored.error?.message);
+    const directory=async()=>{
+      const result=await call("vendor","d5o_platform_provisioning_directory_v1");
+      assert(!result.error,result.error?.message);
+      return result.data.find((item)=>item.workspaceKey===b.workspaceKey);
+    };
+    const feature=(kind,enabled,revision)=>call("vendor","d5o_platform_capability_command_v1",{
+      p_workspace_key:b.workspaceKey,p_kind:kind,p_enabled:enabled,
+      p_expected_revision:revision,p_command_id:randomUUID(),
+      p_reason:`TD ${kind} ${enabled?"restore":"disable"} service authority check`});
+    let info=await directory();
+    const flagOff=await feature("flag",false,info.connectedWorkFlagRevision);
+    assert(!flagOff.error,flagOff.error?.message);
+    const flagHttp=await post({...staleCommand,commandId:randomUUID()});
+    assert.equal(flagHttp.status,403,JSON.stringify(flagHttp));
+    const flagAuthorization=await post({...evidence.gateBJobs[1].authorizationCommand,
+      commandId:randomUUID()});
+    assert.equal(flagAuthorization.status,403,JSON.stringify(flagAuthorization));
+    assert.equal(await readQueue(),403);
+    const flagRpc=await call("b_ops","d5o_hosted_operate_command_v1",{
+      p_workspace_key:b.workspaceKey,p_presentation_id:workId,p_action:"triage-request",
+      p_input:{requestId:request.id,serviceCategory:"Monitoring fault"},
+      p_command_id:randomUUID(),p_expected_source_revision:basis.source.revision,
+      p_expected_deploy_revision:basis.deploy.revision,
+      p_expected_operate_revision:basis.operate.revision});
+    assert.equal(flagRpc.error?.code,"42501",JSON.stringify(flagRpc));
+    const flagPricing=await call("b_pm","d5o_hosted_service_pricing_command_v1",{
+      p_workspace_key:b.workspaceKey,p_parent_presentation_id:workId,
+      p_request_id:request.id,p_action:"submit-service-pricing",
+      p_input:{estimateRevision:1,note:"Disabled feature pricing probe"},
+      p_command_id:randomUUID(),p_expected_work_revision:basis.source.revision,
+      p_expected_operate_revision:basis.operate.revision});
+    const flagApproval=await call("b_admin","d5o_hosted_connected_service_approval_command_v1",{
+      p_workspace_key:b.workspaceKey,p_parent_presentation_id:workId,
+      p_request_id:request.id,p_action:"request",p_command_id:randomUUID()});
+    const flagJob=await call("b_pm","d5o_hosted_service_job_command_v1",{
+      p_workspace_key:b.workspaceKey,p_parent_presentation_id:workId,
+      p_request_id:request.id,p_due_date:executionDate,p_owner:"Synthetic owner",
+      p_command_id:randomUUID(),p_expected_work_revision:basis.source.revision,
+      p_expected_catalog_revision:1,p_expected_operate_revision:basis.operate.revision});
+    for(const result of [flagPricing,flagApproval,flagJob])
+      assert.equal(result.error?.code,"42501",JSON.stringify(result));
+    const privilegedJob=await admin.rpc("d5o_hosted_create_related_work_v1",{
+      p_workspace_key:b.workspaceKey,p_command_id:randomUUID(),p_action:"create-job",
+      p_parent_presentation_id:workId,p_expected_work_revision:basis.source.revision,
+      p_expected_catalog_revision:1,p_parent_after:{},p_child:{},
+      p_actor_user_id:users.b_pm.id,p_membership_id:sql(`select id
+        from d5o_hosted.memberships where workspace_id=${q(b.workspaceId)}
+          and actor_user_id=${q(users.b_pm.id)};`)});
+    assert.equal(privilegedJob.error?.code,"42501",JSON.stringify(privilegedJob));
+    const org=await call("b_admin","d5o_hosted_org_admin_read_v1",{
+      p_workspace_key:b.workspaceKey,p_kind:"people",p_search:"",p_offset:0,p_limit:25});
+    assert(!org.error,org.error?.message);
+    const vendor=await call("vendor","d5o_platform_provisioning_directory_v1");
+    assert(!vendor.error,vendor.error?.message);
+    await unchanged();
+    tdCase("FLAG-DIRECT-API-RPC",{api:flagHttp.status,
+      authorizationApi:flagAuthorization.status,rpc:flagRpc.error.code,
+      pricingRpc:flagPricing.error.code,approvalRpc:flagApproval.error.code,
+      jobRpc:flagJob.error.code,privilegedJobRpc:privilegedJob.error.code,
+      unrelatedOrgRead:true,vendorDirectory:true});
+    const flagOn=await feature("flag",true,flagOff.data.revision);
+    assert(!flagOn.error,flagOn.error?.message);
+    info=await directory();
+    const entitlementOff=await feature("entitlement",false,info.connectedWorkEntitlementRevision);
+    assert(!entitlementOff.error,entitlementOff.error?.message);
+    const entitlementHttp=await post({...staleCommand,commandId:randomUUID()});
+    assert.equal(entitlementHttp.status,403,JSON.stringify(entitlementHttp));
+    const entitlementAuthorization=await post({...evidence.gateBJobs[1].authorizationCommand,
+      commandId:randomUUID()});
+    assert.equal(entitlementAuthorization.status,403,JSON.stringify(entitlementAuthorization));
+    assert.equal(await readQueue(),403);
+    await unchanged();
+    tdCase("ENTITLEMENT-SERVICE-API",{api:entitlementHttp.status,
+      authorizationApi:entitlementAuthorization.status,
+      unchangedOperateRevision:basis.operate.revision});
+    const entitlementOn=await feature("entitlement",true,entitlementOff.data.revision);
+    assert(!entitlementOn.error,entitlementOn.error?.message);
+    info=await directory();
+    const tenantOff=await call("vendor","d5o_platform_lifecycle_command_v1",{
+      p_workspace_key:b.workspaceKey,p_action:"suspend",p_expected_revision:info.revision,
+      p_command_id:randomUUID(),p_reason:"TD suspend fictional tenant during open service task"});
+    assert(!tenantOff.error,tenantOff.error?.message);
+    const tenantHttp=await post({...staleCommand,commandId:randomUUID()});
+    assert.equal(tenantHttp.status,403,JSON.stringify(tenantHttp));
+    const tenantAuthorization=await post({...evidence.gateBJobs[1].authorizationCommand,
+      commandId:randomUUID()});
+    assert.equal(tenantAuthorization.status,403,JSON.stringify(tenantAuthorization));
+    assert.equal(await readQueue(),403);
+    await unchanged();
+    tdCase("TENANT-SUSPENDED-SERVICE",{api:tenantHttp.status,
+      authorizationApi:tenantAuthorization.status,
+      unchangedOperateRevision:basis.operate.revision});
+    const tenantOn=await call("vendor","d5o_platform_lifecycle_command_v1",{
+      p_workspace_key:b.workspaceKey,p_action:"reactivate",
+      p_expected_revision:tenantOff.data.revision,p_command_id:randomUUID(),
+      p_reason:"TD restore fictional tenant after denied service action"});
+    assert(!tenantOn.error,tenantOn.error?.message);
+    const resolved=await operateCommand("b",b,"b_ops2","triage-request",{
+      requestId:request.id,serviceCategory:"Monitoring fault"},
+      `td-other-actor-triage-${randomUUID()}`);
+    assert(!resolved.error,resolved.error?.message);
+    const triagedCurrent=await connectedBasis("b",b);
+    assert.equal(triagedCurrent.operate.state.requests.find((item)=>item.id===request.id)?.status,
+      "Triaged");
+    const replay=await post({...staleCommand,commandId:randomUUID()});
+    assert.equal(replay.status,409,JSON.stringify(replay));
+    await page.goto(openedUrl);
+    await page.getByRole("heading",{name:"Design actions"}).waitFor();
+    await page.getByText("Loading current Work and phase decisions…")
+      .waitFor({state:"hidden"});
+    const completedRequest=page.getByRole("heading",{
+      name:`${request.title} · Triaged`,exact:true}).locator("..");
+    assert.equal(await completedRequest.getByRole("button",{name:"Triage request"}).count(),0);
+    await assertServiceTaskResolved("b_ops",b,workId);
+    tdCase("TASK-OTHER-ACTOR-COMPLETED",{staleApi:replay.status,
+      taskRemoved:true,oldUrlNotActionable:true});
+    const removedRequest=await newRequest("removed member");
+    await openServiceTask("b_ops",b,workId,"triage-request");
+    const beforeRemoval=await connectedBasis("b",b);
+    const removed=await memberCommand("member.remove",restored.data.record.revision);
+    assert(!removed.error,removed.error?.message);
+    const removedHttp=await post({action:"triage-request",workId,
+      requestId:removedRequest.id,serviceCategory:"Monitoring fault",
+      expectedRevision:beforeRemoval.source.revision,
+      expectedDeployRevision:beforeRemoval.deploy.revision,
+      expectedDecisionRevision:beforeRemoval.operate.revision,commandId:randomUUID()});
+    assert.equal(removedHttp.status,403,JSON.stringify(removedHttp));
+    assert.equal(await readQueue(),403);
+    const afterRemoval=await connectedBasis("b",b);
+    assert.equal(afterRemoval.operate.revision,beforeRemoval.operate.revision);
+    const successor=await operateCommand("b",b,"b_ops2","triage-request",{
+      requestId:removedRequest.id,serviceCategory:"Monitoring fault"},
+      `td-successor-triage-${randomUUID()}`);
+    assert(!successor.error,successor.error?.message);
+    tdCase("ID-REMOVED-STALE-SESSION",{api:removedHttp.status,queue:403,
+      successorActor:users.b_ops2.id,unchangedOnDenial:true});
+    return {openedTaskUrl:openedUrl,suspended:suspendedHttp.status,
+      disabledFlag:flagHttp.status,disabledEntitlement:entitlementHttp.status,
+      suspendedTenant:tenantHttp.status,otherActorReplay:replay.status,
+      removedMember:removedHttp.status,initialJobCount:basis.operate.state.jobs.length,
+      finalJobCount:afterRemoval.operate.state.jobs.length};
+  });
 } catch(error) {evidence.setupError=String(error.message).slice(-2500);}
 finally {
   if(designBrowser) await designBrowser.close();
@@ -4084,7 +5050,8 @@ finally {
     setupError:Boolean(evidence.setupError),cleanupVerified:Boolean(evidence.cleanup?.clean)};
   mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
-  console.log(JSON.stringify({...evidence.summary,output:phase2htc
+  console.log(JSON.stringify({...evidence.summary,output:phase2htd
+    ? "docs/architecture/evidence/phase2htd-targeted-results.json" : phase2htc
     ? "docs/architecture/evidence/phase2htc-two-tenant-results.json" : phase2htGateA
     ? "docs/architecture/evidence/phase2ht-gate-a-results.json" : phase2htGateB
     ? "docs/architecture/evidence/phase2ht-gate-b-results.json" : phase2hsGateB
