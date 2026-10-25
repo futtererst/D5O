@@ -5,6 +5,8 @@ import { HostedStateError } from "@/lib/d5o/hosted/prototype-context";
 import { defineTasks, designTasks, designReceiptTasks, developTasks, serviceTasks,
   type ServiceTaskWork, type ServiceApprovalTaskState, type CustomerWorkTask } from "@/lib/d5o/hosted/customer-work-tasks";
 import { buildCustomerDefineDraft, parseDefineDraft } from "@/lib/d5o/hosted/customer-define-draft";
+import { deliveryRoleActions } from "@/lib/d5o/hosted/delivery-role-actions";
+import type { WorkRecord } from "@/components/d5o/platform/work-types";
 
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body,
@@ -18,8 +20,9 @@ type WorkRow = { id: string; canonicalWorkId?: string; title: string;
     documents?: Array<{ id: string; status: string; submittedByActorId?: string }>;
     reviews?: Array<{ id: string; packageId: string; discipline: string; status: string; requestedByActorId?: string }>;
     releases?: Array<{ id: string; packageId: string; status: string; issuedByActorId?: string }> };
-  deploy?: { permits?: Array<{ packageId?: string; status?: string }> };
-  operate?: { activation?: { status?: string }; requests?: Array<{
+  deploy?: { permits?: Array<{ packageId?: string; status?: string }>;
+    workAcceptance?: { id?: string; receipt?: string; revision?: number } };
+  operate?: { activation?: { status?: string }; source?: { workAcceptanceId?: string }; requests?: Array<{
     id: string; status?: string; serviceEstimate?: { status?: string } }> };
   definition?: { status?: string; authorityRevision?: number;
     reviews?: { commercial?: string; delivery?: string };
@@ -53,7 +56,7 @@ export async function GET(request: NextRequest) {
       const visibleIds = new Set(visible.map((item) => item.id));
       const roleTasks = (queued.data as Array<Record<string, unknown>>)
         .filter((item) => typeof item.workId === "string" && visibleIds.has(item.workId)
-          && item.phase !== "Design")
+          && item.phase !== "Design" && item.phase !== "Deploy")
         .map((item): CustomerWorkTask => ({ id: `role:${item.workId}:${item.kind}:${item.packageId ?? ""}:${item.revision}`,
           workId: item.workId as string, title: String(item.title ?? item.kind ?? "Review Work"),
           phase: String(item.phase ?? "Work"), status: "view_only",
@@ -71,6 +74,21 @@ export async function GET(request: NextRequest) {
           workId: item.workId as string, title: String(item.kind ?? "Review execution authority"),
           phase: "Develop", status: "available", revision: Number(item.revision) || 0,
           action: String(item.focus ?? "review") })));
+      const deployTasks = deliveryRoleActions(visible as unknown as WorkRecord[], context.actor.id,
+        context.actor.role).filter((item) => item.position === "available").map((item): CustomerWorkTask => ({
+          id: `deploy:${item.workId}:${item.focus}:${item.decisionId}:${item.revision}`,
+          workId: item.workId, title: item.kind, phase: "Deploy",
+          status: "available",
+          revision: item.revision, packageId: item.packageId ?? undefined,
+          releaseId: item.releaseId ?? undefined, action: item.focus,
+          decisionId: item.decisionId, sourceRevision: item.sourceRevision }));
+      const operateHandoffs: CustomerWorkTask[] = context.actor.role === "operations_leader"
+        ? visible.filter((item) => item.deploy?.workAcceptance?.receipt === "Accepted" &&
+          !item.operate?.source?.workAcceptanceId).map((item) => ({
+            id: `operate-handoff:${item.id}:${item.deploy?.workAcceptance?.id}`,
+            workId: item.id, title: "Receive accepted Deploy handoff", phase: "Operate",
+            status: "available", revision: item.deploy?.workAcceptance?.revision ?? 0,
+            action: "receive-handoff" })) : [];
       const serviceApprovals: Record<string, ServiceApprovalTaskState> = {};
       await Promise.all(visible.flatMap((work) => (work.operate?.requests ?? [])
         .filter((item) => item.serviceEstimate?.status === "Approved")
@@ -88,7 +106,7 @@ export async function GET(request: NextRequest) {
         ...designReceiptTasks(visible, context.actor.role, context.actor.id),
         ...developTasks(visible, context.actor.role, schedule.state),
         ...authorityTasks, ...serviceTasks(visible as ServiceTaskWork[], context.actor.role,
-          serviceApprovals, context.actor.id), ...roleTasks],
+          serviceApprovals, context.actor.id), ...roleTasks, ...deployTasks, ...operateHandoffs],
       records: visible
         .map(({ id, title, customer, site, owner, type, phaseConfigurationVersionId }) =>
           ({ id, title, customer, site, owner, type, phaseConfigurationVersionId })) });

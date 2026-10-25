@@ -4,6 +4,8 @@ import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server"
 import { customerWorkScope, customerWorkspaceKey, type CustomerRpcError } from "@/lib/d5o/hosted/customer-work-scope";
 import { hostedWorkerContext } from "@/lib/d5o/hosted/worker-context";
 import { HostedStateError } from "@/lib/d5o/hosted/prototype-context";
+import { currentAcceptedRelease } from "@/components/d5o/platform/deploy-model";
+import type { WorkRecord } from "@/components/d5o/platform/work-types";
 
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body,
@@ -50,8 +52,9 @@ export async function GET(request: NextRequest) {
       const works = (Array.isArray(workState.state?.records) ? workState.state.records as Work[] : [])
         .filter((item) => item.workspace === workspace && assignedIds.has(item.id))
         .map((item) => ({ id: item.id, title: item.title ?? "Assigned Work",
-          permits: (item.deploy as { permits?: Array<{ packageId?: string; status?: string }> } | undefined)
-            ?.permits?.filter((permit) => permit.status === "Authorized") ?? [] }));
+          permits: (item.deploy as { permits?: Array<{ packageId?: string; releaseId?: string; status?: string }> } | undefined)
+            ?.permits?.filter((permit) => permit.status === "Authorized" && !!permit.packageId &&
+              currentAcceptedRelease(item as WorkRecord, permit.packageId)?.id === permit.releaseId) ?? [] }));
       return reply({ role: "field_worker", person: worker.person, workspaceName: worker.workspaceName, schedule,
         works,
         publications: publications.map((publication) => ({ ...publication,

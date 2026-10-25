@@ -23,7 +23,8 @@ type WorkSummary = { id: string; title: string; customer?: string; site?: string
   owner?: string; type?: string; phaseConfigurationVersionId?: string };
 type CustomerTask = { id: string; workId: string; title: string; phase: string;
   status: "available" | "view_only"; revision: number; packageId?: string;
-  releaseId?: string; dueDate?: string; action?: string; reviewRole?: string };
+  releaseId?: string; dueDate?: string; action?: string; reviewRole?: string;
+  decisionId?: string; sourceRevision?: number };
 type WorkDetail = WorkSummary & { canonicalWorkId: string; workspace: string;
   discovery?: { outcome?: string; proposal?: { package?: { revision?: number } };
     designHandoff?: { status?: string; revision?: number; authorityRevision?: number;
@@ -171,8 +172,12 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
       <small>{role.replaceAll("_", " ") || "Loading access"}</small></div>
       <h2>My Work</h2>{list?.tasks?.length ? <ul>{list.tasks.map((task) => {
         const work = list.records.find((item) => item.id === task.workId);
-        return <li key={task.id}><Link href={`/work/customer/${encodeURIComponent(workspace)}?work=${encodeURIComponent(task.workId)}#phase-${task.phase.toLowerCase()}`}>
-          {task.title}<small>{task.phase} · {work?.title ?? "Work"} · {work?.customer ?? "Customer pending"} · {task.status === "view_only" ? "View context" : "Ready for decision"}{task.dueDate ? ` · Due ${task.dueDate}` : ""}</small></Link></li>;
+        const deployLink = task.phase === "Deploy" && task.action
+          ? `/work/customer/${encodeURIComponent(workspace)}/deploy?workId=${encodeURIComponent(task.workId)}&package=${encodeURIComponent(task.packageId ?? "")}&focus=${encodeURIComponent(task.action)}&decision=${encodeURIComponent(task.decisionId ?? "")}&release=${encodeURIComponent(task.releaseId ?? "")}&sourceRevision=${task.sourceRevision ?? 0}&decisionRevision=${task.revision}`
+          : null;
+        const label = <>{task.title}<small>{task.phase} · {work?.title ?? "Work"} · {work?.customer ?? "Customer pending"} · {task.status === "view_only" ? "View context" : "Ready for decision"}{task.dueDate ? ` · Due ${task.dueDate}` : ""}</small></>;
+        return <li key={task.id}>{deployLink ? <a href={deployLink}>{label}</a>
+          : <Link href={`/work/customer/${encodeURIComponent(workspace)}?work=${encodeURIComponent(task.workId)}#phase-${task.phase.toLowerCase()}`}>{label}</Link>}</li>;
       })}</ul> : !loading && !error ? <p>No current responsibilities for your role. Refresh after a business decision.</p> : null}
       <h2>Work records</h2>{list?.records.length ? <ul>{list.records.map((work) =>
         <li key={work.id}><Link aria-current={selected === work.id ? "page" : undefined}
@@ -245,7 +250,9 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
               onChanged={() => load()} />
             <CustomerDevelopActions workspace={workspace} workId={detail.record.id} role={role}
               onChanged={() => load()} /></>}
-          {phase === "Deploy" && <p>Whole-Work customer acceptance: {detail.record.deploy?.workAcceptance?.receipt ?? "Pending"}.</p>}
+          {phase === "Deploy" && <><p>Whole-Work customer acceptance: {detail.record.deploy?.workAcceptance?.receipt ?? "Pending"}.</p>
+            {detail.phaseStatus.replayMatches && ["admin", "project_manager", "field_supervisor", "operations_leader"].includes(role) &&
+              <Link href={`/work/customer/${encodeURIComponent(workspace)}/deploy?workId=${encodeURIComponent(detail.record.id)}`}>Open Deploy decisions and evidence</Link>}</>}
           {phase === "Operate" && <><p>Support {status.supportStatus ?? "Pending"}; financial closeout {status.financialCloseout ?? "Pending"}.</p>
             {detail.phaseStatus.replayMatches && detail.record.operate?.activation?.status === "Active" &&
               <CustomerServiceActions work={detail.record as unknown as WorkRecord}

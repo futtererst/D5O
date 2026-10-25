@@ -9,6 +9,7 @@ import { chromium } from "@playwright/test";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
+const phase2hu = process.env.D5O_PHASE2HU === "1";
 const phase2htd = process.env.D5O_PHASE2HTD === "1";
 const phase2hteDiagnostic = process.env.D5O_PHASE2HTE_DIAGNOSTIC === "1";
 const phase2hteReloadProbe = process.env.D5O_PHASE2HTE_RELOAD_PROBE === "1";
@@ -21,7 +22,9 @@ const phase2hsGateA = process.env.D5O_PHASE2HS_GATE_A === "1" || phase2hsGateB;
 const phase2hr = process.env.D5O_PHASE2HR === "1" || phase2hsGateA;
 const phase2hCompletion = process.env.D5O_PHASE2H_COMPLETION === "1" || phase2hr;
 const phase2h = process.env.D5O_PHASE2H === "1" || phase2hCompletion;
-const output = resolve(root, phase2htd
+const output = resolve(root, phase2hu
+  ? "docs/architecture/evidence/phase2hu-two-tenant-results.json"
+  : phase2htd
   ? "docs/architecture/evidence/phase2htd-targeted-results.json"
   : phase2htc
   ? "docs/architecture/evidence/phase2htc-two-tenant-results.json"
@@ -42,7 +45,8 @@ const output = resolve(root, phase2htd
   : phase2g
   ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
   : "docs/architecture/evidence/phase2f-connected-journey-results.json");
-const evidence = { baseline: phase2htd ? "88381435a965050402dcd423b4856115246459a3"
+const evidence = { baseline: phase2hu ? "639308061ff236ac0afb6487088a44c315e9b554"
+  : phase2htd ? "88381435a965050402dcd423b4856115246459a3"
   : phase2htc ? "6e28685f44795b1a3f6b19877d575b609be43729"
   : phase2htGateA || phase2htGateB ? "82d9b1c4131d3154da3d0e53e15a8d22365fec35"
   : phase2hsGateA ? "d1537c2070eee6926ad227c69dcdc43418bb381d" : phase2hr ? "f53aa89192b776221067cc6a761248e87259f82e" : phase2g
@@ -56,7 +60,8 @@ const browserEvidenceDir = (legacyPath) => resolve(root,phase2htd
 if(phase2htGateA) evidence.gateASecurity=[];
 // Field start checks the real shift clock. The disposable journey uses today's
 // local business date so that its schedule is actually eligible for execution.
-const useQualificationClock=phase2hsGateB || phase2htGateA || phase2htGateB;
+const useQualificationClock=process.env.D5O_DISPOSABLE_QUALIFICATION_CLOCK==="1" ||
+  phase2hu || phase2hsGateB || phase2htGateA || phase2htGateB;
 let executionDate = useQualificationClock ? "2026-10-26" : new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York",
   year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 const executionDay = new Date(`${executionDate}T12:00:00Z`).getUTCDay();
@@ -67,7 +72,7 @@ const currentFridayOvernight = (phase2hsGateB || phase2g || phase2htGateB) && ex
 if(phase2htGateB && (executionDay===0 || (executionDay===6 && !currentFridayOvernight)))
   throw Error("current_business_shift_unavailable_for_field_start");
 if(executionDay===0 || executionDay===6) {
-  if(!phase2hsGateA && !currentFridayOvernight && !phase2htGateB)
+  if(!phase2hu && !phase2hsGateA && !currentFridayOvernight && !phase2htGateB)
     throw Error("business_day_required_for_field_start");
   if(currentFridayOvernight) {
     // A real Friday overnight shift remains current on Saturday morning.
@@ -142,9 +147,13 @@ async function startNext(url, anon, service) {
     D5O_ISOLATED_APP_ORIGIN: `http://127.0.0.1:${port}`, D5O_COMMAND_RUNTIME: "pilot",
     RYBEXOS_RUNTIME_MODE: "test", RYBEXOS_AUTH_MODE: "supabase", RYBEXOS_DATA_SOURCE: "database" };
   const handle = spawn(process.execPath, [resolve(root,"node_modules/next/dist/bin/next"),
-    "dev","--webpack","-p",String(port),"-H","127.0.0.1"],{cwd:root,env,stdio:"ignore",shell:false});
+    "dev","--webpack","-p",String(port),"-H","127.0.0.1"],{cwd:root,env,stdio:["ignore","pipe","pipe"],shell:false});
+  let diagnostics="";
+  for(const stream of [handle.stdout,handle.stderr]) stream?.on("data",(chunk)=>{
+    diagnostics=(diagnostics+String(chunk)).slice(-5000);
+  });
   for(let n=0;n<160;n++) { try { if((await fetch(`http://127.0.0.1:${port}/api/health`)).ok)
-    return {handle,port}; } catch { /* startup */ } await new Promise((done)=>setTimeout(done,500)); }
+    return {handle,port,diagnostics:()=>diagnostics}; } catch { /* startup */ } await new Promise((done)=>setTimeout(done,500)); }
   handle.kill();throw Error("next_start_timeout");
 }
 
@@ -2695,7 +2704,7 @@ try {
       assert.equal(unauthorized.error?.code,"42501",`${prefix}:unauthorized:${unauthorized.error?.message}`);
       const cross=await fieldStart(prefix,tenant,`${prefix==="a"?"b":"a"}_ops`,"cross-start");
       assert.equal(cross.error?.code,"42501",`${prefix}:cross:${cross.error?.message}`);
-      if(phase2hsGateB) {
+      if(phase2hsGateB || phase2hu) {
         await browserDevelopAction(`${prefix}_ops`,tenant,basis.work.id,
           "Authorize field start",async(page)=>{
             const form=page.locator("form").filter({has:page.getByRole("button",{name:"Authorize field start"})});
@@ -2929,7 +2938,274 @@ try {
       p_expected_schedule_revision:basis.schedule.revision,
       p_expected_deploy_revision:basis.deploy.revision});
   };
+  const deployPages=new Map();
+  async function deployPage(actor,tenant,path,viewport={width:1440,height:900}) {
+    if(!server) server=await startNext(url,anon,service);
+    if(!designBrowser) designBrowser=await chromium.launch();
+    let page=deployPages.get(actor);
+    if(!page) {
+      page=await designBrowser.newPage({viewport});
+      const workerSignIn=actor.endsWith("_worker");
+      const firstPath=workerSignIn ? path : "/work";
+      await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=${encodeURIComponent(firstPath)}`);
+      await page.waitForLoadState("networkidle");
+      page.on("response",(response)=>{if(response.request().method()==="POST")
+        console.log(JSON.stringify({deployStep:`${actor}:sign-in-response`,status:response.status(),url:response.url()}));});
+      page.on("pageerror",(error)=>console.log(JSON.stringify({deployStep:`${actor}:page-error`,message:error.message})));
+      await page.getByLabel("Email").fill(users[actor].email);
+      await page.getByLabel("Password").fill(users[actor].password);
+      const formValid=await page.locator("form").evaluate((form)=>form.checkValidity());
+      assert(formValid,`${actor}:sign_in_form_invalid`);
+      await page.getByRole("button",{name:"Continue to your work"}).click();
+      await (workerSignIn
+        ? page.waitForURL((location)=>location.pathname===new URL(path,"http://127.0.0.1").pathname,{timeout:30000})
+        : page.getByRole("link",{name:/Open workspace/}).first().waitFor({timeout:30000})).catch(async(error)=>{
+        throw Error(`${actor}:sign_in_navigation:${page.url()}:${(await page.locator("body").innerText()).slice(0,500)}:${server.diagnostics().slice(-600)}:${error.message}`);
+      });
+      if(!workerSignIn) {
+        await page.locator(`[data-workspace="${tenant.workspaceKey}"]`).click();
+        await page.getByRole("heading",{name:"Work lifecycle"}).waitFor({timeout:30000});
+      }
+      deployPages.set(actor,page);
+      if(page.url()!==`http://127.0.0.1:${server.port}${path}`)
+        await page.goto(`http://127.0.0.1:${server.port}${path}`);
+      return page;
+    }
+    await page.goto(`http://127.0.0.1:${server.port}${path}`);
+    return page;
+  }
+  async function browserDeployDecision(page,button,endpoint,expected=200,method="POST") {
+    await button.waitFor({state:"visible"});
+    console.log(JSON.stringify({deployStep:"submit-decision",endpoint,button:await button.innerText(),url:page.url()}));
+    const [response]=await Promise.all([
+      page.waitForResponse((item)=>item.url().includes(endpoint)&&item.request().method()===method),
+      button.click()]);
+    const body=await response.text().catch(()=>"response body unavailable after navigation");
+    assert.equal(response.status(),expected,`deploy_browser:${endpoint}:${body}`);
+    return {status:response.status(),body:body.slice(0,500)};
+  }
+  async function refreshDeployRead(page) {
+    const target=page.url();
+    try {
+      await page.goto(target,{waitUntil:"domcontentloaded"});
+    } catch(error) {
+      // Next dev navigation may be interrupted by a route refresh after a
+      // successful command. Retrying this read does not replay the decision.
+      if(!String(error).includes("ERR_ABORTED")) throw error;
+      await page.goto(target,{waitUntil:"domcontentloaded"});
+    }
+    await page.getByRole("button",{name:"Acceptance & turnover"}).waitFor();
+    await page.waitForFunction(() => {
+      const button=[...document.querySelectorAll("button")].find((item)=>
+        item.textContent?.trim()==="Acceptance & turnover");
+      return !!button && Object.keys(button).some((key)=>key.startsWith("__reactProps$"));
+    });
+  }
+  async function openAcceptanceTab(page) {
+    await page.getByRole("button",{name:"Acceptance & turnover"}).click();
+    await page.getByRole("heading",{name:"Whole Work Record · Client Accepted"}).waitFor()
+      .catch(async(error)=>{throw Error(`acceptance_tab_unavailable:${page.url()}:${
+        (await page.locator("body").innerText()).slice(0,700)}:${error.message}`);});
+  }
+  async function phase2huField(prefix,tenant) {
+    const basis=await connectedBasis(prefix,tenant);
+    const publication=basis.schedule.state.publications.at(-1);
+    const booking=publication?.assignments.find((item)=>item.packageId===basis.packageId&&item.workId===basis.work.id);
+    assert(booking,`${prefix}:published_field_booking_missing`);
+    const dir=resolve(root,"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
+    const worker=await deployPage(`${prefix}_worker`,tenant,
+      `/work/customer/${tenant.workspaceKey}/assignments`,{width:390,height:844});
+    console.log(JSON.stringify({deployStep:`${prefix}:open-field`,url:worker.url()}));
+    await worker.getByRole("link",{name:"Open field execution"}).click();
+    await worker.waitForURL((location)=>location.pathname===`/work/customer/${tenant.workspaceKey}/field`,
+      {timeout:30000});
+    await worker.getByRole("heading",{name:basis.work.title}).waitFor({timeout:30000});
+    assert.equal(worker.url().includes(`/work/customer/${tenant.workspaceKey}/field`),true);
+    await worker.getByText("Authorized start",{exact:true}).waitFor();
+    await worker.screenshot({path:resolve(dir,`${prefix}-field-assigned-mobile.png`),fullPage:true});
+    const photo=Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRxkAAAAASUVORK5CYII=","base64");
+    const evidenceForm=worker.locator("#field-files form");
+    await evidenceForm.getByLabel("File").setInputFiles({name:`${prefix}-completion.png`,mimeType:"image/png",buffer:photo});
+    await evidenceForm.getByLabel("Purpose").selectOption("Inspection result");
+    await evidenceForm.getByLabel("Caption").fill("Fictional completed service condition photograph");
+    const upload=await browserDeployDecision(worker,evidenceForm.getByRole("button",{name:"Upload file"}),
+      "/api/d5o-hosted/worker-deploy",200,"PUT");
+    const reportForm=worker.locator("#report-work form");
+    await reportForm.getByLabel("Quantity").fill("1");
+    if((await reportForm.getByLabel("Unit").getAttribute("readonly"))===null)
+      await reportForm.getByLabel("Unit").fill("service");
+    await reportForm.getByLabel("Actual labor hours").fill("2");
+    await reportForm.getByLabel("Work and conditions").fill("Fictional restoration performed and service verified");
+    await reportForm.locator('input[name="evidenceId"]').first().check();
+    await browserDeployDecision(worker,reportForm.getByRole("button",{name:"Synchronize report"}),
+      "/api/d5o-hosted/worker-deploy",200);
+    await browserDeployDecision(worker,worker.getByRole("button",{name:"Submit for supervisor review"}),
+      "/api/d5o-hosted/worker-deploy",200);
+    let current=await connectedBasis(prefix,tenant);
+    const report=current.deploy.state.reports.find((item)=>item.packageId===current.packageId);
+    assert.equal(report?.status,"Submitted",`${prefix}:browser_report_submission`);
+    if(prefix==="a") {
+      const directory=await call("vendor","d5o_platform_provisioning_directory_v1");
+      assert(!directory.error,directory.error?.message);
+      const tenantEntry=directory.data.find((item)=>item.workspaceKey===tenant.workspaceKey);
+      const disabled=await call("vendor","d5o_platform_capability_command_v1",{
+        p_workspace_key:tenant.workspaceKey,p_kind:"flag",p_enabled:false,
+        p_expected_revision:tenantEntry.connectedWorkFlagRevision,p_command_id:randomUUID(),
+        p_reason:"Verify a pending field review cannot bypass disabled connected Work"});
+      assert(!disabled.error,`${prefix}:disable-field-rollout:${disabled.error?.message}`);
+      let direct;
+      try {
+        direct=await call(`${prefix}_ops`,"d5o_hosted_field_fact_command_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:current.work.id,
+          p_package_id:current.packageId,p_action:"review-report",
+          p_input:{reportId:report.id,decision:"Reviewed",
+            note:"Independent review while connected Work is disabled"},
+          p_command_id:`phase2hu-disabled-pending-${randomUUID()}`,
+          p_expected_source_revision:current.source.revision,
+          p_expected_design_revision:current.work.design.authorityRevision,
+          p_expected_schedule_revision:current.schedule.revision,
+          p_expected_deploy_revision:current.deploy.revision});
+      } finally {
+        const enabled=await call("vendor","d5o_platform_capability_command_v1",{
+          p_workspace_key:tenant.workspaceKey,p_kind:"flag",p_enabled:true,
+          p_expected_revision:disabled.data.revision,p_command_id:randomUUID(),
+          p_reason:"Restore connected Work after pending field review denial"});
+        assert(!enabled.error,`${prefix}:restore-field-rollout:${enabled.error?.message}`);
+      }
+      assert.equal(direct.error?.code,"42501",`${prefix}:disabled_pending_rpc:${JSON.stringify(direct)}`);
+      const afterDenied=await connectedBasis(prefix,tenant);
+      assert.equal(afterDenied.deploy.revision,current.deploy.revision,
+        `${prefix}:disabled_pending_rpc_changed_deploy`);
+    }
+    const ops=await deployPage(`${prefix}_ops`,tenant,
+      `/work/customer/${tenant.workspaceKey}`);
+    await ops.getByRole("link",{name:/Field report review/}).waitFor();
+    console.log(JSON.stringify({deployStep:`${prefix}:open-report-review`,url:ops.url()}));
+    console.log(JSON.stringify({deployStep:`${prefix}:report-link`,href:await ops.getByRole("link",{name:/Field report review/}).getAttribute("href")}));
+    ops.on("response",(response)=>{if(response.request().resourceType()==="document" || response.url().includes(`/work/customer/${tenant.workspaceKey}/deploy`))
+      console.log(JSON.stringify({deployStep:`${prefix}:report-route-response`,status:response.status(),url:response.url()}));});
+    ops.on("pageerror",(error)=>console.log(JSON.stringify({deployStep:`${prefix}:page-error`,message:error.message})));
+    await ops.getByRole("link",{name:/Field report review/}).click();
+    await ops.waitForURL((location)=>location.pathname===`/work/customer/${tenant.workspaceKey}/deploy`).catch(async(error)=>{
+      const href=await ops.getByRole("link",{name:/Field report review/}).getAttribute("href");
+      const direct=await ops.goto(`http://127.0.0.1:${server.port}${href}`);
+      throw Error(`${prefix}:report_navigation:direct_status=${direct?.status()}:direct_url=${ops.url()}:body=${(await ops.locator("body").innerText()).slice(0,500)}:click=${error.message}`);
+    });
+    const reportReview=ops.locator('[data-task-panel="report-review"] form');
+    await reportReview.getByLabel("Review reason").fill("Independent supervisor review of performed field work");
+    await browserDeployDecision(ops,reportReview.getByRole("button",{name:"Record independent review"}),
+      "/api/d5o-hosted/prototype-deploy-command",200);
+    await worker.reload();
+    const inspection=worker.getByRole("heading",{name:"Inspect and retest"}).locator("..").locator("form");
+    await inspection.getByLabel("Released requirement").selectOption({index:1});
+    await inspection.getByLabel("Acceptance requirement").fill("Restored service passes functional check");
+    await inspection.getByLabel("Test or inspection method").fill("Observed functional service restoration");
+    await inspection.getByLabel("Observed result").selectOption("Pass");
+    await browserDeployDecision(worker,inspection.getByRole("button",{name:"Submit result for quality review"}),
+      "/api/d5o-hosted/worker-deploy",200);
+    current=await connectedBasis(prefix,tenant);
+    const inspectionId=current.deploy.state.inspections.find((item)=>item.packageId===basis.packageId&&item.status==="Submitted")?.id;
+    assert(inspectionId,`${prefix}:inspection_not_submitted`);
+    await ops.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`);
+    await ops.getByRole("link",{name:/Inspection verification/}).waitFor();
+    console.log(JSON.stringify({deployStep:`${prefix}:open-inspection-review`,url:ops.url()}));
+    await ops.getByRole("link",{name:/Inspection verification/}).click();
+    await ops.waitForURL((location)=>location.pathname===`/work/customer/${tenant.workspaceKey}/deploy`);
+    const quality=ops.locator('[data-task-panel="inspection-review"] form').filter({has:ops.getByRole("button",{name:"Record quality review"})});
+    await quality.waitFor({timeout:20000}).catch(async()=>{
+      throw Error(`${prefix}:quality_form:${(await ops.locator("body").innerText()).slice(0,700)}`);
+    });
+    await quality.getByLabel("Reason").fill("Independent verification of passing field inspection");
+    await browserDeployDecision(ops,quality.getByRole("button",{name:"Record quality review"}),
+      "/api/d5o-hosted/prototype-deploy-command",200);
+    await worker.reload();
+    const issueForm=worker.locator("form").filter({has:worker.getByRole("button",{name:"Raise condition and hold further start"})});
+    await issueForm.getByLabel("Unexpected condition").fill("Fictional cable cover condition");
+    await issueForm.getByLabel("Impact and affected scope").fill("Inspect and correct a loose cover before handoff");
+    await issueForm.locator('input[name="evidenceId"]').first().check();
+    await browserDeployDecision(worker,issueForm.getByRole("button",{name:"Raise condition and hold further start"}),
+      "/api/d5o-hosted/field-changes",200);
+    let changes=await call(`${prefix}_ops`,"d5o_hosted_field_change_read_v1",{
+      p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
+    assert(!changes.error,`${prefix}:issue_read:${changes.error?.message}`);
+    const raised=changes.data.changes.find((item)=>item.status==="Open"&&item.packageId===basis.packageId);
+    assert(raised,`${prefix}:browser_issue_missing`);
+    const held=await deployCommand(prefix,tenant,`${prefix}_ops`,"review-completion",{
+      note:"Attempt completion with unresolved fictional field condition"},`issue-hold-${randomUUID()}`);
+    assert(held.error,`${prefix}:issue_hold_not_denied`);
+    if(prefix==="b") assert.equal(held.error.message,"open_field_change_blocks_completion",
+      `${prefix}:issue_hold:${held.error.message}`);
+    await ops.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}/deploy?workId=${encodeURIComponent(basis.work.id)}`);
+    await ops.getByRole("button",{name:"Inspections & issues"}).click();
+    const assess=ops.locator("form").filter({has:ops.getByRole("button",{name:"Assess condition"})});
+    await assess.getByLabel("Disposition").selectOption("Correction");
+    await assess.getByLabel("Independent assessment").fill("Independent assessment of a correctable field condition");
+    await browserDeployDecision(ops,assess.getByRole("button",{name:"Assess condition"}),
+      "/api/d5o-hosted/field-changes",200);
+    const resolveForm=ops.locator("form").filter({has:ops.getByRole("button",{name:"Resolve against approved basis"})});
+    await resolveForm.getByLabel("Resolution and current Design receipt").fill("Corrected cover and retained original approved Design basis");
+    await browserDeployDecision(ops,resolveForm.getByRole("button",{name:"Resolve against approved basis"}),
+      "/api/d5o-hosted/field-changes",200);
+    changes=await call(`${prefix}_ops`,"d5o_hosted_field_change_read_v1",{
+      p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
+    assert.equal(changes.data.changes.find((item)=>item.id===raised.id)?.status,"Resolved");
+    current=await connectedBasis(prefix,tenant);
+    await ops.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}/deploy?workId=${encodeURIComponent(basis.work.id)}`);
+    await ops.getByRole("button",{name:"Field work",exact:true}).click();
+    const completion=ops.locator('[data-task-panel="completion-review"] form');
+    await completion.getByLabel("Independent review reason").fill("Independent quality review of completed fictional package");
+    const denied=await browserDeployDecision(ops,completion.getByRole("button",{name:"Record reviewed completion"}),
+      "/api/d5o-hosted/prototype-deploy-command",prefix==="a"?409:200);
+    if(prefix==="a") {
+      assert.match(denied.body,/reviewed_evidence_required/);
+      await ops.getByRole("alert").getByText(/independently reviewed completion photo or document/).waitFor();
+      await ops.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}/deploy?workId=${encodeURIComponent(basis.work.id)}`);
+      await ops.getByRole("button",{name:"Field work",exact:true}).click();
+      const fileLink=ops.getByRole("link",{name:"Open actual file"}).first();
+      await fileLink.waitFor();
+      const fileHref=await fileLink.getAttribute("href");
+      const reviewerFile=await ops.evaluate(async(href)=>{
+        const response=await fetch(href);
+        return {status:response.status,bytes:(await response.arrayBuffer()).byteLength};
+      },fileHref);
+      assert.equal(reviewerFile.status,200,`${prefix}:reviewer_private_evidence_read`);
+      assert(reviewerFile.bytes>0,`${prefix}:reviewer_private_evidence_empty`);
+      const evidenceReview=ops.locator('[data-task-panel="evidence-review"] form');
+      await evidenceReview.getByLabel("Reason").fill("Independent review of authentic fictional field photograph");
+      await browserDeployDecision(ops,evidenceReview.getByRole("button",{name:"Record independent review"}),
+        "/api/d5o-hosted/prototype-deploy-command",200);
+      const reviewed=await connectedBasis(prefix,tenant);
+      assert(reviewed.deploy.state.evidence.some((item)=>item.packageId===basis.packageId&&item.state==="Reviewed"),
+        `${prefix}:evidence_not_reviewed`);
+      await ops.reload();
+      await ops.getByRole("button",{name:"Field work",exact:true}).click();
+      const retryCompletion=ops.locator('[data-task-panel="completion-review"] form');
+      await retryCompletion.getByLabel("Independent review reason").fill("Measured and evidenced package completion is ready");
+      await browserDeployDecision(ops,retryCompletion.getByRole("button",{name:"Record reviewed completion"}),
+        "/api/d5o-hosted/prototype-deploy-command",200);
+    }
+    current=await connectedBasis(prefix,tenant);
+    assert(current.deploy.state.completions.some((item)=>item.packageId===basis.packageId&&item.status==="Reviewed"));
+    await worker.reload();await ops.reload();
+    const evidenceLink=worker.getByRole("link",{name:"View uploaded file"}).first();
+    await evidenceLink.waitFor();
+    const evidenceHref=await evidenceLink.getAttribute("href");
+    const evidenceRead=await worker.evaluate(async(href)=>{
+      const response=await fetch(href);
+      return {status:response.status,bytes:(await response.arrayBuffer()).byteLength};
+    },evidenceHref);
+    assert.equal(evidenceRead.status,200,`${prefix}:private_evidence_read`);
+    assert(evidenceRead.bytes>0,`${prefix}:private_evidence_empty`);
+    await worker.screenshot({path:resolve(dir,`${prefix}-field-complete-mobile.png`),fullPage:true});
+    await ops.screenshot({path:resolve(dir,`${prefix}-completion-review.png`),fullPage:true});
+    return {tenant:tenant.workspaceKey,workId:basis.work.id,packageId:basis.packageId,
+      bookingId:booking.id,reportId:report.id,inspectionId,fieldChangeId:raised.id,upload,
+      policyRejection:prefix==="a"?denied.body:null,
+      completionId:current.deploy.state.completions.find((item)=>item.packageId===basis.packageId)?.id,
+      evidenceRead};
+  }
   await check("Deploy completion enforces reviewed evidence only for the pinned strict tenant",async()=>{
+    if(phase2hu) return [await phase2huField("a",a),await phase2huField("b",b)];
     const outcomes=[];
     for(const [prefix,tenant] of [["a",a],["b",b]]) {
       const first=await connectedBasis(prefix,tenant);
@@ -3037,7 +3313,71 @@ try {
     assert(!registered.error,`${prefix}:${purpose}:register:${registered.error?.message}`);
     return evidenceId;
   };
+  async function phase2huAcceptance(prefix,tenant) {
+    const initial=await connectedBasis(prefix,tenant);
+    const path=`/work/customer/${tenant.workspaceKey}/deploy?workId=${encodeURIComponent(initial.work.id)}`;
+    const pm=await deployPage(`${prefix}_pm`,tenant,path);
+    await pm.getByRole("button",{name:"Acceptance & turnover"}).click();
+    await pm.getByLabel("Continuing obligations").fill(
+      "Review as-built and inspection documentation for fictional support");
+    await browserDeployDecision(pm,pm.getByRole("button",{name:"Assemble revisioned turnover"}),
+      "/api/d5o-hosted/prototype-deploy-command",200);
+    let current=await connectedBasis(prefix,tenant);
+    const turnover=current.deploy.state.turnovers.find((item)=>item.packageId===current.packageId);
+    assert(turnover,`${prefix}:browser_turnover_missing`);
+    const acceptor=await deployPage(`${prefix}_ops2`,tenant,path);
+    await acceptor.getByRole("button",{name:"Acceptance & turnover"}).click();
+    const packageForm=acceptor.locator("form").filter({has:acceptor.getByRole("button",{name:"Record scoped Client Accepted"})});
+    const pdf=Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF");
+    await packageForm.getByLabel("Externally signed acceptance PDF").setInputFiles({
+      name:`${prefix}-signed-package.pdf`,mimeType:"application/pdf",buffer:pdf});
+    await browserDeployDecision(acceptor,packageForm.getByRole("button",{name:"Retain PDF"}),
+      "/api/d5o-hosted/customer-decision-evidence",200);
+    await packageForm.getByLabel("Customer signer").fill("Fictional Customer Representative");
+    await packageForm.getByLabel("Organization").fill("Fictional Customer");
+    await packageForm.getByLabel("Role").fill("Fictional customer approver");
+    await packageForm.getByLabel("Authority basis").fill("Fictional signed customer acceptance of the exact package");
+    await browserDeployDecision(acceptor,packageForm.getByRole("button",{name:"Record scoped Client Accepted"}),
+      "/api/d5o-hosted/prototype-deploy-command",200);
+    const ops=await deployPage(`${prefix}_ops`,tenant,path);
+    await ops.getByRole("button",{name:"Acceptance & turnover"}).click();
+    const packageReceipt=ops.locator("form").filter({has:ops.getByRole("button",{name:"Record independent receipt"})});
+    await packageReceipt.getByLabel("Reason").fill("Independent Operations receipt of exact fictional package");
+    await browserDeployDecision(ops,packageReceipt.getByRole("button",{name:"Record independent receipt"}),
+      "/api/d5o-hosted/prototype-deploy-command",200);
+    await refreshDeployRead(acceptor);
+    await openAcceptanceTab(acceptor);
+    const wholeForm=acceptor.locator("form").filter({has:acceptor.getByRole("button",{name:"Record whole-work Client Accepted"})});
+    await wholeForm.getByLabel("Externally signed acceptance PDF").setInputFiles({
+      name:`${prefix}-signed-work.pdf`,mimeType:"application/pdf",buffer:pdf});
+    await browserDeployDecision(acceptor,wholeForm.getByRole("button",{name:"Retain PDF"}),
+      "/api/d5o-hosted/customer-decision-evidence",200);
+    await wholeForm.getByLabel("Customer signer").fill("Fictional Customer Representative");
+    await wholeForm.getByLabel("Organization").fill("Fictional Customer");
+    await wholeForm.getByLabel("Role").fill("Fictional site reviewer");
+    await wholeForm.getByLabel("Authority basis").fill("Fictional signed acceptance of all delivered Work");
+    await browserDeployDecision(acceptor,wholeForm.getByRole("button",{name:"Record whole-work Client Accepted"}),
+      "/api/d5o-hosted/prototype-deploy-command",200);
+    await refreshDeployRead(ops);
+    await openAcceptanceTab(ops);
+    const workReceipt=ops.locator("form").filter({has:ops.getByRole("button",{name:"Record independent whole-work receipt"})});
+    await workReceipt.getByLabel("Reason").fill("Independent Operations receipt of accepted fictional Work");
+    await browserDeployDecision(ops,workReceipt.getByRole("button",{name:"Record independent whole-work receipt"}),
+      "/api/d5o-hosted/prototype-deploy-command",200);
+    current=await connectedBasis(prefix,tenant);
+    assert.equal(current.deploy.state.workAcceptance?.receipt,"Accepted");
+    const dir=resolve(root,"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
+    await ops.screenshot({path:resolve(dir,`${prefix}-deploy-accepted.png`),fullPage:true});
+    await ops.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`);
+    await ops.getByRole("heading",{name:"Work lifecycle"}).waitFor();
+    await ops.getByRole("link",{name:/Receive accepted Deploy handoff/}).waitFor();
+    await ops.screenshot({path:resolve(dir,`${prefix}-operate-handoff-task.png`),fullPage:true});
+    return {tenant:tenant.workspaceKey,workId:current.work.id,turnoverId:turnover.id,
+      workAcceptanceId:current.deploy.state.workAcceptance.id,
+      configurationVersionId:current.work.phaseConfigurationVersionId};
+  }
   await check("both tenants capture independent customer and Operations acceptance",async()=>{
+    if(phase2hu) return [await phase2huAcceptance("a",a),await phase2huAcceptance("b",b)];
     const outcomes=[];
     for(const [prefix,tenant] of [["a",a],["b",b]]) {
       const assembled=await acceptanceCommand(prefix,tenant,`${prefix}_pm`,"assemble-turnover",{
@@ -3087,6 +3427,41 @@ try {
         independentReceiverId:users[`${prefix}_ops`].id});
     }
     return outcomes;
+  });
+  if(phase2hu) await check("tenant-neutral Deploy adapters reject foreign and wrong-role actors without state change",async()=>{
+    const aBasis=await connectedBasis("a",a);
+    const bBasis=await connectedBasis("b",b);
+    const worker=deployPages.get("a_worker");
+    const foreignWorker=deployPages.get("b_worker");
+    const manager=deployPages.get("a_ops");
+    assert(worker&&foreignWorker&&manager,"browser_identities_unavailable");
+    const report=aBasis.deploy.state.reports.find((item)=>item.packageId===aBasis.packageId);
+    assert(report,"field_report_missing");
+    const workerManager=await worker.evaluate(async({workspace,workId,evidenceId})=>{
+      const response=await fetch(`/api/d5o-hosted/prototype-deploy-command?workspace=${workspace}&workId=${workId}&evidenceId=${evidenceId}`);
+      return {status:response.status,body:await response.json()};
+    },{workspace:a.workspaceKey,workId:aBasis.work.id,
+      evidenceId:aBasis.deploy.state.evidence[0]?.id??randomUUID()});
+    const foreignField=await foreignWorker.evaluate(async({workspace,workId,evidenceId})=>{
+      const response=await fetch(`/api/d5o-hosted/worker-deploy?workspace=${workspace}&workId=${workId}&evidenceId=${evidenceId}`);
+      return {status:response.status,body:await response.json()};
+    },{workspace:a.workspaceKey,workId:aBasis.work.id,
+      evidenceId:aBasis.deploy.state.evidence[0]?.id??randomUUID()});
+    const foreignManager=await manager.evaluate(async({workspace,workId})=>{
+      const response=await fetch(`/api/d5o-hosted/prototype-deploy-command?workspace=${workspace}&workId=${workId}&evidenceId=00000000-0000-4000-8000-000000000001`);
+      return {status:response.status,body:await response.json()};
+    },{workspace:b.workspaceKey,workId:bBasis.work.id});
+    const foreignIssue=await worker.evaluate(async({workspace,workId})=>{
+      const response=await fetch(`/api/d5o-hosted/field-changes?workspace=${workspace}&workId=${workId}`);
+      return {status:response.status,body:await response.json()};
+    },{workspace:b.workspaceKey,workId:bBasis.work.id});
+    for(const [name,result] of Object.entries({workerManager,foreignField,foreignManager,foreignIssue}))
+      assert.equal(result.status,403,`${name}:${JSON.stringify(result)}`);
+    const after=await connectedBasis("a",a);
+    assert.equal(after.deploy.revision,aBasis.deploy.revision);
+    assert.equal(after.deploy.state.evidence.length,aBasis.deploy.state.evidence.length);
+    return {workerManager,foreignField,foreignManager,foreignIssue,
+      unchangedDeployRevision:after.deploy.revision};
   });
   operateCommand=async(prefix,tenant,actor,action,input,id)=>{
     const basis=await connectedBasis(prefix,tenant);
@@ -3653,7 +4028,18 @@ try {
             ${q(users[`${prefix}_pm`].id)});`));
       assert(deploy>=8,`${prefix}:deploy-audit-${deploy}`);
       assert(operate>=3,`${prefix}:operate-audit-${operate}`);
-      outcomes.push({tenant:tenant.workspaceKey,workId:id,deployEvents:deploy,operateEvents:operate});
+      const deployEventRefs=JSON.parse(sql(`select pg_catalog.jsonb_agg(
+        pg_catalog.jsonb_build_object('revision',decision_revision,'commandId',command_id,
+          'action',action,'actor',actor_user_id) order by decision_revision)::text
+        from d5o_hosted.connected_deploy_events where workspace_id=${q(tenant.workspaceId)}
+          and work_id=${q(id)};`));
+      const operateEventRefs=JSON.parse(sql(`select pg_catalog.jsonb_agg(
+        pg_catalog.jsonb_build_object('revision',decision_revision,'commandId',command_id,
+          'action',action,'actor',actor_user_id) order by decision_revision)::text
+        from d5o_hosted.connected_operate_events where workspace_id=${q(tenant.workspaceId)}
+          and work_id=${q(id)};`));
+      outcomes.push({tenant:tenant.workspaceKey,workId:id,deployEvents:deploy,operateEvents:operate,
+        deployEventRefs,operateEventRefs});
     }
     return outcomes;
   });
@@ -3970,10 +4356,15 @@ try {
       for(const [prefix,tenant] of [["a",a],["b",b]]) {
         const page=await browser.newPage({viewport:{width:1440,height:900}});
         const configurationPath=`/work/admin/configuration?workspace=${tenant.workspaceKey}`;
-        await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=${encodeURIComponent(configurationPath)}`);
+        await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=%2Fwork`);
+        await page.waitForLoadState("networkidle");
         await page.getByLabel("Email").fill(users[`${prefix}_admin`].email);
         await page.getByLabel("Password").fill(users[`${prefix}_admin`].password);
         await page.getByRole("button",{name:"Continue to your work"}).click();
+        await page.getByRole("link",{name:/Open workspace/}).first().waitFor({timeout:30000});
+        await page.locator(`[data-workspace="${tenant.workspaceKey}"]`).click();
+        await page.getByRole("heading",{name:"Work lifecycle"}).waitFor({timeout:30000});
+        await page.goto(`http://127.0.0.1:${server.port}${configurationPath}`);
         await page.getByRole("heading",{name:"Configuration",exact:true}).waitFor({timeout:30000});
         for(const [path,file] of [
           [configurationPath,
@@ -3998,6 +4389,85 @@ try {
       }
       return {files,ephemeralPreview:`http://127.0.0.1:${server.port}/work/connected-work`};
     } finally {await browser.close();}
+  });
+  if(phase2hu) await check("field evidence access rechecks membership, rollout and tenant lifecycle",async()=>{
+    const worker=deployPages.get("a_worker");
+    assert(worker,"signed-in assigned field worker required");
+    const before=await connectedBasis("a",a);
+    const evidenceId=before.deploy.state.evidence.find((item)=>item.packageId===before.packageId)?.id;
+    assert(evidenceId,"private field evidence required");
+    const deniedMutation=(id)=>call("a_worker","d5o_hosted_field_fact_command_v1",{
+      p_workspace_key:a.workspaceKey,p_presentation_id:before.work.id,
+      p_package_id:before.packageId,p_action:"save-report",
+      p_input:{summary:"Denied stale field decision"},p_command_id:`phase2hu-${id}-${randomUUID()}`,
+      p_expected_source_revision:before.source.revision,
+      p_expected_design_revision:before.work.design.authorityRevision,
+      p_expected_schedule_revision:before.schedule.revision,
+      p_expected_deploy_revision:before.deploy.revision});
+    const probe=async(id=evidenceId)=>worker.evaluate(async({workspace,workId,evidenceId})=>{
+      const response=await fetch(`/api/d5o-hosted/worker-deploy?workspace=${workspace}`+
+        `&workId=${encodeURIComponent(workId)}&evidenceId=${evidenceId}`);
+      return response.status;
+    },{workspace:a.workspaceKey,workId:before.work.id,evidenceId:id});
+    assert.equal(await probe(),200);
+    assert.equal(await probe(randomUUID()),404);
+    const people=await call("a_admin","d5o_hosted_org_admin_read_v1",{
+      p_workspace_key:a.workspaceKey,p_kind:"people",p_search:"",p_offset:0,p_limit:25});
+    assert(!people.error,people.error?.message);
+    const member=people.data.items.find((item)=>item.actor_user_id===users.a_worker.id);
+    assert(member,"assigned worker membership required");
+    const membership=async(action,revision)=>call("a_admin","d5o_hosted_org_admin_command_v1",{
+      p_workspace_key:a.workspaceKey,p_action:action,p_subject_id:member.id,p_input:{},
+      p_expected_revision:revision,p_reason:`Disposable field evidence ${action} qualification`,
+      p_command_id:randomUUID()});
+    const suspended=await membership("member.suspend",member.revision);
+    assert(!suspended.error,suspended.error?.message);
+    const suspendedStatus=await probe();assert.equal(suspendedStatus,403);
+    const suspendedRpc=await deniedMutation("suspended");
+    assert.equal(suspendedRpc.error?.code,"42501",JSON.stringify(suspendedRpc));
+    const restored=await membership("member.reactivate",suspended.data.record.revision);
+    assert(!restored.error,restored.error?.message);
+    assert.equal(await probe(),200);
+    const directory=async()=>{
+      const result=await call("vendor","d5o_platform_provisioning_directory_v1");
+      assert(!result.error,result.error?.message);
+      return result.data.find((item)=>item.workspaceKey===a.workspaceKey);
+    };
+    let tenant=await directory();
+    const disabled=await call("vendor","d5o_platform_capability_command_v1",{
+      p_workspace_key:a.workspaceKey,p_kind:"flag",p_enabled:false,
+      p_expected_revision:tenant.connectedWorkFlagRevision,p_command_id:randomUUID(),
+      p_reason:"Disposable field evidence rollout denial"});
+    assert(!disabled.error,disabled.error?.message);
+    const disabledStatus=await probe();assert.equal(disabledStatus,403);
+    const disabledRpc=await deniedMutation("disabled");
+    assert.equal(disabledRpc.error?.code,"42501",JSON.stringify(disabledRpc));
+    const enabled=await call("vendor","d5o_platform_capability_command_v1",{
+      p_workspace_key:a.workspaceKey,p_kind:"flag",p_enabled:true,
+      p_expected_revision:disabled.data.revision,p_command_id:randomUUID(),
+      p_reason:"Restore disposable field evidence rollout"});
+    assert(!enabled.error,enabled.error?.message);
+    assert.equal(await probe(),200);
+    tenant=await directory();
+    const tenantOff=await call("vendor","d5o_platform_lifecycle_command_v1",{
+      p_workspace_key:a.workspaceKey,p_action:"suspend",p_expected_revision:tenant.revision,
+      p_command_id:randomUUID(),p_reason:"Disposable field evidence tenant suspension"});
+    assert(!tenantOff.error,tenantOff.error?.message);
+    const tenantStatus=await probe();assert.equal(tenantStatus,403);
+    const tenantRpc=await deniedMutation("tenant-off");
+    assert.equal(tenantRpc.error?.code,"42501",JSON.stringify(tenantRpc));
+    const tenantOn=await call("vendor","d5o_platform_lifecycle_command_v1",{
+      p_workspace_key:a.workspaceKey,p_action:"reactivate",p_expected_revision:tenantOff.data.revision,
+      p_command_id:randomUUID(),p_reason:"Restore disposable field evidence tenant"});
+    assert(!tenantOn.error,tenantOn.error?.message);
+    assert.equal(await probe(),200);
+    const after=await connectedBasis("a",a);
+    assert.equal(after.deploy.revision,before.deploy.revision);
+    return {evidenceId,forgedStatus:404,suspendedStatus,
+      suspendedRpc:suspendedRpc.error?.message,disabledStatus,
+      disabledRpc:disabledRpc.error?.message,tenantStatus,
+      tenantRpc:tenantRpc.error?.message,
+      unchangedDeployRevision:after.deploy.revision};
   });
   }
   }
@@ -5137,7 +5607,8 @@ finally {
     setupError:Boolean(evidence.setupError),cleanupVerified:Boolean(evidence.cleanup?.clean)};
   mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
-  console.log(JSON.stringify({...evidence.summary,output:phase2htd
+  console.log(JSON.stringify({...evidence.summary,output:phase2hu
+    ? "docs/architecture/evidence/phase2hu-two-tenant-results.json" : phase2htd
     ? "docs/architecture/evidence/phase2htd-targeted-results.json" : phase2htc
     ? "docs/architecture/evidence/phase2htc-two-tenant-results.json" : phase2htGateA
     ? "docs/architecture/evidence/phase2ht-gate-a-results.json" : phase2htGateB

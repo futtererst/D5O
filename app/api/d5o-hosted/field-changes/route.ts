@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { authoritativeD5OCommandsReady } from "@/lib/d5o/auth/hosted-target";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
+import { customerWorkspaceKey } from "@/lib/d5o/hosted/customer-work-scope";
 
 export const dynamic = "force-dynamic";
 const reply = (value: unknown, status = 200) => NextResponse.json(value, {
@@ -11,13 +12,21 @@ type DbResult = { data: unknown; error: { code?: string; message: string } | nul
 const actions = new Set(["raise", "assess", "answer-query", "propose",
   "submit-review", "review", "record-customer", "resolve"]);
 const validId = (value: unknown) => typeof value === "string" && value.length >= 2 && value.length <= 120;
+async function allowed(client: Awaited<ReturnType<typeof createRybexSupabaseServerClient>>, workspace: string) {
+  if (workspace === "rybex") return true;
+  if (workspace === "rotork" || !customerWorkspaceKey.test(workspace)) return false;
+  const call = client.rpc.bind(client) as unknown as (name: string, args: Record<string, unknown>) => Promise<DbResult>;
+  const { data, error } = await call("d5o_hosted_capability_read_v1", { p_workspace_key: workspace });
+  return !error && (data as { connectedWork?: boolean } | null)?.connectedWork === true;
+}
 
 export async function GET(request: NextRequest) {
   if (!authoritativeD5OCommandsReady()) return reply({ error: "field_change_unavailable" }, 503);
   const workspace = request.nextUrl.searchParams.get("workspace");
   const workId = request.nextUrl.searchParams.get("workId");
-  if (workspace !== "rybex" || !validId(workId)) return reply({ error: "invalid_target" }, 400);
+  if (!workspace || !customerWorkspaceKey.test(workspace) || !validId(workId)) return reply({ error: "invalid_target" }, 400);
   const client = await createRybexSupabaseServerClient();
+  if (!await allowed(client, workspace)) return reply({ error: "connected_work_unavailable" }, 403);
   const call = client.rpc.bind(client) as unknown as (name: string, args: Record<string, unknown>) => Promise<DbResult>;
   const { data, error } = await call("d5o_hosted_field_change_read_v1", {
     p_workspace_key: workspace, p_presentation_id: workId
@@ -35,13 +44,14 @@ export async function POST(request: NextRequest) {
     expectedSourceRevision?: number; expectedDesignRevision?: number;
     expectedDeployRevision?: number; expectedChangeRevision?: number };
   try { input = JSON.parse(raw); } catch { return reply({ error: "invalid_request" }, 400); }
-  if (input.workspace !== "rybex" || !validId(input.workId) || !validId(input.packageId)
+  if (!input.workspace || !customerWorkspaceKey.test(input.workspace) || !validId(input.workId) || !validId(input.packageId)
     || !actions.has(input.action ?? "") || !input.data || !validId(input.commandId)
     || !Number.isInteger(input.expectedSourceRevision)
     || !Number.isInteger(input.expectedDesignRevision)
     || !Number.isInteger(input.expectedDeployRevision)
     || !Number.isInteger(input.expectedChangeRevision)) return reply({ error: "invalid_command" }, 400);
   const client = await createRybexSupabaseServerClient();
+  if (!await allowed(client, input.workspace)) return reply({ error: "connected_work_unavailable" }, 403);
   const call = client.rpc.bind(client) as unknown as (name: string, args: Record<string, unknown>) => Promise<DbResult>;
   const { data, error } = await call("d5o_hosted_field_change_command_v1", {
     p_workspace_key: input.workspace, p_presentation_id: input.workId,

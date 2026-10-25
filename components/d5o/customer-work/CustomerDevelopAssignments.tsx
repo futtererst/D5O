@@ -48,7 +48,7 @@ export function CustomerDevelopAssignments({ workspace }: { workspace: string })
         const receipt = (view.schedule.state.receipts ?? []).find((item) =>
           item.assignmentId === assignment.id && item.publicationId === publication.id);
         const permitted = view.works.find((item) => item.id === assignment.workId)
-          ?.permits.some((item) => item.packageId === assignment.packageId);
+          ?.permits.some((item) => item.packageId === assignment.packageId && item.status === "Authorized");
         return <article key={`${publication.id}:${assignment.id}`} className="d5o-customer-assignment">
           <h3>{view.works.find((item) => item.id === assignment.workId)?.title ?? "Assigned Work"}</h3>
           <p>{assignment.date} · {assignment.shift} · Package assignment</p>
@@ -57,8 +57,9 @@ export function CustomerDevelopAssignments({ workspace }: { workspace: string })
             assignment.id, assignment.workId)}>Acknowledge assignment</button>}
           {receipt?.response === "acknowledged" && <p>{permitted
             ? "Field start authorized. Your next responsibility is Deploy execution."
-            : "Wait for the Operations field-start permit before execution."}
-            <Link href={`/work/customer/${encodeURIComponent(workspace)}/assignments`}> Refresh assignment status</Link></p>}
+            : "Wait for the Operations field-start permit before execution."}</p>}
+          {receipt?.response === "acknowledged" && permitted &&
+            <Link href={`/work/customer/${encodeURIComponent(workspace)}/field?booking=${encodeURIComponent(assignment.id)}&publication=${encodeURIComponent(publication.id)}`}>Open field execution</Link>}
         </article>;
       }))}
       {view && !view.publications.some((item) => item.assignments.length) &&

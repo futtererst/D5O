@@ -1,6 +1,7 @@
 export type CustomerWorkTask = { id: string; workId: string; title: string; phase: string;
   status: "available" | "view_only"; revision: number; packageId?: string; releaseId?: string;
-  dueDate?: string; action?: string; reviewRole?: string };
+  dueDate?: string; action?: string; reviewRole?: string;
+  decisionId?: string; sourceRevision?: number };
 
 export type CustomerTaskWork = { id: string;
   discovery?: { pursuitControl?: { handoff?: { status?: string } }; outcome?: string;

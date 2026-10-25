@@ -11,21 +11,27 @@ import { resolvePublishedPhaseConfiguration } from "@/components/d5o/platform/pu
 import { createRybexSupabaseAdminClient } from "@/lib/d5o/auth/supabase-server";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { createHash, randomUUID } from "node:crypto";
+import { customerWorkScope, customerWorkspaceKey } from "@/lib/d5o/hosted/customer-work-scope";
 
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 const bucket = "d5o-deploy-evidence";
 const types = new Set(["image/jpeg", "image/png", "image/webp", "application/pdf"]);
 const objectPath = (workspace: string, workId: string, id: string) => `${workspace}/${createHash("sha256").update(workId).digest("hex")}/${id}`;
+const validWorkspace = (workspace: string) => customerWorkspaceKey.test(workspace);
+async function deployContext(workspace: string) {
+  if (workspace === "rybex" || workspace === "rotork") return hostedPrototypeContext(workspace);
+  return (await customerWorkScope(workspace)).context;
+}
 export async function POST(request: NextRequest) {
   if (!validLocalScheduleOrigin(request.headers)) return reply({ error: "invalid_origin" }, 403);
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
-  if (!["rybex", "rotork"].includes(workspace)) return reply({ error: "invalid_target" }, 400);
+  if (!validWorkspace(workspace)) return reply({ error: "invalid_target" }, 400);
   const raw = await request.text(); if (raw.length > 100_000) return reply({ error: "command_too_large" }, 413);
   try {
     const command = JSON.parse(raw) as DeployCommand;
     if (!command?.workId || !Number.isInteger(command.expectedRevision) || !command.commandId || !command.action) return reply({ error: "invalid_command" }, 400);
-    const context = await hostedPrototypeContext(workspace);
+    const context = await deployContext(workspace);
     if (!context.canEdit) return reply({ error: "workspace_forbidden" }, 403);
     const loaded = await context.read("work");
     if (!loaded.state) return reply({ error: "work_unavailable" }, 404);
@@ -34,8 +40,11 @@ export async function POST(request: NextRequest) {
     const index = records.findIndex((item) => item && typeof item === "object" && (item as WorkRecord).id === command.workId && (item as WorkRecord).workspace === workspace);
     if (index < 0) return reply({ error: "work_unavailable" }, 404);
     const selected = records[index] as WorkRecord;
+    if (!["rybex", "rotork"].includes(workspace) && (!authoritativeD5OCommandsReady() || !selected.canonicalWorkId))
+      return reply({ error: "authoritative_work_required" }, 409);
     if (authoritativeD5OCommandsReady() && selected.canonicalWorkId) {
-      if (!command.packageId || !Number.isInteger(command.expectedDesignRevision)
+      const wholeWorkAction = command.action === "accept-work" || command.action === "respond-operate-work";
+      if ((!wholeWorkAction && !command.packageId) || !Number.isInteger(command.expectedDesignRevision)
         || !Number.isInteger(command.expectedScheduleRevision)
         || !Number.isInteger(command.expectedDecisionRevision))
         return reply({ error: "invalid_decision_basis" }, 400);
@@ -115,11 +124,11 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   if (!validLocalScheduleOrigin(request.headers)) return reply({ error: "invalid_origin" }, 403);
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
-  if (!["rybex", "rotork"].includes(workspace)) return reply({ error: "invalid_target" }, 400);
+  if (!validWorkspace(workspace)) return reply({ error: "invalid_target" }, 400);
   let uploadedPath = "";
   let admin: ReturnType<typeof createRybexSupabaseAdminClient> | null = null;
   try {
-    const context = await hostedPrototypeContext(workspace);
+    const context = await deployContext(workspace);
     if (!context.canEdit) return reply({ error: "workspace_forbidden" }, 403);
     admin = createRybexSupabaseAdminClient();
     const form = await request.formData(), file = form.get("file");
@@ -131,7 +140,9 @@ export async function PUT(request: NextRequest) {
     const index = records?.findIndex((item) => item.id === workId && item.workspace === workspace) ?? -1;
     if (index < 0 || !records) return reply({ error: "work_unavailable" }, 404);
     if (expectedRevision !== loaded.revision) return reply({ error: "stale_state" }, 409);
-    const work = records[index], config = resolvePublishedPhaseConfiguration(await hostedConfigurationInventory(workspace as WorkRecord["workspace"]), work.workspace, work.type, work);
+    const work = records[index];
+    if (!["rybex", "rotork"].includes(workspace)) return reply({ error: "worker_upload_required" }, 403);
+    const config = resolvePublishedPhaseConfiguration(await hostedConfigurationInventory(workspace as WorkRecord["workspace"]), work.workspace, work.type, work);
     if (authoritativeD5OCommandsReady() && work.canonicalWorkId)
       return reply({ error: "worker_upload_required", message: "The assigned worker must upload this package evidence from My assigned work." }, 403);
     if (work.phaseConfigurationVersionId && !config) return reply({ error: "deploy_policy_unavailable" }, 409);
@@ -152,14 +163,16 @@ export async function PUT(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
-  if (!["rybex", "rotork"].includes(workspace)) return reply({ error: "invalid_target" }, 400);
+  if (!validWorkspace(workspace)) return reply({ error: "invalid_target" }, 400);
   try {
-    const context = await hostedPrototypeContext(workspace);
+    const context = await deployContext(workspace);
     if (!context.canEdit) return reply({ error: "workspace_forbidden" }, 403);
     const workId = request.nextUrl.searchParams.get("workId") ?? "", id = request.nextUrl.searchParams.get("evidenceId") ?? "";
     if (!/^[0-9a-f-]{36}$/i.test(id)) return reply({ error: "invalid_evidence" }, 400);
     const loaded = await context.read("work");
     const work = (loaded.state?.records as WorkRecord[] | undefined)?.find((item) => item.id === workId && item.workspace === workspace);
+    if (work && !["rybex", "rotork"].includes(workspace) && !work.canonicalWorkId)
+      return reply({ error: "authoritative_work_required" }, 409);
     const evidence = work?.deploy?.evidence.find((item) => item.id === id);
     if (!evidence) return reply({ error: "evidence_missing" }, 404);
     const file = await createRybexSupabaseAdminClient().storage.from(bucket).download(objectPath(workspace, workId, id));
