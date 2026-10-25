@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "82d9b1c4131d3154da3d0e53e15a8d22365fec35",
+  "environment": "isolated Windows worktree and disposable local Supabase/PostgreSQL, synthetic tenants and browser users",
+  "decision": "PARTIAL",
+  "checks": {
+    "inheritedGateA": { "passed": 42, "failed": 0, "cleanupVerified": true, "source": "phase2ht-gate-a-results.json" },
+    "finalGateB": { "passed": 51, "failed": 0, "cleanupVerified": true, "source": "phase2ht-gate-b-results.json" },
+    "approvalIntegrity": { "passed": 14, "failed": 0, "cleanupVerified": true, "source": "phase2ht-approval-gate-results.json" },
+    "calendarPredicate": { "passed": 8, "failed": 0, "sourceCheck": 1, "source": "phase2htb-calendar-results.json" },
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "productionBuild": "PASS after sandbox junction permission rerun"
+  },
+  "browserJobs": {
+    "tenantA": { "amountMinor": 1500000, "thresholdMinor": 1000000, "approvalRequired": true, "approvalRows": 1, "jobCount": 1 },
+    "tenantB": { "amountMinor": 1500000, "thresholdMinor": 2500000, "approvalRequired": false, "approvalRows": 0, "jobCount": 1 }
+  },
+  "incomplete": [
+    "Direct invalid, missing, overnight, and wrong-tenant calendar command cases",
+    "Full adapter rejection, revision, revoked and suspended actor matrix",
+    "Full stale approval, duplicate/concurrent job, conflicting idempotency, and My Work replay matrix",
+    "Each intermediate My Work task reached from its list entry",
+    "Historical sealed M1 and original connected pilot fixture reproduction"
+  ],
+  "productionChanged": false
+}

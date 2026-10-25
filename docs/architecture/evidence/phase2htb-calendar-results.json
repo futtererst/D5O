@@ -1,0 +1,72 @@
+{
+  "source": "locally migrated authoritative Operate SQL predicate",
+  "tests": [
+    {
+      "name": "normal_business_hours",
+      "status": "PASS",
+      "start": "2026-10-26T14:00:00Z",
+      "deadline": "2026-10-26T15:00:00.000Z",
+      "calendar": "Business hours"
+    },
+    {
+      "name": "before_opening",
+      "status": "PASS",
+      "start": "2026-10-26T11:00:00Z",
+      "deadline": "2026-10-26T13:00:00.000Z",
+      "calendar": "Business hours"
+    },
+    {
+      "name": "after_closing",
+      "status": "PASS",
+      "start": "2026-10-26T22:00:00Z",
+      "deadline": "2026-10-27T13:00:00.000Z",
+      "calendar": "Business hours"
+    },
+    {
+      "name": "weekend",
+      "status": "PASS",
+      "start": "2026-10-24T14:00:00Z",
+      "deadline": "2026-10-26T13:00:00.000Z",
+      "calendar": "Business hours"
+    },
+    {
+      "name": "configured_holiday",
+      "status": "PASS",
+      "start": "2026-10-26T14:00:00Z",
+      "deadline": "2026-10-27T13:00:00.000Z",
+      "calendar": "Business hours"
+    },
+    {
+      "name": "spring_dst",
+      "status": "PASS",
+      "start": "2026-03-06T22:00:00Z",
+      "deadline": "2026-03-09T13:00:00.000Z",
+      "calendar": "Business hours"
+    },
+    {
+      "name": "autumn_dst",
+      "status": "PASS",
+      "start": "2026-10-30T21:00:00Z",
+      "deadline": "2026-11-02T14:00:00.000Z",
+      "calendar": "Business hours"
+    },
+    {
+      "name": "friday_saturday_continuous",
+      "status": "PASS",
+      "start": "2026-10-23T23:00:00Z",
+      "deadline": "2026-10-24T03:00:00.000Z",
+      "calendar": "Continuous"
+    },
+    {
+      "name": "invalid_and_missing_calendar_guard_source",
+      "status": "SOURCE_CHECK",
+      "detail": "Authoritative function contains service_calendar_invalid guard; direct command denial remains untested"
+    }
+  ],
+  "guardVerified": true,
+  "clock": {
+    "at": "2026-10-26T14:00:00.000Z",
+    "authenticatedCanUseSchema": false,
+    "authenticatedCanUpdate": false
+  }
+}

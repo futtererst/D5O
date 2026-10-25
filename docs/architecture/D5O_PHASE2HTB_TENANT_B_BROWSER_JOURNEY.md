@@ -1,0 +1,7 @@
+# Phase 2H-TB Tenant B browser journey
+
+Result: browser request-to-job path **passed** on the same disposable application build. Evidence: `evidence/phase2ht-gate-b-results.json` and `evidence/phase2ht-gate-b-browser/` (`b-service-request-open.png`, `b-service-triaged.png`, `b-service-priced.png`, `b-service-job.png`, `b-service-job-mobile.png`). The browser used separate Tenant B project manager and Operations sessions.
+
+Work `tenant_b_test-b524c29ccb30433fb09aa7686569bca3` produced child request `ce05fb64-f52f-41bf-a457-758f395750c4`. Browser coverage, request, independent coverage review, triage, estimate, estimate submission, and pricing approval each returned HTTP 200. The USD 15,000 estimate was evaluated against Tenant B's pinned USD 25,000 threshold and returned `approvalRequired: false`. Premature job creation still returned HTTP 409 because mandatory customer authorization was absent. Customer evidence `87614b78-efe3-4a82-bdcd-4bf17bdff800` and the customer-authorization decision were retained; the latter returned HTTP 200. Job creation returned HTTP 200 and produced exactly one job, `673315f1-b881-4f03-9cd5-2e4cb9e4318e`. The approval row count was zero. The pinned configuration version was `9fda3658-7782-430b-a0e4-ef01524319c4`.
+
+The create-job My Work responsibility appeared after authorization and disappeared after job creation and reload. The test did not separately assert navigation from the My Work list into the task.

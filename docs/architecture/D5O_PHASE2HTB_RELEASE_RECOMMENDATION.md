@@ -1,0 +1,9 @@
+# Phase 2H-TB release recommendation
+
+**PARTIAL.** The core browser request-to-job chain now passes for two independent tenants: Tenant A requires an independent threshold approval and Tenant B does not; mandatory customer authorization remains enforced for both. The final clean run has 51 passing checks, zero failures, and verified fixture cleanup. The Phase 1B integrity rerun has 14 passing checks. No production or hosted migration was applied.
+
+The package is not locally qualified because Gate A's full direct calendar/adaptor matrix and Gate D's full adversarial, concurrency, and My Work replay matrix are incomplete. The browser test verifies the exact create-job task before and after the decision, but not every intermediate task from the My Work list. The historical six-phase inventory stays at 32/54 browser-qualified rows. These are local acceptance gaps, not evidence of a demonstrated approval bypass.
+
+Before qualification, execute direct invalid, missing, overnight, and wrong-tenant calendar commands; adapter rejection, stale revision, revoked/suspended authority and evidence-reference cases; exact-scope stale approval cases; duplicate/concurrent job and replay checks; and full intermediate My Work reconciliation. The inherited staging, historical fixture, commercial email, pilot-route, and production-readiness gates remain separate from this local package. See `D5O_PHASE2HT_RELEASE_BLOCKERS.md`.
+
+The three local migrations require approved staging rehearsal before any later deployment. They change authoritative calendar validation, stable work-type lookup, and the identity trigger's typed service-child check. Rollback in an isolated environment should restore the prior function definitions from the preceding migrations; a deployed instance with newly created service jobs needs forward recovery analysis before reverting the identity guard. No production deployment or Git push is authorized by this package.

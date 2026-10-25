@@ -34,7 +34,7 @@ const output = resolve(root, phase2htGateA
   : phase2g
   ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
   : "docs/architecture/evidence/phase2f-connected-journey-results.json");
-const evidence = { baseline: phase2htGateA || phase2htGateB ? "c45f8f0a29f227ce9404c32d0dc2b18cb45b9bf0"
+const evidence = { baseline: phase2htGateA || phase2htGateB ? "82d9b1c4131d3154da3d0e53e15a8d22365fec35"
   : phase2hsGateA ? "d1537c2070eee6926ad227c69dcdc43418bb381d" : phase2hr ? "f53aa89192b776221067cc6a761248e87259f82e" : phase2g
     ? "dae8e1fa975bc47ef6d1180b512399683e3c9613"
     : "8d536b4ce74282fe6c3a0e2dbb66b1752ca51ec2",
@@ -44,10 +44,10 @@ const browserEvidenceDir = (legacyPath) => resolve(root,phase2htGateB
 if(phase2htGateA) evidence.gateASecurity=[];
 // Field start checks the real shift clock. The disposable journey uses today's
 // local business date so that its schedule is actually eligible for execution.
-let executionDate = new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York",
+let executionDate = (phase2htGateA || phase2htGateB) ? "2026-10-26" : new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York",
   year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 const executionDay = new Date(`${executionDate}T12:00:00Z`).getUTCDay();
-const executionHour = Number(new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York",
+const executionHour = (phase2htGateA || phase2htGateB) ? 10 : Number(new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York",
   hour:"2-digit",hourCycle:"h23"}).format(new Date()));
 const currentFridayOvernight = (phase2hsGateB || phase2g || phase2htGateB) && executionDay===6
   && executionHour<11;
@@ -70,6 +70,11 @@ if(executionDay===0 || executionDay===6) {
 }
 const executionShift = currentFridayOvernight ? "23:00–10:59"
   : `${String(Math.max(0,executionHour-2)).padStart(2,"0")}:00–${String(Math.min(23,executionHour+6)).padStart(2,"0")}:59`;
+// Economic and labor authorities are checked against the database's real
+// current_date. Their validity can begin today while the disposable field
+// shift is evaluated under its controlled qualification clock.
+const authorityValidFrom = (phase2htGateA || phase2htGateB)
+  ? new Date().toISOString().slice(0,10) : executionDate;
 let runtime, server, designBrowser;
 const q = (value) => `'${String(value).replaceAll("'", "''")}'`;
 function sql(query) {
@@ -78,10 +83,38 @@ function sql(query) {
   if (result.status !== 0) throw Error(`sql_failed:${result.stderr.slice(-900)}`);
   return result.stdout.trim();
 }
+function installDisposableQualificationClock() {
+  // This seam exists only in the disposable database. No application request or
+  // authenticated actor can set it, and production migrations are unchanged.
+  sql(`create schema d5o_qualification;
+    revoke all on schema d5o_qualification from public,anon,authenticated;
+    create table d5o_qualification.clock(fixed_at timestamptz not null);
+    revoke all on d5o_qualification.clock from public,anon,authenticated;
+    insert into d5o_qualification.clock values ('2026-10-26T14:00:00Z');
+    create function d5o_qualification.fixed_now() returns timestamptz
+      language sql stable security definer set search_path=''
+      as 'select fixed_at from d5o_qualification.clock limit 1';
+    revoke all on function d5o_qualification.fixed_now() from public,anon,authenticated;
+    do $clock$ declare v_oid oid; v_source text; v_replaced text; begin
+      select 'public.d5o_hosted_field_start_command_v1(text,text,text,text,text,text,bigint,integer,integer,integer)'::regprocedure::oid into v_oid;
+      v_source:=pg_get_functiondef(v_oid);
+      v_replaced:=regexp_replace(v_source,'v_now[[:space:]]+timestamptz[[:space:]]*:=[[:space:]]*now\\(\\)',
+        'v_now timestamptz:=d5o_qualification.fixed_now()','i');
+      if v_replaced=v_source then raise exception 'field_clock_seam_missing'; end if;
+      execute v_replaced;
+      select 'public.d5o_hosted_operate_command_internal_v1(text,text,text,jsonb,text,bigint,integer,integer)'::regprocedure::oid into v_oid;
+      v_source:=pg_get_functiondef(v_oid);
+      v_replaced:=regexp_replace(v_source,'v_now[[:space:]]+timestamptz[[:space:]]*:=[[:space:]]*now\\(\\)',
+        'v_now timestamptz:=d5o_qualification.fixed_now()','i');
+      if v_replaced=v_source then raise exception 'operate_clock_seam_missing'; end if;
+      execute v_replaced;
+    end $clock$;`);
+  evidence.disposableClock={at:"2026-10-26T14:00:00Z",scope:"field-start and connected Operate commands in disposable database only"};
+}
 async function check(name, run) {
   try { evidence.tests.push({ name, status: "PASS", detail: await run() ?? null }); }
   catch (error) { evidence.tests.push({ name, status: "FAIL", detail: String(error.message).slice(0,
-    phase2hsGateB ? 3600 : 800) }); }
+    phase2hsGateB || phase2htGateB ? 5000 : 800) }); }
   console.log(JSON.stringify({test:name,status:evidence.tests.at(-1).status,
     ...(evidence.tests.at(-1).status==="FAIL"?{detail:evidence.tests.at(-1).detail}:{})}));
 }
@@ -104,6 +137,7 @@ async function startNext(url, anon, service) {
 
 try {
   runtime = await createP0aRuntime(root);
+  if(phase2htGateA || phase2htGateB) installDisposableQualificationClock();
   const url = runtime.status.API_URL ?? runtime.status.SUPABASE_URL;
   const anon = runtime.status.ANON_KEY ?? runtime.status.PUBLISHABLE_KEY;
   const service = runtime.status.SERVICE_ROLE_KEY ?? runtime.status.SECRET_KEY;
@@ -2130,7 +2164,7 @@ try {
         };
         await browserDevelopAction(`${prefix}_pm`,tenant,basis.work.id,
           "Submit economic authority",(page)=>fill(page,"Submit economic authority",{
-            parentCapMinor:"1000000",purchaseCapMinor:"0",validFrom:executionDate,
+            parentCapMinor:"1000000",purchaseCapMinor:"0",validFrom:authorityValidFrom,
             validUntil,purchasingEntity:"Fictional procurement entity",
             graybarAccountReference:`SYNTH-${prefix.toUpperCase()}-NO-PURCHASE`,
             scope:"Labor only fictional service restoration authorization",
@@ -2149,7 +2183,7 @@ try {
             rateBasis:"Hourly rate for qualified service technician",
             scope:"Fictional service restoration and independent inspection",
             conditions:"Only published eligible crew and reviewed hours may consume cap",
-            validFrom:executionDate,validUntil
+            validFrom:authorityValidFrom,validUntil
           }),"customer-develop-authority");
         await browserDevelopAction(`${prefix}_admin`,tenant,basis.work.id,
           "Approve labor authority",(page)=>fill(page,"Approve labor authority",{
@@ -2171,7 +2205,7 @@ try {
       assert(!purchasing.error,`${prefix}:purchase-read:${purchasing.error?.message}`);
       assert(purchasing.data.source?.digest,`${prefix}:funded-source-missing`);
       const parentInput={parentCapMinor:"1000000",purchaseCapMinor:"0",
-        subcontractEnabled:true,validFrom:executionDate,validUntil,
+        subcontractEnabled:true,validFrom:authorityValidFrom,validUntil,
         purchasingEntity:"Fictional procurement entity",
         graybarAccountReference:`SYNTH-${prefix.toUpperCase()}-NO-PURCHASE`,
         scope:"Labor only fictional service restoration authorization",
@@ -2203,7 +2237,7 @@ try {
           rateBasis:"Hourly rate for qualified service technician",
           scope:"Fictional service restoration and independent inspection",
           conditions:"Only published eligible crew and reviewed hours may consume cap",
-          validFrom:executionDate,validUntil},
+          validFrom:authorityValidFrom,validUntil},
         p_command_id:`phase2f-${prefix}-prepare-labor`,
         p_expected_revision:laborRead.data.revision,
         p_expected_source_digest:laborRead.data.source.digest});
@@ -3043,7 +3077,7 @@ try {
     }
     return outcomes;
   });
-  if(phase2htGateB) await check("both tenants open and triage connected service through authenticated browser controls",async()=>{
+  if(phase2htGateB && !evidence.tests.some((item)=>item.status==="FAIL")) await check("both tenants open and triage connected service through authenticated browser controls",async()=>{
     const outcomes=[];
     const screenshotDir=resolve(root,"docs/architecture/evidence/phase2ht-gate-b-browser");
     mkdirSync(screenshotDir,{recursive:true});
@@ -3098,14 +3132,21 @@ try {
       await pm.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
       const pricing=pm.locator("details").filter({has:pm.getByText(/Chargeable service estimate/)});
       await pricing.getByText(/Chargeable service estimate/).first().click();
-      const costForm=pricing.locator("form").filter({has:pricing.getByRole("button",{name:"Add cost line"})});
-      await costForm.getByLabel("Work performed or supplied").fill("Controlled fictional service inspection");
-      await costForm.getByLabel("Quantity or hours").fill("105");
-      await costForm.getByLabel("Unit").fill("hour");
-      await costForm.getByLabel("Catalog rate ID").fill("service-hour");
-      await costForm.getByLabel("Rate or quote source").fill("Synthetic rate catalog");
-      await costForm.getByLabel("Quantity / cost assumption").fill("Qualified inspection and repair crew hours");
-      await costForm.getByRole("button",{name:"Add cost line"}).click();
+      try { await pricing.getByLabel("Work performed or supplied").waitFor({state:"visible",timeout:12000}); }
+      catch {
+        const state=await pm.evaluate(async(workspace)=>{
+          const response=await fetch(`/api/d5o-hosted/prototype-state?workspace=${workspace}&key=work&pricing=1`);
+          return {status:response.status,body:await response.json()};
+        },tenant.workspaceKey);
+        throw Error(`${prefix}:pricing_editor_unavailable:${JSON.stringify({panel:await pricing.innerText(),state}).slice(0,2200)}`);
+      }
+      await pricing.getByLabel("Work performed or supplied").fill("Controlled fictional service inspection");
+      await pricing.getByLabel("Quantity or hours").fill("105");
+      await pricing.getByLabel("Unit").fill("hour");
+      await pricing.getByLabel("Catalog rate ID").fill("service-hour");
+      await pricing.getByLabel("Rate or quote source").fill("Synthetic rate catalog");
+      await pricing.getByLabel("Quantity / cost assumption").fill("Qualified inspection and repair crew hours");
+      await pricing.getByRole("button",{name:"Add cost line"}).click();
       await pricing.getByLabel("Estimate risk and uncertainty basis").fill("Synthetic bounded service repair risk");
       const [estimateResponse]=await Promise.all([pm.waitForResponse((item)=>item.url().includes("/prototype-operate-command")&&item.request().method()==="POST"),
         pricing.getByRole("button",{name:"Save new estimate revision"}).click()]);
@@ -3113,7 +3154,31 @@ try {
       await pm.reload();
       await pm.getByRole("heading",{name:"Design actions"}).waitFor();
       await pm.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
-      await pm.getByRole("button",{name:"Submit exact revision for pricing review"}).waitFor();
+      // Reload closes the native <details> disclosure. Its action is present
+      // but correctly hidden until an employee opens the estimate again.
+      await pm.locator("details").filter({has:pm.getByText(/Chargeable service estimate/)})
+        .first().locator("summary").click();
+      try { await pm.getByRole("button",{name:"Submit exact revision for pricing review"}).waitFor({timeout:12000}); }
+      catch {
+        const current=await connectedBasis(prefix,tenant);
+        const shown=await pm.evaluate(async({workspace,workId})=>{
+          const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}&workId=${workId}`);
+          const body=await response.json();
+          return {status:response.status,role:body.role,
+            requests:body.record?.operate?.requests?.map((item)=>({id:item.id,status:item.status,
+              reportedAt:item.reportedAt,estimateStatus:item.serviceEstimate?.status,
+              estimateRevision:item.serviceEstimate?.revision,
+              requestCycleAt:item.serviceEstimate?.requestCycleAt,
+              currentCycle:item.serviceEstimate?.requestCycleAt===(item.reopenedAt??item.reportedAt)})),
+            replayMatches:body.phaseStatus?.replayMatches};
+        },{workspace:tenant.workspaceKey,workId:basis.work.id});
+        const panel=await pm.locator("details").filter({has:pm.getByText(/Chargeable service estimate/)})
+          .first().innerText().catch(()=>"pricing panel unavailable");
+        const requestState=current.operate.state.requests.at(-1);
+        throw Error(`${prefix}:pricing_submit_unavailable:${JSON.stringify({connected:{
+          reportedAt:requestState?.reportedAt,estimateStatus:requestState?.serviceEstimate?.status,
+          requestCycleAt:requestState?.serviceEstimate?.requestCycleAt},shown,panel}).slice(0,4200)}`);
+      }
       const [submitResponse]=await Promise.all([pm.waitForResponse((item)=>item.url().includes("/prototype-operate-command")&&item.request().method()==="POST"),
         pm.getByRole("button",{name:"Submit exact revision for pricing review"}).click()]);
       assert.equal(submitResponse.status(),200,`${prefix}:service-pricing-submit:${await submitResponse.text()}`);
@@ -3142,15 +3207,24 @@ try {
     evidence.gateB=outcomes;
     return outcomes;
   });
-  if(phase2htGateB) await check("both tenants authorize priced service and create one executable job through authenticated browser controls",async()=>{
+  else if(phase2htGateB) evidence.tests.push({name:"both tenants open and triage connected service through authenticated browser controls",
+    status:"BLOCKED",detail:"Connected Work prerequisite did not pass"});
+  if(phase2htGateB && evidence.tests.at(-1)?.status==="PASS") await check("both tenants authorize priced service and create one executable job through authenticated browser controls",async()=>{
     const outcomes=[];
     const screenshotDir=resolve(root,"docs/architecture/evidence/phase2ht-gate-b-browser");
+    const expandPricing=async(page)=>{
+      const details=page.locator("details").filter({has:page.getByText(/Chargeable service estimate/)})
+        .first();
+      if(await details.getAttribute("open")===null) await details.locator("summary").click();
+    };
     for(const [prefix,tenant] of [["a",a],["b",b]]) {
       const basis=await connectedBasis(prefix,tenant);
       const request=basis.operate.state.requests.at(-1);
       assert.equal(request.serviceEstimate.evaluation.proposedPriceMinor,1500000);
       const pm=await designPage(`${prefix}_pm`,tenant,basis.work.id);
       const ops=await designPage(`${prefix}_ops`,tenant,basis.work.id);
+      await expandPricing(pm);
+      await expandPricing(ops);
       const approvalBefore=await pm.evaluate(async({workspace,workId,requestId})=>{
         const response=await fetch(`/api/d5o-hosted/service-approval?workspace=${workspace}&parentPresentationId=${workId}&requestId=${requestId}`);
         return {status:response.status,body:await response.json()};
@@ -3172,6 +3246,7 @@ try {
       assert.equal(unauthorizedJob.status,409,`${prefix}:premature-job:${JSON.stringify(unauthorizedJob)}`);
       assert.equal((await connectedBasis(prefix,tenant)).operate.state.jobs.length,beforeDecision.operate.state.jobs.length);
       let preapprovalAuthorization=null;
+      let thresholdApprovalHttp=null;
       if(prefix==="a") {
         preapprovalAuthorization=await ops.evaluate(async({workspace,workId,requestId,sourceRevision,operateRevision,estimateRevision})=>{
           const response=await fetch(`/api/d5o-hosted/prototype-operate-command?workspace=${workspace}`,{
@@ -3189,21 +3264,24 @@ try {
         await pm.reload();
         await pm.getByRole("heading",{name:"Design actions"}).waitFor();
         await pm.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
+        await expandPricing(pm);
         const requestApproval=pm.getByRole("button",{name:"Request additional approval"});
         await requestApproval.waitFor({state:"visible"});
         const [requestResponse]=await Promise.all([pm.waitForResponse((item)=>item.url().includes("/service-approval")&&item.request().method()==="POST"),requestApproval.click()]);
         assert.equal(requestResponse.status(),200,`a:approval-request:${await requestResponse.text()}`);
-        await ops.reload();
-        await ops.getByRole("heading",{name:"Design actions"}).waitFor();
-        await ops.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
-        const approve=ops.getByRole("button",{name:"Approve service threshold"});
+        const approver=await designPage("a_admin",tenant,basis.work.id);
+        await approver.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
+        await expandPricing(approver);
+        const approve=approver.getByRole("button",{name:"Approve service threshold"});
         await approve.waitFor({state:"visible"});
-        const [approvalResponse]=await Promise.all([ops.waitForResponse((item)=>item.url().includes("/service-approval")&&item.request().method()==="POST"),approve.click()]);
+        const [approvalResponse]=await Promise.all([approver.waitForResponse((item)=>item.url().includes("/service-approval")&&item.request().method()==="POST"),approve.click()]);
         assert.equal(approvalResponse.status(),200,`a:threshold-approval:${await approvalResponse.text()}`);
+        thresholdApprovalHttp=approvalResponse.status();
       }
       await ops.reload();
       await ops.getByRole("heading",{name:"Design actions"}).waitFor();
       await ops.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
+      await expandPricing(ops);
       const authorization=ops.locator("form").filter({has:ops.getByRole("button",{name:"Record exact customer authorization"})});
       await authorization.getByLabel("External customer authority / party").fill("Fictional authorized customer");
       await authorization.getByLabel("Externally signed acceptance PDF").setInputFiles({name:`${prefix}-service-authorization.pdf`,mimeType:"application/pdf",buffer:Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF")});
@@ -3220,6 +3298,14 @@ try {
       await pm.reload();
       await pm.getByRole("heading",{name:"Design actions"}).waitFor();
       await pm.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
+      const readyQueue=await pm.evaluate(async(workspace)=>{
+        const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`);
+        return {status:response.status,body:await response.json()};
+      },tenant.workspaceKey);
+      assert.equal(readyQueue.status,200);
+      assert((readyQueue.body.tasks??[]).some((item)=>item.workId===basis.work.id
+        && item.id?.includes(request.id) && item.action==="create-job"),
+        `${prefix}:job_task_missing`);
       const create=pm.getByRole("button",{name:"Create executable service job"});
       await create.waitFor({state:"visible"});
       const [jobResponse]=await Promise.all([pm.waitForResponse((item)=>item.url().includes("/prototype-operate-command")&&item.request().method()==="POST"),create.click()]);
@@ -3227,20 +3313,75 @@ try {
       const completed=await connectedBasis(prefix,tenant);
       const job=completed.operate.state.jobs.find((item)=>item.requestId===request.id);
       assert(job,`${prefix}:job-missing`);
+      assert.equal(completed.operate.state.jobs.filter((item)=>item.requestId===request.id
+        && item.status!=="Cancelled").length,1,`${prefix}:duplicate-executable-job`);
+      const approvalRows=Number(sql(`select count(*) from d5o_hosted.service_approval_requests
+        where workspace_id=${q(tenant.workspaceId)} and service_request_id=${q(request.id)};`));
+      assert.equal(approvalRows,prefix==="a"?1:0,`${prefix}:unexpected-approval-record`);
       assert.equal(completed.work.phaseConfigurationVersionId,basis.work.phaseConfigurationVersionId);
       await pm.reload();
       await pm.getByText(`Service job: ${job.status}`,{exact:false}).waitFor();
       assert.equal(await pm.getByRole("button",{name:"Create executable service job"}).count(),0);
+      const completedQueue=await pm.evaluate(async(workspace)=>{
+        const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`);
+        return {status:response.status,body:await response.json()};
+      },tenant.workspaceKey);
+      assert.equal(completedQueue.status,200);
+      assert(!(completedQueue.body.tasks??[]).some((item)=>item.workId===basis.work.id
+        && item.id?.includes(request.id) && item.action==="create-job"),
+        `${prefix}:stale_job_task`);
       await pm.screenshot({path:resolve(screenshotDir,`${prefix}-service-job.png`),fullPage:true});
+      await pm.setViewportSize({width:390,height:844});
+      await pm.screenshot({path:resolve(screenshotDir,`${prefix}-service-job-mobile.png`),fullPage:true});
+      await pm.setViewportSize({width:1440,height:900});
       outcomes.push({tenant:tenant.workspaceKey,workId:basis.work.id,requestId:request.id,
         thresholdMinor:approvalBefore.body.result.thresholdMinor,
         approvalRequired:approvalBefore.body.result.approvalRequired,
+        thresholdApprovalHttp,thresholdApproverActorId:prefix==="a"?users.a_admin.id:null,
         prematureJobHttp:unauthorizedJob.status,prematureAuthorizationHttp:preapprovalAuthorization?.status??null,
         customerEvidenceId:evidenceBody.evidenceId,authorizationHttp:authorizationResponse.status(),
-        jobHttp:jobResponse.status(),jobId:job.id,configurationVersionId:completed.work.phaseConfigurationVersionId});
+        jobHttp:jobResponse.status(),jobId:job.id,approvalRows,
+        myWorkCreationTaskReady:true,myWorkCreationTaskResolved:true,
+        configurationVersionId:completed.work.phaseConfigurationVersionId});
     }
     evidence.gateBJobs=outcomes;
     return outcomes;
+  });
+  else if(phase2htGateB) evidence.tests.push({name:"both tenants authorize priced service and create one executable job through authenticated browser controls",
+    status:"BLOCKED",detail:"Triage and pricing browser prerequisite did not pass"});
+  if(phase2htGateB && evidence.gateBJobs?.length===2) await check("connected service adapters and job RPC deny cross-tenant actors",async()=>{
+    const aJob=evidence.gateBJobs[0],bJob=evidence.gateBJobs[1];
+    const aPage=await designPage("a_pm",a,aJob.workId);
+    const forbidden=await aPage.evaluate(async({workspace,workId,requestId,evidenceId})=>{
+      const approval=await fetch(`/api/d5o-hosted/service-approval?workspace=${workspace}&parentPresentationId=${workId}&requestId=${requestId}`);
+      const evidence=await fetch(`/api/d5o-hosted/customer-decision-evidence?workspace=${workspace}&workId=${workId}&evidenceId=${evidenceId}`);
+      const mutation=await fetch(`/api/d5o-hosted/service-approval`,{method:"POST",
+        headers:{"Content-Type":"application/json"},body:JSON.stringify({workspace,
+          parentPresentationId:workId,requestId,action:"request",commandId:crypto.randomUUID()})});
+      return {approval:approval.status,evidence:evidence.status,mutation:mutation.status};
+    },{workspace:b.workspaceKey,workId:bJob.workId,requestId:bJob.requestId,
+      evidenceId:bJob.customerEvidenceId});
+    assert.deepEqual(forbidden,{approval:403,evidence:403,mutation:403});
+    const directApproval=await call("a_pm","d5o_hosted_connected_service_approval_read_v1",{
+      p_workspace_key:b.workspaceKey,p_parent_presentation_id:bJob.workId,
+      p_request_id:bJob.requestId});
+    assert.equal(directApproval.error?.code,"42501");
+    const before=await connectedBasis("b",b);
+    const catalog=await call("b_admin","d5o_hosted_prototype_read_v1",{
+      p_workspace_key:b.workspaceKey,p_state_key:"catalog"});
+    assert(!catalog.error);
+    const directJob=await call("a_pm","d5o_hosted_service_job_command_v1",{
+      p_workspace_key:b.workspaceKey,p_parent_presentation_id:bJob.workId,
+      p_request_id:bJob.requestId,p_due_date:new Date().toISOString().slice(0,10),
+      p_owner:"Forged foreign owner",p_command_id:randomUUID(),
+      p_expected_work_revision:before.source.revision,
+      p_expected_catalog_revision:catalog.data.revision,
+      p_expected_operate_revision:before.operate.revision});
+    assert.equal(directJob.error?.code,"42501",JSON.stringify(directJob));
+    const after=await connectedBasis("b",b);
+    assert.equal(after.operate.state.jobs.length,before.operate.state.jobs.length);
+    return {api:forbidden,directApproval:directApproval.error.code,
+      directJob:directJob.error.code,unchangedJobCount:after.operate.state.jobs.length};
   });
   await check("cross-tenant Deploy and Operate RPCs reject the foreign actor",async()=>{
     const deploy=await deployCommand("a",a,"b_ops","review-completion",{
@@ -3426,11 +3567,22 @@ try {
             && response.request().method()==="POST");
           await page.getByRole("button",{name:"Create connected Work"}).click();
           const createdResult=await createdResponse;
-          assert.equal(createdResult.status(),201,"browser-work-create");
+          // Chromium may discard the response body after a successful route
+          // transition. Only request it when diagnosing a non-201 response.
+          if(createdResult.status()!==201) {
+            const body=await createdResult.text().catch(()=>"response body unavailable");
+            assert.equal(createdResult.status(),201,`browser-work-create:${body}`);
+          }
           await page.getByRole("status").filter({hasText:"Connected Work created"})
             .waitFor({timeout:30000});
-          await page.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`,
-            {waitUntil:"domcontentloaded"});
+          const customerUrl=`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`;
+          try { await page.goto(customerUrl,{waitUntil:"domcontentloaded"}); }
+          catch(error) {
+            if(!String(error).includes("net::ERR_ABORTED")) throw error;
+            // The development server can replace an in-flight route while it
+            // compiles. Retry this read-only navigation once, then fail.
+            await page.goto(customerUrl,{waitUntil:"domcontentloaded"});
+          }
           await page.getByRole("heading",{name:"Work lifecycle"}).waitFor({timeout:30000});
           await page.locator('.d5o-customer-work-list a[href*="?work="]')
             .filter({hasText:browserWork}).click();

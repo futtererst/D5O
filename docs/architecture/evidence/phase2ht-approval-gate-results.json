@@ -1,6 +1,6 @@
 {
   "sourceCommit": "7b8a629d57f4652acd7545ac244555e228a563d4",
-  "startedAt": "2026-10-24T14:12:32.330Z",
+  "startedAt": "2026-10-25T02:55:40.485Z",
   "tests": [
     {
       "name": "A direct authorization and job RPC deny missing approval",
@@ -23,8 +23,8 @@
       "name": "material scope change invalidates old approval before authorization and job",
       "status": "PASS",
       "detail": {
-        "oldApprovalId": "4300c43b-fca2-4c93-bb17-8940e62c2e0e",
-        "newApprovalId": "00218c72-92fe-4aa5-8141-cc141a1acadc",
+        "oldApprovalId": "f301e31a-a16c-4c5c-bdd8-7636c23a2e83",
+        "newApprovalId": "cb67a331-b81c-427d-a755-284311ba694b",
         "staleAuthorization": "23514",
         "staleJob": "23514",
         "unchangedOperateState": true
@@ -34,9 +34,9 @@
       "name": "A valid approval authorizes customer decision and creates job",
       "status": "PASS",
       "detail": {
-        "approvalId": "00218c72-92fe-4aa5-8141-cc141a1acadc",
+        "approvalId": "cb67a331-b81c-427d-a755-284311ba694b",
         "authorization": "recorded",
-        "jobId": "4111cfdb-3a7e-4c13-80f9-a3ce1490cc34",
+        "jobId": "4e5f8249-82e7-4094-a561-c998e2b5829e",
         "duplicateJob": "stable"
       }
     },
@@ -55,7 +55,7 @@
         "approvalRequired": false,
         "fabricatedApprovals": 0,
         "authorization": "recorded",
-        "jobId": "a96b779f-3a0c-4143-9bdb-c4208d1d17ee",
+        "jobId": "0b927792-f5cc-4567-8010-f11285942d19",
         "concurrentJobAttempts": {
           "accepted": 1,
           "denied": 1
@@ -66,9 +66,9 @@
       "name": "new active version does not repin A historical connected request",
       "status": "PASS",
       "detail": {
-        "historicalVersion": "7897e36c-ffc0-44d0-8161-c4fd633e705a",
+        "historicalVersion": "2ba550ac-330e-428a-bd50-5b637551ca75",
         "historicalThresholdMinor": 1000000,
-        "newWorkVersion": "29173526-1668-4887-a9e2-28c6ba83f4d6",
+        "newWorkVersion": "4a4d8e17-0d6c-4d25-a828-b85df0d7e812",
         "newThresholdMinor": 2500000
       }
     },
@@ -126,13 +126,13 @@
       "detail": {
         "eventCount": 6,
         "tenant": "A",
-        "pinnedVersion": "7897e36c-ffc0-44d0-8161-c4fd633e705a"
+        "pinnedVersion": "2ba550ac-330e-428a-bd50-5b637551ca75"
       }
     }
   ],
   "setupError": null,
   "cleanup": {
-    "projectId": "d5o-p0a-38fcbd91-9c8",
+    "projectId": "d5o-p0a-fdd96011-e63",
     "stopExit": 0,
     "networkError": null,
     "projectDirectoryAbsent": true,
@@ -140,12 +140,12 @@
     "clean": true
   },
   "environment": {
-    "projectId": "d5o-p0a-38fcbd91-9c8",
+    "projectId": "d5o-p0a-fdd96011-e63",
     "apiPort": 57621,
     "localOnly": true,
     "migration": "20261023115306_d5o_phase1b_connected_service_approval.sql"
   },
-  "finishedAt": "2026-10-24T14:13:50.157Z",
+  "finishedAt": "2026-10-25T02:57:10.858Z",
   "summary": {
     "passed": 14,
     "failed": 0,
