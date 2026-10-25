@@ -11,6 +11,28 @@ export function ConnectedWorkStart({workspace}:{workspace:string}) {
   const [busy,setBusy]=useState(false);
   const [created,setCreated]=useState("");
   const [createdId,setCreatedId]=useState("");
+  const confirmationKey=`d5o-connected-work-created:${workspace}`;
+  useEffect(()=>{
+    const controller=new AbortController();
+    const saved=(()=>{
+      try {return JSON.parse(sessionStorage.getItem(confirmationKey)??"null") as
+        {id?:string;title?:string}|null;}
+      catch {try {sessionStorage.removeItem(confirmationKey);}catch {/* Storage unavailable. */}
+        return null;}
+    })();
+    if(!saved?.id||!saved.title)return ()=>controller.abort();
+    const {id,title}=saved;
+    void fetch(`/api/d5o-hosted/customer-work?workspace=${encodeURIComponent(workspace)}`+
+      `&workId=${encodeURIComponent(id)}`,{cache:"no-store",signal:controller.signal})
+      .then(async(response)=>response.ok?await response.json() as
+        {record?:{id?:string;title?:string}}:null)
+      .then((body)=>{
+        if(controller.signal.aborted||sessionStorage.getItem(confirmationKey)!==JSON.stringify({id,title}))return;
+        if(body?.record?.id===id&&body.record.title===title){setCreated(title);setCreatedId(id);}
+        else sessionStorage.removeItem(confirmationKey);
+      }).catch(()=>{/* The confirmed message can be checked again on a later visit. */});
+    return ()=>controller.abort();
+  },[workspace,confirmationKey]);
   useEffect(()=>{const controller=new AbortController();
     void fetch(`/api/d5o-hosted/connected-work?workspace=${encodeURIComponent(workspace)}`,
       {cache:"no-store",signal:controller.signal}).then(async(response)=>{
@@ -24,6 +46,7 @@ export function ConnectedWorkStart({workspace}:{workspace:string}) {
     const form=event.currentTarget;
     const fields=new FormData(form);
     setBusy(true);setError("");setCreated("");setCreatedId("");
+    try {sessionStorage.removeItem(confirmationKey);}catch {/* Storage is optional. */}
     try {
       const response=await fetch(`/api/d5o-hosted/connected-work?workspace=${encodeURIComponent(workspace)}`,{
         method:"POST",headers:{"Content-Type":"application/json"},
@@ -34,8 +57,12 @@ export function ConnectedWorkStart({workspace}:{workspace:string}) {
             need:String(fields.get("need")),procurement:String(fields.get("procurement")),closeDate:""}})});
       const body=await response.json() as {error?:string;result?:{presentationId?:string}};
       if(!response.ok)throw Error(body.error??"Connected Work could not be created");
-      form.reset();setCreated(String(fields.get("title")));
-      setCreatedId(body.result?.presentationId ?? "");
+      const id=body.result?.presentationId;
+      if(!id)throw Error("Connected Work response omitted its identifier");
+      const title=String(fields.get("title"));
+      try {sessionStorage.setItem(confirmationKey,JSON.stringify({id,title}));}
+      catch {/* Immediate confirmation remains available without storage. */}
+      form.reset();setCreated(title);setCreatedId(id);
     }catch(cause){setError(cause instanceof Error?cause.message:"Command failed");}
     finally{setBusy(false);}
   }

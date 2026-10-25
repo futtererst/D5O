@@ -1074,5 +1074,14 @@
         "docs/architecture/evidence/phase2htd-targeted-results.json"
       ]
     }
-  ]
+  ],
+  "phase2hteFollowUp": {
+    "date": "2026-10-25",
+    "localDecision": "LOCALLY QUALIFIED",
+    "originalFiniteCases": "43 PASS, 1 NOT APPLICABLE",
+    "inheritedGateB": "PASS 51/51",
+    "visibleConfirmationAfterReload": true,
+    "onePersistedWorkAndReceiptPerTenant": true,
+    "evidence": "docs/architecture/evidence/phase2hte-gate-b-green-results.json"
+  }
 }

@@ -10,6 +10,8 @@ import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
 const phase2htd = process.env.D5O_PHASE2HTD === "1";
+const phase2hteDiagnostic = process.env.D5O_PHASE2HTE_DIAGNOSTIC === "1";
+const phase2hteReloadProbe = process.env.D5O_PHASE2HTE_RELOAD_PROBE === "1";
 const phase2htc = process.env.D5O_PHASE2HTC === "1" || phase2htd;
 const phase2htGateA = process.env.D5O_PHASE2HT_GATE_A === "1";
 const phase2htGateB = process.env.D5O_PHASE2HT_GATE_B === "1" || phase2htc;
@@ -3797,6 +3799,32 @@ try {
           await page.goto(`http://127.0.0.1:${server.port}/work/connected-work?workspace=${tenant.workspaceKey}`);
           await page.getByRole("button",{name:"Create connected Work"}).waitFor({timeout:30000});
           const browserWork=`Phase 2G browser Work ${prefix.toUpperCase()}`;
+          const diagnostic=phase2hteDiagnostic?{
+            actor:users[`${prefix}_admin`].id,tenant:tenant.workspaceKey,
+            route:page.url(),title:browserWork,events:[],attempts:[]}:null;
+          const responseReads=[];
+          if(diagnostic) {
+            page.on("request",(request)=>{
+              if(!request.url().includes("/api/d5o-hosted/connected-work"))return;
+              const body=request.method()==="POST"?request.postDataJSON():null;
+              diagnostic.events.push({kind:"request",at:new Date().toISOString(),
+                method:request.method(),url:request.url(),body});
+            });
+            page.on("response",(response)=>{
+              if(!response.url().includes("/api/d5o-hosted/connected-work"))return;
+              responseReads.push(response.text().then((body)=>diagnostic.events.push({
+                kind:"response",at:new Date().toISOString(),status:response.status(),
+                method:response.request().method(),url:response.url(),body
+              })).catch((error)=>diagnostic.events.push({kind:"response_body_unavailable",
+                at:new Date().toISOString(),reason:String(error.message)})));
+            });
+            page.on("console",(message)=>{if(message.type()==="error")diagnostic.events.push({
+              kind:"console_error",at:new Date().toISOString(),message:message.text()});});
+            page.on("pageerror",(error)=>diagnostic.events.push({kind:"page_error",
+              at:new Date().toISOString(),message:error.message}));
+            page.on("framenavigated",(frame)=>{if(frame===page.mainFrame())diagnostic.events.push({
+              kind:"navigation",at:new Date().toISOString(),url:frame.url()});});
+          }
           const fillBrowserWork=async()=>{
             await page.getByLabel("Work name").fill(browserWork);
             await page.getByLabel("Customer",{exact:true}).fill("Fictional browser customer");
@@ -3807,7 +3835,8 @@ try {
             await page.getByLabel("Procurement route").fill("Customer authorization required");
           };
           let createdResult=null;
-          for(let attempt=0;attempt<2;attempt++) {
+          let creationError=null;
+          try {for(let attempt=0;attempt<2;attempt++) {
             await fillBrowserWork();
             // Next dev may replace this route during hydration. Retry only when
             // the browser never sent a POST, so no business command can repeat.
@@ -3820,6 +3849,8 @@ try {
             await page.getByRole("button",{name:"Create connected Work"}).click();
             createdResult=await response;
             page.off("request",onRequest);
+            if(diagnostic)diagnostic.attempts.push({attempt:attempt+1,postObserved:posted,
+              responseStatus:createdResult?.status()??null,url:page.url()});
             if(createdResult && createdResult.status()!==201) {
               const body=await createdResult.text().catch(()=>"response body unavailable");
               assert.equal(createdResult.status(),201,`browser-work-create:${body}`);
@@ -3827,11 +3858,67 @@ try {
             const receipt=page.getByRole("status")
               .filter({hasText:`Connected Work created: ${browserWork}`});
             if(await receipt.isVisible().catch(()=>false))break;
-            if(posted)await receipt.waitFor({timeout:30000});
+            if(posted) {
+              await receipt.waitFor({timeout:30000});
+              break;
+            }
             else if(attempt===0) {
               await page.goto(`http://127.0.0.1:${server.port}/work/connected-work?workspace=${tenant.workspaceKey}`);
               await page.getByRole("button",{name:"Create connected Work"}).waitFor({timeout:30000});
             } else throw Error(`browser_work_post_not_sent:${page.url()}`);
+          }} catch(error) {creationError=error;}
+          if(diagnostic) {
+            await Promise.allSettled(responseReads);
+            diagnostic.failedAssertion=creationError?String(creationError.message):null;
+            diagnostic.page=await page.evaluate(()=>{
+              const form=document.querySelector("form.connectedStartForm");
+              return {url:location.href,readyState:document.readyState,
+                statuses:[...document.querySelectorAll('[role="status"]')].map((item)=>item.textContent),
+                alerts:[...document.querySelectorAll('[role="alert"]')].map((item)=>item.textContent),
+                formPresent:Boolean(form),formValid:form?.checkValidity()??null,
+                formValues:form?Object.fromEntries(new FormData(form)):null};
+            }).catch((error)=>({unavailable:String(error.message)}));
+            diagnostic.database=JSON.parse(sql(`select pg_catalog.jsonb_build_object(
+              'work',coalesce((select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(
+                'id',id,'title',title,'createdBy',created_by,'configurationVersionId',configuration_version_id))
+                from d5o_hosted.work_records where workspace_id=${q(tenant.workspaceId)}
+                  and title=${q(browserWork)}),'[]'::jsonb),
+              'receipts',coalesce((select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(
+                'commandId',r.command_id,'actor',r.actor_user_id,'workId',r.work_id,'result',r.result))
+                from d5o_hosted.connected_create_receipts r
+                join d5o_hosted.work_records w on w.id=r.work_id and w.workspace_id=r.workspace_id
+                where r.workspace_id=${q(tenant.workspaceId)} and w.title=${q(browserWork)}),'[]'::jsonb))::text;`));
+            const evidenceDir=resolve(root,"docs/architecture/evidence/phase2hte-gate-b-browser");
+            mkdirSync(evidenceDir,{recursive:true});
+            const screenshot=resolve(evidenceDir,`${prefix}-creation-state.png`);
+            await page.screenshot({path:screenshot,fullPage:true}).catch(()=>{});
+            diagnostic.screenshot=`${prefix}-creation-state.png`;
+            writeFileSync(resolve(root,`docs/architecture/evidence/phase2hte-gate-b-diagnostic-${prefix}.json`),
+              JSON.stringify(diagnostic,null,2)+"\n");
+          }
+          if(creationError)throw creationError;
+          if(phase2hteReloadProbe) {
+            await page.reload();
+            const confirmation=page.getByRole("status")
+              .filter({hasText:`Connected Work created: ${browserWork}`});
+            const receiptVisible=await confirmation.waitFor({timeout:30000})
+              .then(()=>true).catch(()=>false);
+            const persisted=JSON.parse(sql(`select pg_catalog.jsonb_build_object(
+              'workCount',(select count(*) from d5o_hosted.work_records
+                where workspace_id=${q(tenant.workspaceId)} and title=${q(browserWork)}),
+              'receiptCount',(select count(*) from d5o_hosted.connected_create_receipts r
+                join d5o_hosted.work_records w on w.id=r.work_id and w.workspace_id=r.workspace_id
+                where r.workspace_id=${q(tenant.workspaceId)} and w.title=${q(browserWork)}))::text;`));
+            const probe={tenant:tenant.workspaceKey,receiptVisible,persisted,
+              route:page.url(),expectedTitle:browserWork};
+            const probeDir=resolve(root,"docs/architecture/evidence/phase2hte-gate-b-browser");
+            mkdirSync(probeDir,{recursive:true});
+            await page.screenshot({path:resolve(probeDir,`${prefix}-creation-after-reload.png`),fullPage:true});
+            writeFileSync(resolve(root,`docs/architecture/evidence/phase2hte-reload-probe-${prefix}.json`),
+              JSON.stringify(probe,null,2)+"\n");
+            assert.equal(Number(persisted.workCount),1,"created_work_missing_after_reload");
+            assert.equal(Number(persisted.receiptCount),1,"create_receipt_missing_after_reload");
+            assert(receiptVisible,"work_creation_receipt_lost_after_reload");
           }
           // Chromium may discard the response body after a successful route
           // transition. Only request it when diagnosing a non-201 response.
@@ -3839,8 +3926,8 @@ try {
             const body=await createdResult.text().catch(()=>"response body unavailable");
             assert.equal(createdResult.status(),201,`browser-work-create:${body}`);
           }
-          // The successful create can navigate before the transient status is
-          // rendered; the persisted Work read below is the authoritative check.
+          // The Work list and exact detail read prove that the confirmed create
+          // is accessible after leaving the form, not just visible as a receipt.
           const customerUrl=`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`;
           try { await page.goto(customerUrl,{waitUntil:"domcontentloaded"}); }
           catch(error) {

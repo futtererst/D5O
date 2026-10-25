@@ -1,5 +1,7 @@
 # Phase 2H-TD finite closure results
 
+> **Phase 2H-TE follow-up (2026-10-25):** The TD finite register remains 43 PASS and one NOT APPLICABLE. Its separate inherited Gate B browser blocker is now closed by a 51/51 run with one persisted Work and one receipt per tenant after reload. See [TE results](D5O_PHASE2HTE_QUALIFICATION_RESULTS.md). The TD-era evidence below is retained unchanged as historical context.
+
 Baseline: `88381435a965050402dcd423b4856115246459a3`. Implementation branch: `codex/d5o-phase2htd-security-closure`. The [machine-readable closure register](evidence/phase2htd-closure-register.json) retains the complete inherited Phase 2H-TC register and expands each local blocker into a stable atomic case with risk, target API/RPC, actor, fixture, expected and actual outcome, state-integrity assertion, status, and evidence. The original [TC register](evidence/phase2htc-closure-register.json) remains an immutable record of its earlier PARTIAL decision.
 
 ## Finite case matrix

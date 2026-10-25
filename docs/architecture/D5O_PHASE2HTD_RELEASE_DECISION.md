@@ -1,5 +1,7 @@
 # Phase 2H-TD release decision
 
+> **Phase 2H-TE follow-up (2026-10-25): LOCALLY QUALIFIED.** The inherited Gate B blocker described below was reproduced, corrected, and passed 51/51 with visible and persisted Work confirmation. TC browser passed 52/52, TD security 60/60, and approval integrity 13/13; all verified cleanup. See [Phase 2H-TE release decision](D5O_PHASE2HTE_RELEASE_DECISION.md) and [evidence](D5O_PHASE2HTE_QUALIFICATION_RESULTS.md). The original TD decision below remains the historical record of that run.
+
 **PARTIAL — local Phase 2H-TD qualification remains open.** This is not authorization for production promotion.
 
 The [focused TD run](evidence/phase2htd-targeted-results.json) passed 60/60 with cleanup. Its 44-case [finite register](evidence/phase2htd-closure-register.json) has 43 PASS and one NOT APPLICABLE (individual employee reassignment does not exist in the role-derived connected-service queue). Suspended and removed users, suspended tenants, disabled entitlement/flag, wrong role, and cross-tenant actors were denied. Stale approval and customer evidence could not authorize work. Pending conflicts produced one authoritative decision or one job. The final [My Work browser regression](evidence/phase2htd-final-browser-regression.json) passed 52/52 with cleanup, preserving Tenant A's USD 10,000 threshold approval, Tenant B's USD 25,000 no-additional-approval outcome, and one executable job each.

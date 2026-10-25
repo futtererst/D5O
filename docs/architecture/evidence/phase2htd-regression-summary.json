@@ -27,5 +27,16 @@
   "hostedMigrationApplied": false,
   "deployed": false,
   "pushed": false,
-  "merged": false
+  "merged": false,
+  "phase2hteFollowUp": {
+    "localDecision": "LOCALLY QUALIFIED",
+    "gateB": {"passed": 51, "failed": 0, "cleanupVerified": true,
+      "evidence": "phase2hte-gate-b-green-results.json"},
+    "tcBrowser": {"passed": 52, "failed": 0, "cleanupVerified": true,
+      "evidence": "phase2hte-tc-browser-results.json"},
+    "tdSecurity": {"passed": 60, "failed": 0, "cleanupVerified": true,
+      "evidence": "phase2hte-td-security-results.json"},
+    "approvalIntegrity": {"passed": 13, "failed": 0, "cleanupVerified": true,
+      "evidence": "phase2hte-approval-results.json"}
+  }
 }

@@ -1,0 +1,175 @@
+{
+  "actor": "28d1d640-1695-4e01-aa78-a48416533c07",
+  "tenant": "tenant_a_test",
+  "route": "http://127.0.0.1:59305/work/connected-work?workspace=tenant_a_test",
+  "title": "Phase 2G browser Work A",
+  "events": [
+    {
+      "kind": "request",
+      "at": "2026-10-25T17:38:13.993Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:59305/api/d5o-hosted/connected-work?workspace=tenant_a_test",
+      "body": {
+        "commandId": "2a3f56ee-b9f5-4e01-b483-b9229f368269",
+        "configurationVersionId": "baad0d09-0ac8-4b65-bfdd-1b05895da77b",
+        "workTypeKey": "lifecycle-service",
+        "title": "Phase 2G browser Work A",
+        "customer": "Fictional browser customer",
+        "site": "Fictional browser site",
+        "owner": "Fictional owner",
+        "initialDiscovery": {
+          "source": "Fictional customer request",
+          "need": "A fictional connected service need created through the authenticated application.",
+          "procurement": "Customer authorization required",
+          "closeDate": ""
+        }
+      }
+    },
+    {
+      "kind": "navigation",
+      "at": "2026-10-25T17:38:14.767Z",
+      "url": "http://127.0.0.1:59305/work/connected-work?workspace=tenant_a_test"
+    },
+    {
+      "kind": "response_body_unavailable",
+      "at": "2026-10-25T17:38:14.772Z",
+      "reason": "response.text: Protocol error (Network.getResponseBody): No resource with given identifier found"
+    },
+    {
+      "kind": "navigation",
+      "at": "2026-10-25T17:38:16.970Z",
+      "url": "http://127.0.0.1:59305/work/connected-work?workspace=tenant_a_test"
+    },
+    {
+      "kind": "request",
+      "at": "2026-10-25T17:38:16.980Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:59305/api/d5o-hosted/connected-work?workspace=tenant_a_test",
+      "body": null
+    },
+    {
+      "kind": "request",
+      "at": "2026-10-25T17:38:16.980Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:59305/api/d5o-hosted/connected-work?workspace=tenant_a_test",
+      "body": null
+    },
+    {
+      "kind": "response",
+      "at": "2026-10-25T17:38:17.087Z",
+      "status": 200,
+      "method": "GET",
+      "url": "http://127.0.0.1:59305/api/d5o-hosted/connected-work?workspace=tenant_a_test",
+      "body": "{\"available\":true,\"versionId\":\"baad0d09-0ac8-4b65-bfdd-1b05895da77b\",\"versionNumber\":5,\"workTypes\":[{\"key\":\"lifecycle-service\",\"label\":\"Lifecycle Service\",\"status\":\"active\",\"templateKey\":\"lifecycle-service\"}]}"
+    },
+    {
+      "kind": "request",
+      "at": "2026-10-25T17:38:17.684Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:59305/api/d5o-hosted/connected-work?workspace=tenant_a_test",
+      "body": {
+        "commandId": "f7860b0d-e32d-4dcd-a440-e1386927fbaa",
+        "configurationVersionId": "baad0d09-0ac8-4b65-bfdd-1b05895da77b",
+        "workTypeKey": "lifecycle-service",
+        "title": "Phase 2G browser Work A",
+        "customer": "Fictional browser customer",
+        "site": "Fictional browser site",
+        "owner": "Fictional owner",
+        "initialDiscovery": {
+          "source": "Fictional customer request",
+          "need": "A fictional connected service need created through the authenticated application.",
+          "procurement": "Customer authorization required",
+          "closeDate": ""
+        }
+      }
+    },
+    {
+      "kind": "response",
+      "at": "2026-10-25T17:38:17.862Z",
+      "status": 201,
+      "method": "POST",
+      "url": "http://127.0.0.1:59305/api/d5o-hosted/connected-work?workspace=tenant_a_test",
+      "body": "{\"result\":{\"workId\":\"420a8495-cee2-4e19-a76e-8c9baa268639\",\"workRevision\":8,\"recordVersion\":1,\"presentationId\":\"tenant_a_test-420a8495cee24e19a76e8c9baa268639\",\"catalogRevision\":4,\"configurationVersionId\":\"baad0d09-0ac8-4b65-bfdd-1b05895da77b\"}}"
+    }
+  ],
+  "attempts": [
+    {
+      "attempt": 1,
+      "postObserved": true,
+      "responseStatus": 201,
+      "url": "http://127.0.0.1:59305/work/connected-work?workspace=tenant_a_test"
+    },
+    {
+      "attempt": 2,
+      "postObserved": true,
+      "responseStatus": 201,
+      "url": "http://127.0.0.1:59305/work/connected-work?workspace=tenant_a_test"
+    }
+  ],
+  "failedAssertion": null,
+  "page": {
+    "url": "http://127.0.0.1:59305/work/connected-work?workspace=tenant_a_test",
+    "readyState": "complete",
+    "statuses": [
+      "Connected Work created: Phase 2G browser Work A · Open Work lifecycle"
+    ],
+    "alerts": [],
+    "formPresent": true,
+    "formValid": false,
+    "formValues": {
+      "workTypeKey": "lifecycle-service",
+      "title": "",
+      "customer": "",
+      "site": "",
+      "owner": "",
+      "source": "",
+      "need": "",
+      "procurement": ""
+    }
+  },
+  "database": {
+    "work": [
+      {
+        "id": "3aa51f55-0225-4921-b5e0-43ef9f1c2ef6",
+        "title": "Phase 2G browser Work A",
+        "createdBy": "28d1d640-1695-4e01-aa78-a48416533c07",
+        "configurationVersionId": "baad0d09-0ac8-4b65-bfdd-1b05895da77b"
+      },
+      {
+        "id": "420a8495-cee2-4e19-a76e-8c9baa268639",
+        "title": "Phase 2G browser Work A",
+        "createdBy": "28d1d640-1695-4e01-aa78-a48416533c07",
+        "configurationVersionId": "baad0d09-0ac8-4b65-bfdd-1b05895da77b"
+      }
+    ],
+    "receipts": [
+      {
+        "actor": "28d1d640-1695-4e01-aa78-a48416533c07",
+        "result": {
+          "workId": "3aa51f55-0225-4921-b5e0-43ef9f1c2ef6",
+          "workRevision": 7,
+          "recordVersion": 1,
+          "presentationId": "tenant_a_test-3aa51f5502254921b5e043ef9f1c2ef6",
+          "catalogRevision": 3,
+          "configurationVersionId": "baad0d09-0ac8-4b65-bfdd-1b05895da77b"
+        },
+        "workId": "3aa51f55-0225-4921-b5e0-43ef9f1c2ef6",
+        "commandId": "2a3f56ee-b9f5-4e01-b483-b9229f368269"
+      },
+      {
+        "actor": "28d1d640-1695-4e01-aa78-a48416533c07",
+        "result": {
+          "workId": "420a8495-cee2-4e19-a76e-8c9baa268639",
+          "workRevision": 8,
+          "recordVersion": 1,
+          "presentationId": "tenant_a_test-420a8495cee24e19a76e8c9baa268639",
+          "catalogRevision": 4,
+          "configurationVersionId": "baad0d09-0ac8-4b65-bfdd-1b05895da77b"
+        },
+        "workId": "420a8495-cee2-4e19-a76e-8c9baa268639",
+        "commandId": "f7860b0d-e32d-4dcd-a440-e1386927fbaa"
+      }
+    ]
+  },
+  "screenshot": "a-creation-state.png"
+}

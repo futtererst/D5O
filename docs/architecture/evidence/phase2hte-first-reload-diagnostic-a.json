@@ -1,0 +1,92 @@
+{
+  "actor": "964c8578-dc09-48b8-b4ab-fc81a68ccab1",
+  "tenant": "tenant_a_test",
+  "route": "http://127.0.0.1:61822/work/connected-work?workspace=tenant_a_test",
+  "title": "Phase 2G browser Work A",
+  "events": [
+    {
+      "kind": "request",
+      "at": "2026-10-25T17:32:02.348Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:61822/api/d5o-hosted/connected-work?workspace=tenant_a_test",
+      "body": {
+        "commandId": "99617a02-b407-4046-88a2-2fa5415e8b78",
+        "configurationVersionId": "e5989cfb-285d-4cce-82f8-bb5e469ad27c",
+        "workTypeKey": "lifecycle-service",
+        "title": "Phase 2G browser Work A",
+        "customer": "Fictional browser customer",
+        "site": "Fictional browser site",
+        "owner": "Fictional owner",
+        "initialDiscovery": {
+          "source": "Fictional customer request",
+          "need": "A fictional connected service need created through the authenticated application.",
+          "procurement": "Customer authorization required",
+          "closeDate": ""
+        }
+      }
+    },
+    {
+      "kind": "response",
+      "at": "2026-10-25T17:32:02.566Z",
+      "status": 201,
+      "method": "POST",
+      "url": "http://127.0.0.1:61822/api/d5o-hosted/connected-work?workspace=tenant_a_test",
+      "body": "{\"result\":{\"workId\":\"d5befca5-3338-4f3c-9848-3897fb037acb\",\"workRevision\":7,\"recordVersion\":1,\"presentationId\":\"tenant_a_test-d5befca533384f3c98483897fb037acb\",\"catalogRevision\":3,\"configurationVersionId\":\"e5989cfb-285d-4cce-82f8-bb5e469ad27c\"}}"
+    }
+  ],
+  "attempts": [
+    {
+      "attempt": 1,
+      "postObserved": true,
+      "responseStatus": 201,
+      "url": "http://127.0.0.1:61822/work/connected-work?workspace=tenant_a_test"
+    }
+  ],
+  "failedAssertion": null,
+  "page": {
+    "url": "http://127.0.0.1:61822/work/connected-work?workspace=tenant_a_test",
+    "readyState": "complete",
+    "statuses": [
+      "Connected Work created: Phase 2G browser Work A · Open Work lifecycle"
+    ],
+    "alerts": [],
+    "formPresent": true,
+    "formValid": false,
+    "formValues": {
+      "workTypeKey": "lifecycle-service",
+      "title": "",
+      "customer": "",
+      "site": "",
+      "owner": "",
+      "source": "",
+      "need": "",
+      "procurement": ""
+    }
+  },
+  "database": {
+    "work": [
+      {
+        "id": "d5befca5-3338-4f3c-9848-3897fb037acb",
+        "title": "Phase 2G browser Work A",
+        "createdBy": "964c8578-dc09-48b8-b4ab-fc81a68ccab1",
+        "configurationVersionId": "e5989cfb-285d-4cce-82f8-bb5e469ad27c"
+      }
+    ],
+    "receipts": [
+      {
+        "actor": "964c8578-dc09-48b8-b4ab-fc81a68ccab1",
+        "result": {
+          "workId": "d5befca5-3338-4f3c-9848-3897fb037acb",
+          "workRevision": 7,
+          "recordVersion": 1,
+          "presentationId": "tenant_a_test-d5befca533384f3c98483897fb037acb",
+          "catalogRevision": 3,
+          "configurationVersionId": "e5989cfb-285d-4cce-82f8-bb5e469ad27c"
+        },
+        "workId": "d5befca5-3338-4f3c-9848-3897fb037acb",
+        "commandId": "99617a02-b407-4046-88a2-2fa5415e8b78"
+      }
+    ]
+  },
+  "screenshot": "a-creation-state.png"
+}
