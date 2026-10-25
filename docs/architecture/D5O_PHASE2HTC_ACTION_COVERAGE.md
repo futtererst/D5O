@@ -1,0 +1,7 @@
+# Phase 2H-TC employee action coverage
+
+The two measures remain separate. The inherited core Discover-to-Operate inventory has **32 browser-qualified rows out of 54**, including two retained duplicate Design inventory entries. Phase 2H-TC does not promote any core row or count a connected-service extension action as six-phase completion. The source is `D5O_PHASE2HS_ACTION_INVENTORY.json`.
+
+The connected-service extension has **9 actionable My Work entries for Tenant A and 7 for Tenant B**. The A-only entries are request and independent decision for its USD 10,000 threshold; Tenant B's USD 25,000 threshold does not create those tasks. Every entry is opened through a browser task link, tied to the expected Work, followed by a browser business command and checked for removal after authoritative state changes. The customer PDF upload and pricing submission are separate browser decisions within an existing responsibility, so they do not increase the task-entry denominator. `scripts/p0a/write-phase2htc-action-coverage.mjs` verifies the exact ordered entries, resolution, job IDs and completed task URL replay before writing [machine-readable coverage](evidence/phase2htc-action-coverage.json).
+
+This is coverage of the supported connected-service task chain, not Deploy employee execution or complete financial closeout. It does not make the inherited 54-row inventory fully browser-qualified.

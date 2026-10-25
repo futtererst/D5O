@@ -1,0 +1,7 @@
+# Phase 2H-TC concurrency and replay
+
+The passing service-adapter check issues authenticated HTTP replays against completed decisions and compares the authoritative Operate state before and after. Exact job, approval and service-authorization replays return HTTP 200 from the existing command receipts. Reusing their idempotency keys with changed payloads returns HTTP 409. Two simultaneous new job submissions after job creation return HTTP 409/409. Both tenants retain exactly one executable job, and neither Operate revision changes. See the `service adapters reject forgery and replay without additional jobs` result in [machine evidence](evidence/phase2htc-two-tenant-results.json).
+
+The Phase 1B approval suite separately covers stale amount and scope, another request on the same Work, revoked approval authority, historical configuration pins, direct legacy-entry denial and audit binding. Its prior baseline result was 14/14; this package must rerun it before treating regression as closed.
+
+The completed My Work create-job URL is reopened after the job exists; the create action must be absent. A live task is removed only when the authoritative business state changes. This package has not yet reproduced genuinely concurrent conflicting *pending* approval decisions, concurrent preauthorization attempts, duplicate pricing review or duplicate customer authorization through the tenant-neutral HTTP adapter. Those are separate finite Gate B cases and must not be inferred from the post-job replay results.

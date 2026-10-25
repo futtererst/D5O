@@ -20,6 +20,8 @@ export type CustomerTaskWork = { id: string;
 
 export type ServiceTaskWork = CustomerTaskWork & { operate?: {
   activation?: { status?: string };
+  agreements?: Array<{ id: string; name?: string; status?: string;
+    createdByActorId?: string }>;
   requests?: Array<{ id: string; title?: string; status?: string; coverage?: string;
     serviceEstimate?: { status?: string; revision?: number };
     serviceAuthorization?: { estimateRevision?: number } }>;
@@ -28,10 +30,18 @@ export type ServiceApprovalTaskState = { status?: string; canRequest?: boolean;
   canDecide?: boolean; canAuthorize?: boolean; canCreateJob?: boolean };
 
 export function serviceTasks(records: ServiceTaskWork[], role: string,
-  approvals: Record<string, ServiceApprovalTaskState>): CustomerWorkTask[] {
+  approvals: Record<string, ServiceApprovalTaskState>, actorId: string): CustomerWorkTask[] {
   return records.flatMap((work) => {
     const operate = work.operate;
     if (operate?.activation?.status !== "Active") return [];
+    if (role === "operations_leader") {
+      const draftAgreements = (operate.agreements ?? []).filter((agreement) =>
+        agreement.status === "Draft" && agreement.createdByActorId !== actorId);
+      if (draftAgreements.length) return draftAgreements.map((agreement) => ({
+        id: `service:${work.id}:coverage:${agreement.id}`, workId: work.id,
+        phase: "Operate", title: `Review ${agreement.name ?? "service coverage"}`,
+        status: "available" as const, revision: 0, action: "approve-agreement" }));
+    }
     if ((operate.requests ?? []).length === 0 && role === "project_manager")
       return [{ id: `service:${work.id}:open-request`, workId: work.id, phase: "Operate",
         title: "Open connected service request", status: "available", revision: 0,

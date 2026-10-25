@@ -9,15 +9,18 @@ import { chromium } from "@playwright/test";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
+const phase2htc = process.env.D5O_PHASE2HTC === "1";
 const phase2htGateA = process.env.D5O_PHASE2HT_GATE_A === "1";
-const phase2htGateB = process.env.D5O_PHASE2HT_GATE_B === "1";
+const phase2htGateB = process.env.D5O_PHASE2HT_GATE_B === "1" || phase2htc;
 const phase2g = process.env.D5O_PHASE2G === "1";
 const phase2hsGateB = process.env.D5O_PHASE2HS_GATE_B === "1" || phase2htGateA;
 const phase2hsGateA = process.env.D5O_PHASE2HS_GATE_A === "1" || phase2hsGateB;
 const phase2hr = process.env.D5O_PHASE2HR === "1" || phase2hsGateA;
 const phase2hCompletion = process.env.D5O_PHASE2H_COMPLETION === "1" || phase2hr;
 const phase2h = process.env.D5O_PHASE2H === "1" || phase2hCompletion;
-const output = resolve(root, phase2htGateA
+const output = resolve(root, phase2htc
+  ? "docs/architecture/evidence/phase2htc-two-tenant-results.json"
+  : phase2htGateA
   ? "docs/architecture/evidence/phase2ht-gate-a-results.json"
   : phase2htGateB
   ? "docs/architecture/evidence/phase2ht-gate-b-results.json"
@@ -34,12 +37,14 @@ const output = resolve(root, phase2htGateA
   : phase2g
   ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
   : "docs/architecture/evidence/phase2f-connected-journey-results.json");
-const evidence = { baseline: phase2htGateA || phase2htGateB ? "82d9b1c4131d3154da3d0e53e15a8d22365fec35"
+const evidence = { baseline: phase2htc ? "6e28685f44795b1a3f6b19877d575b609be43729"
+  : phase2htGateA || phase2htGateB ? "82d9b1c4131d3154da3d0e53e15a8d22365fec35"
   : phase2hsGateA ? "d1537c2070eee6926ad227c69dcdc43418bb381d" : phase2hr ? "f53aa89192b776221067cc6a761248e87259f82e" : phase2g
     ? "dae8e1fa975bc47ef6d1180b512399683e3c9613"
     : "8d536b4ce74282fe6c3a0e2dbb66b1752ca51ec2",
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
-const browserEvidenceDir = (legacyPath) => resolve(root,phase2htGateB
+const browserEvidenceDir = (legacyPath) => resolve(root,phase2htc
+  ? "docs/architecture/evidence/phase2htc-browser" : phase2htGateB
   ? "docs/architecture/evidence/phase2ht-gate-b-browser" : legacyPath);
 if(phase2htGateA) evidence.gateASecurity=[];
 // Field start checks the real shift clock. The disposable journey uses today's
@@ -182,9 +187,94 @@ try {
     }
     const target=`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}?work=${workId}#phase-design`;
     if(page.url()===target) await page.reload(); else await page.goto(target);
-    await page.getByRole("heading",{name:"Design actions"}).waitFor({timeout:30000});
+    try {
+      await page.getByRole("heading",{name:"Design actions"}).waitFor({timeout:30000});
+    } catch (firstNavigationError) {
+      const detail=await page.evaluate(async({workspace,workId})=>{
+        const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}&workId=${workId}`);
+        return {status:response.status,body:await response.json()};
+      },{workspace:tenant.workspaceKey,workId});
+      assert.equal(detail.status,200,`${actor}:task_detail_after_navigation:${JSON.stringify(detail)}`);
+      // A read-only reload repairs an interrupted development-server route render.
+      // The business decision is still performed exactly once, after this check.
+      await page.reload({waitUntil:"domcontentloaded"});
+      await page.getByRole("heading",{name:"Design actions"}).waitFor({timeout:30000})
+        .catch(async()=>{throw new Error(`${actor}:task_route_unavailable:${page.url()}:${
+          (await page.locator("body").innerText()).slice(0,400)}:${firstNavigationError}`);});
+    }
     await page.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
     return page;
+  }
+  const serviceTaskEvidence=[];
+  if(phase2htc) evidence.serviceTaskNavigation=serviceTaskEvidence;
+  const lastServiceTask=new Map();
+  async function openServiceTask(actor,tenant,workId,action) {
+    const page=await designPage(actor,tenant,workId);
+    const rootUrl=`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`;
+    await page.goto(rootUrl);
+    await page.getByRole("heading",{name:"Work lifecycle"}).waitFor({timeout:30000});
+    const queue=async()=>page.evaluate(async(workspace)=>{
+      const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`);
+      return {status:response.status,body:await response.json()};
+    },tenant.workspaceKey);
+    const current=await queue();
+    assert.equal(current.status,200,`${actor}:my_work_read`);
+    const actorWorkKey=`${actor}:${workId}`;
+    const previous=lastServiceTask.get(actorWorkKey);
+    if(previous) {
+      assert(!(current.body.tasks??[]).some((item)=>item.id===previous.id),
+        `${actor}:stale_my_work_task:${previous.action}`);
+      assert.equal(await page.locator('.d5o-customer-work-list a')
+        .filter({hasText:previous.title}).count(),0,`${actor}:stale_my_work_link`);
+      previous.resolved=true;
+    }
+    const task=(current.body.tasks??[]).find((item)=>item.workId===workId
+      && item.action===action && item.status==="available");
+    assert(task,`${actor}:my_work_task_missing:${action}`);
+    const link=page.locator('.d5o-customer-work-list a[href*="#phase-operate"]')
+      .filter({hasText:task.title}).first();
+    await link.waitFor({state:"visible",timeout:30000});
+    await link.click();
+    await page.waitForURL((location)=>location.searchParams.get("work")===workId,
+      {timeout:30000});
+    assert.equal(new URL(page.url()).searchParams.get("work"),workId,
+      `${actor}:my_work_wrong_work`);
+    try { await page.getByRole("heading",{name:"Design actions"}).waitFor({timeout:30000}); }
+    catch (firstNavigationError) {
+      const detail=await page.evaluate(async({workspace,workId})=>{
+        const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}&workId=${workId}`);
+        return {status:response.status,body:await response.json()};
+      },{workspace:tenant.workspaceKey,workId});
+      assert.equal(detail.status,200,`${actor}:my_work_detail_after_navigation:${JSON.stringify(detail)}`);
+      await page.reload({waitUntil:"domcontentloaded"});
+      await page.getByRole("heading",{name:"Design actions"}).waitFor({timeout:30000})
+        .catch(async()=>{throw new Error(`${actor}:my_work_route_unavailable:${page.url()}:${
+          (await page.locator("body").innerText()).slice(0,400)}:${firstNavigationError}`);});
+    }
+    await page.getByText("Loading current Work and phase decisions…")
+      .waitFor({state:"hidden"});
+    const row={tenant:tenant.workspaceKey,actor,action,id:task.id,title:task.title,
+      workId,origin:"my_work_link",url:page.url(),resolved:false};
+    serviceTaskEvidence.push(row);
+    lastServiceTask.set(actorWorkKey,row);
+    return page;
+  }
+  async function assertServiceTaskResolved(actor,tenant,workId) {
+    const prior=lastServiceTask.get(`${actor}:${workId}`);
+    assert(prior,`${actor}:service_task_receipt_missing`);
+    const page=designPages.get(actor);
+    await page.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`);
+    await page.getByRole("heading",{name:"Work lifecycle"}).waitFor({timeout:30000});
+    const current=await page.evaluate(async(workspace)=>{
+      const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`);
+      return {status:response.status,body:await response.json()};
+    },tenant.workspaceKey);
+    assert.equal(current.status,200);
+    assert(!(current.body.tasks??[]).some((item)=>item.id===prior.id),
+      `${actor}:service_task_still_actionable:${prior.action}`);
+    assert.equal(await page.locator('.d5o-customer-work-list a')
+      .filter({hasText:prior.title}).count(),0,`${actor}:service_task_link_stale`);
+    prior.resolved=true;
   }
   async function browserDesignAction(actor,tenant,workId,button,prepare=async()=>{},expected=200) {
     const page=await designPage(actor,tenant,workId);
@@ -3079,11 +3169,13 @@ try {
   });
   if(phase2htGateB && !evidence.tests.some((item)=>item.status==="FAIL")) await check("both tenants open and triage connected service through authenticated browser controls",async()=>{
     const outcomes=[];
-    const screenshotDir=resolve(root,"docs/architecture/evidence/phase2ht-gate-b-browser");
+    const screenshotDir=browserEvidenceDir("docs/architecture/evidence/phase2ht-gate-b-browser");
     mkdirSync(screenshotDir,{recursive:true});
     for(const [prefix,tenant] of [["a",a],["b",b]]) {
       const basis=await connectedBasis(prefix,tenant);
-      const pm=await designPage(`${prefix}_pm`,tenant,basis.work.id);
+      const pm=phase2htc
+        ? await openServiceTask(`${prefix}_pm`,tenant,basis.work.id,"open-request")
+        : await designPage(`${prefix}_pm`,tenant,basis.work.id);
       const coverage=pm.getByText("Record service coverage terms",{exact:true});
       await coverage.click();
       const agreement=pm.locator("details").filter({has:coverage}).locator("form");
@@ -3110,12 +3202,15 @@ try {
       const opened=await connectedBasis(prefix,tenant);
       const request=opened.operate.state.requests.at(-1);
       assert(request,`${prefix}:browser-request-missing`);
-      const ops=await designPage(`${prefix}_ops`,tenant,basis.work.id);
+      const ops=phase2htc
+        ? await openServiceTask(`${prefix}_ops`,tenant,basis.work.id,"approve-agreement")
+        : await designPage(`${prefix}_ops`,tenant,basis.work.id);
       const approve=ops.getByRole("button",{name:"Approve coverage terms"});
       await ops.getByLabel("Independent review reason").fill("Independent review of fictional tenant coverage terms");
       const [approvalResponse]=await Promise.all([ops.waitForResponse((item)=>item.url().includes("/prototype-operate-command")&&item.request().method()==="POST"),approve.click()]);
       assert.equal(approvalResponse.status(),200,`${prefix}:terms-approval:${await approvalResponse.text()}`);
-      await ops.reload();
+      if(phase2htc) await openServiceTask(`${prefix}_ops`,tenant,basis.work.id,"triage-request");
+      else await ops.reload();
       await ops.getByRole("heading",{name:"Design actions"}).waitFor();
       await ops.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
       await ops.screenshot({path:resolve(screenshotDir,`${prefix}-service-request-open.png`),fullPage:true});
@@ -3127,7 +3222,8 @@ try {
       const current=await connectedBasis(prefix,tenant);
       assert.equal(current.operate.state.requests.find((item)=>item.id===request.id)?.coverage,"Partially covered");
       await ops.screenshot({path:resolve(screenshotDir,`${prefix}-service-triaged.png`),fullPage:true});
-      await pm.reload();
+      if(phase2htc) await openServiceTask(`${prefix}_pm`,tenant,basis.work.id,"prepare-estimate");
+      else await pm.reload();
       await pm.getByRole("heading",{name:"Design actions"}).waitFor();
       await pm.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
       const pricing=pm.locator("details").filter({has:pm.getByText(/Chargeable service estimate/)});
@@ -3182,7 +3278,8 @@ try {
       const [submitResponse]=await Promise.all([pm.waitForResponse((item)=>item.url().includes("/prototype-operate-command")&&item.request().method()==="POST"),
         pm.getByRole("button",{name:"Submit exact revision for pricing review"}).click()]);
       assert.equal(submitResponse.status(),200,`${prefix}:service-pricing-submit:${await submitResponse.text()}`);
-      await ops.reload();
+      if(phase2htc) await openServiceTask(`${prefix}_ops`,tenant,basis.work.id,"approve-pricing");
+      else await ops.reload();
       await ops.getByRole("heading",{name:"Design actions"}).waitFor();
       await ops.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
       const opsPricing=ops.locator("details").filter({has:ops.getByText(/Chargeable service estimate/)});
@@ -3211,7 +3308,7 @@ try {
     status:"BLOCKED",detail:"Connected Work prerequisite did not pass"});
   if(phase2htGateB && evidence.tests.at(-1)?.status==="PASS") await check("both tenants authorize priced service and create one executable job through authenticated browser controls",async()=>{
     const outcomes=[];
-    const screenshotDir=resolve(root,"docs/architecture/evidence/phase2ht-gate-b-browser");
+    const screenshotDir=browserEvidenceDir("docs/architecture/evidence/phase2ht-gate-b-browser");
     const expandPricing=async(page)=>{
       const details=page.locator("details").filter({has:page.getByText(/Chargeable service estimate/)})
         .first();
@@ -3247,6 +3344,7 @@ try {
       assert.equal((await connectedBasis(prefix,tenant)).operate.state.jobs.length,beforeDecision.operate.state.jobs.length);
       let preapprovalAuthorization=null;
       let thresholdApprovalHttp=null;
+      let thresholdDecisionCommand=null;
       if(prefix==="a") {
         preapprovalAuthorization=await ops.evaluate(async({workspace,workId,requestId,sourceRevision,operateRevision,estimateRevision})=>{
           const response=await fetch(`/api/d5o-hosted/prototype-operate-command?workspace=${workspace}`,{
@@ -3261,7 +3359,8 @@ try {
           sourceRevision:beforeDecision.source.revision,operateRevision:beforeDecision.operate.revision,
           estimateRevision:request.serviceEstimate.revision});
         assert.equal(preapprovalAuthorization.status,409,`a:approval-bypass:${JSON.stringify(preapprovalAuthorization)}`);
-        await pm.reload();
+        if(phase2htc) await openServiceTask(`${prefix}_pm`,tenant,basis.work.id,"request-approval");
+        else await pm.reload();
         await pm.getByRole("heading",{name:"Design actions"}).waitFor();
         await pm.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
         await expandPricing(pm);
@@ -3269,7 +3368,16 @@ try {
         await requestApproval.waitFor({state:"visible"});
         const [requestResponse]=await Promise.all([pm.waitForResponse((item)=>item.url().includes("/service-approval")&&item.request().method()==="POST"),requestApproval.click()]);
         assert.equal(requestResponse.status(),200,`a:approval-request:${await requestResponse.text()}`);
-        const approver=await designPage("a_admin",tenant,basis.work.id);
+        if(phase2htc) {
+          const wrongRole=await call("a_worker","d5o_hosted_connected_service_approval_command_v1",{
+            p_workspace_key:tenant.workspaceKey,p_parent_presentation_id:basis.work.id,
+            p_request_id:request.id,p_action:"approve",p_command_id:randomUUID()});
+          assert.equal(wrongRole.error?.code,"42501",JSON.stringify(wrongRole));
+          evidence.serviceWrongRoleDenial=wrongRole.error.code;
+        }
+        const approver=phase2htc
+          ? await openServiceTask("a_admin",tenant,basis.work.id,"decide-approval")
+          : await designPage("a_admin",tenant,basis.work.id);
         await approver.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
         await expandPricing(approver);
         const approve=approver.getByRole("button",{name:"Approve service threshold"});
@@ -3277,11 +3385,38 @@ try {
         const [approvalResponse]=await Promise.all([approver.waitForResponse((item)=>item.url().includes("/service-approval")&&item.request().method()==="POST"),approve.click()]);
         assert.equal(approvalResponse.status(),200,`a:threshold-approval:${await approvalResponse.text()}`);
         thresholdApprovalHttp=approvalResponse.status();
+        thresholdDecisionCommand=approvalResponse.request().postDataJSON();
+        if(phase2htc) await assertServiceTaskResolved("a_admin",tenant,basis.work.id);
       }
-      await ops.reload();
+      if(phase2htc) await openServiceTask(`${prefix}_ops`,tenant,basis.work.id,"authorize-service");
+      else await ops.reload();
       await ops.getByRole("heading",{name:"Design actions"}).waitFor();
       await ops.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
       await expandPricing(ops);
+      let forgedEvidenceHttp=null;
+      if(phase2htc) {
+        const current=await connectedBasis(prefix,tenant);
+        const forged=await ops.evaluate(async({workspace,workId,requestId,estimateRevision,
+            sourceRevision,operateRevision,evidenceId})=>{
+          const response=await fetch(`/api/d5o-hosted/prototype-operate-command?workspace=${workspace}`,{
+            method:"POST",headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({action:"record-service-authorization",workId,requestId,
+              estimateRevision,expectedRevision:sourceRevision,
+              expectedDecisionRevision:operateRevision,expectedDeployRevision:0,
+              commandId:crypto.randomUUID(),evidenceId,
+              customerParty:"Fictional customer",customerOrganization:"Fictional customer",
+              customerRole:"Authorized buyer",authorityBasis:"Signed service order authority",
+              note:"Forged evidence boundary probe"})});
+          return {status:response.status,body:await response.json()};
+        },{workspace:tenant.workspaceKey,workId:basis.work.id,requestId:request.id,
+          estimateRevision:request.serviceEstimate.revision,sourceRevision:current.source.revision,
+          operateRevision:current.operate.revision,
+          evidenceId:prefix==="b"?outcomes[0].customerEvidenceId:randomUUID()});
+        assert([403,409].includes(forged.status),
+          `${prefix}:forged_service_evidence:${JSON.stringify(forged)}`);
+        assert.equal((await connectedBasis(prefix,tenant)).operate.revision,current.operate.revision);
+        forgedEvidenceHttp=forged.status;
+      }
       const authorization=ops.locator("form").filter({has:ops.getByRole("button",{name:"Record exact customer authorization"})});
       await authorization.getByLabel("External customer authority / party").fill("Fictional authorized customer");
       await authorization.getByLabel("Externally signed acceptance PDF").setInputFiles({name:`${prefix}-service-authorization.pdf`,mimeType:"application/pdf",buffer:Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF")});
@@ -3295,7 +3430,10 @@ try {
       await authorization.getByLabel("Internal recording rationale").fill("Reviewed exact service estimate and source");
       const [authorizationResponse]=await Promise.all([ops.waitForResponse((item)=>item.url().includes("/prototype-operate-command")&&item.request().method()==="POST"),authorization.getByRole("button",{name:"Record exact customer authorization"}).click()]);
       assert.equal(authorizationResponse.status(),200,`${prefix}:service-authorization:${await authorizationResponse.text()}`);
-      await pm.reload();
+      const authorizationCommand=authorizationResponse.request().postDataJSON();
+      if(phase2htc) await assertServiceTaskResolved(`${prefix}_ops`,tenant,basis.work.id);
+      if(phase2htc) await openServiceTask(`${prefix}_pm`,tenant,basis.work.id,"create-job");
+      else await pm.reload();
       await pm.getByRole("heading",{name:"Design actions"}).waitFor();
       await pm.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
       const readyQueue=await pm.evaluate(async(workspace)=>{
@@ -3310,6 +3448,7 @@ try {
       await create.waitFor({state:"visible"});
       const [jobResponse]=await Promise.all([pm.waitForResponse((item)=>item.url().includes("/prototype-operate-command")&&item.request().method()==="POST"),create.click()]);
       assert.equal(jobResponse.status(),200,`${prefix}:service-job:${await jobResponse.text()}`);
+      const jobCommand=jobResponse.request().postDataJSON();
       const completed=await connectedBasis(prefix,tenant);
       const job=completed.operate.state.jobs.find((item)=>item.requestId===request.id);
       assert(job,`${prefix}:job-missing`);
@@ -3334,6 +3473,15 @@ try {
       await pm.setViewportSize({width:390,height:844});
       await pm.screenshot({path:resolve(screenshotDir,`${prefix}-service-job-mobile.png`),fullPage:true});
       await pm.setViewportSize({width:1440,height:900});
+      if(phase2htc) {
+        const completedTask=lastServiceTask.get(`${prefix}_pm:${basis.work.id}`);
+        await assertServiceTaskResolved(`${prefix}_pm`,tenant,basis.work.id);
+        await pm.goto(completedTask.url);
+        await pm.getByText(`Service job: ${job.status}`,{exact:false}).waitFor();
+        assert.equal(await pm.getByRole("button",{name:"Create executable service job"}).count(),0,
+          `${prefix}:replayed_job_task_actionable`);
+        completedTask.urlReplayDenied=true;
+      }
       outcomes.push({tenant:tenant.workspaceKey,workId:basis.work.id,requestId:request.id,
         thresholdMinor:approvalBefore.body.result.thresholdMinor,
         approvalRequired:approvalBefore.body.result.approvalRequired,
@@ -3341,6 +3489,8 @@ try {
         prematureJobHttp:unauthorizedJob.status,prematureAuthorizationHttp:preapprovalAuthorization?.status??null,
         customerEvidenceId:evidenceBody.evidenceId,authorizationHttp:authorizationResponse.status(),
         jobHttp:jobResponse.status(),jobId:job.id,approvalRows,
+        ...(phase2htc?{thresholdDecisionCommand,authorizationCommand,jobCommand,
+          forgedEvidenceHttp}:{}),
         myWorkCreationTaskReady:true,myWorkCreationTaskResolved:true,
         configurationVersionId:completed.work.phaseConfigurationVersionId});
     }
@@ -3382,6 +3532,81 @@ try {
     assert.equal(after.operate.state.jobs.length,before.operate.state.jobs.length);
     return {api:forbidden,directApproval:directApproval.error.code,
       directJob:directJob.error.code,unchangedJobCount:after.operate.state.jobs.length};
+  });
+  if(phase2htc && evidence.gateBJobs?.length===2) await check("service adapters reject forgery and replay without additional jobs",async()=>{
+    const [aJob,bJob]=evidence.gateBJobs;
+    const aPage=await designPage("a_pm",a,aJob.workId);
+    const bPage=await designPage("b_pm",b,bJob.workId);
+    const aOps=await designPage("a_ops",a,aJob.workId);
+    const approver=await designPage("a_admin",a,aJob.workId);
+    const anonymous=await designBrowser.newPage();
+    const unauth=await anonymous.request.get(`http://127.0.0.1:${server.port}`+
+      `/api/d5o-hosted/service-approval?workspace=${a.workspaceKey}`+
+      `&parentPresentationId=${aJob.workId}&requestId=${aJob.requestId}`);
+    await anonymous.close();
+    assert([401,403].includes(unauth.status()),`unauth:${unauth.status()}`);
+    const reversed=await bPage.evaluate(async({workspace,workId,requestId,evidenceId})=>{
+      const endpoints=[
+        `/api/d5o-hosted/service-approval?workspace=${workspace}&parentPresentationId=${workId}&requestId=${requestId}`,
+        `/api/d5o-hosted/customer-decision-evidence?workspace=${workspace}&workId=${workId}&evidenceId=${evidenceId}`];
+      return Promise.all(endpoints.map(async(url)=>(await fetch(url)).status));
+    },{workspace:a.workspaceKey,workId:aJob.workId,requestId:aJob.requestId,
+      evidenceId:aJob.customerEvidenceId});
+    assert.deepEqual(reversed,[403,403]);
+    const forged=await aPage.evaluate(async({workspace,workId,evidenceId})=>{
+      const other=crypto.randomUUID();
+      const urls=[
+        `/api/d5o-hosted/service-approval?workspace=${workspace}&parentPresentationId=${workId}&requestId=${other}`,
+        `/api/d5o-hosted/service-approval?workspace=${workspace}&parentPresentationId=${other}&requestId=${other}`,
+        `/api/d5o-hosted/customer-decision-evidence?workspace=${workspace}&workId=${workId}&evidenceId=${other}`,
+        `/api/d5o-hosted/customer-decision-evidence?workspace=${workspace}&workId=${other}&evidenceId=${evidenceId}`];
+      return Promise.all(urls.map(async(url)=>(await fetch(url)).status));
+    },{workspace:a.workspaceKey,workId:aJob.workId,evidenceId:aJob.customerEvidenceId});
+    assert(forged.every((status)=>status>=400),`forged:${forged}`);
+    const outsider=await call("outsider","d5o_hosted_connected_service_approval_read_v1",{
+      p_workspace_key:a.workspaceKey,p_parent_presentation_id:aJob.workId,
+      p_request_id:aJob.requestId});
+    assert.equal(outsider.error?.code,"42501");
+    const beforeA=await connectedBasis("a",a),beforeB=await connectedBasis("b",b);
+    const send=async(page,path,command)=>page.evaluate(async({path,command})=>{
+      const response=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(command)});
+      return {status:response.status,body:await response.json()};
+    },{path,command});
+    const jobPath=`/api/d5o-hosted/prototype-operate-command?workspace=${a.workspaceKey}`;
+    const jobReplay=await send(aPage,jobPath,aJob.jobCommand);
+    assert.equal(jobReplay.status,200,JSON.stringify(jobReplay));
+    const changedJob={...aJob.jobCommand,dueDate:"2026-12-31"};
+    const jobConflict=await send(aPage,jobPath,changedJob);
+    assert.equal(jobConflict.status,409,JSON.stringify(jobConflict));
+    const parallel=await Promise.all([send(aPage,jobPath,{...aJob.jobCommand,
+      commandId:randomUUID()}),send(aPage,jobPath,{...aJob.jobCommand,
+      commandId:randomUUID()})]);
+    assert(parallel.every((item)=>item.status===409),JSON.stringify(parallel));
+    const approvalPath="/api/d5o-hosted/service-approval";
+    const approvalReplay=await send(approver,approvalPath,aJob.thresholdDecisionCommand);
+    assert.equal(approvalReplay.status,200,JSON.stringify(approvalReplay));
+    const approvalConflict=await send(approver,approvalPath,
+      {...aJob.thresholdDecisionCommand,action:"reject"});
+    assert.equal(approvalConflict.status,409,JSON.stringify(approvalConflict));
+    const authPath=`/api/d5o-hosted/prototype-operate-command?workspace=${a.workspaceKey}`;
+    const authorizationReplay=await send(aOps,authPath,aJob.authorizationCommand);
+    assert.equal(authorizationReplay.status,200,JSON.stringify(authorizationReplay));
+    const authConflict=await send(aOps,authPath,{...aJob.authorizationCommand,
+      note:"Conflicting decision reuse"});
+    assert.equal(authConflict.status,409,JSON.stringify(authConflict));
+    const afterA=await connectedBasis("a",a),afterB=await connectedBasis("b",b);
+    assert.equal(afterA.operate.state.jobs.length,beforeA.operate.state.jobs.length);
+    assert.equal(afterB.operate.state.jobs.length,beforeB.operate.state.jobs.length);
+    assert.equal(afterA.operate.revision,beforeA.operate.revision);
+    assert.equal(afterB.operate.revision,beforeB.operate.revision);
+    return {unauthenticated:unauth.status(),reverseCrossTenant:reversed,forged,
+      nonmemberRpc:outsider.error.code,wrongRoleRpc:evidence.serviceWrongRoleDenial,
+      exactJobReplay:jobReplay.status,conflictingJobReplay:jobConflict.status,
+      concurrentPostJob:parallel.map((item)=>item.status),
+      exactApprovalReplay:approvalReplay.status,conflictingApprovalReplay:approvalConflict.status,
+      exactAuthorizationReplay:authorizationReplay.status,conflictingAuthorizationReplay:authConflict.status,
+      unchangedJobs:[afterA.operate.state.jobs.length,afterB.operate.state.jobs.length]};
   });
   await check("cross-tenant Deploy and Operate RPCs reject the foreign actor",async()=>{
     const deploy=await deployCommand("a",a,"b_ops","review-completion",{
@@ -3573,8 +3798,8 @@ try {
             const body=await createdResult.text().catch(()=>"response body unavailable");
             assert.equal(createdResult.status(),201,`browser-work-create:${body}`);
           }
-          await page.getByRole("status").filter({hasText:"Connected Work created"})
-            .waitFor({timeout:30000});
+          // The successful create can navigate before the transient status is
+          // rendered; the persisted Work read below is the authoritative check.
           const customerUrl=`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`;
           try { await page.goto(customerUrl,{waitUntil:"domcontentloaded"}); }
           catch(error) {
@@ -3859,7 +4084,8 @@ finally {
     setupError:Boolean(evidence.setupError),cleanupVerified:Boolean(evidence.cleanup?.clean)};
   mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
-  console.log(JSON.stringify({...evidence.summary,output:phase2htGateA
+  console.log(JSON.stringify({...evidence.summary,output:phase2htc
+    ? "docs/architecture/evidence/phase2htc-two-tenant-results.json" : phase2htGateA
     ? "docs/architecture/evidence/phase2ht-gate-a-results.json" : phase2htGateB
     ? "docs/architecture/evidence/phase2ht-gate-b-results.json" : phase2hsGateB
     ? "docs/architecture/evidence/phase2hs-develop-gate-results.json" : phase2hsGateA

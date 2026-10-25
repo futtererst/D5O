@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
         ...designReceiptTasks(visible, context.actor.role, context.actor.id),
         ...developTasks(visible, context.actor.role, schedule.state),
         ...authorityTasks, ...serviceTasks(visible as ServiceTaskWork[], context.actor.role,
-          serviceApprovals), ...roleTasks],
+          serviceApprovals, context.actor.id), ...roleTasks],
       records: visible
         .map(({ id, title, customer, site, owner, type, phaseConfigurationVersionId }) =>
           ({ id, title, customer, site, owner, type, phaseConfigurationVersionId })) });
