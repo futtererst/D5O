@@ -1,5 +1,7 @@
 # D5O RC2 isolated staging proposal
 
+**Architecture update:** [RC2-B minimum-cost decision](D5O_RC2B_MINIMUM_STAGING_DECISION.md) supersedes this proposal's assumption that a second Vercel project is required. A branch-scoped Preview in the existing Vercel project is the preferred application target; a separate Supabase project remains required for the clean RC0 staging schema. The proposal below is retained as the original RC2 record, not as current provisioning instructions.
+
 **Authorization gate: BLOCKED BY AUTHORIZATION (2026-10-26).** Read-only discovery found only the known production D5O Supabase project `fcawktdjoxvahhgvkebx` and Vercel project `prj_HF8KhxUFvONQlpMr53FdhEgmIpFG`; the former has no branches and the latter has no custom environments. No separate approved staging tuple, owner, cost approval, or protected historical-copy approval was established. These production IDs are a denylist for staging mutation. [Machine identity record](D5O_RC2_ENVIRONMENT_IDENTITY.json) records unknown staging IDs as null.
 
 ## Decision request before provisioning

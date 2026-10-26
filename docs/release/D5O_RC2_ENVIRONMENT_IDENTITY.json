@@ -1,5 +1,5 @@
 {
-  "format": "d5o-rc2-environment-identity-v1",
+  "format": "d5o-rc2-environment-identity-v2",
   "observedDate": "2026-10-26",
   "authorization": {
     "isolatedStagingMutation": "not_granted",
@@ -16,7 +16,7 @@
     "migrationManifestSha256": "908316ebda4d59f15c035ac2dd8bbd036a8b4d9eb24a39b07f4a1ca2491b5c74",
     "migrationCount": 234
   },
-  "productionReferenceOnly": {
+  "productionReference": {
     "supabaseProjectRef": "fcawktdjoxvahhgvkebx",
     "vercelProjectId": "prj_HF8KhxUFvONQlpMr53FdhEgmIpFG"
   },
@@ -26,6 +26,8 @@
     "authIdentity": null,
     "storageIdentity": null,
     "vercelProjectId": null,
+    "vercelEnvironment": null,
+    "gitBranch": null,
     "deploymentId": null,
     "applicationBuildSha": null,
     "migrationLedgerSha256": null
@@ -39,7 +41,7 @@
   },
   "requiredPreDeploymentChecks": [
     "written owner and cost approval",
-    "staging Supabase and Vercel identities differ from production denylist",
+    "staging Supabase identity differs from production; Vercel may reuse the existing project only in a verified Preview Git branch",
     "staging database, Auth, and private Storage bindings verified independently",
     "RC0 hosted command runtime guard corrected and reviewed for the staging project",
     "staging environment variables inventoried by name without recording values",

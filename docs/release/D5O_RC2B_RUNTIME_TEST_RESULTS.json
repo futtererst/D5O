@@ -1,0 +1,29 @@
+{
+  "format": "d5o-rc2b-runtime-guard-v1",
+  "passed": 21,
+  "failed": 0,
+  "syntheticOnly": true,
+  "checks": [
+    "production unchanged",
+    "production rejects another project",
+    "local pilot unchanged",
+    "local rehearsal unchanged",
+    "approved synthetic staging",
+    "hosted disabled",
+    "unknown runtime",
+    "production Supabase denied",
+    "production deployment denied",
+    "wrong Vercel project denied",
+    "wrong Git branch denied",
+    "wrong public key denied",
+    "wrong server key denied",
+    "legacy public key alias denied",
+    "legacy server key alias denied",
+    "missing binding hash denied",
+    "wrong auth mode denied",
+    "wrong data source denied",
+    "malformed URL denied",
+    "staging HTTPS same-origin schedule accepted",
+    "staging HTTP, mismatched host and cross-site schedules denied"
+  ]
+}

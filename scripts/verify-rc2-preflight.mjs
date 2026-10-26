@@ -26,18 +26,21 @@ const source = readFileSync(join(root, "lib/d5o/auth/hosted-target.ts"), "utf8")
 const hostedGuardNeedsStaging = source.includes('const hostedProjectRef = "fcawktdjoxvahhgvkebx"') &&
   !source.includes('D5O_COMMAND_RUNTIME === "staging"');
 const staging = identity.staging;
-const prod = identity.productionReferenceOnly;
-const stagingIdsSeparated = Boolean(staging.supabaseProjectRef && staging.vercelProjectId &&
-  staging.supabaseProjectRef !== prod.supabaseProjectRef && staging.vercelProjectId !== prod.vercelProjectId);
+const prod = identity.productionReference;
+const stagingDataIdentitySeparated = Boolean(staging.supabaseProjectRef &&
+  staging.supabaseProjectRef !== prod.supabaseProjectRef);
+const vercelPreviewScoped = Boolean(staging.vercelProjectId &&
+  staging.vercelEnvironment === "preview" && staging.gitBranch && staging.gitBranch !== "main");
 const approved = identity.authorization.isolatedStagingMutation === "approved" &&
   identity.authorization.billableResourceCreation === "approved";
 
 const result = {
-  format: "d5o-rc2-preflight-results-v1",
+  format: "d5o-rc2-preflight-results-v2",
   manifest: { filename: "D5O_RC0_MIGRATION_CHECKSUMS.json", sha256: sha256(manifestBytes),
     migrationCount: manifest.migrations.length, exactSourceChecksumsPass: errors.length === 0 },
-  staging: { approved, stagingIdsSeparated, hostedGuardNeedsStaging,
-    readyForHostedMutation: approved && stagingIdsSeparated && !hostedGuardNeedsStaging && errors.length === 0 },
+  staging: { approved, stagingDataIdentitySeparated, vercelPreviewScoped, hostedGuardNeedsStaging,
+    readyForHostedMutation: approved && stagingDataIdentitySeparated && vercelPreviewScoped &&
+      !hostedGuardNeedsStaging && errors.length === 0 },
   errors
 };
 process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
