@@ -1,0 +1,49 @@
+{
+  "format": "d5o-rc2-environment-identity-v1",
+  "observedDate": "2026-10-26",
+  "authorization": {
+    "isolatedStagingMutation": "not_granted",
+    "billableResourceCreation": "not_granted",
+    "historicalProductionCopy": "not_granted",
+    "owner": null,
+    "costApproval": null
+  },
+  "source": {
+    "rc1Commit": "855566bc7deef4bc14bd4a09e4fd27ad2e43c1f4",
+    "rc0ApplicationCommit": "3710ecace04e54769b5761da83f12594562e95b3",
+    "rc0EvidenceCommit": "ebad4b2b59ca65654777811a40ccde046f929e07",
+    "migrationManifest": "docs/release/D5O_RC0_MIGRATION_CHECKSUMS.json",
+    "migrationManifestSha256": "908316ebda4d59f15c035ac2dd8bbd036a8b4d9eb24a39b07f4a1ca2491b5c74",
+    "migrationCount": 234
+  },
+  "productionReferenceOnly": {
+    "supabaseProjectRef": "fcawktdjoxvahhgvkebx",
+    "vercelProjectId": "prj_HF8KhxUFvONQlpMr53FdhEgmIpFG"
+  },
+  "staging": {
+    "supabaseProjectRef": null,
+    "databaseIdentity": null,
+    "authIdentity": null,
+    "storageIdentity": null,
+    "vercelProjectId": null,
+    "deploymentId": null,
+    "applicationBuildSha": null,
+    "migrationLedgerSha256": null
+  },
+  "observations": {
+    "separateD5oSupabaseProjectFound": false,
+    "d5oSupabaseBranchCount": 0,
+    "separateD5oVercelProjectFound": false,
+    "d5oVercelCustomEnvironmentCount": 0,
+    "hostedMutationsPerformed": false
+  },
+  "requiredPreDeploymentChecks": [
+    "written owner and cost approval",
+    "staging Supabase and Vercel identities differ from production denylist",
+    "staging database, Auth, and private Storage bindings verified independently",
+    "RC0 hosted command runtime guard corrected and reviewed for the staging project",
+    "staging environment variables inventoried by name without recording values",
+    "synthetic test identities and non-production email policy approved",
+    "restricted deployment access established"
+  ]
+}

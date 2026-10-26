@@ -1,0 +1,16 @@
+{
+  "format": "d5o-rc2-preflight-results-v1",
+  "manifest": {
+    "filename": "D5O_RC0_MIGRATION_CHECKSUMS.json",
+    "sha256": "908316ebda4d59f15c035ac2dd8bbd036a8b4d9eb24a39b07f4a1ca2491b5c74",
+    "migrationCount": 234,
+    "exactSourceChecksumsPass": true
+  },
+  "staging": {
+    "approved": false,
+    "stagingIdsSeparated": false,
+    "hostedGuardNeedsStaging": true,
+    "readyForHostedMutation": false
+  },
+  "errors": []
+}

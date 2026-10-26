@@ -1,0 +1,9 @@
+# D5O RC2 database and private evidence recovery
+
+**Result: BLOCKED.** No authorized protected historical copy, coordinated checkpoint or hosted restoration was available. Recovery duration, RTO and RPO are **not measured** for the intended staging/historical system. No production restore was attempted.
+
+The [RC1 local proof](D5O_RC1_BACKUP_AND_RECOVERY_PROOF.md) restored one synthetic private object with matching bytes and anonymous denial, but its Storage metadata ID changed on upload. That proof did not restore a historical database and complete private-object set together. Supabase [database backups do not include Storage object bytes](https://supabase.com/docs/guides/platform/backups); metadata-only backup cannot satisfy Deploy evidence recovery.
+
+On an explicitly approved isolated target, record a protected database/Storage checkpoint; inventory database rows, Auth mappings, ledger, bucket paths, object byte SHA-256, metadata IDs, tenant/Work ownership and access policies. Rehearse forward migration and representative writes, then restore or use a supported forward recovery route. Verify every sampled object byte and evidence association; repair and verify metadata-ID links if restoration changes IDs. Recheck tenant and revoked-user denials. Record start/end timestamps, actual recoverable point, any writes after checkpoint, actual restoration duration and cleanup. A rollback to an earlier snapshot after new writes can lose or conflict with those business actions; reconcile them explicitly before any production recommendation.
+
+Track B has no recovery pass until database records **and** private object bytes are jointly restored, authenticated retrieval and isolation pass, and the measured data-loss window is stated. Synthetic Track A qualification does not substitute for this proof.
