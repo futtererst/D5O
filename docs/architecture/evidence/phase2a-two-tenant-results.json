@@ -1,6 +1,6 @@
 {
   "baseline": "448c00be9d09e4b527aa7f3a3c89d99ce5ceda6f",
-  "startedAt": "2026-10-23T13:18:37.621Z",
+  "startedAt": "2026-10-26T14:55:30.531Z",
   "tests": [
     {
       "name": "tenant administrators see only their own organization",
@@ -41,7 +41,7 @@
       "name": "business-unit hierarchy supports a parent and rejects cycles",
       "status": "PASS",
       "detail": {
-        "childParent": "4b951cc2-b278-4810-b0c8-300694ff9dd9",
+        "childParent": "e112dc78-141a-415e-b47b-4e9421af7112",
         "cycleDenied": true
       }
     },
@@ -49,7 +49,7 @@
       "name": "revision conflicts, retirement dependencies and code uniqueness are enforced",
       "status": "PASS",
       "detail": {
-        "stableId": "4b951cc2-b278-4810-b0c8-300694ff9dd9",
+        "stableId": "e112dc78-141a-415e-b47b-4e9421af7112",
         "staleDenied": true,
         "inUseDenied": true,
         "duplicateDenied": true
@@ -117,20 +117,20 @@
         ],
         "tenantIsolationInApi": true,
         "authenticatedUiWrites": true,
-        "ephemeralPreview": "http://127.0.0.1:58933/work/admin/organization?workspace=rybex"
+        "ephemeralPreview": "http://127.0.0.1:58723/work/admin/organization?workspace=rybex"
       }
     }
   ],
   "setupError": null,
   "cleanup": {
-    "projectId": "d5o-p0a-0a1e2653-5ac",
+    "projectId": "d5o-p0a-dfa82777-346",
     "stopExit": 0,
     "networkError": null,
     "projectDirectoryAbsent": true,
     "residualContainers": [],
     "clean": true
   },
-  "finishedAt": "2026-10-23T13:20:52.178Z",
+  "finishedAt": "2026-10-26T14:57:37.797Z",
   "summary": {
     "passed": 11,
     "failed": 0,

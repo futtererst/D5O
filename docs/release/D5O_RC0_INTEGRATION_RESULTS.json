@@ -1,0 +1,261 @@
+{
+  "format": "d5o-rc0-integration-results-v1",
+  "applicationCommit": "3710ecace04e54769b5761da83f12594562e95b3",
+  "baselineCommit": "4cf881b506def45564040d767292c5c8c4ecbe48",
+  "localSourceCommit": "9a0886990bc8d1d2cb4e3a28cbc73672501b7240",
+  "verdict": "INTEGRATION QUALIFIED",
+  "passed": [
+    {
+      "name": "npm ci",
+      "status": "PASS"
+    },
+    {
+      "name": "TypeScript",
+      "status": "PASS"
+    },
+    {
+      "name": "ESLint",
+      "status": "PASS"
+    },
+    {
+      "name": "production build",
+      "status": "PASS",
+      "nextVersion": "16.4.2"
+    },
+    {
+      "name": "npm run verify",
+      "status": "PASS",
+      "routeSmokeChecks": 28
+    },
+    {
+      "name": "published phase contract",
+      "status": "PASS"
+    },
+    {
+      "name": "readiness scanner invariant",
+      "status": "PASS"
+    },
+    {
+      "name": "fresh migration stack",
+      "status": "PASS",
+      "includedMigrations": 234,
+      "cleanupClean": true
+    },
+    {
+      "name": "released-main forward upgrade",
+      "status": "PASS",
+      "appliedVersions": [
+        "20261023111641",
+        "20261023115306",
+        "20261023123751",
+        "20261023140000",
+        "20261023141000",
+        "20261023142000",
+        "20261023143000",
+        "20261023150000",
+        "20261023151000",
+        "20261023152000",
+        "20261023153646",
+        "20261023153752",
+        "20261023180000",
+        "20261023201553",
+        "20261024010000",
+        "20261024011000",
+        "20261024012000",
+        "20261024105438",
+        "20261024112500",
+        "20261024113000",
+        "20261024150000",
+        "20261024151000",
+        "20261025010000"
+      ],
+      "markerPreserved": true,
+      "workPinPreserved": true,
+      "auditPreserved": true,
+      "cleanupClean": true
+    },
+    {
+      "name": "tenant organization and people",
+      "path": "docs/architecture/evidence/phase2a-two-tenant-results.json",
+      "passed": 11,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true,
+      "disposableProjectId": "d5o-p0a-dfa82777-346",
+      "cleanupClean": true
+    },
+    {
+      "name": "integrated Deploy browser",
+      "path": "docs/architecture/evidence/phase2hu-two-tenant-results.json",
+      "passed": 47,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true,
+      "disposableProjectId": "d5o-p0a-a5a1aaa2-612",
+      "cleanupClean": true
+    },
+    {
+      "name": "connected service security closure",
+      "path": "docs/architecture/evidence/phase2htd-targeted-results.json",
+      "passed": 60,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true,
+      "disposableProjectId": "d5o-p0a-bb88d337-ce2",
+      "cleanupClean": true
+    },
+    {
+      "name": "tenant-neutral Work and phase replay",
+      "path": "docs/architecture/evidence/phase2g-two-tenant-results.json",
+      "passed": 48,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true,
+      "disposableProjectId": "d5o-p0a-4f416325-006",
+      "cleanupClean": true
+    },
+    {
+      "name": "Deploy integrity qualification",
+      "path": "docs/release/D5O_RC0_DEPLOY_INTEGRITY.json",
+      "passed": 47,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true,
+      "disposableProjectId": "d5o-p0a-873b552e-864",
+      "cleanupClean": true,
+      "finiteCases": [
+        {
+          "name": "pending field task rejects suspended worker session",
+          "status": "PASS",
+          "detail": {
+            "worker": "7a571799-2528-4b65-b8da-5a17e91fd93a",
+            "reportId": "695e64fb-68c0-43b2-9bb9-6a5ddf25524d",
+            "unchangedRevision": 4
+          }
+        },
+        {
+          "name": "open assignment rejects removed worker session",
+          "status": "PASS",
+          "detail": {
+            "worker": "7a571799-2528-4b65-b8da-5a17e91fd93a",
+            "bookingId": "phase2f-b-booking",
+            "denial": "field_membership_required",
+            "unchangedRevision": 4,
+            "fixtureRestored": true
+          }
+        },
+        {
+          "name": "wrong Work, package and forged field evidence leave state unchanged",
+          "status": "PASS",
+          "detail": {
+            "evidenceId": "595988be-322e-4163-a82f-933b16f258e6",
+            "denials": [
+              {
+                "code": "42501",
+                "message": "connected_work_unavailable"
+              },
+              {
+                "code": "23514",
+                "message": "current_release_required"
+              },
+              {
+                "code": "23514",
+                "message": "independent_current_evidence_required"
+              }
+            ],
+            "unchangedRevision": 7
+          }
+        },
+        {
+          "name": "conflicting pending evidence reviews serialize",
+          "status": "PASS",
+          "detail": {
+            "evidenceId": "595988be-322e-4163-a82f-933b16f258e6",
+            "decisions": [
+              "accepted",
+              "stale_evidence_basis"
+            ],
+            "terminalState": "Reviewed",
+            "revisionBefore": 7,
+            "revisionAfter": 8
+          }
+        },
+        {
+          "name": "concurrent completion and exact/conflicting replay preserve one receipt",
+          "status": "PASS",
+          "detail": {
+            "winnerCommandId": "rc0-completion-b-24572d32-379e-45cc-83a3-d5ad1e541225",
+            "loserError": "stale_field_fact_basis",
+            "replayAccepted": true,
+            "conflictError": "command_reuse_conflict",
+            "revisionBefore": 8,
+            "revisionAfter": 9
+          }
+        },
+        {
+          "name": "deleted customer evidence cannot authorize pending acceptance",
+          "status": "PASS",
+          "detail": {
+            "evidenceId": "48a154d4-0f5e-400c-95cf-d391b9c12f94",
+            "denial": "customer_evidence_bytes_changed",
+            "unchangedRevision": 10
+          }
+        },
+        {
+          "name": "concurrent package-acceptance acceptance and conflicting command replay",
+          "status": "PASS",
+          "detail": {
+            "evidenceId": "29fd120d-24f1-43ef-ae54-753011ce80c3",
+            "winnerCommandId": "rc0-package-acceptance-b-161f1d5f-7055-443b-a6e4-e128e31f1ef7",
+            "loserError": "stale_acceptance_basis",
+            "conflictError": "command_reuse_conflict",
+            "revisionBefore": 10,
+            "revisionAfter": 11
+          }
+        },
+        {
+          "name": "concurrent work-acceptance acceptance and conflicting command replay",
+          "status": "PASS",
+          "detail": {
+            "evidenceId": "e21a314e-51a6-4dc6-be83-38159d0acd3c",
+            "winnerCommandId": "rc0-work-acceptance-a-8ab214f0-fe3b-4424-946c-e3d854fd2bff",
+            "loserError": "stale_acceptance_basis",
+            "conflictError": "command_reuse_conflict",
+            "revisionBefore": 12,
+            "revisionAfter": 13
+          }
+        }
+      ]
+    }
+  ],
+  "failed": [
+    {
+      "name": "legacy configuration-foundation static verifier",
+      "status": "FAIL",
+      "detail": "Five stale P1 documentation assertions in verify-no-regression; migration/schema/RLS/effective-resolution subchecks passed."
+    },
+    {
+      "name": "Phase 2G concurrent dev-server attempt",
+      "status": "FAIL",
+      "passed": 34,
+      "failed": 14,
+      "cleanupClean": true,
+      "detail": "next_start_timeout while TD used the same checkout; isolated rerun passed 48/48"
+    },
+    {
+      "name": "Deploy integrity first probe",
+      "status": "FAIL",
+      "passed": 44,
+      "failed": 3,
+      "cleanupClean": true,
+      "detail": "Probe omitted turnoverId; authenticated RPCs denied both acceptance attempts before decision"
+    }
+  ],
+  "blocked": [
+    "Approved staging restore and recovery proof",
+    "Read-only hosted migration ledger and approved staging data-copy comparison",
+    "Live invitation delivery and historical fixture provenance",
+    "General-customer routing and historical phase-projection data",
+    "Production readiness and promotion authorization"
+  ]
+}

@@ -13,7 +13,7 @@ const run = (root, command, args, env = createSanitizedChildEnv()) => spawnSync(
   cwd: root, env, encoding: "utf8", shell: false, maxBuffer: 1024 * 1024 * 100,
 });
 
-export async function createP0aRuntime(root = process.cwd()) {
+export async function createP0aRuntime(root = process.cwd(), { migrationCutoff = null } = {}) {
   root = resolve(root);
   const projectId = `${PREFIX}${randomUUID().slice(0, 12)}`;
   const projectDir = mkdtempSync(join(tmpdir(), projectId + "-"));
@@ -26,7 +26,9 @@ export async function createP0aRuntime(root = process.cwd()) {
     runtime.ports = ports;
     cpSync(join(root, "supabase"), join(projectDir, "supabase"), {
       recursive: true,
-      filter: (path) => !/[\\/](?:\.temp|\.branches)(?:[\\/]|$)/.test(path) && !/-ShawnT13\.sql$/i.test(path),
+      filter: (path) => !/[\\/](?:\.temp|\.branches)(?:[\\/]|$)/.test(path) && !/-ShawnT13\.sql$/i.test(path)
+        && !(migrationCutoff && /[\\/]migrations[\\/]([0-9]+)_[^\\/]+\.sql$/i.test(path)
+          && path.match(/[\\/]migrations[\\/]([0-9]+)_[^\\/]+\.sql$/i)[1] >= migrationCutoff),
     });
     writeFileSync(join(projectDir, "supabase", "config.toml"), rewriteSupabaseConfigForProject(
       readFileSync(join(root, "supabase", "config.toml"), "utf8"), projectId, ports));
