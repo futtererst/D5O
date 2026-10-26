@@ -1,0 +1,1070 @@
+{
+  "format": "d5o-rc1-hosted-ledger-statement-hashes-v1",
+  "projectRef": "fcawktdjoxvahhgvkebx",
+  "observedAtUtc": "2026-10-26T17:25:25.534Z",
+  "hashDefinition": "SHA-256 of UTF-8 array_to_string(statements, newline); distinct from exact migration-file byte SHA-256",
+  "rows": [
+    {
+      "version": "001",
+      "name": "initial_schema",
+      "statement_count": 101,
+      "ledger_statement_sha256": "8c3160a2899df58cc8535dc2938f28b79cead12fde4697e569573fa997a7a381"
+    },
+    {
+      "version": "002",
+      "name": "customer_order_item_rls",
+      "statement_count": 1,
+      "ledger_statement_sha256": "ed2baf8137cf3aba77d06037d9b03cbddc46da84fdc91439bef2ec58e1e4c976"
+    },
+    {
+      "version": "003",
+      "name": "webhook_event_status",
+      "statement_count": 2,
+      "ledger_statement_sha256": "c6d187aa883a42da88aadc2103da395f9664deb4b9b4344d130808c81e118a5c"
+    },
+    {
+      "version": "004",
+      "name": "backfill_webhook_status",
+      "statement_count": 1,
+      "ledger_statement_sha256": "47a8e3323ec3dd1768aaf48adf89b38c074f3d81dc8d114ca296dcaf496312fd"
+    },
+    {
+      "version": "005",
+      "name": "transaction_idempotency_indexes",
+      "statement_count": 4,
+      "ledger_statement_sha256": "78053cbc115a10201a43bfffd03c164d39837af9127eafda25ad25828c42839f"
+    },
+    {
+      "version": "006",
+      "name": "enterprise_integration_foundation",
+      "statement_count": 42,
+      "ledger_statement_sha256": "3319f00cb2e25cf0a2d99eb42d3622b091df738f2d06820385ff913d5b1ec281"
+    },
+    {
+      "version": "007",
+      "name": "enterprise_d365_cached_models",
+      "statement_count": 32,
+      "ledger_statement_sha256": "c942de9abb8e02914a4c7792503bbfb9a4009453a3ec4ad2f2b912b8fd114d1c"
+    },
+    {
+      "version": "008",
+      "name": "transaction_unique_constraints",
+      "statement_count": 8,
+      "ledger_statement_sha256": "5f2189efb0c7a5bfffd3d10ddb75b78a0f1061158c29e833a86bc5629a355c3e"
+    },
+    {
+      "version": "009",
+      "name": "customer_portal_rls",
+      "statement_count": 1,
+      "ledger_statement_sha256": "6c6f5c8fa40ee874b7e52c825bb5fc96f5e020ec6360353f34532abcd421ec9d"
+    },
+    {
+      "version": "010",
+      "name": "seed_enterprise_integration_demo",
+      "statement_count": 10,
+      "ledger_statement_sha256": "11d1edcfd83dc96dd019031e37b092b389639daaa17708621e652ca5fac035ac"
+    },
+    {
+      "version": "20261007013631",
+      "name": "d5o_hosted_workspace_authority",
+      "statement_count": 1,
+      "ledger_statement_sha256": "f578586e317ea08a245034e9603e8d4c2edf81c368a598bd575c0532ac72b5f7"
+    },
+    {
+      "version": "20261007014024",
+      "name": "d5o_hosted_workspace_invoker_hardening",
+      "statement_count": 1,
+      "ledger_statement_sha256": "359e52afba189267c80ee937cbde3cccf30ea94d204ea41525e8f857de4f44fc"
+    },
+    {
+      "version": "20261007015048",
+      "name": "d5o_hosted_work_identity",
+      "statement_count": 1,
+      "ledger_statement_sha256": "3bde99269a15eada3e7518de3cb0bb6892d97efae7536d789c11d3e068ea3639"
+    },
+    {
+      "version": "20261007015356",
+      "name": "d5o_hosted_create_work_authority",
+      "statement_count": 1,
+      "ledger_statement_sha256": "fa0efa45ee2fa8d4e5dfcc780fb2280dcf4e89a213090117e311decaf6372f49"
+    },
+    {
+      "version": "20261007020854",
+      "name": "d5o_hosted_configuration_manifest",
+      "statement_count": 1,
+      "ledger_statement_sha256": "f7ba02bb6737f25406a531f875e19dc85e781d5889e67cc639bf5a75129af6ec"
+    },
+    {
+      "version": "20261007021942",
+      "name": "d5o_hosted_synthetic_prototype_state",
+      "statement_count": 1,
+      "ledger_statement_sha256": "836479cefc53d9248d7567d502a3ff7e62610f2608f9103f86cb4b1c3002e864"
+    },
+    {
+      "version": "20261007025942",
+      "name": "d5o_hosted_prototype_nested_scope",
+      "statement_count": 1,
+      "ledger_statement_sha256": "79d095ce1e0d8bbc523ffa0ca608dbf82713c9193ead563f5ad0389676def135"
+    },
+    {
+      "version": "20261007225404",
+      "name": "d5o_hosted_worker_boundary",
+      "statement_count": 1,
+      "ledger_statement_sha256": "4ab1a2e9ea223541d01d6a0bbebf24fde62d3b3dfc4fc12edb0a4092b6f51fc1"
+    },
+    {
+      "version": "20261008182443",
+      "name": "d5o_hosted_command_writer",
+      "statement_count": 1,
+      "ledger_statement_sha256": "5d642aa19e266e0801d97f518e58f926c821ec8b4c46b4d76064a2ed1dcfe614"
+    },
+    {
+      "version": "20261008183310",
+      "name": "d5o_prototype_authoritative_writes",
+      "statement_count": 1,
+      "ledger_statement_sha256": "0cd376df0a8299fe5991cc75b852f316b6597278024f5888aa75ed1ffed01dfb"
+    },
+    {
+      "version": "20261008185604",
+      "name": "d5o_hosted_worker_provisioning",
+      "statement_count": 1,
+      "ledger_statement_sha256": "01c314d3688e20236766bd3a09c5498b9014ff6a91c774660d4552063e7761a2"
+    },
+    {
+      "version": "20261008190351",
+      "name": "d5o_secret_key_role_compatibility",
+      "statement_count": 1,
+      "ledger_statement_sha256": "bafc7c04721faf771b8c7f5c3543358c50de70e58b85b1302bcd2f2cfd6f7409"
+    },
+    {
+      "version": "20261008200840",
+      "name": "restrict_worker_work_access",
+      "statement_count": 1,
+      "ledger_statement_sha256": "2d3e1fd290f03e6999ff806bcdebd2a6fab990f434ae210b452717e06193059a"
+    },
+    {
+      "version": "20261008203000",
+      "name": "d5o_reject_imported_commercial_decisions",
+      "statement_count": 1,
+      "ledger_statement_sha256": "70b27341d9d211407ba8eb3a73e5e237d1813eb97675f70a58f026e25dd169ff"
+    },
+    {
+      "version": "20261008214425",
+      "name": "hosted_pilot_role_assignments",
+      "statement_count": 1,
+      "ledger_statement_sha256": "9b3f9fd09c56a68b8a5df1b989dd3cda5f9a3700728abccfaf764b6b546c67f0"
+    },
+    {
+      "version": "20261008221100",
+      "name": "d5o_guard_pilot_position",
+      "statement_count": 1,
+      "ledger_statement_sha256": "6ccc027ac9d1f483269b892ba46d1c60cdcadcf8f640a0d0b1ac16c9423fb286"
+    },
+    {
+      "version": "20261008230000",
+      "name": "d5o_connected_work_identity",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c75baf84eac7d61ab5471c6e22b2c5610ba289f4366cbc8cec351af11cbf7aa4"
+    },
+    {
+      "version": "20261008231000",
+      "name": "d5o_connected_define_commands",
+      "statement_count": 1,
+      "ledger_statement_sha256": "bedd1d89a0832c8e0d56ce1fcccb22d04a4fc23de8948d1b241e91ed535e7d47"
+    },
+    {
+      "version": "20261008232000",
+      "name": "d5o_connected_discover_commands",
+      "statement_count": 1,
+      "ledger_statement_sha256": "dc2fd7366b1004d8ebc99754932482e2db9d47b671c28014262f264b2a5f361e"
+    },
+    {
+      "version": "20261008233000",
+      "name": "d5o_connected_draft_projection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "2014dbaf06779f67698e9d71e358aa1c72c9335a0d52ed0c3003f2541fba21d3"
+    },
+    {
+      "version": "20261008234000",
+      "name": "d5o_connected_solution_decision_lock",
+      "statement_count": 1,
+      "ledger_statement_sha256": "edbe6c7c29407d40facfad7e9619d21d70bd5ca0a4eb90f5e441cf32aabbfecf"
+    },
+    {
+      "version": "20261008235000",
+      "name": "d5o_connected_solution_commands",
+      "statement_count": 1,
+      "ledger_statement_sha256": "03bcc7cebb987dc8dcbd5f0bddd0302e6b13b64aecd820c238ce977d1effbc2c"
+    },
+    {
+      "version": "20261008235500",
+      "name": "d5o_connected_pricing_policy_commands",
+      "statement_count": 1,
+      "ledger_statement_sha256": "04ac4a4bd7a52d64bc20395c01a48495afbf71ff968de6193c8f7049fdd123d3"
+    },
+    {
+      "version": "20261008240000",
+      "name": "d5o_connected_estimate_commands",
+      "statement_count": 1,
+      "ledger_statement_sha256": "adfda8f6801951eed399dd2544b44fe884364c5af30f7d6dd1df9184b958e348"
+    },
+    {
+      "version": "20261008241000",
+      "name": "d5o_connected_offer_review",
+      "statement_count": 1,
+      "ledger_statement_sha256": "15854987206f5692100d4e26598c3e4c963a44322bef2831edd2c51924119f46"
+    },
+    {
+      "version": "20261008242000",
+      "name": "d5o_connected_customer_decisions",
+      "statement_count": 1,
+      "ledger_statement_sha256": "d9c25ca210859425d513cd33fca1fd42a7e61210f7d14e058666e2f4b30f6623"
+    },
+    {
+      "version": "20261008243000",
+      "name": "d5o_connected_design_handoff",
+      "statement_count": 1,
+      "ledger_statement_sha256": "b688919409ad47dcf7759eb227d315b443c0a03d1de40d682d0150bdf20ee640"
+    },
+    {
+      "version": "20261008244000",
+      "name": "d5o_connected_package_creation",
+      "statement_count": 1,
+      "ledger_statement_sha256": "9806748474be44dfe8d54db2f266180fab8d473942cddf78d1f99603299c9b31"
+    },
+    {
+      "version": "20261008244500",
+      "name": "d5o_connected_package_projection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c466fec14a3ed97e7c8393f1fda3e35a5fce1866efd7907f2c022f8b8667a895"
+    },
+    {
+      "version": "20261008245000",
+      "name": "d5o_connected_design_drafts",
+      "statement_count": 1,
+      "ledger_statement_sha256": "d29ed83efd1ea7c6c8f837b463b488992890919ed7205c39a60376c395e73c8f"
+    },
+    {
+      "version": "20261008245100",
+      "name": "d5o_connected_design_reviews",
+      "statement_count": 1,
+      "ledger_statement_sha256": "cafac7845bc1cfaf19ccfa1e9139694f00d009fe59954194952d61ecde170c05"
+    },
+    {
+      "version": "20261008245150",
+      "name": "d5o_connected_design_demand",
+      "statement_count": 1,
+      "ledger_statement_sha256": "514456134098dd347eff0078ddcf95b3f445be7d730fa149084203072edd4a6f"
+    },
+    {
+      "version": "20261008245200",
+      "name": "d5o_connected_design_release",
+      "statement_count": 1,
+      "ledger_statement_sha256": "22d11b7de19bfb6f69da473d916980dc074fe57c53e0251b4c06b3957a67b891"
+    },
+    {
+      "version": "20261008245300",
+      "name": "d5o_connected_crew_publication",
+      "statement_count": 1,
+      "ledger_statement_sha256": "748ebaf2f75cc0b89525e2ef7a581157fcb34601f25428b4d6e0d7665646a0f6"
+    },
+    {
+      "version": "20261008245400",
+      "name": "d5o_connected_field_start",
+      "statement_count": 1,
+      "ledger_statement_sha256": "6a789803abcafb0c96047f82f03c92eada9581653f8665c71aef829503ca0bfc"
+    },
+    {
+      "version": "20261008245450",
+      "name": "d5o_connected_deploy_draft_rebase",
+      "statement_count": 1,
+      "ledger_statement_sha256": "678d13d6ba9bed666c29f927ebfe9c27dcdde104dd6e424f8b4c7b2933ef22ad"
+    },
+    {
+      "version": "20261008245500",
+      "name": "d5o_connected_field_facts",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c31205cfa9f97c9e704469fb5a368b8ee6db38d4812f47c976cca72bcc98e52f"
+    },
+    {
+      "version": "20261008245600",
+      "name": "d5o_connected_field_evidence",
+      "statement_count": 1,
+      "ledger_statement_sha256": "5ac2bcda4b54569ff1683063453ad0009e7629efb73ca749c35b074f952cd8f8"
+    },
+    {
+      "version": "20261008245650",
+      "name": "d5o_connected_worker_projection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c5571af156b637078f9656593e9f44fb2da45e4d8929f2289dcff06547d07509"
+    },
+    {
+      "version": "20261008245700",
+      "name": "d5o_connected_acceptance",
+      "statement_count": 1,
+      "ledger_statement_sha256": "653743acf1a72012cfdd29d3006b1b9b8566502148f973333c185422b22abc0d"
+    },
+    {
+      "version": "20261008245800",
+      "name": "d5o_connected_operate_state",
+      "statement_count": 1,
+      "ledger_statement_sha256": "e715351e319a1a3a6170624442214c3b6aeb43c8cbc2870f05eb519d796b1bf1"
+    },
+    {
+      "version": "20261008245850",
+      "name": "d5o_connected_operate_commands",
+      "statement_count": 1,
+      "ledger_statement_sha256": "a49a371d3b2f24becb98717dc42468058f12e626911252d7134ee003c8602971"
+    },
+    {
+      "version": "20261008245900",
+      "name": "d5o_connected_operate_draft_rebase",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c8890cb031f72a6b4e91853469f13774da1f3d42c7001e75edb864b0d757321f"
+    },
+    {
+      "version": "20261008250000",
+      "name": "d5o_connected_service_job_command",
+      "statement_count": 1,
+      "ledger_statement_sha256": "7a926ea6c2758f2a3f554011c5142d92f77a487ff5400c47e20d350a4939318d"
+    },
+    {
+      "version": "20261008250100",
+      "name": "d5o_connected_asset_acceptance",
+      "statement_count": 1,
+      "ledger_statement_sha256": "d3251f1adfe088f5c51f84d2955f90af81620552ba910dbf3487f412a5b11014"
+    },
+    {
+      "version": "20261008250200",
+      "name": "d5o_connected_service_projection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "6dc8b3ce5c9d7db0f3b85cf1d3902f046f330230b43757539dc461385f2f6292"
+    },
+    {
+      "version": "20261008250300",
+      "name": "d5o_connected_service_draft_rebase",
+      "statement_count": 1,
+      "ledger_statement_sha256": "fe60b4fb22530a0ee954091bef5037114eac12dcb3c3872e00a90b4ab6339310"
+    },
+    {
+      "version": "20261009094046",
+      "name": "d5o_connected_service_basis",
+      "statement_count": 1,
+      "ledger_statement_sha256": "12f61e838a7388a80e64ccdb817e68b432b5478d90ba050bb036748798e19780"
+    },
+    {
+      "version": "20261009094248",
+      "name": "d5o_connected_service_basis_projection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "ce7ff95e7939840adb7cdd13e3c095d86b6a38166de156ed0acde48ace5bbd94"
+    },
+    {
+      "version": "20261009095342",
+      "name": "d5o_connected_service_package",
+      "statement_count": 1,
+      "ledger_statement_sha256": "f644d8a3d4aa21ed425623869e4b7f65d699c7ca0db04925a4cb147a4c98b03e"
+    },
+    {
+      "version": "20261009095658",
+      "name": "d5o_connected_design_source_adapter",
+      "statement_count": 1,
+      "ledger_statement_sha256": "9904a8e530f0606bf4614e1cde57da73446fa0de74926b5b48141037b58a88a9"
+    },
+    {
+      "version": "20261009101200",
+      "name": "d5o_connected_service_field_source",
+      "statement_count": 1,
+      "ledger_statement_sha256": "4dd47a530d17bbd58c85e9d8707fa0cc0c7c61286ce413406ccc27e10e97de76"
+    },
+    {
+      "version": "20261009102800",
+      "name": "d5o_connected_worker_schedule_read",
+      "statement_count": 1,
+      "ledger_statement_sha256": "50591b897c6e70fd8edee2cc3252611cbe88603921c83cd2b2e35f95d4fca34e"
+    },
+    {
+      "version": "20261009104500",
+      "name": "d5o_connected_service_return",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c9c09a6deae738d629a39fee485fcc559641ee70f40770ef9e708117817cbb57"
+    },
+    {
+      "version": "20261009110500",
+      "name": "d5o_connected_service_pricing",
+      "statement_count": 1,
+      "ledger_statement_sha256": "55faef2349e1abde099788b7d1cf54f2c668a117d64ab60fdc299cd495896b7b"
+    },
+    {
+      "version": "20261009112000",
+      "name": "d5o_connected_partial_service_source",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c1bf25bf9a0befbe48bf108cc208f42253c0ce77cfd546e108880767a9879e7e"
+    },
+    {
+      "version": "20261009123000",
+      "name": "d5o_customer_decision_evidence",
+      "statement_count": 1,
+      "ledger_statement_sha256": "90162ebbf40786f0e83821cb83346b15bdf518d28caba3c0f9f09c8ef7590be8"
+    },
+    {
+      "version": "20261009124000",
+      "name": "d5o_empty_package_draft_compatibility",
+      "statement_count": 1,
+      "ledger_statement_sha256": "65159223cdb80b1d24fd4d2343fd3cea7e5f560e2f54d4f654ca9e99ff42d0e6"
+    },
+    {
+      "version": "20261009125000",
+      "name": "d5o_pursuit_correction_after_source_change",
+      "statement_count": 1,
+      "ledger_statement_sha256": "ef34116bf304d8d79f8a9a0c704c6a592c56f74a9692c0a57349a1f3b285ede4"
+    },
+    {
+      "version": "20261009181045",
+      "name": "d5o_post_acceptance_scope_integrity",
+      "statement_count": 1,
+      "ledger_statement_sha256": "e74963668566a41cae2f9717e0a92bb4c64376397c0c6c5e6b6763740cc0ad54"
+    },
+    {
+      "version": "20261009214103",
+      "name": "d5o_connected_workforce",
+      "statement_count": 1,
+      "ledger_statement_sha256": "aef50a9015d2400fbc20e5655ce5281861d636cb2ba9ef29ac6b667d1709a8bd"
+    },
+    {
+      "version": "20261009220510",
+      "name": "d5o_connected_field_changes",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c1e8de97b4ef2831dc4a3488d923dae4a3c1052c307dad6800d38e6a072f2dac"
+    },
+    {
+      "version": "20261009221159",
+      "name": "d5o_connected_job_finance",
+      "statement_count": 1,
+      "ledger_statement_sha256": "b4ea87b59efbe9adfe9f160f177da99959853f6325928fdfc0d0c4bd7b74737c"
+    },
+    {
+      "version": "20261009232739",
+      "name": "d5o_connected_design_field_change",
+      "statement_count": 1,
+      "ledger_statement_sha256": "16225e5bf900146f8a3bcacd043b02b35913d9f083fc43908ace09c925fc350b"
+    },
+    {
+      "version": "20261009234405",
+      "name": "d5o_current_release_field_start",
+      "statement_count": 1,
+      "ledger_statement_sha256": "7cf1eef640a8e83b35261a254550ab14361099c8b94a158a8d1aae22ce171197"
+    },
+    {
+      "version": "20261010011108",
+      "name": "d5o_connected_billing_integrity",
+      "statement_count": 1,
+      "ledger_statement_sha256": "2435008275849a731568997bdde4d0d97e38d77ca938deaf020bacc3de2e2ebf"
+    },
+    {
+      "version": "20261010100022",
+      "name": "d5o_post_closeout_receivable",
+      "statement_count": 1,
+      "ledger_statement_sha256": "d2d3a56f21beec8b0b6c5b9cf8f18664ea1c34db0fea89a84fde83ba609637c2"
+    },
+    {
+      "version": "20261010130807",
+      "name": "connected_service_financial_disposition",
+      "statement_count": 1,
+      "ledger_statement_sha256": "3582991b7a16f8d73f21c3af93d14658050abf73886286472e322b19ed0ae334"
+    },
+    {
+      "version": "20261010150000",
+      "name": "connected_service_billing_terms",
+      "statement_count": 1,
+      "ledger_statement_sha256": "52d21004d0c8385ca21140b2daa7f6419ddee224bebb2f7c4e870336191bd0af"
+    },
+    {
+      "version": "20261010170000",
+      "name": "connected_service_action_queue",
+      "statement_count": 1,
+      "ledger_statement_sha256": "57007045eeedc08d8c24e8d61aa1b13637ba5bc6ba2107715bc8ad844aec94e2"
+    },
+    {
+      "version": "20261010180000",
+      "name": "connected_service_invoice",
+      "statement_count": 1,
+      "ledger_statement_sha256": "21efa336decf522fdaa2b894cf9ff9abba39b910971b2952938ce76973fdca07"
+    },
+    {
+      "version": "20261010190000",
+      "name": "connected_service_actual_cost",
+      "statement_count": 1,
+      "ledger_statement_sha256": "b744942432d17f9be8cc8aef94e6025f44838ac40f4c5b867c169c962d00597d"
+    },
+    {
+      "version": "20261010200000",
+      "name": "d5o_completion_reassessment",
+      "statement_count": 1,
+      "ledger_statement_sha256": "5b5854a7f1eefc6ee7143b3fcd75aabdc3b7d7bfe491dd62be00b6f543612a0f"
+    },
+    {
+      "version": "20261010210000",
+      "name": "d5o_support_document_obligations",
+      "statement_count": 1,
+      "ledger_statement_sha256": "d0a5176054aec7f28ec96979bdbf166730dfcd227ce1f86a6ac84cc518278215"
+    },
+    {
+      "version": "20261011162940",
+      "name": "optimize_connected_draft_projection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "962208c69505804b34ac0968e963bd5bba1d471d1e0b159fc72c333fdd84ce42"
+    },
+    {
+      "version": "20261012110000",
+      "name": "d5o_design_draft_required_arrays",
+      "statement_count": 1,
+      "ledger_statement_sha256": "a23de88797f4883f3989bb08154be56950f9ef33f39b0c3c092789c0f1bae5ff"
+    },
+    {
+      "version": "20261012120000",
+      "name": "d5o_draft_booking_before_release",
+      "statement_count": 1,
+      "ledger_statement_sha256": "d83e7a1319a549250861ecdfd48bf2743b5c70a0d1ed9063f83d0d2292235419"
+    },
+    {
+      "version": "20261012123000",
+      "name": "d5o_design_handoff_clarification",
+      "statement_count": 1,
+      "ledger_statement_sha256": "8b7707ee751fdc05958759938ad0dd2b8c5670a14cde0c32e6b427e7f1594b5b"
+    },
+    {
+      "version": "20261013111633",
+      "name": "design_document_custody",
+      "statement_count": 1,
+      "ledger_statement_sha256": "f3f7cf00fa0d48c9160ecb12c6ebdcec97987a2655811077fbddd314e7836661"
+    },
+    {
+      "version": "20261013140000",
+      "name": "d5o_field_start_shift_window",
+      "statement_count": 1,
+      "ledger_statement_sha256": "b4d0db930ec41eee4b5e37e990e43522d417fb0895909d259590e4a8ca817e04"
+    },
+    {
+      "version": "20261013152258",
+      "name": "d5o_connected_field_fact_evidence_links",
+      "statement_count": 1,
+      "ledger_statement_sha256": "9e33ff61c8898dd86e44eaedf1d43f5ff0799aadaa78741b79fcdd9543bb42f2"
+    },
+    {
+      "version": "20261014164339",
+      "name": "carry_unchanged_crew_responses",
+      "statement_count": 1,
+      "ledger_statement_sha256": "88c4ad866edd048c4e734ac176847c4f1441107609d8604674e3be0eb44faa85"
+    },
+    {
+      "version": "20261014223405",
+      "name": "guard_cross_work_asset_identity",
+      "statement_count": 1,
+      "ledger_statement_sha256": "817ec07f63895348b8093539b09745bc1c7cb1d48243440a60add6aa9b1921f2"
+    },
+    {
+      "version": "20261014230758",
+      "name": "link_accepted_delivery_to_existing_asset",
+      "statement_count": 1,
+      "ledger_statement_sha256": "ac9eb8fd242473bd2cd15d3b8598c7ba361231a40f5c00403e3a13e838d9bdc3"
+    },
+    {
+      "version": "20261014235613",
+      "name": "reject_ambiguous_asset_contribution",
+      "statement_count": 1,
+      "ledger_statement_sha256": "7f49f0bd8a41b82e942f696f7729506b06f132b0431fb6408dacc08c1e02dcce"
+    },
+    {
+      "version": "20261014235900",
+      "name": "d5o_private_evidence_index",
+      "statement_count": 1,
+      "ledger_statement_sha256": "d49bb7c977b4c0431f97b373321ded4991179fedb750590bf3253438dad777a2"
+    },
+    {
+      "version": "20261015111608",
+      "name": "restrict_supervisor_private_evidence",
+      "statement_count": 1,
+      "ledger_statement_sha256": "700fb159a7295c8c1eb49c47aa35d829bf1270df8fc1ad05305348aa282ee577"
+    },
+    {
+      "version": "20261015123201",
+      "name": "scope_support_documents_to_reviewing_supervisor",
+      "statement_count": 1,
+      "ledger_statement_sha256": "d303f438f6dbdd6ddeca9af883d2cf42ec5716b184380cd89a5b7e067e931433"
+    },
+    {
+      "version": "20261015132434",
+      "name": "assign_support_document_supplier",
+      "statement_count": 1,
+      "ledger_statement_sha256": "bb7d315eb74a7664efba3e3dac5d3092413f6dcc3e5de1b803d5f29cae542ce2"
+    },
+    {
+      "version": "20261015153000",
+      "name": "scope_supervisor_draft_save_return",
+      "statement_count": 1,
+      "ledger_statement_sha256": "0cc84a6c9d39b6b10187d035f3fe439bbbc29162d6999a36af3e432aaa5fb220"
+    },
+    {
+      "version": "20261016103345",
+      "name": "configured_handoff_roles",
+      "statement_count": 1,
+      "ledger_statement_sha256": "4bd7cf5e36702909b5a44d26170d2de4dcb8f45623598b6b1102c1a59843b3e9"
+    },
+    {
+      "version": "20261016104310",
+      "name": "configure_handoff_route_admin",
+      "statement_count": 1,
+      "ledger_statement_sha256": "fae829b705ee2f340f2dc960410be08765f274f32cd63767d88c201c9722947e"
+    },
+    {
+      "version": "20261016110000",
+      "name": "prioritize_admin_handoff_routes",
+      "statement_count": 1,
+      "ledger_statement_sha256": "caeea0bd1fcc317db29c5427fc45fcf6ee5cbe4e30a3530851fa2b1db7c381c5"
+    },
+    {
+      "version": "20261016130000",
+      "name": "versioned_hosted_handoff_routes",
+      "statement_count": 1,
+      "ledger_statement_sha256": "0befc97874fedf17644d8dd4aeeedac0d0f15249fcbee96de880b5043f20dc58"
+    },
+    {
+      "version": "20261016170859",
+      "name": "d5o_connected_rom_review",
+      "statement_count": 1,
+      "ledger_statement_sha256": "995d7cc0d6d9df7021193e9710e8a0823faf00d1a982a9e9cec7a9cfc6e923a9"
+    },
+    {
+      "version": "20261016190000",
+      "name": "d5o_workforce_availability_and_eligibility",
+      "statement_count": 1,
+      "ledger_statement_sha256": "b1cf436568b3197f810bd3bd18a6562a442767548de6ff5cbc31c05de6e1635f"
+    },
+    {
+      "version": "20261016200000",
+      "name": "d5o_graybar_procurement",
+      "statement_count": 1,
+      "ledger_statement_sha256": "a418fbc574da8e57635a13a45f4f51285b18a6076fa7c492d2a3c557dff2521f"
+    },
+    {
+      "version": "20261016210000",
+      "name": "d5o_graybar_quote_cost_and_invoice_guards",
+      "statement_count": 1,
+      "ledger_statement_sha256": "8aa03bc6f80cd60517a5ac46b7307506711df231e1521fa3a7c0f69bd1a12cb0"
+    },
+    {
+      "version": "20261016220000",
+      "name": "d5o_graybar_job_cost_bridge",
+      "statement_count": 1,
+      "ledger_statement_sha256": "0af4952885585c3df2703d5652a75cf2a4dd11f16727982cbd5db6938309c006"
+    },
+    {
+      "version": "20261016230000",
+      "name": "d5o_graybar_finance_queue",
+      "statement_count": 1,
+      "ledger_statement_sha256": "bd1c4fa4f455afa335a4810e4e04ecd16dc4112c31fa64cc4d3595dc6b828c4d"
+    },
+    {
+      "version": "20261016240000",
+      "name": "d5o_graybar_rom_pack_guard",
+      "statement_count": 1,
+      "ledger_statement_sha256": "bb6f0217f43024fed161af81e6ffa4aa9bc592a9a973f98730fdefaed26d4195"
+    },
+    {
+      "version": "20261016250000",
+      "name": "d5o_graybar_post_award_rom_reconciliation",
+      "statement_count": 1,
+      "ledger_statement_sha256": "81ba09141ff7e3d6870990f855ccfb098157b3e382f0743d2388f4639870279f"
+    },
+    {
+      "version": "20261016260000",
+      "name": "d5o_design_schedule_correction_hold",
+      "statement_count": 1,
+      "ledger_statement_sha256": "43117ada32cbea19771ce22b514cba5756b37b605bd2864bca32eb19ed736344"
+    },
+    {
+      "version": "20261016270000",
+      "name": "d5o_schedule_hold_scope_guard",
+      "statement_count": 1,
+      "ledger_statement_sha256": "d2cbc64209d92ddf13223428ea05923a956c572e143a631f0162b2abd10f14e2"
+    },
+    {
+      "version": "20261016280000",
+      "name": "d5o_schedule_hold_scope_guard_complete",
+      "statement_count": 1,
+      "ledger_statement_sha256": "add90aebcf76bd77230a74cb130447988e67cf956875a865e8e46ea07bfda8a0"
+    },
+    {
+      "version": "20261017000000",
+      "name": "hall_c_work_display_correction",
+      "statement_count": 1,
+      "ledger_statement_sha256": "374fea0bab98670f6a728eff99ca66f00f97e3523d3f82a52fbf9322e564fc93"
+    },
+    {
+      "version": "20261017010000",
+      "name": "service_only_work_title_correction",
+      "statement_count": 1,
+      "ledger_statement_sha256": "4c9ef5b742e64c1e8a1448588e7d8288b18aba4afe764f885d828812fb73726c"
+    },
+    {
+      "version": "20261017020000",
+      "name": "d5o_connected_design_spend_authority",
+      "statement_count": 1,
+      "ledger_statement_sha256": "24aad1bc561d42bf1cf10dda721ad71d80fb15a55a04545a23db2cda0fe32b1e"
+    },
+    {
+      "version": "20261017030000",
+      "name": "d5o_design_spend_queue_correction",
+      "statement_count": 1,
+      "ledger_statement_sha256": "1d0dc86d5feaa932ffbda83f8a6da96dd589a004ab12073428dc65ff3dd31f2e"
+    },
+    {
+      "version": "20261017040000",
+      "name": "d5o_design_spend_window_balance",
+      "statement_count": 1,
+      "ledger_statement_sha256": "aead5a23ea6779be28d2b6082a144ae2ec24248e19ee483536534bb78c91bf5f"
+    },
+    {
+      "version": "20261017050000",
+      "name": "d5o_design_spend_expired_window",
+      "statement_count": 1,
+      "ledger_statement_sha256": "56367e34bace636c3beb4f8495651f2382a87ef58ca6730d23ec963d398f7ca1"
+    },
+    {
+      "version": "20261017060000",
+      "name": "d5o_purchase_economic_authority",
+      "statement_count": 1,
+      "ledger_statement_sha256": "b78aa895ecc1fbe684238f32d297637973f44ebed758d46f46a28dae61ad3d85"
+    },
+    {
+      "version": "20261017070000",
+      "name": "d5o_subcontract_commercial_authority",
+      "statement_count": 1,
+      "ledger_statement_sha256": "a5ad46892fb4afe884276b88df9c521e133f59fd937dd0053c785312fa971a7a"
+    },
+    {
+      "version": "20261017080000",
+      "name": "d5o_subcontract_invoice_revision_guard",
+      "statement_count": 1,
+      "ledger_statement_sha256": "5ee06cfa505fd2ff0bf67002000067818216149cfa18c927b1e9d979787c259f"
+    },
+    {
+      "version": "20261017090000",
+      "name": "d5o_field_labor_economic_authority",
+      "statement_count": 1,
+      "ledger_statement_sha256": "78a50a11a45b229acb3190aa50fc7230837bcbdeb6f39810bd7a9293a76b4b87"
+    },
+    {
+      "version": "20261017091000",
+      "name": "d5o_labor_legacy_publication_and_cost_guard",
+      "statement_count": 1,
+      "ledger_statement_sha256": "bf373efc6af6272ab00cb5c09e9b1fd40b572b3c42c1054be25f5317eadba377"
+    },
+    {
+      "version": "20261017092000",
+      "name": "d5o_labor_review_correction_delta",
+      "statement_count": 1,
+      "ledger_statement_sha256": "e1fade3a8562701c7552d603fc5a4475a836c579e51ca5356d827a94cf1c383e"
+    },
+    {
+      "version": "20261017093000",
+      "name": "d5o_shared_cap_trigger_row_shape",
+      "statement_count": 1,
+      "ledger_statement_sha256": "8b631035dba50834b01c3eba87be54e8750ebdfd03ed22d0e3646ca79019f452"
+    },
+    {
+      "version": "20261017094000",
+      "name": "d5o_labor_current_actual_projection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "098bffe6ea769d00654c57c8d39f4cbc855045700cce9a8a5a5588111e1398cf"
+    },
+    {
+      "version": "20261017095000",
+      "name": "d5o_schedule_labor_hours_projection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "75e74f4f205e28323d9df0ad85a11363344cff403cd800df679b01fa1b3ba1ed"
+    },
+    {
+      "version": "20261017096000",
+      "name": "d5o_booking_effort_in_typed_writer",
+      "statement_count": 1,
+      "ledger_statement_sha256": "6ec006944e707c66d310c0c1bbd8bae736b4c1ee84bb5f21c40fd1ac73f0f1a9"
+    },
+    {
+      "version": "20261017097000",
+      "name": "d5o_labor_finance_control_visibility",
+      "statement_count": 1,
+      "ledger_statement_sha256": "e33d29f534f96b8fd64bbef1abd54d1afeec29e9219587ee1d5f244126a2f230"
+    },
+    {
+      "version": "20261017098000",
+      "name": "d5o_labor_report_reservation_source",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c9ba373ec194147c6141d2cbe2435019d94a4b4250f72a3eece6da338263853b"
+    },
+    {
+      "version": "20261017100000",
+      "name": "d5o_design_no_material_disposition",
+      "statement_count": 1,
+      "ledger_statement_sha256": "1d0cc072199b8379eda38da0f7439d70acf0fbc77a58f9b1d94de69333e7317d"
+    },
+    {
+      "version": "20261017101000",
+      "name": "d5o_release_no_material_design",
+      "statement_count": 1,
+      "ledger_statement_sha256": "465ff53e3a88b8d447eac664240574788834a7bf60d0fa38728f165641a79efe"
+    },
+    {
+      "version": "20261017102000",
+      "name": "d5o_labor_only_work_authority",
+      "statement_count": 1,
+      "ledger_statement_sha256": "07f5e48cfac69d9160cb47c5a04e5eee0565831900e6a0b1e3221edb7a1b3b10"
+    },
+    {
+      "version": "20261017171132",
+      "name": "d5o_design_cost_outlook_assessment",
+      "statement_count": 1,
+      "ledger_statement_sha256": "d9042517eec8d8b2036d35de28bed34ea85c3ab0373a595e992a9d8c8b50b756"
+    },
+    {
+      "version": "20261017172358",
+      "name": "d5o_preaward_work_cost_forecast",
+      "statement_count": 1,
+      "ledger_statement_sha256": "7abc1f80eaccc7e4e3982e65b4c375b04841e14314b01880846e0b6e43142e8e"
+    },
+    {
+      "version": "20261017172557",
+      "name": "d5o_design_cost_variable_guard",
+      "statement_count": 1,
+      "ledger_statement_sha256": "74105641ccdbeb3eb3509b0d21a7f33838441db3d957a21df9a56b4da88c73c6"
+    },
+    {
+      "version": "20261017173237",
+      "name": "d5o_finance_forecast_queue",
+      "statement_count": 1,
+      "ledger_statement_sha256": "b1b9d84f073eef99903d0efb4861ace3893387ba927da80ec129d9501535bce5"
+    },
+    {
+      "version": "20261017173653",
+      "name": "d5o_outlook_complete_source_guards",
+      "statement_count": 1,
+      "ledger_statement_sha256": "8774f9e99a068926a46f423c7797fd02e25a06a26dfa7ac3704fd01d965e8b5a"
+    },
+    {
+      "version": "20261017180000",
+      "name": "d5o_draft_save_projection_cache",
+      "statement_count": 1,
+      "ledger_statement_sha256": "768a13e32fd8c786c91ee3c17f26e9091df5a5ded9f8123b598232db102988a9"
+    },
+    {
+      "version": "20261017190000",
+      "name": "d5o_cache_design_package_draft_guards",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c5cfff2fdf621aba16a7b66cc85eba4a6f0643cd9a71bd9c2dcbfeedcd3d5e1d"
+    },
+    {
+      "version": "20261018005615",
+      "name": "d5o_design_cost_source_custody",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c46e70a7bc04d5558f5ad2eda68a8592508f116cb0960236c40fffb7cbb4d8d9"
+    },
+    {
+      "version": "20261018011407",
+      "name": "d5o_design_cost_evidence_owner_read",
+      "statement_count": 1,
+      "ledger_statement_sha256": "a3d309e3c14ff375863ec86c4d8920b1280e8faa248c962627070cd17c57f817"
+    },
+    {
+      "version": "20261018020000",
+      "name": "d5o_spending_delegate_selection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "45e71bcd53e6d93aad571217cdc041bfac54a952c92504d68d8b3a1d808a4b1c"
+    },
+    {
+      "version": "20261018021000",
+      "name": "d5o_spending_delegate_review_read_fix",
+      "statement_count": 1,
+      "ledger_statement_sha256": "a15504cdeb02da1d3fea0fd82c08378768ac2008b90c84addb6291c33be84476"
+    },
+    {
+      "version": "20261018022000",
+      "name": "d5o_design_only_work_authority_queue",
+      "statement_count": 1,
+      "ledger_statement_sha256": "56cae778f75d584891875919a0534584bb7c893e8c3b06b4dd128ddc8c6d26bf"
+    },
+    {
+      "version": "20261018023000",
+      "name": "d5o_field_labor_queue_scope",
+      "statement_count": 1,
+      "ledger_statement_sha256": "ad9d111375d9c0d37fb91e271799a6584aac74c81f790c74860f72ba27d32bd4"
+    },
+    {
+      "version": "20261018170056",
+      "name": "d5o_internal_design_rate_valuation",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c5b75f3b61f9ee5a81ce719c44c87a35aa468970325761525991590de3d9ee2e"
+    },
+    {
+      "version": "20261018180000",
+      "name": "d5o_purchase_order_delegation",
+      "statement_count": 1,
+      "ledger_statement_sha256": "cdf691c7ee69cfef360b7fec1c48c002db742404952caff0093cd7f24e29cb75"
+    },
+    {
+      "version": "20261018190000",
+      "name": "d5o_subcontract_delegate_selection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "83faded338d098a76e0c88a9468ee860a946317c6f74b570cfac8c032114192d"
+    },
+    {
+      "version": "20261018193000",
+      "name": "d5o_field_labor_delegate_selection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "45195c762590e500746ea1ce492e0b61015a76348b9795c1de3696110f4caebb"
+    },
+    {
+      "version": "20261018200000",
+      "name": "d5o_internal_rate_delegate_selection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "54a4e04645f154bda5685e1792e9fa1c1a739aa6f47f85c9c434e4fe3d4a8226"
+    },
+    {
+      "version": "20261018210000",
+      "name": "d5o_design_cost_review_delegate_selection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "eb6f08202f30ea6db1ef569eb2e11d379b31af82a8edb1f33408583b426c6a7d"
+    },
+    {
+      "version": "20261018220000",
+      "name": "d5o_outlook_review_delegate_selection",
+      "statement_count": 1,
+      "ledger_statement_sha256": "2bce77d652888a80942f448d68e4e86feb8a69ab75163258868530c6a3faad39"
+    },
+    {
+      "version": "20261018230000",
+      "name": "d5o_service_invoice_documented_net_terms",
+      "statement_count": 1,
+      "ledger_statement_sha256": "0c6dd994d39c86ef94fb16faf4afb1c305994d7bc8979a677c296fdf25677fb6"
+    },
+    {
+      "version": "20261019000000",
+      "name": "d5o_field_start_lead_policy",
+      "statement_count": 1,
+      "ledger_statement_sha256": "ae2ac3881dc7381d9b1c92611fbd2690322dc674be01ca0b96ecc37c1b0c158f"
+    },
+    {
+      "version": "20261019010000",
+      "name": "d5o_configured_delivery_receiver",
+      "statement_count": 1,
+      "ledger_statement_sha256": "a6fdc5d0828a676e694c65a4b21ebe29119e836ab3e6083f778dec775ff01b55"
+    },
+    {
+      "version": "20261019020000",
+      "name": "hosted_initial_configuration_publication",
+      "statement_count": 1,
+      "ledger_statement_sha256": "2c71347dfeb5853bccf49aa50cd50db16a4615d576ad0b09ababe883bc0578b2"
+    },
+    {
+      "version": "20261019030000",
+      "name": "hosted_initial_configuration_sha256_correction",
+      "statement_count": 1,
+      "ledger_statement_sha256": "8998e1ed62da29509dff7f98bac7175b2f20fc77eb9eb5eb7820d8eef0d06697"
+    },
+    {
+      "version": "20261019040000",
+      "name": "hosted_initial_configuration_empty_queue",
+      "statement_count": 1,
+      "ledger_statement_sha256": "06208205065696e8e0dee69f6011c579bc022718511dce45c55836dc536b734e"
+    },
+    {
+      "version": "20261019050000",
+      "name": "hosted_initial_configuration_empty_read",
+      "statement_count": 1,
+      "ledger_statement_sha256": "5bf4cdceb899ad688cb64d63d794a8df2e1eb2c4acaf6f6cbf4c59e127ec4a6d"
+    },
+    {
+      "version": "20261019131510",
+      "name": "d5o_suspend_synthetic_membership",
+      "statement_count": 1,
+      "ledger_statement_sha256": "56d07251c8f795ae59a80a719ef71032e01346566d1dcd339558326723e235c2"
+    },
+    {
+      "version": "20261019162237",
+      "name": "d5o_preserve_legacy_schedule_on_typed_transition",
+      "statement_count": 1,
+      "ledger_statement_sha256": "5dabb5e33c4bdad55f54803b19d8e0acb2609790766e9567c4f105192683b681"
+    },
+    {
+      "version": "20261019164403",
+      "name": "d5o_field_labor_source_text_precedence",
+      "statement_count": 1,
+      "ledger_statement_sha256": "525aaa0c883aeb18b65c91ffec7d34c57b8cf64891bfd2191ff50c73af2d66ec"
+    },
+    {
+      "version": "20261019211112",
+      "name": "d5o_admin_backend_20261019183127",
+      "statement_count": 1,
+      "ledger_statement_sha256": "482ef512fff535d244198df7f75ef57e1fc5b134fb8fdab9ae196ee66f583f82"
+    },
+    {
+      "version": "20261019221852",
+      "name": "d5o_hosted_configuration_management_20261019213000",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c0eb6b7eac2602ec122ebb8946e8eef156c82ecaaa798cc34a1631f344a4d866"
+    },
+    {
+      "version": "20261020085806",
+      "name": "d5o_design_same_day_schedule_hold",
+      "statement_count": 1,
+      "ledger_statement_sha256": "b6784f6a5e3fe361336bd73ab8f381d6626a6de9e4e330510508f2424b0bf039"
+    },
+    {
+      "version": "20261020131219",
+      "name": "d5o_admin_invitation_setup_20261020115849",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c921dfb8d18f2215584beef92801d4f362f098a4e9d67a53454526dfec114c48"
+    },
+    {
+      "version": "20261020131240",
+      "name": "d5o_admin_invitation_role_retry_guard_20261020135000",
+      "statement_count": 1,
+      "ledger_statement_sha256": "c4ada0e6fff6365a64b0fabfb6ccedab329e4d705a689ab79a98beeefa59516e"
+    },
+    {
+      "version": "20261020203138",
+      "name": "d5o_workforce_field_readiness_20261020180000",
+      "statement_count": 1,
+      "ledger_statement_sha256": "7b94fa3d05b711ace6e89047169e1ad8736e319cdfde2859b512c1cb3e5fd7af"
+    },
+    {
+      "version": "20261020205337",
+      "name": "d5o_binding_current_publication_20261020193000",
+      "statement_count": 1,
+      "ledger_statement_sha256": "b48522e313d65e6f67390920590f05f4a93ae9fbe30cf86e5f82cb30348d2315"
+    },
+    {
+      "version": "20261020205350",
+      "name": "d5o_worker_binding_publication_attribution_20261020200000",
+      "statement_count": 1,
+      "ledger_statement_sha256": "e9a0b09d5ae2beaabf54899b01132b9db4596f036b52775a20a2faad1d81d5d7"
+    },
+    {
+      "version": "20261020235720",
+      "name": "d5o_cross_week_empty_publication_20261020223652",
+      "statement_count": 1,
+      "ledger_statement_sha256": "f425bd2041351f4cc12fd320fd4da80a38ccbccd16ffa0feea57ca42e092231f"
+    },
+    {
+      "version": "20261020235730",
+      "name": "d5o_worker_empty_publication_projection_20261020231536",
+      "statement_count": 1,
+      "ledger_statement_sha256": "5e5b459ce580e3e58f2d1a628a91131d6a14c04815a6a4d1ee29ba64cfc313e2"
+    },
+    {
+      "version": "20261021123923",
+      "name": "d5o_field_worker_invitation_proposal_20261021114905",
+      "statement_count": 1,
+      "ledger_statement_sha256": "bb7963a1ee37da0d841129595215b4039171c4a935248f95a0eb8eae5d3f76ef"
+    }
+  ]
+}

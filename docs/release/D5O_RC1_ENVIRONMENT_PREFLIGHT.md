@@ -1,0 +1,13 @@
+# D5O RC1 environment preflight
+
+**Gate A: BLOCKED for staging.** Read-only discovery on 2026-10-26 found no identified and mutation-authorized isolated D5O staging target. The only Supabase project named D5O is `fcawktdjoxvahhgvkebx` (`db.fcawktdjoxvahhgvkebx.supabase.co`, PostgreSQL 17.6, database `postgres`). It contains existing tenants and private evidence and is classified as production or protected hosted state. Supabase reports no branches for it. No hosted mutation was attempted.
+
+The Vercel project is `d5o-system-of-work`, ID `prj_HF8KhxUFvONQlpMr53FdhEgmIpFG`, team `team_YSItyDw0cqxobdy4YBp9osYV`. Its latest reported deployment `dpl_DYXNRK2PyF4UUUKqpPqNHVYhVKXm` targets **production** and carries Git SHA `64487f8ec34da78325b0d87958ba5e29c46dd5fc`. RC0's application SHA is `3710ecace04e54769b5761da83f12594562e95b3`; no RC0 staging deployment was identified. Vercel reports zero custom environments. A preview URL would not establish database or Storage isolation.
+
+The production environment-variable **names** were read without values. They include Supabase URL, publishable and server key names, hosted/Auth/data-source modes, `D5O_SOURCE_SHA`, and restricted invitation names. They do not include the three persistence mode names, `RYBEXOS_SCANNER_MODE`, or `RYBEXOS_SCANNER_URL`. The current Vercel-to-Supabase Auth/Storage binding was not proven by reading a secret value. The prior 2026-10-23 health observation identified the D5O Supabase URL; it is historical, not a fresh authenticated binding proof.
+
+Read-only aggregate inventory of the D5O Supabase project: 2 hosted tenants, 15 hosted Work records, 4 configuration versions, 15 Work events, 0 Work command receipts, 25 Auth users, and 23 Storage objects. All 23 objects are in the private `d5o-deploy-evidence` bucket; no object bytes or names were exported. The SQL inspection role was `postgres`. Of 149 `d5o_hosted` tables, 149 have RLS enabled. Of 88 functions in that schema, 80 are `SECURITY DEFINER`; none of those is executable by `anon` in the inspected grants. These are aggregate observations, not a two-tenant authorization test.
+
+[Machine-readable preflight](D5O_RC1_READ_ONLY_PREFLIGHT.json) records identities, aggregate counts, bucket inventory, missing persistence tables, and environment-variable names without credentials. The protected Vercel URL fetch was rejected by automatic approval review because it could create a temporary share link; no alternate fetch was attempted. Current HTTP readiness is therefore unverified.
+
+The authorized disposable targets were two local loopback Supabase stacks created by the RC0 runtime. Both verified teardown. Neither is a staging data copy.

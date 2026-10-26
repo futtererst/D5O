@@ -1,0 +1,28 @@
+{
+  "format": "d5o-rc1-local-object-recovery-v1",
+  "scope": "fictional local object only; not a database or hosted Storage restore",
+  "candidateCommit": "ebad4b2b59ca65654777811a40ccde046f929e07",
+  "cleanup": {
+    "projectId": "d5o-p0a-234fc09e-5ba",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "error": null,
+  "object": {
+    "bucket": "d5o-deploy-evidence",
+    "privateBucket": true,
+    "path": "rc1-fictional-e3a32624-be62-4277-9a7a-4a07347d3991/work-c5784152-9500-4a3d-976c-b3187d0589d5/evidence-3bf47c2b-b6be-4dc1-815b-7d544281d324.pdf",
+    "byteLength": 85,
+    "sha256": "437a23e94baa6d077c9cb9592e13722c603ecdb82432bf72bc1bc90da6ad290a",
+    "checkpointAt": "2026-10-26T17:33:45.064Z",
+    "objectIdBefore": "1ba3f391-3241-4969-a429-f9bbc9b090dc",
+    "objectIdAfter": "a96ccab9-9e08-4859-9d11-e06d560e4880",
+    "objectIdPreserved": false,
+    "restoredBytesMatch": true,
+    "anonymousReadDeniedBeforeAndAfter": true,
+    "localObjectRecoveryMs": 438
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "format": "d5o-rc1-qualification-results-v1",
+  "recordedAtUtc": "2026-10-26T17:39:42.735Z",
+  "verdict": "NO-GO",
+  "rc0ApplicationCommit": "3710ecace04e54769b5761da83f12594562e95b3",
+  "rc0EvidenceCommit": "ebad4b2b59ca65654777811a40ccde046f929e07",
+  "branch": "codex/d5o-rc1-qualification",
+  "gates": {
+    "A": "BLOCKED",
+    "B": "FAIL",
+    "C": "BLOCKED",
+    "D": "BLOCKED",
+    "E": "BLOCKED",
+    "F": "BLOCKED",
+    "G": "FAIL"
+  },
+  "passed": [
+    {
+      "name": "npm ci",
+      "packages": 530
+    },
+    {
+      "name": "TypeScript"
+    },
+    {
+      "name": "targeted ESLint"
+    },
+    {
+      "name": "local production build",
+      "nextVersion": "16.4.2",
+      "staticPages": 45,
+      "applicationSha": "3710ecace04e54769b5761da83f12594562e95b3"
+    },
+    {
+      "name": "production configuration static check"
+    },
+    {
+      "name": "scanner invariant static check"
+    },
+    {
+      "name": "disposable 211-to-234 upgrade",
+      "appliedVersions": 23,
+      "workPinPreserved": true,
+      "auditPreserved": true,
+      "cleanupClean": true
+    },
+    {
+      "name": "fictional private object byte restoration",
+      "sha256": "437a23e94baa6d077c9cb9592e13722c603ecdb82432bf72bc1bc90da6ad290a",
+      "bytesMatch": true,
+      "anonymousDenied": true,
+      "localObjectRecoveryMs": 438,
+      "cleanupClean": true
+    }
+  ],
+  "failed": [
+    {
+      "name": "direct hosted migration compatibility",
+      "comparisonCounts": {
+        "manifest": 234,
+        "hosted": 177,
+        "sharedVersions": 148,
+        "hostedOnly": 29,
+        "manifestOnly": 86
+      },
+      "versionRemappingCandidates": 19,
+      "missingPersistenceTables": 16
+    },
+    {
+      "name": "legacy configuration no-regression verifier",
+      "failedAssertions": 5
+    },
+    {
+      "name": "initial sandboxed local build",
+      "reason": "Windows junction permission denied",
+      "resolvedByAuthorizedLocalRerun": true
+    }
+  ],
+  "blocked": [
+    {
+      "name": "approved isolated D5O staging identity and mutation authorization"
+    },
+    {
+      "name": "hosted migration SQL equivalence and protected data copy"
+    },
+    {
+      "name": "coordinated database and private object restore, RTO and RPO"
+    },
+    {
+      "name": "RC0 staging application and browser/security execution"
+    },
+    {
+      "name": "historical phase projection and sealed M1 fixture provenance"
+    },
+    {
+      "name": "fresh production HTTP readiness",
+      "reason": "automatic approval review rejected protected URL fetch because it could create a temporary share link"
+    }
+  ],
+  "limits": {
+    "hostedProjectRef": "fcawktdjoxvahhgvkebx",
+    "latestProductionDeploymentId": "dpl_DYXNRK2PyF4UUUKqpPqNHVYhVKXm",
+    "latestProductionGitSha": "64487f8ec34da78325b0d87958ba5e29c46dd5fc",
+    "storageObjectIdPreservedByLocalReupload": false,
+    "productionMutations": 0,
+    "hostedDeployments": 0,
+    "pushes": 0
+  }
+}

@@ -84,7 +84,8 @@ try {
 } catch (error) { result.error = String(error); }
 finally {
   if (runtime) result.cleanup = cleanupP0aRuntime(runtime);
-  writeFileSync(join(root, "docs/release/D5O_RC0_UPGRADE_SMOKE.json"), `${JSON.stringify(result, null, 2)}\n`);
+  writeFileSync(join(root, process.env.D5O_UPGRADE_RESULT_PATH || "docs/release/D5O_RC0_UPGRADE_SMOKE.json"),
+    `${JSON.stringify(result, null, 2)}\n`);
   console.log(JSON.stringify({ passed: !result.error && result.markerPreserved && result.workPinPreserved &&
     result.auditPreserved && result.cleanup?.clean,
     applied: result.appliedVersions.length, markerPreserved: result.markerPreserved,

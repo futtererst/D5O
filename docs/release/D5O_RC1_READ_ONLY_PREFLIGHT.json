@@ -1,0 +1,138 @@
+{
+  "format": "d5o-rc1-read-only-environment-preflight-v1",
+  "observedAtUtc": "2026-10-26T17:30:54.081Z",
+  "classification": "hosted production; staging identity and mutation authorization not established",
+  "application": {
+    "projectId": "prj_HF8KhxUFvONQlpMr53FdhEgmIpFG",
+    "name": "d5o-system-of-work",
+    "latestProductionDeploymentId": "dpl_DYXNRK2PyF4UUUKqpPqNHVYhVKXm",
+    "latestProductionGitSha": "64487f8ec34da78325b0d87958ba5e29c46dd5fc",
+    "rc0ApplicationSha": "3710ecace04e54769b5761da83f12594562e95b3",
+    "customEnvironments": 0
+  },
+  "database": {
+    "projectRef": "fcawktdjoxvahhgvkebx",
+    "databaseName": "postgres",
+    "executionRole": "postgres",
+    "postgresVersion": "17.6",
+    "aggregateCounts": {
+      "hosted_tenants": 2,
+      "hosted_work": 15,
+      "configuration_versions": 4,
+      "work_events": 15,
+      "work_receipts": 0,
+      "storage_objects": 23,
+      "auth_users": 25
+    },
+    "bucketInventory": [
+      {
+        "bucket_id": "customer-documents",
+        "public": false,
+        "object_count": 0
+      },
+      {
+        "bucket_id": "d5o-deploy-evidence",
+        "public": false,
+        "object_count": 23
+      },
+      {
+        "bucket_id": "partner-assets",
+        "public": false,
+        "object_count": 0
+      },
+      {
+        "bucket_id": "tenant-assets",
+        "public": true,
+        "object_count": 0
+      }
+    ],
+    "requiredPersistenceTables": [
+      {
+        "name": "billing_backup_packages",
+        "present": false
+      },
+      {
+        "name": "billing_backup_requirements",
+        "present": false
+      },
+      {
+        "name": "billing_blocker_clearances",
+        "present": false
+      },
+      {
+        "name": "billing_commercial_reviews",
+        "present": false
+      },
+      {
+        "name": "billing_review_decisions",
+        "present": false
+      },
+      {
+        "name": "closeout_blocker_clearances",
+        "present": false
+      },
+      {
+        "name": "closeout_evidence_references",
+        "present": false
+      },
+      {
+        "name": "closeout_readiness_validations",
+        "present": false
+      },
+      {
+        "name": "closeout_release_cases",
+        "present": false
+      },
+      {
+        "name": "closeout_review_decisions",
+        "present": false
+      },
+      {
+        "name": "closeout_reviews",
+        "present": false
+      },
+      {
+        "name": "field_issue_assessments",
+        "present": false
+      },
+      {
+        "name": "field_issue_evidence_references",
+        "present": false
+      },
+      {
+        "name": "field_issue_resolutions",
+        "present": false
+      },
+      {
+        "name": "field_issues",
+        "present": false
+      },
+      {
+        "name": "final_billing_retainage_projections",
+        "present": false
+      }
+    ],
+    "privilegeInventory": {
+      "hostedTables": 149,
+      "rlsEnabledTables": 149,
+      "hostedFunctions": 88,
+      "securityDefinerFunctions": 80,
+      "anonExecutableDefiners": 0
+    }
+  },
+  "productionEnvironmentVariableNames": [
+    "D5O_APPROVED_TEST_EMAIL_ADDRESS",
+    "D5O_APPROVED_TEST_EMAIL_ADDRESSES",
+    "D5O_COMMAND_RUNTIME",
+    "D5O_HOSTED_ENABLED",
+    "D5O_SOURCE_SHA",
+    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+    "NEXT_PUBLIC_SUPABASE_URL",
+    "RYBEXOS_AUTH_MODE",
+    "RYBEXOS_DATA_SOURCE",
+    "RYBEXOS_RUNTIME_MODE",
+    "SUPABASE_SECRET_KEY"
+  ],
+  "secretValuesRead": false,
+  "stagingMutationAuthorized": false
+}

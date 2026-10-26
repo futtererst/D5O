@@ -1,0 +1,717 @@
+{
+  "format": "d5o-rc1-hosted-ledger-metadata-v1",
+  "observedAtUtc": "2026-10-26T17:23:54.341Z",
+  "projectRef": "fcawktdjoxvahhgvkebx",
+  "classification": "production-or-unverified-hosted; read-only discovery",
+  "source": "Supabase connector list_migrations",
+  "migrations": [
+    {
+      "version": "001",
+      "name": "initial_schema"
+    },
+    {
+      "version": "002",
+      "name": "customer_order_item_rls"
+    },
+    {
+      "version": "003",
+      "name": "webhook_event_status"
+    },
+    {
+      "version": "004",
+      "name": "backfill_webhook_status"
+    },
+    {
+      "version": "005",
+      "name": "transaction_idempotency_indexes"
+    },
+    {
+      "version": "006",
+      "name": "enterprise_integration_foundation"
+    },
+    {
+      "version": "007",
+      "name": "enterprise_d365_cached_models"
+    },
+    {
+      "version": "008",
+      "name": "transaction_unique_constraints"
+    },
+    {
+      "version": "009",
+      "name": "customer_portal_rls"
+    },
+    {
+      "version": "010",
+      "name": "seed_enterprise_integration_demo"
+    },
+    {
+      "version": "20261007013631",
+      "name": "d5o_hosted_workspace_authority"
+    },
+    {
+      "version": "20261007014024",
+      "name": "d5o_hosted_workspace_invoker_hardening"
+    },
+    {
+      "version": "20261007015048",
+      "name": "d5o_hosted_work_identity"
+    },
+    {
+      "version": "20261007015356",
+      "name": "d5o_hosted_create_work_authority"
+    },
+    {
+      "version": "20261007020854",
+      "name": "d5o_hosted_configuration_manifest"
+    },
+    {
+      "version": "20261007021942",
+      "name": "d5o_hosted_synthetic_prototype_state"
+    },
+    {
+      "version": "20261007025942",
+      "name": "d5o_hosted_prototype_nested_scope"
+    },
+    {
+      "version": "20261007225404",
+      "name": "d5o_hosted_worker_boundary"
+    },
+    {
+      "version": "20261008182443",
+      "name": "d5o_hosted_command_writer"
+    },
+    {
+      "version": "20261008183310",
+      "name": "d5o_prototype_authoritative_writes"
+    },
+    {
+      "version": "20261008185604",
+      "name": "d5o_hosted_worker_provisioning"
+    },
+    {
+      "version": "20261008190351",
+      "name": "d5o_secret_key_role_compatibility"
+    },
+    {
+      "version": "20261008200840",
+      "name": "restrict_worker_work_access"
+    },
+    {
+      "version": "20261008203000",
+      "name": "d5o_reject_imported_commercial_decisions"
+    },
+    {
+      "version": "20261008214425",
+      "name": "hosted_pilot_role_assignments"
+    },
+    {
+      "version": "20261008221100",
+      "name": "d5o_guard_pilot_position"
+    },
+    {
+      "version": "20261008230000",
+      "name": "d5o_connected_work_identity"
+    },
+    {
+      "version": "20261008231000",
+      "name": "d5o_connected_define_commands"
+    },
+    {
+      "version": "20261008232000",
+      "name": "d5o_connected_discover_commands"
+    },
+    {
+      "version": "20261008233000",
+      "name": "d5o_connected_draft_projection"
+    },
+    {
+      "version": "20261008234000",
+      "name": "d5o_connected_solution_decision_lock"
+    },
+    {
+      "version": "20261008235000",
+      "name": "d5o_connected_solution_commands"
+    },
+    {
+      "version": "20261008235500",
+      "name": "d5o_connected_pricing_policy_commands"
+    },
+    {
+      "version": "20261008240000",
+      "name": "d5o_connected_estimate_commands"
+    },
+    {
+      "version": "20261008241000",
+      "name": "d5o_connected_offer_review"
+    },
+    {
+      "version": "20261008242000",
+      "name": "d5o_connected_customer_decisions"
+    },
+    {
+      "version": "20261008243000",
+      "name": "d5o_connected_design_handoff"
+    },
+    {
+      "version": "20261008244000",
+      "name": "d5o_connected_package_creation"
+    },
+    {
+      "version": "20261008244500",
+      "name": "d5o_connected_package_projection"
+    },
+    {
+      "version": "20261008245000",
+      "name": "d5o_connected_design_drafts"
+    },
+    {
+      "version": "20261008245100",
+      "name": "d5o_connected_design_reviews"
+    },
+    {
+      "version": "20261008245150",
+      "name": "d5o_connected_design_demand"
+    },
+    {
+      "version": "20261008245200",
+      "name": "d5o_connected_design_release"
+    },
+    {
+      "version": "20261008245300",
+      "name": "d5o_connected_crew_publication"
+    },
+    {
+      "version": "20261008245400",
+      "name": "d5o_connected_field_start"
+    },
+    {
+      "version": "20261008245450",
+      "name": "d5o_connected_deploy_draft_rebase"
+    },
+    {
+      "version": "20261008245500",
+      "name": "d5o_connected_field_facts"
+    },
+    {
+      "version": "20261008245600",
+      "name": "d5o_connected_field_evidence"
+    },
+    {
+      "version": "20261008245650",
+      "name": "d5o_connected_worker_projection"
+    },
+    {
+      "version": "20261008245700",
+      "name": "d5o_connected_acceptance"
+    },
+    {
+      "version": "20261008245800",
+      "name": "d5o_connected_operate_state"
+    },
+    {
+      "version": "20261008245850",
+      "name": "d5o_connected_operate_commands"
+    },
+    {
+      "version": "20261008245900",
+      "name": "d5o_connected_operate_draft_rebase"
+    },
+    {
+      "version": "20261008250000",
+      "name": "d5o_connected_service_job_command"
+    },
+    {
+      "version": "20261008250100",
+      "name": "d5o_connected_asset_acceptance"
+    },
+    {
+      "version": "20261008250200",
+      "name": "d5o_connected_service_projection"
+    },
+    {
+      "version": "20261008250300",
+      "name": "d5o_connected_service_draft_rebase"
+    },
+    {
+      "version": "20261009094046",
+      "name": "d5o_connected_service_basis"
+    },
+    {
+      "version": "20261009094248",
+      "name": "d5o_connected_service_basis_projection"
+    },
+    {
+      "version": "20261009095342",
+      "name": "d5o_connected_service_package"
+    },
+    {
+      "version": "20261009095658",
+      "name": "d5o_connected_design_source_adapter"
+    },
+    {
+      "version": "20261009101200",
+      "name": "d5o_connected_service_field_source"
+    },
+    {
+      "version": "20261009102800",
+      "name": "d5o_connected_worker_schedule_read"
+    },
+    {
+      "version": "20261009104500",
+      "name": "d5o_connected_service_return"
+    },
+    {
+      "version": "20261009110500",
+      "name": "d5o_connected_service_pricing"
+    },
+    {
+      "version": "20261009112000",
+      "name": "d5o_connected_partial_service_source"
+    },
+    {
+      "version": "20261009123000",
+      "name": "d5o_customer_decision_evidence"
+    },
+    {
+      "version": "20261009124000",
+      "name": "d5o_empty_package_draft_compatibility"
+    },
+    {
+      "version": "20261009125000",
+      "name": "d5o_pursuit_correction_after_source_change"
+    },
+    {
+      "version": "20261009181045",
+      "name": "d5o_post_acceptance_scope_integrity"
+    },
+    {
+      "version": "20261009214103",
+      "name": "d5o_connected_workforce"
+    },
+    {
+      "version": "20261009220510",
+      "name": "d5o_connected_field_changes"
+    },
+    {
+      "version": "20261009221159",
+      "name": "d5o_connected_job_finance"
+    },
+    {
+      "version": "20261009232739",
+      "name": "d5o_connected_design_field_change"
+    },
+    {
+      "version": "20261009234405",
+      "name": "d5o_current_release_field_start"
+    },
+    {
+      "version": "20261010011108",
+      "name": "d5o_connected_billing_integrity"
+    },
+    {
+      "version": "20261010100022",
+      "name": "d5o_post_closeout_receivable"
+    },
+    {
+      "version": "20261010130807",
+      "name": "connected_service_financial_disposition"
+    },
+    {
+      "version": "20261010150000",
+      "name": "connected_service_billing_terms"
+    },
+    {
+      "version": "20261010170000",
+      "name": "connected_service_action_queue"
+    },
+    {
+      "version": "20261010180000",
+      "name": "connected_service_invoice"
+    },
+    {
+      "version": "20261010190000",
+      "name": "connected_service_actual_cost"
+    },
+    {
+      "version": "20261010200000",
+      "name": "d5o_completion_reassessment"
+    },
+    {
+      "version": "20261010210000",
+      "name": "d5o_support_document_obligations"
+    },
+    {
+      "version": "20261011162940",
+      "name": "optimize_connected_draft_projection"
+    },
+    {
+      "version": "20261012110000",
+      "name": "d5o_design_draft_required_arrays"
+    },
+    {
+      "version": "20261012120000",
+      "name": "d5o_draft_booking_before_release"
+    },
+    {
+      "version": "20261012123000",
+      "name": "d5o_design_handoff_clarification"
+    },
+    {
+      "version": "20261013111633",
+      "name": "design_document_custody"
+    },
+    {
+      "version": "20261013140000",
+      "name": "d5o_field_start_shift_window"
+    },
+    {
+      "version": "20261013152258",
+      "name": "d5o_connected_field_fact_evidence_links"
+    },
+    {
+      "version": "20261014164339",
+      "name": "carry_unchanged_crew_responses"
+    },
+    {
+      "version": "20261014223405",
+      "name": "guard_cross_work_asset_identity"
+    },
+    {
+      "version": "20261014230758",
+      "name": "link_accepted_delivery_to_existing_asset"
+    },
+    {
+      "version": "20261014235613",
+      "name": "reject_ambiguous_asset_contribution"
+    },
+    {
+      "version": "20261014235900",
+      "name": "d5o_private_evidence_index"
+    },
+    {
+      "version": "20261015111608",
+      "name": "restrict_supervisor_private_evidence"
+    },
+    {
+      "version": "20261015123201",
+      "name": "scope_support_documents_to_reviewing_supervisor"
+    },
+    {
+      "version": "20261015132434",
+      "name": "assign_support_document_supplier"
+    },
+    {
+      "version": "20261015153000",
+      "name": "scope_supervisor_draft_save_return"
+    },
+    {
+      "version": "20261016103345",
+      "name": "configured_handoff_roles"
+    },
+    {
+      "version": "20261016104310",
+      "name": "configure_handoff_route_admin"
+    },
+    {
+      "version": "20261016110000",
+      "name": "prioritize_admin_handoff_routes"
+    },
+    {
+      "version": "20261016130000",
+      "name": "versioned_hosted_handoff_routes"
+    },
+    {
+      "version": "20261016170859",
+      "name": "d5o_connected_rom_review"
+    },
+    {
+      "version": "20261016190000",
+      "name": "d5o_workforce_availability_and_eligibility"
+    },
+    {
+      "version": "20261016200000",
+      "name": "d5o_graybar_procurement"
+    },
+    {
+      "version": "20261016210000",
+      "name": "d5o_graybar_quote_cost_and_invoice_guards"
+    },
+    {
+      "version": "20261016220000",
+      "name": "d5o_graybar_job_cost_bridge"
+    },
+    {
+      "version": "20261016230000",
+      "name": "d5o_graybar_finance_queue"
+    },
+    {
+      "version": "20261016240000",
+      "name": "d5o_graybar_rom_pack_guard"
+    },
+    {
+      "version": "20261016250000",
+      "name": "d5o_graybar_post_award_rom_reconciliation"
+    },
+    {
+      "version": "20261016260000",
+      "name": "d5o_design_schedule_correction_hold"
+    },
+    {
+      "version": "20261016270000",
+      "name": "d5o_schedule_hold_scope_guard"
+    },
+    {
+      "version": "20261016280000",
+      "name": "d5o_schedule_hold_scope_guard_complete"
+    },
+    {
+      "version": "20261017000000",
+      "name": "hall_c_work_display_correction"
+    },
+    {
+      "version": "20261017010000",
+      "name": "service_only_work_title_correction"
+    },
+    {
+      "version": "20261017020000",
+      "name": "d5o_connected_design_spend_authority"
+    },
+    {
+      "version": "20261017030000",
+      "name": "d5o_design_spend_queue_correction"
+    },
+    {
+      "version": "20261017040000",
+      "name": "d5o_design_spend_window_balance"
+    },
+    {
+      "version": "20261017050000",
+      "name": "d5o_design_spend_expired_window"
+    },
+    {
+      "version": "20261017060000",
+      "name": "d5o_purchase_economic_authority"
+    },
+    {
+      "version": "20261017070000",
+      "name": "d5o_subcontract_commercial_authority"
+    },
+    {
+      "version": "20261017080000",
+      "name": "d5o_subcontract_invoice_revision_guard"
+    },
+    {
+      "version": "20261017090000",
+      "name": "d5o_field_labor_economic_authority"
+    },
+    {
+      "version": "20261017091000",
+      "name": "d5o_labor_legacy_publication_and_cost_guard"
+    },
+    {
+      "version": "20261017092000",
+      "name": "d5o_labor_review_correction_delta"
+    },
+    {
+      "version": "20261017093000",
+      "name": "d5o_shared_cap_trigger_row_shape"
+    },
+    {
+      "version": "20261017094000",
+      "name": "d5o_labor_current_actual_projection"
+    },
+    {
+      "version": "20261017095000",
+      "name": "d5o_schedule_labor_hours_projection"
+    },
+    {
+      "version": "20261017096000",
+      "name": "d5o_booking_effort_in_typed_writer"
+    },
+    {
+      "version": "20261017097000",
+      "name": "d5o_labor_finance_control_visibility"
+    },
+    {
+      "version": "20261017098000",
+      "name": "d5o_labor_report_reservation_source"
+    },
+    {
+      "version": "20261017100000",
+      "name": "d5o_design_no_material_disposition"
+    },
+    {
+      "version": "20261017101000",
+      "name": "d5o_release_no_material_design"
+    },
+    {
+      "version": "20261017102000",
+      "name": "d5o_labor_only_work_authority"
+    },
+    {
+      "version": "20261017171132",
+      "name": "d5o_design_cost_outlook_assessment"
+    },
+    {
+      "version": "20261017172358",
+      "name": "d5o_preaward_work_cost_forecast"
+    },
+    {
+      "version": "20261017172557",
+      "name": "d5o_design_cost_variable_guard"
+    },
+    {
+      "version": "20261017173237",
+      "name": "d5o_finance_forecast_queue"
+    },
+    {
+      "version": "20261017173653",
+      "name": "d5o_outlook_complete_source_guards"
+    },
+    {
+      "version": "20261017180000",
+      "name": "d5o_draft_save_projection_cache"
+    },
+    {
+      "version": "20261017190000",
+      "name": "d5o_cache_design_package_draft_guards"
+    },
+    {
+      "version": "20261018005615",
+      "name": "d5o_design_cost_source_custody"
+    },
+    {
+      "version": "20261018011407",
+      "name": "d5o_design_cost_evidence_owner_read"
+    },
+    {
+      "version": "20261018020000",
+      "name": "d5o_spending_delegate_selection"
+    },
+    {
+      "version": "20261018021000",
+      "name": "d5o_spending_delegate_review_read_fix"
+    },
+    {
+      "version": "20261018022000",
+      "name": "d5o_design_only_work_authority_queue"
+    },
+    {
+      "version": "20261018023000",
+      "name": "d5o_field_labor_queue_scope"
+    },
+    {
+      "version": "20261018170056",
+      "name": "d5o_internal_design_rate_valuation"
+    },
+    {
+      "version": "20261018180000",
+      "name": "d5o_purchase_order_delegation"
+    },
+    {
+      "version": "20261018190000",
+      "name": "d5o_subcontract_delegate_selection"
+    },
+    {
+      "version": "20261018193000",
+      "name": "d5o_field_labor_delegate_selection"
+    },
+    {
+      "version": "20261018200000",
+      "name": "d5o_internal_rate_delegate_selection"
+    },
+    {
+      "version": "20261018210000",
+      "name": "d5o_design_cost_review_delegate_selection"
+    },
+    {
+      "version": "20261018220000",
+      "name": "d5o_outlook_review_delegate_selection"
+    },
+    {
+      "version": "20261018230000",
+      "name": "d5o_service_invoice_documented_net_terms"
+    },
+    {
+      "version": "20261019000000",
+      "name": "d5o_field_start_lead_policy"
+    },
+    {
+      "version": "20261019010000",
+      "name": "d5o_configured_delivery_receiver"
+    },
+    {
+      "version": "20261019020000",
+      "name": "hosted_initial_configuration_publication"
+    },
+    {
+      "version": "20261019030000",
+      "name": "hosted_initial_configuration_sha256_correction"
+    },
+    {
+      "version": "20261019040000",
+      "name": "hosted_initial_configuration_empty_queue"
+    },
+    {
+      "version": "20261019050000",
+      "name": "hosted_initial_configuration_empty_read"
+    },
+    {
+      "version": "20261019131510",
+      "name": "d5o_suspend_synthetic_membership"
+    },
+    {
+      "version": "20261019162237",
+      "name": "d5o_preserve_legacy_schedule_on_typed_transition"
+    },
+    {
+      "version": "20261019164403",
+      "name": "d5o_field_labor_source_text_precedence"
+    },
+    {
+      "version": "20261019211112",
+      "name": "d5o_admin_backend_20261019183127"
+    },
+    {
+      "version": "20261019221852",
+      "name": "d5o_hosted_configuration_management_20261019213000"
+    },
+    {
+      "version": "20261020085806",
+      "name": "d5o_design_same_day_schedule_hold"
+    },
+    {
+      "version": "20261020131219",
+      "name": "d5o_admin_invitation_setup_20261020115849"
+    },
+    {
+      "version": "20261020131240",
+      "name": "d5o_admin_invitation_role_retry_guard_20261020135000"
+    },
+    {
+      "version": "20261020203138",
+      "name": "d5o_workforce_field_readiness_20261020180000"
+    },
+    {
+      "version": "20261020205337",
+      "name": "d5o_binding_current_publication_20261020193000"
+    },
+    {
+      "version": "20261020205350",
+      "name": "d5o_worker_binding_publication_attribution_20261020200000"
+    },
+    {
+      "version": "20261020235720",
+      "name": "d5o_cross_week_empty_publication_20261020223652"
+    },
+    {
+      "version": "20261020235730",
+      "name": "d5o_worker_empty_publication_projection_20261020231536"
+    },
+    {
+      "version": "20261021123923",
+      "name": "d5o_field_worker_invitation_proposal_20261021114905"
+    }
+  ]
+}

@@ -1,0 +1,853 @@
+{
+  "format": "d5o-rc1-ledger-comparison-v1",
+  "applicationCommit": "3710ecace04e54769b5761da83f12594562e95b3",
+  "hostedProjectRef": "fcawktdjoxvahhgvkebx",
+  "hostedClassification": "production-or-unverified-hosted; read-only discovery",
+  "observedAtUtc": "2026-10-26T17:23:54.341Z",
+  "counts": {
+    "manifest": 234,
+    "hosted": 177,
+    "sharedVersions": 148,
+    "hostedOnly": 29,
+    "manifestOnly": 86
+  },
+  "sharedVersionNameMismatches": [],
+  "hostedOnly": [
+    {
+      "version": "001",
+      "name": "initial_schema"
+    },
+    {
+      "version": "002",
+      "name": "customer_order_item_rls"
+    },
+    {
+      "version": "003",
+      "name": "webhook_event_status"
+    },
+    {
+      "version": "004",
+      "name": "backfill_webhook_status"
+    },
+    {
+      "version": "005",
+      "name": "transaction_idempotency_indexes"
+    },
+    {
+      "version": "006",
+      "name": "enterprise_integration_foundation"
+    },
+    {
+      "version": "007",
+      "name": "enterprise_d365_cached_models"
+    },
+    {
+      "version": "008",
+      "name": "transaction_unique_constraints"
+    },
+    {
+      "version": "009",
+      "name": "customer_portal_rls"
+    },
+    {
+      "version": "010",
+      "name": "seed_enterprise_integration_demo"
+    },
+    {
+      "version": "20261007013631",
+      "name": "d5o_hosted_workspace_authority"
+    },
+    {
+      "version": "20261007014024",
+      "name": "d5o_hosted_workspace_invoker_hardening"
+    },
+    {
+      "version": "20261007015048",
+      "name": "d5o_hosted_work_identity"
+    },
+    {
+      "version": "20261007015356",
+      "name": "d5o_hosted_create_work_authority"
+    },
+    {
+      "version": "20261007020854",
+      "name": "d5o_hosted_configuration_manifest"
+    },
+    {
+      "version": "20261007021942",
+      "name": "d5o_hosted_synthetic_prototype_state"
+    },
+    {
+      "version": "20261007025942",
+      "name": "d5o_hosted_prototype_nested_scope"
+    },
+    {
+      "version": "20261019164403",
+      "name": "d5o_field_labor_source_text_precedence"
+    },
+    {
+      "version": "20261019211112",
+      "name": "d5o_admin_backend_20261019183127"
+    },
+    {
+      "version": "20261019221852",
+      "name": "d5o_hosted_configuration_management_20261019213000"
+    },
+    {
+      "version": "20261020085806",
+      "name": "d5o_design_same_day_schedule_hold"
+    },
+    {
+      "version": "20261020131219",
+      "name": "d5o_admin_invitation_setup_20261020115849"
+    },
+    {
+      "version": "20261020131240",
+      "name": "d5o_admin_invitation_role_retry_guard_20261020135000"
+    },
+    {
+      "version": "20261020203138",
+      "name": "d5o_workforce_field_readiness_20261020180000"
+    },
+    {
+      "version": "20261020205337",
+      "name": "d5o_binding_current_publication_20261020193000"
+    },
+    {
+      "version": "20261020205350",
+      "name": "d5o_worker_binding_publication_attribution_20261020200000"
+    },
+    {
+      "version": "20261020235720",
+      "name": "d5o_cross_week_empty_publication_20261020223652"
+    },
+    {
+      "version": "20261020235730",
+      "name": "d5o_worker_empty_publication_projection_20261020231536"
+    },
+    {
+      "version": "20261021123923",
+      "name": "d5o_field_worker_invitation_proposal_20261021114905"
+    }
+  ],
+  "manifestOnly": [
+    {
+      "order": 1,
+      "version": "0001",
+      "filename": "0001_core_foundation.sql",
+      "sha256": "9970d46cd6cdefe411d7c51eaa24af12a9c1e9fcdd017122423739255bcd91c5"
+    },
+    {
+      "order": 2,
+      "version": "0002",
+      "filename": "0002_d1_d2_pipeline_projects.sql",
+      "sha256": "3947432a1c857eec13c481535440985538b74b0a1caa07fe3b2f058fe31373a8"
+    },
+    {
+      "order": 3,
+      "version": "0003",
+      "filename": "0003_workflow_transactions.sql",
+      "sha256": "e089336b22e642018d78332b4939b666fe98ce8b633015d6b607e2341d09f089"
+    },
+    {
+      "order": 4,
+      "version": "0004",
+      "filename": "0004_rls_security_scaffold.sql",
+      "sha256": "dfeb278d28c6ddc6cb6be12847b160e3bfc85b13079627712e6860f10067c39a"
+    },
+    {
+      "order": 5,
+      "version": "0005",
+      "filename": "0005_identity_workspace_security.sql",
+      "sha256": "188680b9e3adc6756cb0ef8c50a895843554ef0321bc8e6c27719ecf313b8c2c"
+    },
+    {
+      "order": 6,
+      "version": "0006",
+      "filename": "0006_shared_command_audit_evidence.sql",
+      "sha256": "84fb66d66074447914e07ea7664d891b50dba6c5b46108181780d54ef9c4199b"
+    },
+    {
+      "order": 7,
+      "version": "0007",
+      "filename": "0007_billing_v2_production_persistence.sql",
+      "sha256": "ab48b32ec3af5d02cf5df71917b5c59895d0266f503a273e2cdb53dd0466f6f6"
+    },
+    {
+      "order": 8,
+      "version": "0008",
+      "filename": "0008_field_issue_rfi_change_production_persistence.sql",
+      "sha256": "6581bfc01fcfc715c95cdd191827bc77646804215cfebe03fa77255f93f21204"
+    },
+    {
+      "order": 9,
+      "version": "0009",
+      "filename": "0009_closeout_production_persistence.sql",
+      "sha256": "c1f3c6a06231340ad963d178c07322a04c7af48145b4f9a5adbc9f50408f93dd"
+    },
+    {
+      "order": 10,
+      "version": "0010",
+      "filename": "0010_production_cutover_hardening.sql",
+      "sha256": "80b9a9dd7e2f982221274c467d6d8b983d64753bd3b9ecc27b2b32de9b017ff2"
+    },
+    {
+      "order": 11,
+      "version": "0011",
+      "filename": "0011_p1_01a_opportunity_intake_qualification.sql",
+      "sha256": "f3ee7b1f9c769a04177833227f40fb3e32c638e9fb8a05c14519ba88706c4816"
+    },
+    {
+      "order": 12,
+      "version": "0012",
+      "filename": "0012_p1_01a_acceptance_remediation.sql",
+      "sha256": "bac007cc605bebd3e1d90b13501e199fa65908dad531f227b2ed4878fe9edd5d"
+    },
+    {
+      "order": 13,
+      "version": "0013",
+      "filename": "0013_p1_01a_role_accountability_read_model.sql",
+      "sha256": "f4e04faa65bbddf8a0f25c6ba54a42bf70a35a790dd09850c45d8a3935133273"
+    },
+    {
+      "order": 14,
+      "version": "0014",
+      "filename": "0014_p1_01a_decision_owner_actions.sql",
+      "sha256": "7037a301181e5155642fc99b4c09361e2cda1eddb5151d145806f306c08b6030"
+    },
+    {
+      "order": 15,
+      "version": "0015",
+      "filename": "0015_p1_01b_1_pursuit_authorization.sql",
+      "sha256": "bdd9744a9f623b632860542e853dda59f966eaebf15fe9a4d5617df023f9087d"
+    },
+    {
+      "order": 16,
+      "version": "0016",
+      "filename": "0016_p1_01b_2_bid_submission_outcome.sql",
+      "sha256": "3731aff4ba8c2e31b98e4219fa84498c4e2309da7aa02d0daa97fdcd33177588"
+    },
+    {
+      "order": 17,
+      "version": "0017",
+      "filename": "0017_configuration_foundation_core.sql",
+      "sha256": "acd2aa06590b8d1113741e4296a9842cc0c0ff54af05926956c9e917c9dabccb"
+    },
+    {
+      "order": 18,
+      "version": "0018",
+      "filename": "0018_configuration_template_packs_versions.sql",
+      "sha256": "3bbbf4f8b5635a824acdc5e1f02a98c7ab5ac1d79fde900387ad7908a0116ba4"
+    },
+    {
+      "order": 19,
+      "version": "0019",
+      "filename": "0019_configuration_tenant_activation_versions.sql",
+      "sha256": "6fdfc1d5acdd209c4b168168467892df952de7e507a4f7f40661691951771d37"
+    },
+    {
+      "order": 20,
+      "version": "0020",
+      "filename": "0020_configuration_phase_gate_definitions.sql",
+      "sha256": "a3874654190220561dbea6b7b5195bd69fd8c78617de7defebc8759cedd44afd"
+    },
+    {
+      "order": 21,
+      "version": "0021",
+      "filename": "0021_configuration_work_types_streams_lanes.sql",
+      "sha256": "8e817aec5fa3a2b55f77c43ca36f1fa7312b02395f68cd3eb5a284adca6e9d9c"
+    },
+    {
+      "order": 22,
+      "version": "0022",
+      "filename": "0022_configuration_roles_permissions_decision_rights.sql",
+      "sha256": "84601aa08fa94b5c3882524f02365cc3806c9cce727051167d563f349417a4f1"
+    },
+    {
+      "order": 23,
+      "version": "0023",
+      "filename": "0023_configuration_artifact_evidence_definitions.sql",
+      "sha256": "84347c74d1e3f110b4df055d9c1d2f102e6d7fd3da851131e26baef8d474b4f4"
+    },
+    {
+      "order": 24,
+      "version": "0024",
+      "filename": "0024_configuration_kpi_financial_workforce_handoff_governance.sql",
+      "sha256": "4dba92036cacb3c06ce6109392e00a9c8955976463acef87766780c2f9d69473"
+    },
+    {
+      "order": 25,
+      "version": "0025",
+      "filename": "0025_configuration_audit_effective_resolution.sql",
+      "sha256": "359043ee38a971bae291c640da71e96ce5a1a5e6d46a3b295cada3f04325ec06"
+    },
+    {
+      "order": 26,
+      "version": "0026",
+      "filename": "0026_configuration_template_pack_seed_data.sql",
+      "sha256": "92750263a7aaee419de89f1fb313811810ee006c80ee2727139680442f6d7a3e"
+    },
+    {
+      "order": 27,
+      "version": "0027",
+      "filename": "0027_cfg_runtime_01_pricing_review_readiness.sql",
+      "sha256": "9ff978f044caff6c1dc0fd9e9e620bd2f81befc5954965314c42ab5a704b2949"
+    },
+    {
+      "order": 28,
+      "version": "0028",
+      "filename": "0028_cfg_runtime_02_pursuit_authorization.sql",
+      "sha256": "cbfe93ecdf2c0db681d18e8afb370876c2244053b5990f364a5029d8720c387a"
+    },
+    {
+      "order": 29,
+      "version": "0029",
+      "filename": "0029_cfg_runtime_03_bid_submission_approval.sql",
+      "sha256": "e1d48c12d02c42545045e462bc52f1ca2e11a52052c704ac54af7d3e0624d7a0"
+    },
+    {
+      "order": 30,
+      "version": "0030",
+      "filename": "0030_cfg_runtime_03_evidence_persistence_authority.sql",
+      "sha256": "af0091579d9258c9bc9ddfb79e156a4fbe7ef19159ab74eb0567e4b6ebf87f7a"
+    },
+    {
+      "order": 31,
+      "version": "0031",
+      "filename": "0031_cfg_runtime_03_actor_profile_identity_coherence.sql",
+      "sha256": "f4337c332c975c91994b34414fd142aade4df8140ff9f76463b183c430b81664"
+    },
+    {
+      "order": 32,
+      "version": "20260928120323",
+      "filename": "20260928120323_baseline_evidence_scan_reconciliation.sql",
+      "sha256": "6a244d93074aa83b90bd7b437de13107843ffdc99b1a39f2e197d40eeacd4ca9"
+    },
+    {
+      "order": 33,
+      "version": "20260928145307",
+      "filename": "20260928145307_p1_cfg_evidence_custody_acceptance.sql",
+      "sha256": "5dfcaf06b3712b5eb464951b67daa439b1bcb59848b11a6229ce298bd52977c2"
+    },
+    {
+      "order": 34,
+      "version": "20260928214119",
+      "filename": "20260928214119_d5o_m1_work_record_gate.sql",
+      "sha256": "d18dc96e768cad1240dbef17011461a9ce565d1690a585b2f5cfe5da366f3dbe"
+    },
+    {
+      "order": 35,
+      "version": "20260929121652",
+      "filename": "20260929121652_d5o_m1_replay_configuration_guard.sql",
+      "sha256": "9dd4dc9ece353557378e7dfae733b39283832b3fdf2008c03b99d436069d0a90"
+    },
+    {
+      "order": 36,
+      "version": "20261002000000",
+      "filename": "20261002000000_d5o_m2_work_record_queue.sql",
+      "sha256": "efcd61fc7801a42fb339d4853ad9af7e3bc353d3585810993aac636541f23ca9"
+    },
+    {
+      "order": 37,
+      "version": "20261004230000",
+      "filename": "20261004230000_d5o_work_package_foundation.sql",
+      "sha256": "9b5c03025f14ab2c0c6d71c9d088efba69e2797364243b488f2ff9de65eb104b"
+    },
+    {
+      "order": 38,
+      "version": "20261004233000",
+      "filename": "20261004233000_d5o_work_package_closed_guard.sql",
+      "sha256": "f84c6cef592ae541aa58ff731d4d6d56646f2e727c173578b321930fdebc0d69"
+    },
+    {
+      "order": 39,
+      "version": "20261004234500",
+      "filename": "20261004234500_d5o_package_proof_snapshot.sql",
+      "sha256": "2ffb1c7632f436864a2d2cf4323d5e47ed1ab07bba32f9b3c9da117af1cbde88"
+    },
+    {
+      "order": 40,
+      "version": "20261005122038",
+      "filename": "20261005122038_d5o_configured_lifecycle_rules.sql",
+      "sha256": "1eebba81b8292fe348a94bcde178b6d875858fd06935f055660ebcc3de651380"
+    },
+    {
+      "order": 41,
+      "version": "20261005200000",
+      "filename": "20261005200000_d5o_configuration_publication.sql",
+      "sha256": "c3ca5277189fe5635bafa4a9896494ab3b90383490ddb21637b658a28e0d2c22"
+    },
+    {
+      "order": 42,
+      "version": "20261005210000",
+      "filename": "20261005210000_d5o_configuration_activation_split.sql",
+      "sha256": "f0dea15ba3bf13278a5dde4641d75eb3b144454361b174fecd880fdc57c26e80"
+    },
+    {
+      "order": 43,
+      "version": "20261005220000",
+      "filename": "20261005220000_d5o_candidate_activation_guard.sql",
+      "sha256": "5635a5aa5964176b08e35cadee9c18e5c776c9396f2b1b07c61714481e26e3e4"
+    },
+    {
+      "order": 44,
+      "version": "20261005230000",
+      "filename": "20261005230000_d5o_published_phase_contract.sql",
+      "sha256": "661264ddfdea38165597d853d90d381311e63ead3430df52b1e00aa4b4fc694a"
+    },
+    {
+      "order": 45,
+      "version": "20261007013134",
+      "filename": "20261007013134_d5o_hosted_workspace_authority.sql",
+      "sha256": "18e09f92e5d6380f2c26f8248e0fae4892936aa27229573ec326a0db1b616956"
+    },
+    {
+      "order": 46,
+      "version": "20261007013707",
+      "filename": "20261007013707_d5o_hosted_workspace_invoker_hardening.sql",
+      "sha256": "951ef953b723ad8d54ae55f7eedb126f181d0a040fb5213859964a860e71fa77"
+    },
+    {
+      "order": 47,
+      "version": "20261007020600",
+      "filename": "20261007020600_d5o_hosted_work_identity.sql",
+      "sha256": "1f3120fc5601f630a7679744cfc3dbc844318b870c126e795e29b9540ad0a27b"
+    },
+    {
+      "order": 48,
+      "version": "20261007022200",
+      "filename": "20261007022200_d5o_hosted_create_work_authority.sql",
+      "sha256": "eb1dbc16a0bbb096efb2a4bb79973a124427a9e7769366abc2076432d2dda44e"
+    },
+    {
+      "order": 49,
+      "version": "20261007031000",
+      "filename": "20261007031000_d5o_hosted_configuration_manifest.sql",
+      "sha256": "cf23152b841e3de3ad49405a63e862a14a5c5910d75dcde9f8b6b93bd1878617"
+    },
+    {
+      "order": 50,
+      "version": "20261007040000",
+      "filename": "20261007040000_d5o_hosted_synthetic_prototype_state.sql",
+      "sha256": "ed042a5b491565fe458ca42efd3348dd936b57239ec10b2d40fd31e451bf155b"
+    },
+    {
+      "order": 51,
+      "version": "20261007050000",
+      "filename": "20261007050000_d5o_hosted_prototype_nested_scope.sql",
+      "sha256": "ea1261d4a0a05868b5f361ae394b479db782e8912569cf9b28037a4fd2a80f7a"
+    },
+    {
+      "order": 200,
+      "version": "20261019170000",
+      "filename": "20261019170000_d5o_field_labor_source_text_precedence.sql",
+      "sha256": "6eb620e8fe53183209a22f5f3c457fc242fbdca07385afe42bb094411a043841"
+    },
+    {
+      "order": 201,
+      "version": "20261019183127",
+      "filename": "20261019183127_d5o_admin_backend.sql",
+      "sha256": "df771e7c167ce9dcf53d0823f0994410d5acfb834f6175d56a93ae0f17190179"
+    },
+    {
+      "order": 202,
+      "version": "20261019213000",
+      "filename": "20261019213000_d5o_hosted_configuration_management.sql",
+      "sha256": "c84a3bea6ea3e73d24d9f001159977ec18ca2fe0d62045cafe924aee1a5bc12a"
+    },
+    {
+      "order": 203,
+      "version": "20261020085414",
+      "filename": "20261020085414_d5o_design_same_day_schedule_hold.sql",
+      "sha256": "b63fa59ec06b70895f0d3dd268c6eff07d455186b1e3df2727bca3c0ac9be89c"
+    },
+    {
+      "order": 204,
+      "version": "20261020115849",
+      "filename": "20261020115849_d5o_admin_invitation_setup.sql",
+      "sha256": "c9f960023f3890849f94e19af9b3488acab705c357b8dfa98726288a898c939b"
+    },
+    {
+      "order": 205,
+      "version": "20261020135000",
+      "filename": "20261020135000_d5o_admin_invitation_role_retry_guard.sql",
+      "sha256": "2a9b5483ebf4203dbbfed578a80b91e28bd50cb84821de0b1f4679afdbe35163"
+    },
+    {
+      "order": 206,
+      "version": "20261020180000",
+      "filename": "20261020180000_d5o_workforce_field_readiness.sql",
+      "sha256": "3c25af08cacf5ae9c403cdac41897a6a53671898af8c241a0a52363ef3f64aae"
+    },
+    {
+      "order": 207,
+      "version": "20261020193000",
+      "filename": "20261020193000_d5o_binding_current_publication.sql",
+      "sha256": "8c9fcdacdf425a99d531cfd3799322de285ad50e405b1ee5a3cb217e6bc32847"
+    },
+    {
+      "order": 208,
+      "version": "20261020200000",
+      "filename": "20261020200000_d5o_worker_binding_publication_attribution.sql",
+      "sha256": "646ce221777a8945123ead66695b6ee3b13323efbe7b7ad72c8bab7cb7e24294"
+    },
+    {
+      "order": 209,
+      "version": "20261020223652",
+      "filename": "20261020223652_d5o_cross_week_empty_publication.sql",
+      "sha256": "e95788dcd9a1595017517226c6ae95c2c8266fd62012ccaec187a7b5f2fda79c"
+    },
+    {
+      "order": 210,
+      "version": "20261020231536",
+      "filename": "20261020231536_d5o_worker_empty_publication_projection.sql",
+      "sha256": "1cdd15a5eb9b860db0d84c3827988d4c2abf39d08f297ab855dc7de0e414cd2b"
+    },
+    {
+      "order": 211,
+      "version": "20261021114905",
+      "filename": "20261021114905_d5o_field_worker_invitation_proposal.sql",
+      "sha256": "ad51fd407be42e9505f6588dfce3516b7219723630bf79f5c2e1db092ac11959"
+    },
+    {
+      "order": 212,
+      "version": "20261023111641",
+      "filename": "20261023111641_d5o_service_approval_policy_phase1.sql",
+      "sha256": "e66b8fbfdba38c88276c829f351b3f89cd8d40f4f79ad50f7e8efc0556bb84df"
+    },
+    {
+      "order": 213,
+      "version": "20261023115306",
+      "filename": "20261023115306_d5o_phase1b_connected_service_approval.sql",
+      "sha256": "9169ad7bdaece5767f242c268c29d9828f29c00c0d78ccb71c4acdd8ac27412c"
+    },
+    {
+      "order": 214,
+      "version": "20261023123751",
+      "filename": "20261023123751_d5o_phase2a_organization_people.sql",
+      "sha256": "35b806bdf59146b088feee8af0375dfbe8ecae8a4befdf039bc769d23aa466de"
+    },
+    {
+      "order": 215,
+      "version": "20261023140000",
+      "filename": "20261023140000_d5o_phase2b_tenant_onboarding.sql",
+      "sha256": "d037c3e95a4ce0dda6325a8264117a838eab91d2a942735fa96350dc5ceb0adc"
+    },
+    {
+      "order": 216,
+      "version": "20261023141000",
+      "filename": "20261023141000_d5o_phase2b_onboarding_commands.sql",
+      "sha256": "f9de353e8005dbec8715e8a48eff3486f1e3312b809af9d2eb8c8d5f68135540"
+    },
+    {
+      "order": 217,
+      "version": "20261023142000",
+      "filename": "20261023142000_d5o_phase2b_vendor_controls.sql",
+      "sha256": "6f97052b2f97687766a8f6ddf1b3747e307a69ed237e8a257ec9aee97cdedd4b"
+    },
+    {
+      "order": 218,
+      "version": "20261023143000",
+      "filename": "20261023143000_d5o_phase2b_template_governance.sql",
+      "sha256": "0587d11930b29a18c5551033505412c734452bbcce11e7bdb7ed1f0d11885756"
+    },
+    {
+      "order": 219,
+      "version": "20261023150000",
+      "filename": "20261023150000_d5o_phase2c_lifecycle_features.sql",
+      "sha256": "c52410967753b1a5dd33128d26bdfb54f44f04e3e3cd0212ae2e27fcbcb1f981"
+    },
+    {
+      "order": 220,
+      "version": "20261023151000",
+      "filename": "20261023151000_d5o_phase2c_discover_policy.sql",
+      "sha256": "18fb136d785dcd6119230559858dc12af86a8daaf40c996d84100bfc41a5c991"
+    },
+    {
+      "order": 221,
+      "version": "20261023152000",
+      "filename": "20261023152000_d5o_phase2c_connected_work_gate.sql",
+      "sha256": "19e88b407c5cc95c28e9cd6076b2fac09c38720c1ca9d39184fe5a2a456cf289"
+    },
+    {
+      "order": 222,
+      "version": "20261023153646",
+      "filename": "20261023153646_d5o_phase2d_phase_policies.sql",
+      "sha256": "446acc031a27047b7bd7f9b25d00009f5b60418c6028b6f67bb89d408ae2629c"
+    },
+    {
+      "order": 223,
+      "version": "20261023153752",
+      "filename": "20261023153752_d5o_phase2d_define_develop_guards.sql",
+      "sha256": "cc80923fb755bfa224ed700ae834ea836c7134da64d5991aa3611bf0bb72bbe0"
+    },
+    {
+      "order": 224,
+      "version": "20261023180000",
+      "filename": "20261023180000_d5o_phase2f_operate_review_guard.sql",
+      "sha256": "e06828ccad9b8cc52cefb49de2226c5dc36b1495e702e69b1a0672cf7048f060"
+    },
+    {
+      "order": 225,
+      "version": "20261023201553",
+      "filename": "20261023201553_phase2g_phase_status.sql",
+      "sha256": "166cb56667af6dbffc380ae0503bf6faa55e08797b2a1b264779e5ebd543d30e"
+    },
+    {
+      "order": 226,
+      "version": "20261024010000",
+      "filename": "20261024010000_d5o_service_sla_calendar_validation.sql",
+      "sha256": "3f444078725133e9b6408e62241a2f12e7a25a4fec41fb2800fe69211b898658"
+    },
+    {
+      "order": 227,
+      "version": "20261024011000",
+      "filename": "20261024011000_d5o_service_job_stable_work_type_key.sql",
+      "sha256": "e130af53589d9d96d3f34f9a574c7674c599320c7d1ea9505cd2a942ee3d8674"
+    },
+    {
+      "order": 228,
+      "version": "20261024012000",
+      "filename": "20261024012000_d5o_service_child_identity_guard.sql",
+      "sha256": "1b2255b7e22f09c81ee9f4624f8d2ee76b6fd19bb8136947f097adbd5e85a1ab"
+    },
+    {
+      "order": 229,
+      "version": "20261024105438",
+      "filename": "20261024105438_phase2hs_connected_design_capability_gate.sql",
+      "sha256": "320a88ffbc24bf7af6a80023f26f35aeadd42d8e7e08cb86c149b37edb9fafec"
+    },
+    {
+      "order": 230,
+      "version": "20261024112500",
+      "filename": "20261024112500_phase2hs_overnight_crew_eligibility.sql",
+      "sha256": "eee419503ada7f35194407aa22dbb2a251bfa0d092d7b24c0ceb9fd0c76ac2fb"
+    },
+    {
+      "order": 231,
+      "version": "20261024113000",
+      "filename": "20261024113000_phase2hs_connected_develop_capability_gate.sql",
+      "sha256": "7b5e9cf4c4002433ac46455b9b08fe19a9335b62df187bb47ffc4e7bf4ef45fb"
+    },
+    {
+      "order": 232,
+      "version": "20261024150000",
+      "filename": "20261024150000_phase2ht_workforce_qualification_expiry.sql",
+      "sha256": "ae8ebb0cd83c5c6ecc804445fcecb3cec8a8ef72d1b52a8a31f57bfddf4e6c81"
+    },
+    {
+      "order": 233,
+      "version": "20261024151000",
+      "filename": "20261024151000_phase2ht_current_worker_assignment.sql",
+      "sha256": "8c73747eb163b207095f416b1c67724a0728a2b10479d81d04af95b4d5be68f9"
+    },
+    {
+      "order": 234,
+      "version": "20261025010000",
+      "filename": "20261025010000_d5o_phase2htd_connected_service_capability_boundary.sql",
+      "sha256": "22727a482e87067c25352e450e652e87725166cbc3091ae036292570f15721fc"
+    }
+  ],
+  "checksumComparison": "UNAVAILABLE: hosted ledger connector returns version and name only",
+  "decision": "STOP: 19 name-linked version remappings are not content equivalence; 44 additional released manifest versions absent after accounting for remapping; no authorized staging target",
+  "classification": {
+    "versionRemappingCandidates": [
+      {
+        "hostedVersion": "20261007013631",
+        "hostedName": "d5o_hosted_workspace_authority",
+        "sourceVersion": "20261007013134",
+        "sourceFile": "20261007013134_d5o_hosted_workspace_authority.sql",
+        "sourceSha256": "18e09f92e5d6380f2c26f8248e0fae4892936aa27229573ec326a0db1b616956",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261007014024",
+        "hostedName": "d5o_hosted_workspace_invoker_hardening",
+        "sourceVersion": "20261007013707",
+        "sourceFile": "20261007013707_d5o_hosted_workspace_invoker_hardening.sql",
+        "sourceSha256": "951ef953b723ad8d54ae55f7eedb126f181d0a040fb5213859964a860e71fa77",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261007015048",
+        "hostedName": "d5o_hosted_work_identity",
+        "sourceVersion": "20261007020600",
+        "sourceFile": "20261007020600_d5o_hosted_work_identity.sql",
+        "sourceSha256": "1f3120fc5601f630a7679744cfc3dbc844318b870c126e795e29b9540ad0a27b",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261007015356",
+        "hostedName": "d5o_hosted_create_work_authority",
+        "sourceVersion": "20261007022200",
+        "sourceFile": "20261007022200_d5o_hosted_create_work_authority.sql",
+        "sourceSha256": "eb1dbc16a0bbb096efb2a4bb79973a124427a9e7769366abc2076432d2dda44e",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261007020854",
+        "hostedName": "d5o_hosted_configuration_manifest",
+        "sourceVersion": "20261007031000",
+        "sourceFile": "20261007031000_d5o_hosted_configuration_manifest.sql",
+        "sourceSha256": "cf23152b841e3de3ad49405a63e862a14a5c5910d75dcde9f8b6b93bd1878617",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261007021942",
+        "hostedName": "d5o_hosted_synthetic_prototype_state",
+        "sourceVersion": "20261007040000",
+        "sourceFile": "20261007040000_d5o_hosted_synthetic_prototype_state.sql",
+        "sourceSha256": "ed042a5b491565fe458ca42efd3348dd936b57239ec10b2d40fd31e451bf155b",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261007025942",
+        "hostedName": "d5o_hosted_prototype_nested_scope",
+        "sourceVersion": "20261007050000",
+        "sourceFile": "20261007050000_d5o_hosted_prototype_nested_scope.sql",
+        "sourceSha256": "ea1261d4a0a05868b5f361ae394b479db782e8912569cf9b28037a4fd2a80f7a",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261019164403",
+        "hostedName": "d5o_field_labor_source_text_precedence",
+        "sourceVersion": "20261019170000",
+        "sourceFile": "20261019170000_d5o_field_labor_source_text_precedence.sql",
+        "sourceSha256": "6eb620e8fe53183209a22f5f3c457fc242fbdca07385afe42bb094411a043841",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261019211112",
+        "hostedName": "d5o_admin_backend_20261019183127",
+        "sourceVersion": "20261019183127",
+        "sourceFile": "20261019183127_d5o_admin_backend.sql",
+        "sourceSha256": "df771e7c167ce9dcf53d0823f0994410d5acfb834f6175d56a93ae0f17190179",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261019221852",
+        "hostedName": "d5o_hosted_configuration_management_20261019213000",
+        "sourceVersion": "20261019213000",
+        "sourceFile": "20261019213000_d5o_hosted_configuration_management.sql",
+        "sourceSha256": "c84a3bea6ea3e73d24d9f001159977ec18ca2fe0d62045cafe924aee1a5bc12a",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261020085806",
+        "hostedName": "d5o_design_same_day_schedule_hold",
+        "sourceVersion": "20261020085414",
+        "sourceFile": "20261020085414_d5o_design_same_day_schedule_hold.sql",
+        "sourceSha256": "b63fa59ec06b70895f0d3dd268c6eff07d455186b1e3df2727bca3c0ac9be89c",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261020131219",
+        "hostedName": "d5o_admin_invitation_setup_20261020115849",
+        "sourceVersion": "20261020115849",
+        "sourceFile": "20261020115849_d5o_admin_invitation_setup.sql",
+        "sourceSha256": "c9f960023f3890849f94e19af9b3488acab705c357b8dfa98726288a898c939b",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261020131240",
+        "hostedName": "d5o_admin_invitation_role_retry_guard_20261020135000",
+        "sourceVersion": "20261020135000",
+        "sourceFile": "20261020135000_d5o_admin_invitation_role_retry_guard.sql",
+        "sourceSha256": "2a9b5483ebf4203dbbfed578a80b91e28bd50cb84821de0b1f4679afdbe35163",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261020203138",
+        "hostedName": "d5o_workforce_field_readiness_20261020180000",
+        "sourceVersion": "20261020180000",
+        "sourceFile": "20261020180000_d5o_workforce_field_readiness.sql",
+        "sourceSha256": "3c25af08cacf5ae9c403cdac41897a6a53671898af8c241a0a52363ef3f64aae",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261020205337",
+        "hostedName": "d5o_binding_current_publication_20261020193000",
+        "sourceVersion": "20261020193000",
+        "sourceFile": "20261020193000_d5o_binding_current_publication.sql",
+        "sourceSha256": "8c9fcdacdf425a99d531cfd3799322de285ad50e405b1ee5a3cb217e6bc32847",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261020205350",
+        "hostedName": "d5o_worker_binding_publication_attribution_20261020200000",
+        "sourceVersion": "20261020200000",
+        "sourceFile": "20261020200000_d5o_worker_binding_publication_attribution.sql",
+        "sourceSha256": "646ce221777a8945123ead66695b6ee3b13323efbe7b7ad72c8bab7cb7e24294",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261020235720",
+        "hostedName": "d5o_cross_week_empty_publication_20261020223652",
+        "sourceVersion": "20261020223652",
+        "sourceFile": "20261020223652_d5o_cross_week_empty_publication.sql",
+        "sourceSha256": "e95788dcd9a1595017517226c6ae95c2c8266fd62012ccaec187a7b5f2fda79c",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261020235730",
+        "hostedName": "d5o_worker_empty_publication_projection_20261020231536",
+        "sourceVersion": "20261020231536",
+        "sourceFile": "20261020231536_d5o_worker_empty_publication_projection.sql",
+        "sourceSha256": "1cdd15a5eb9b860db0d84c3827988d4c2abf39d08f297ab855dc7de0e414cd2b",
+        "contentEquivalence": "UNVERIFIED"
+      },
+      {
+        "hostedVersion": "20261021123923",
+        "hostedName": "d5o_field_worker_invitation_proposal_20261021114905",
+        "sourceVersion": "20261021114905",
+        "sourceFile": "20261021114905_d5o_field_worker_invitation_proposal.sql",
+        "sourceSha256": "ad51fd407be42e9505f6588dfce3516b7219723630bf79f5c2e1db092ac11959",
+        "contentEquivalence": "UNVERIFIED"
+      }
+    ],
+    "hostedLegacyOrUnmatched": [
+      {
+        "version": "001",
+        "name": "initial_schema"
+      },
+      {
+        "version": "002",
+        "name": "customer_order_item_rls"
+      },
+      {
+        "version": "003",
+        "name": "webhook_event_status"
+      },
+      {
+        "version": "004",
+        "name": "backfill_webhook_status"
+      },
+      {
+        "version": "005",
+        "name": "transaction_idempotency_indexes"
+      },
+      {
+        "version": "006",
+        "name": "enterprise_integration_foundation"
+      },
+      {
+        "version": "007",
+        "name": "enterprise_d365_cached_models"
+      },
+      {
+        "version": "008",
+        "name": "transaction_unique_constraints"
+      },
+      {
+        "version": "009",
+        "name": "customer_portal_rls"
+      },
+      {
+        "version": "010",
+        "name": "seed_enterprise_integration_demo"
+      }
+    ],
+    "releasedManifestVersionsAbsent": 63,
+    "localForwardVersionsAbsent": 23
+  }
+}

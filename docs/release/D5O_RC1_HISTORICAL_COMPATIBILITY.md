@@ -1,0 +1,19 @@
+# D5O RC1 historical compatibility
+
+**Gate F: BLOCKED.** Read-only aggregates in the hosted D5O project show 15 Work records, 4 configuration versions, 15 Work events, 5 Deploy states, 61 Deploy events, 10 Design states, 14 Design package states, 3 customer decision evidence records and 1 public audit event. All 15 Work records have a resolvable configuration-version pin, and no Work event is orphaned by Work ID in the checked joins. There are zero `work_command_receipts` rows. These checks did not read or rewrite business records. They do not prove that RC0 can execute those records on the divergent hosted schema.
+
+The hosted database lacks the RC0 `connected_phase_status` table and `connected_phase_projection_v1` RPC. Consequently historical phase replay under the RC0 implementation remains untested on a data copy. Existing Design packages, field evidence, customer acceptance, audit and receipts must be checked after a reviewed migration bridge, with exact identities and counts preserved. Private evidence bytes and their metadata-ID bindings remain unverified. The local [synthetic upgrade](D5O_RC1_DISPOSABLE_UPGRADE.json) passed Work-pin and event/receipt preservation, but it is not a substitute for historical hosted data.
+
+## Five legacy configuration-verifier assertions
+
+The unchanged `scripts/verify-configuration-foundation-no-regression.mjs` was rerun and failed exactly five assertions. Its six historical SQL-file existence checks and forbidden-table check passed. The failures are classified individually rather than suppressed:
+
+| Assertion | Contract and current assessment | Disposition / replacement evidence |
+| --- | --- | --- |
+| P1-01B.1 accepted baseline manifest exists | Claims a sealed human acceptance manifest is present. That provenance requirement remains applicable; the manifest is absent from this worktree. | **Remain failing.** Obtain and verify the original artifact legitimately. Current migration tests cannot establish human acceptance. |
+| P1-01B.2 accepted baseline manifest exists | Same claim for the second sealed human acceptance. Absent here. | **Remain failing.** Obtain its original protected manifest and verify hash/provenance. No synthetic replacement is claimed. |
+| `recommended-next` says P1-01B.3 paused/unauthorized | A release-boundary assertion against an older roadmap document. That document now describes a superseded seed-mode MVP. It is not the RC0/RC1 release control. | **Change only after review:** move the current scope check to the RC0/RC1 release decision and migration inventory; use executable no-new-feature and migration-diff checks. Keep the historical document unchanged. |
+| `recommended-next` says demo readiness No-Go | A point-in-time recommendation, not an executable current readiness contract. | **Retire as a current gate after replacement:** retain the historical document, use RC0 integrated browser/security results for disposable scope and the RC1 gate table for staging scope. Neither makes demo commercially accepted. |
+| `recommended-next` says production readiness No-Go | The old file is not the current production gate register. Production remains blocked for independently observed reasons. | **Change after review:** assert against `D5O_RC1_PRODUCTION_READINESS.md` and run `verify-production-config.mjs` plus scanner invariant. Do not turn the old assertion green by inserting words into a stale document. |
+
+The legacy verifier remains red until its replacement is reviewed and implemented. `node scripts/verify-production-config.mjs` and `node scripts/p0a/verify-readiness-scanner.mjs` passed locally, but neither proves deployed scanner reachability. Historical sealed M1 provenance is still unverified; the original required fixture was not available. No historical Work, event or configuration row was modified.
