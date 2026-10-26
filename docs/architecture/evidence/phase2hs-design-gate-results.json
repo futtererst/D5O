@@ -1,0 +1,1702 @@
+{
+  "baseline": "d1537c2070eee6926ad227c69dcdc43418bb381d",
+  "startedAt": "2026-10-24T12:49:04.186Z",
+  "tests": [
+    {
+      "name": "vendor sees validated immutable template directory",
+      "status": "PASS",
+      "detail": {
+        "template": "Service Operations",
+        "version": 1,
+        "outsiderDenied": true
+      }
+    },
+    {
+      "name": "vendor publishes an executable crew-demand template version",
+      "status": "PASS",
+      "detail": {
+        "versionId": "8e27b462-d900-4eab-981a-f1ebce9d2b0a",
+        "crewDemandRequired": true
+      }
+    },
+    {
+      "name": "vendor provisions A and B through one authoritative command",
+      "status": "PASS",
+      "detail": {
+        "A": "tenant_a_test",
+        "B": "tenant_b_test",
+        "independentVersions": true
+      }
+    },
+    {
+      "name": "non-vendor and customer cannot provision or mutate template",
+      "status": "PASS",
+      "detail": {
+        "denied": true
+      }
+    },
+    {
+      "name": "replay, collision and duplicate tenant key preserve one result",
+      "status": "PASS",
+      "detail": {
+        "replay": true,
+        "collisionDenied": true
+      }
+    },
+    {
+      "name": "concurrent identical provisioning creates one tenant",
+      "status": "PASS",
+      "detail": {
+        "sameResult": true,
+        "workspaceCount": 1
+      }
+    },
+    {
+      "name": "provider failure remains inactive and vendor recovery replaces only the offer",
+      "status": "PASS",
+      "detail": {
+        "failedState": true,
+        "recoveredState": "awaiting_admin",
+        "duplicateTenant": false,
+        "grantCount": 0
+      }
+    },
+    {
+      "name": "expired initial invitation recovers without a duplicate tenant",
+      "status": "PASS",
+      "detail": {
+        "expiredDenied": true,
+        "oldOfferDenied": true,
+        "recoveryReplaySafe": true
+      }
+    },
+    {
+      "name": "governed template version is validated, published, immutable and retired",
+      "status": "PASS",
+      "detail": {
+        "publishedVersion": "d3653edb-c887-4d50-b5ca-53c99b6cc024",
+        "immutable": true,
+        "unpublishedSelectionDenied": true,
+        "retiredSelectionDenied": true
+      }
+    },
+    {
+      "name": "initial offers are tenant-bound and accepted by exact recipients",
+      "status": "PASS",
+      "detail": {
+        "A": "accepted",
+        "B": "accepted",
+        "replaySafe": true
+      }
+    },
+    {
+      "name": "incomplete tenants cannot create Work or activate",
+      "status": "PASS",
+      "detail": {
+        "workDenied": "42501",
+        "activationDenied": "23514",
+        "customerActivationDenied": true
+      }
+    },
+    {
+      "name": "tenant_a_test publishes its own USD 10000 threshold",
+      "status": "PASS",
+      "detail": {
+        "thresholdMinor": 1000000,
+        "versionId": "4deb2cf3-5804-4279-88a4-3289486dcc19"
+      }
+    },
+    {
+      "name": "tenant_b_test publishes its own USD 25000 threshold",
+      "status": "PASS",
+      "detail": {
+        "thresholdMinor": 2500000,
+        "versionId": "b0e39dd8-d132-440c-b757-4dafc9961b4b"
+      }
+    },
+    {
+      "name": "tenant_a_test confirms readiness and vendor activates",
+      "status": "PASS",
+      "detail": {
+        "ready": "ready",
+        "activated": "active",
+        "replaySafe": true,
+        "staleDenied": true
+      }
+    },
+    {
+      "name": "tenant_b_test confirms readiness and vendor activates",
+      "status": "PASS",
+      "detail": {
+        "ready": "ready",
+        "activated": "active",
+        "replaySafe": true,
+        "staleDenied": true
+      }
+    },
+    {
+      "name": "vendor grants and flags connected Work independently",
+      "status": "PASS",
+      "detail": {
+        "A": true,
+        "B": false,
+        "replaySafe": true,
+        "customerDenied": true,
+        "crossTenantReadDenied": true
+      }
+    },
+    {
+      "name": "Discover policy publication controls connected Work creation",
+      "status": "PASS",
+      "detail": {
+        "activeVersion": "228ec21c-4744-4281-8e98-b83bd22faa38",
+        "required": true,
+        "invalidPolicyDenied": true,
+        "historicalUnchanged": true
+      }
+    },
+    {
+      "name": "direct RPC enforces entitlement and Discover policy",
+      "status": "PASS",
+      "detail": {
+        "A": "b4ca0b53-9069-4532-8133-8eb3edf63c74",
+        "B": "capability_unavailable",
+        "missingIntakeDenied": true,
+        "coreBypassDenied": true,
+        "replaySafe": true
+      }
+    },
+    {
+      "name": "both tenants onboard independent commercial and operations authorities",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "role": "billing_commercial_lead",
+          "userId": "02ed7c2c-b1cb-4deb-bdae-0758cdcc1dad"
+        },
+        {
+          "tenant": "tenant_a_test",
+          "role": "operations_leader",
+          "userId": "7c42696f-4000-45fb-bee0-87f28ee73472"
+        },
+        {
+          "tenant": "tenant_a_test",
+          "role": "operations_leader",
+          "userId": "d7092bca-9537-4b6f-b16b-e4984f7ed318"
+        },
+        {
+          "tenant": "tenant_a_test",
+          "role": "project_manager",
+          "userId": "cc6b3676-e39f-4482-aca1-3c57d4f2ce72"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "role": "billing_commercial_lead",
+          "userId": "76a7ac7e-b4ca-4cf1-a95f-eeb1e4702f9b"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "role": "operations_leader",
+          "userId": "511f096e-4370-47dd-b261-651988ca50ac"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "role": "operations_leader",
+          "userId": "9cd5fb65-383b-42dd-b042-557928a67a98"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "role": "project_manager",
+          "userId": "85954c62-cfbf-4cea-9bc4-20d5b13f0b82"
+        }
+      ]
+    },
+    {
+      "name": "two tenant administrators publish distinct six-phase requirement sets",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "versionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+          "strict": true,
+          "define": true,
+          "develop": true,
+          "design": true,
+          "deploy": true,
+          "operate": true
+        },
+        {
+          "tenant": "tenant_b_test",
+          "versionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+          "strict": false,
+          "define": false,
+          "develop": false,
+          "design": false,
+          "deploy": false,
+          "operate": false
+        }
+      ]
+    },
+    {
+      "name": "pinned Define command rejects missing risk only for strict tenant",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "0b3e60d1-2b71-4f5f-a30b-be98a6d807da",
+          "policyVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+          "decision": "define_risk_narrative_required",
+          "crossTenantDenied": true,
+          "coreBypassDenied": true
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "fd79adca-5252-4db7-8643-ae5fa3d11a0e",
+          "policyVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+          "decision": "definition_unavailable",
+          "crossTenantDenied": true,
+          "coreBypassDenied": true
+        }
+      ]
+    },
+    {
+      "name": "connected source contract is available for authorized fixture progression",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "revision": 2,
+          "recordId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+          "workId": "0b3e60d1-2b71-4f5f-a30b-be98a6d807da",
+          "discoveryKeys": [
+            "fit",
+            "need",
+            "phase",
+            "source",
+            "estimate",
+            "proposal",
+            "closeDate",
+            "procurement",
+            "pursuitControl"
+          ],
+          "pursuit": {
+            "spend": {
+              "cap": 0,
+              "status": "not_requested",
+              "purpose": ""
+            },
+            "status": "draft",
+            "handoff": {
+              "brief": "",
+              "status": "not_started",
+              "receiver": "",
+              "revision": 0
+            },
+            "history": [],
+            "currency": "USD",
+            "revision": 0,
+            "knownRisk": "",
+            "requester": "",
+            "roughValue": "",
+            "requiredDate": "",
+            "intendedOutcome": ""
+          },
+          "definitionKeys": [],
+          "developKeys": [],
+          "packageCount": 0
+        },
+        {
+          "tenant": "tenant_b_test",
+          "revision": 1,
+          "recordId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+          "workId": "fd79adca-5252-4db7-8643-ae5fa3d11a0e",
+          "discoveryKeys": [
+            "fit",
+            "need",
+            "phase",
+            "source",
+            "estimate",
+            "proposal",
+            "closeDate",
+            "procurement",
+            "pursuitControl"
+          ],
+          "pursuit": {
+            "spend": {
+              "cap": 0,
+              "status": "not_requested",
+              "purpose": ""
+            },
+            "status": "draft",
+            "handoff": {
+              "brief": "",
+              "status": "not_started",
+              "receiver": "",
+              "revision": 0
+            },
+            "history": [],
+            "currency": "USD",
+            "revision": 0,
+            "knownRisk": "",
+            "requester": "",
+            "roughValue": "",
+            "requiredDate": "",
+            "intendedOutcome": ""
+          },
+          "definitionKeys": [],
+          "developKeys": [],
+          "packageCount": 0
+        }
+      ]
+    },
+    {
+      "name": "both tenants complete Discover intake and independent Define handoff",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "0b3e60d1-2b71-4f5f-a30b-be98a6d807da",
+          "sourceRevision": 2,
+          "decisionRevision": 5,
+          "handoff": "accepted"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "fd79adca-5252-4db7-8643-ae5fa3d11a0e",
+          "sourceRevision": 1,
+          "decisionRevision": 5,
+          "handoff": "accepted"
+        }
+      ]
+    },
+    {
+      "name": "both tenants submit an authorized and complete Define draft",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "0b3e60d1-2b71-4f5f-a30b-be98a6d807da",
+          "versionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+          "policyDenied": true,
+          "browserDraft": true,
+          "browserSubmission": true,
+          "taskRemoved": true
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "fd79adca-5252-4db7-8643-ae5fa3d11a0e",
+          "versionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+          "policyDenied": false,
+          "browserDraft": true,
+          "browserSubmission": true,
+          "taskRemoved": true
+        }
+      ]
+    },
+    {
+      "name": "independent Define reviews approve and hand off each pinned baseline",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "0b3e60d1-2b71-4f5f-a30b-be98a6d807da",
+          "versionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+          "definitionStatus": "Approved",
+          "handoffStatus": "accepted",
+          "decisionRevision": 5
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "fd79adca-5252-4db7-8643-ae5fa3d11a0e",
+          "versionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+          "definitionStatus": "Approved",
+          "handoffStatus": "accepted",
+          "decisionRevision": 5
+        }
+      ]
+    },
+    {
+      "name": "tenant administrators publish a bounded pricing prerequisite for solution decisions",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "policyId": "phase2e-price",
+          "version": 1
+        },
+        {
+          "tenant": "tenant_b_test",
+          "policyId": "phase2e-price",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "Develop policy rejects missing option evidence and accepts a documented selected solution",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "0b3e60d1-2b71-4f5f-a30b-be98a6d807da",
+          "versionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+          "missingEvidenceDenied": true,
+          "solutionStatus": "Approved",
+          "sourceRevision": 6
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "fd79adca-5252-4db7-8643-ae5fa3d11a0e",
+          "versionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+          "missingEvidenceDenied": false,
+          "solutionStatus": "Approved",
+          "sourceRevision": 3
+        }
+      ]
+    },
+    {
+      "name": "early solution approval is persisted as Develop preparation only",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "0b3e60d1-2b71-4f5f-a30b-be98a6d807da",
+          "develop": "preparation_in_progress",
+          "design": "ready_to_enter",
+          "preparationEvidence": "selected_solution:2"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "fd79adca-5252-4db7-8643-ae5fa3d11a0e",
+          "develop": "preparation_in_progress",
+          "design": "ready_to_enter",
+          "preparationEvidence": "selected_solution:2"
+        }
+      ]
+    },
+    {
+      "name": "Design handoff rejects an absent offer revision before award",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "0b3e60d1-2b71-4f5f-a30b-be98a6d807da",
+          "denied": "stale_state"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "fd79adca-5252-4db7-8643-ae5fa3d11a0e",
+          "denied": "stale_state"
+        }
+      ]
+    },
+    {
+      "name": "both tenants approve a detailed estimate from the selected solution",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "0b3e60d1-2b71-4f5f-a30b-be98a6d807da",
+          "estimateStatus": "Approved",
+          "revision": 1,
+          "policyId": "phase2e-price"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "fd79adca-5252-4db7-8643-ae5fa3d11a0e",
+          "estimateStatus": "Approved",
+          "revision": 1,
+          "policyId": "phase2e-price"
+        }
+      ]
+    },
+    {
+      "name": "two fictional customer awards establish exact Design handoff basis",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "0b3e60d1-2b71-4f5f-a30b-be98a6d807da",
+          "offerStatus": "Submitted",
+          "awardSource": "SYNTHETIC-PHASE2E-AWARD-A"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "fd79adca-5252-4db7-8643-ae5fa3d11a0e",
+          "offerStatus": "Submitted",
+          "awardSource": "SYNTHETIC-PHASE2E-AWARD-B"
+        }
+      ]
+    },
+    {
+      "name": "Design receives exact awarded scope through independent handoff",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "0b3e60d1-2b71-4f5f-a30b-be98a6d807da",
+          "status": "accepted",
+          "browser": true
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "fd79adca-5252-4db7-8643-ae5fa3d11a0e",
+          "status": "accepted",
+          "browser": true
+        }
+      ]
+    },
+    {
+      "name": "both tenants create a connected Design package and issue its document",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "0b3e60d1-2b71-4f5f-a30b-be98a6d807da",
+          "packageId": "wp-574bc11e969e4dd7bdb2974af050af4d",
+          "documentId": "doc-ccc4dc0b-5e74-4489-ba9c-e25346acf267",
+          "evidenceId": "51dd2aaf-14b7-4341-87ac-70730593bb39",
+          "documentStatus": "Issued for use",
+          "browser": true
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "fd79adca-5252-4db7-8643-ae5fa3d11a0e",
+          "packageId": "wp-6639132f40b24b9e90f55a0c0dcea181",
+          "documentId": "doc-fb8c4f5c-f449-4d60-b296-d2974ef64cfe",
+          "evidenceId": "ad8f4a62-1691-4440-b7eb-c0b2332b297b",
+          "documentStatus": "Issued for use",
+          "browser": true
+        }
+      ]
+    },
+    {
+      "name": "Design policy denies missing method and accepts reviewed package release",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "0b3e60d1-2b71-4f5f-a30b-be98a6d807da",
+          "packageId": "wp-574bc11e969e4dd7bdb2974af050af4d",
+          "methodRequired": true,
+          "releaseStatus": "Accepted",
+          "versionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+          "browserReceipt": true,
+          "concurrentReleaseReplay": [
+            200,
+            200
+          ],
+          "receiptReplay": 200
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "fd79adca-5252-4db7-8643-ae5fa3d11a0e",
+          "packageId": "wp-6639132f40b24b9e90f55a0c0dcea181",
+          "methodRequired": false,
+          "releaseStatus": "Accepted",
+          "versionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+          "browserReceipt": true,
+          "concurrentReleaseReplay": [
+            200,
+            200
+          ],
+          "receiptReplay": 200
+        }
+      ]
+    },
+    {
+      "name": "tenant-neutral Design API rejects foreign, wrong-role, forged and stale actions",
+      "status": "PASS",
+      "detail": {
+        "crossTenant": 403,
+        "forgedWork": 404,
+        "staleRevision": 409,
+        "wrongRole": 403,
+        "wrongReviewer": 403,
+        "crossTenantEvidence": 403,
+        "unchangedDesignRevision": 28
+      }
+    },
+    {
+      "name": "private Design evidence rejects forged, foreign, deleted and unreviewed references",
+      "status": "PASS",
+      "detail": {
+        "privateRead": {
+          "metadata": 200,
+          "download": 200,
+          "contentType": "application/pdf",
+          "bytes": 45
+        },
+        "denied": [
+          {
+            "kind": "nonexistent",
+            "status": 422
+          },
+          {
+            "kind": "other-package-and-document",
+            "status": 422
+          },
+          {
+            "kind": "other-tenant-and-work",
+            "status": 422
+          },
+          {
+            "kind": "storage-without-receipt",
+            "status": 422
+          }
+        ],
+        "prematureIssueCode": "42501",
+        "deletedObjectRead": 404,
+        "deletedObjectReviewCode": "23514",
+        "unchangedRevision": 30
+      }
+    },
+    {
+      "name": "Design adapter denies suspended and removed membership, disabled flag and tenant",
+      "status": "PASS",
+      "detail": {
+        "suspendedMembershipHttp": 403,
+        "suspendedMembershipRpc": "42501",
+        "removedMembershipHttp": 403,
+        "disabledFlagHttp": 403,
+        "disabledFeatureDirectRpc": "42501",
+        "suspendedTenantHttp": 403,
+        "tenantReactivated": "active"
+      }
+    }
+  ],
+  "setupError": null,
+  "cleanup": {
+    "projectId": "d5o-p0a-b6f07c38-b16",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "environment": {
+    "projectId": "d5o-p0a-b6f07c38-b16",
+    "apiPort": 57621,
+    "loopbackOnly": true
+  },
+  "designActions": [
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Send awarded Design handoff",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "submit-handoff",
+      "commandId": "58b0cec3-fdbc-41fb-a2de-8577ff67a5d1",
+      "taskBefore": [
+        "Send awarded Design handoffDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": null,
+      "timestamp": "2026-10-24T12:51:33.845Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_ops",
+      "button": "Accept awarded Design handoff",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "accept-handoff",
+      "commandId": "51f3785d-e4ec-48e0-bade-ecad639df4eb",
+      "taskBefore": [
+        "Receive awarded Design handoffDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": null,
+      "timestamp": "2026-10-24T12:51:37.827Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_admin",
+      "button": "Send awarded Design handoff",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "submit-handoff",
+      "commandId": "f11eec01-1070-4c40-9995-d7f3606ef757",
+      "taskBefore": [
+        "Send awarded Design handoffDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": null,
+      "timestamp": "2026-10-24T12:51:40.696Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_ops",
+      "button": "Accept awarded Design handoff",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "accept-handoff",
+      "commandId": "d96d2a73-0873-4a3e-865a-abd2b9387428",
+      "taskBefore": [
+        "Receive awarded Design handoffDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": null,
+      "timestamp": "2026-10-24T12:51:43.693Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Create package",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "create-package",
+      "commandId": "cd2c0ec4-95d3-4591-9696-1d7fffb42f6c",
+      "taskBefore": [
+        "Prepare Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "save-document"
+      ],
+      "phaseAfter": "Design",
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": null,
+      "timestamp": "2026-10-24T12:51:45.309Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Save document draft",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "save-document",
+      "commandId": "adedff20-b3ea-4134-ad5a-f89adeb5c8db",
+      "taskBefore": [
+        "Prepare Design documentDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "submit-document"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 1,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "save-document · adedff20-b3ea-4134-ad5a-f89adeb5c8db",
+      "timestamp": "2026-10-24T12:51:47.473Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Save package basis",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "save-package",
+      "commandId": "c04a418c-0cae-4904-9600-4869713f31b4",
+      "taskBefore": [
+        "Retain and submit Design PDFDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "submit-document"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 2,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "save-package · c04a418c-0cae-4904-9600-4869713f31b4",
+      "timestamp": "2026-10-24T12:51:51.839Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Retain private PDF",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "51dd2aaf-14b7-4341-87ac-70730593bb39",
+      "timestamp": "2026-10-24T12:51:53.633Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Submit document for independent review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "submit-document",
+      "commandId": "e2daf3f1-2349-48b2-ad50-dfaf38d3e287",
+      "taskBefore": [
+        "Retain and submit Design PDFDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 3,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "submit-document · e2daf3f1-2349-48b2-ad50-dfaf38d3e287",
+      "timestamp": "2026-10-24T12:51:55.774Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_ops",
+      "button": "Approve document",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "approve-document",
+      "commandId": "82bc6832-8707-44f8-a6f1-2d89060b522e",
+      "taskBefore": [
+        "Independently review Design documentDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 4,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "approve-document · 82bc6832-8707-44f8-a6f1-2d89060b522e",
+      "timestamp": "2026-10-24T12:51:57.379Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Issue approved document for use",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "issue-document",
+      "commandId": "867870f7-ff52-4f65-b5bf-b996beecc879",
+      "taskBefore": [
+        "Issue approved Design documentDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 5,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "issue-document · 867870f7-ff52-4f65-b5bf-b996beecc879",
+      "timestamp": "2026-10-24T12:51:58.986Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_admin",
+      "button": "Create package",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "create-package",
+      "commandId": "b830c511-b5f0-4cb7-bfe2-38582e56f689",
+      "taskBefore": [
+        "Prepare Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "save-document"
+      ],
+      "phaseAfter": "Design",
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": null,
+      "timestamp": "2026-10-24T12:52:02.331Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_admin",
+      "button": "Save document draft",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "save-document",
+      "commandId": "c7abcd2e-327b-4e2f-a480-84d6012137d3",
+      "taskBefore": [
+        "Prepare Design documentDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "submit-document"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 1,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "save-document · c7abcd2e-327b-4e2f-a480-84d6012137d3",
+      "timestamp": "2026-10-24T12:52:04.346Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_admin",
+      "button": "Save package basis",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "save-package",
+      "commandId": "bfbe8663-32b0-4124-9eb3-42e496a24790",
+      "taskBefore": [
+        "Retain and submit Design PDFDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "submit-document"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 2,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "save-package · bfbe8663-32b0-4124-9eb3-42e496a24790",
+      "timestamp": "2026-10-24T12:52:06.679Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_admin",
+      "button": "Retain private PDF",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "ad8f4a62-1691-4440-b7eb-c0b2332b297b",
+      "timestamp": "2026-10-24T12:52:08.353Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_admin",
+      "button": "Submit document for independent review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "submit-document",
+      "commandId": "2f456ff7-eaf6-4623-84b9-18b808d83a71",
+      "taskBefore": [
+        "Retain and submit Design PDFDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 3,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "submit-document · 2f456ff7-eaf6-4623-84b9-18b808d83a71",
+      "timestamp": "2026-10-24T12:52:10.591Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_ops",
+      "button": "Approve document",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "approve-document",
+      "commandId": "db117159-ee96-4891-a53f-c0c9178fdc6b",
+      "taskBefore": [
+        "Independently review Design documentDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 4,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "approve-document · db117159-ee96-4891-a53f-c0c9178fdc6b",
+      "timestamp": "2026-10-24T12:52:12.392Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_admin",
+      "button": "Issue approved document for use",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "issue-document",
+      "commandId": "1e8902b9-d019-43fb-8dcf-1e919f687904",
+      "taskBefore": [
+        "Issue approved Design documentDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 5,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "issue-document · 1e8902b9-d019-43fb-8dcf-1e919f687904",
+      "timestamp": "2026-10-24T12:52:14.148Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Save dated crew demand",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "save-demand",
+      "commandId": "9bf2bbbf-cb9a-480b-9969-8ede593cec79",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 6,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "save-demand · 9bf2bbbf-cb9a-480b-9969-8ede593cec79",
+      "timestamp": "2026-10-24T12:52:17.917Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Save dated crew demand",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "save-demand",
+      "commandId": "fb1611dd-0e38-4eba-8985-f72a89ee3641",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 8,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "save-demand · fb1611dd-0e38-4eba-8985-f72a89ee3641",
+      "timestamp": "2026-10-24T12:52:21.599Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Request Engineering review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "request-review",
+      "commandId": "735c8b39-761d-4c4e-ad8e-259bc63b20cf",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 9,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "request-review · 735c8b39-761d-4c4e-ad8e-259bc63b20cf",
+      "timestamp": "2026-10-24T12:52:23.301Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_ops",
+      "button": "Approve Engineering review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "decide-review",
+      "commandId": "63eb7875-4db2-4328-8f50-89921959094a",
+      "taskBefore": [
+        "Review Engineering package basisDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 10,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "decide-review · 63eb7875-4db2-4328-8f50-89921959094a",
+      "timestamp": "2026-10-24T12:52:25.045Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Request Delivery review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "request-review",
+      "commandId": "90c9d5a0-6618-4320-b7a1-ab72791a22ba",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 11,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "request-review · 90c9d5a0-6618-4320-b7a1-ab72791a22ba",
+      "timestamp": "2026-10-24T12:52:26.847Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_ops",
+      "button": "Approve Delivery review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "decide-review",
+      "commandId": "072f34e9-da1d-4a4c-8961-2bf72bcc33e6",
+      "taskBefore": [
+        "Review Delivery package basisDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 12,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "decide-review · 072f34e9-da1d-4a4c-8961-2bf72bcc33e6",
+      "timestamp": "2026-10-24T12:52:28.454Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Request Safety review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "request-review",
+      "commandId": "a4ee9db1-11a5-487d-ac36-ef92ace1a345",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 13,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "request-review · a4ee9db1-11a5-487d-ac36-ef92ace1a345",
+      "timestamp": "2026-10-24T12:52:30.220Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_ops",
+      "button": "Approve Safety review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "decide-review",
+      "commandId": "02cccc88-eb4e-4699-b63e-e7554780dba3",
+      "taskBefore": [
+        "Review Safety package basisDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 14,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "decide-review · 02cccc88-eb4e-4699-b63e-e7554780dba3",
+      "timestamp": "2026-10-24T12:52:32.601Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Request Quality review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "request-review",
+      "commandId": "ab8819b9-7a09-4bcf-a0f6-e410eb07a9e1",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 15,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "request-review · ab8819b9-7a09-4bcf-a0f6-e410eb07a9e1",
+      "timestamp": "2026-10-24T12:52:34.493Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_ops",
+      "button": "Approve Quality review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "decide-review",
+      "commandId": "6661497b-3d87-4dd2-9d54-79293059b458",
+      "taskBefore": [
+        "Review Quality package basisDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 16,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "decide-review · 6661497b-3d87-4dd2-9d54-79293059b458",
+      "timestamp": "2026-10-24T12:52:36.308Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Release for independent receipt",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 422,
+      "result": "package_release_readiness_blocked",
+      "commandId": "7c2b91a4-3fe9-476c-a934-02a7dc00b251",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 16,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": null,
+      "timestamp": "2026-10-24T12:52:38.119Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Save package basis",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "save-package",
+      "commandId": "6bdd7856-a068-491b-9d50-7924b2644b30",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 17,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "save-package · 6bdd7856-a068-491b-9d50-7924b2644b30",
+      "timestamp": "2026-10-24T12:52:40.108Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Save dated crew demand",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "save-demand",
+      "commandId": "000f838b-e3bc-40c3-b329-3cf85f2058e5",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 18,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "save-demand · 000f838b-e3bc-40c3-b329-3cf85f2058e5",
+      "timestamp": "2026-10-24T12:52:41.952Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Request Engineering review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "request-review",
+      "commandId": "3b3bdb60-113a-4ddb-b235-a2a645027099",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 19,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "request-review · 3b3bdb60-113a-4ddb-b235-a2a645027099",
+      "timestamp": "2026-10-24T12:52:43.744Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_ops",
+      "button": "Approve Engineering review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "decide-review",
+      "commandId": "3b842013-ed10-4c2d-8bf9-a64dd1dee407",
+      "taskBefore": [
+        "Review Engineering package basisDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 20,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "decide-review · 3b842013-ed10-4c2d-8bf9-a64dd1dee407",
+      "timestamp": "2026-10-24T12:52:45.561Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Request Delivery review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "request-review",
+      "commandId": "4729bf93-9553-4495-8ecf-4cec4a0b0b50",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 21,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "request-review · 4729bf93-9553-4495-8ecf-4cec4a0b0b50",
+      "timestamp": "2026-10-24T12:52:48.112Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_ops",
+      "button": "Approve Delivery review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "decide-review",
+      "commandId": "a95584e9-506d-4940-a1ca-acd29db606ce",
+      "taskBefore": [
+        "Review Delivery package basisDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 22,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "decide-review · a95584e9-506d-4940-a1ca-acd29db606ce",
+      "timestamp": "2026-10-24T12:52:50.165Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Request Safety review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "request-review",
+      "commandId": "d4d2420d-b217-4117-b191-0d6cdb6bc054",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 23,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "request-review · d4d2420d-b217-4117-b191-0d6cdb6bc054",
+      "timestamp": "2026-10-24T12:52:51.829Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_ops",
+      "button": "Approve Safety review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "decide-review",
+      "commandId": "60d0b88e-7dfe-4494-a0d5-f63a85de93ff",
+      "taskBefore": [
+        "Review Safety package basisDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 24,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "decide-review · 60d0b88e-7dfe-4494-a0d5-f63a85de93ff",
+      "timestamp": "2026-10-24T12:52:53.786Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Request Quality review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "request-review",
+      "commandId": "c7772776-60f0-4a8a-8bb3-a5fae85f2051",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 25,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "request-review · c7772776-60f0-4a8a-8bb3-a5fae85f2051",
+      "timestamp": "2026-10-24T12:52:55.726Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_ops",
+      "button": "Approve Quality review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "decide-review",
+      "commandId": "d03ebc5d-2854-480f-bf99-056365505c1a",
+      "taskBefore": [
+        "Review Quality package basisDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 26,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "decide-review · d03ebc5d-2854-480f-bf99-056365505c1a",
+      "timestamp": "2026-10-24T12:52:57.518Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_admin",
+      "button": "Release for independent receipt",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "release-package",
+      "commandId": "02bf863f-e0b8-4f98-aba3-1350ce9e726b",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 27,
+      "configurationVersionId": "f85b01e8-fcd4-430a-ae8c-1064cfc77c62",
+      "auditReference": "release-package · 02bf863f-e0b8-4f98-aba3-1350ce9e726b",
+      "timestamp": "2026-10-24T12:52:59.273Z"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "workId": "tenant_a_test-0b3e60d12b714f5fa30bbe98a6d807da",
+      "actor": "a_ops",
+      "button": "Accept released package",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "respond-receipt",
+      "timestamp": "2026-10-24T12:53:01.033Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_admin",
+      "button": "Save dated crew demand",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "save-demand",
+      "commandId": "315ece1f-13a5-4d58-afdb-1134ea1e62e4",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 6,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "save-demand · 315ece1f-13a5-4d58-afdb-1134ea1e62e4",
+      "timestamp": "2026-10-24T12:53:03.213Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_admin",
+      "button": "Request Engineering review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "request-review",
+      "commandId": "fec058b1-33fe-4fbd-98bc-411034b0201d",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 8,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "request-review · fec058b1-33fe-4fbd-98bc-411034b0201d",
+      "timestamp": "2026-10-24T12:53:07.712Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_ops",
+      "button": "Approve Engineering review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "decide-review",
+      "commandId": "aba0f23f-7d40-4fa3-af6a-0fcd1e4835fe",
+      "taskBefore": [
+        "Review Engineering package basisDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 9,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "decide-review · aba0f23f-7d40-4fa3-af6a-0fcd1e4835fe",
+      "timestamp": "2026-10-24T12:53:09.733Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_admin",
+      "button": "Request Delivery review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "request-review",
+      "commandId": "65a2b37d-61f7-4c92-b7b7-fe631ed6e9e7",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 10,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "request-review · 65a2b37d-61f7-4c92-b7b7-fe631ed6e9e7",
+      "timestamp": "2026-10-24T12:53:11.843Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_ops",
+      "button": "Approve Delivery review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "decide-review",
+      "commandId": "46fcd177-4c40-46eb-89d2-ed074e46b378",
+      "taskBefore": [
+        "Review Delivery package basisDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 11,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "decide-review · 46fcd177-4c40-46eb-89d2-ed074e46b378",
+      "timestamp": "2026-10-24T12:53:13.895Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_admin",
+      "button": "Request Safety review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "request-review",
+      "commandId": "be7452ce-8d97-4314-a1a6-ac24ded72f95",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 12,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "request-review · be7452ce-8d97-4314-a1a6-ac24ded72f95",
+      "timestamp": "2026-10-24T12:53:15.930Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_ops",
+      "button": "Approve Safety review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "decide-review",
+      "commandId": "17afaac6-f32a-4441-b8d1-6ff0f35e6e85",
+      "taskBefore": [
+        "Review Safety package basisDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 13,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "decide-review · 17afaac6-f32a-4441-b8d1-6ff0f35e6e85",
+      "timestamp": "2026-10-24T12:53:17.877Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_admin",
+      "button": "Request Quality review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "request-review",
+      "commandId": "97b5849d-8af7-442e-a3a2-c5a4f5f08e44",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [
+        "release-package"
+      ],
+      "phaseAfter": "Design",
+      "decisionRevision": 14,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "request-review · 97b5849d-8af7-442e-a3a2-c5a4f5f08e44",
+      "timestamp": "2026-10-24T12:53:19.941Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_ops",
+      "button": "Approve Quality review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "decide-review",
+      "commandId": "894fbde8-3926-4e49-bf26-1486b7ae75e3",
+      "taskBefore": [
+        "Review Quality package basisDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 15,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "decide-review · 894fbde8-3926-4e49-bf26-1486b7ae75e3",
+      "timestamp": "2026-10-24T12:53:22.201Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_admin",
+      "button": "Release for independent receipt",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "release-package",
+      "commandId": "8d9ae1ec-2d20-4ba7-adcf-3230cfd5ebe3",
+      "taskBefore": [
+        "Complete and release Design packageDesign · Phase 2D policy qualification · Fictional Customer · Ready for decision"
+      ],
+      "taskAfter": [],
+      "phaseAfter": "Design",
+      "decisionRevision": 16,
+      "configurationVersionId": "38309e1f-32fd-4ccf-9dd9-9f7dfe153cf9",
+      "auditReference": "release-package · 8d9ae1ec-2d20-4ba7-adcf-3230cfd5ebe3",
+      "timestamp": "2026-10-24T12:53:24.450Z"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "workId": "tenant_b_test-fd79adca52524db78643ae5fa3d11a0e",
+      "actor": "b_ops",
+      "button": "Accept released package",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "result": "respond-receipt",
+      "timestamp": "2026-10-24T12:53:26.854Z"
+    }
+  ],
+  "gateA": {
+    "anonexistent": 422,
+    "bnonexistent": 422,
+    "bforeign-tenant-and-work": 422,
+    "aConcurrentDemand": [
+      409,
+      200
+    ],
+    "bConcurrentDemand": [
+      200,
+      409
+    ]
+  },
+  "finishedAt": "2026-10-24T12:53:50.023Z",
+  "summary": {
+    "passed": 37,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  }
+}

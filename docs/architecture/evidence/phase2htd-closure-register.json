@@ -1,0 +1,1087 @@
+{
+  "sourceCommit": "88381435a965050402dcd423b4856115246459a3",
+  "sourceRegister": "docs/architecture/evidence/phase2htc-closure-register.json",
+  "inheritedGroups": [
+    {
+      "gate": "B",
+      "name": "unauthenticated, wrong role, nonmember, suspended or removed member, stale session",
+      "sourceStatus": "BLOCKED",
+      "atomicCaseIds": [
+        "A01",
+        "A02",
+        "A06",
+        "A08"
+      ],
+      "disposition": "PASS",
+      "reason": "All mapped local atomic assertions executed; see case evidence and final regression report"
+    },
+    {
+      "gate": "B",
+      "name": "suspended tenant, disabled entitlement, disabled flag, assigned task without command role",
+      "sourceStatus": "BLOCKED",
+      "atomicCaseIds": [
+        "A03",
+        "A04",
+        "A05",
+        "A06"
+      ],
+      "disposition": "PASS",
+      "reason": "All mapped local atomic assertions executed; see case evidence and final regression report"
+    },
+    {
+      "gate": "B",
+      "name": "cross-tenant child request, authorization, approval, pricing, evidence, job in both directions",
+      "sourceStatus": "BLOCKED",
+      "atomicCaseIds": [
+        "A07",
+        "B04",
+        "B05",
+        "B09",
+        "B10",
+        "B11"
+      ],
+      "disposition": "PASS",
+      "reason": "All mapped local atomic assertions executed; see case evidence and final regression report"
+    },
+    {
+      "gate": "B",
+      "name": "forged workspace, parent Work, child request and job IDs",
+      "sourceStatus": "BLOCKED",
+      "atomicCaseIds": [
+        "A07",
+        "B12"
+      ],
+      "disposition": "PASS",
+      "reason": "All mapped local atomic assertions executed; see case evidence and final regression report"
+    },
+    {
+      "gate": "B",
+      "name": "missing, rejected, other-request, other-Work and other-tenant approval",
+      "sourceStatus": "BLOCKED",
+      "atomicCaseIds": [
+        "B04",
+        "B05",
+        "B15"
+      ],
+      "disposition": "PASS",
+      "reason": "All mapped local atomic assertions executed; see case evidence and final regression report"
+    },
+    {
+      "gate": "B",
+      "name": "changed estimate amount, scope, currency, config version and revoked approver",
+      "sourceStatus": "BLOCKED",
+      "atomicCaseIds": [
+        "B01",
+        "B02",
+        "B03",
+        "B14"
+      ],
+      "disposition": "PASS",
+      "reason": "All mapped local atomic assertions executed; see case evidence and final regression report"
+    },
+    {
+      "gate": "B",
+      "name": "forged, missing, deleted and foreign customer evidence",
+      "sourceStatus": "BLOCKED",
+      "atomicCaseIds": [
+        "B07",
+        "B08",
+        "B09",
+        "B10",
+        "B11",
+        "B12",
+        "B13"
+      ],
+      "disposition": "PASS",
+      "reason": "All mapped local atomic assertions executed; see case evidence and final regression report"
+    },
+    {
+      "gate": "B",
+      "name": "duplicate pricing, customer authorization, threshold approval, service authorization and job",
+      "sourceStatus": "BLOCKED",
+      "atomicCaseIds": [
+        "C01",
+        "C02",
+        "C04",
+        "C05",
+        "C06",
+        "C07"
+      ],
+      "disposition": "PASS",
+      "reason": "All mapped local atomic assertions executed; see case evidence and final regression report"
+    },
+    {
+      "gate": "B",
+      "name": "concurrent conflicting approval, authorization and job",
+      "sourceStatus": "BLOCKED",
+      "atomicCaseIds": [
+        "C01",
+        "C03",
+        "C04",
+        "C05"
+      ],
+      "disposition": "PASS",
+      "reason": "All mapped local atomic assertions executed; see case evidence and final regression report"
+    },
+    {
+      "gate": "B",
+      "name": "feature boundary for provisioning, organization, membership, configuration and ordinary Work",
+      "sourceStatus": "BLOCKED",
+      "atomicCaseIds": [
+        "A09"
+      ],
+      "disposition": "PASS",
+      "reason": "All mapped local atomic assertions executed; see case evidence and final regression report"
+    },
+    {
+      "gate": "C",
+      "name": "completed task, revised request, changed amount or scope, removed or suspended actor, suspended tenant, disabled feature, existing job and replayed task URL",
+      "sourceStatus": "BLOCKED",
+      "atomicCaseIds": [
+        "D01",
+        "D02",
+        "D03",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08",
+        "D09",
+        "D10",
+        "D11"
+      ],
+      "disposition": "PASS",
+      "reason": "All mapped local atomic assertions executed; see case evidence and final regression report"
+    },
+    {
+      "gate": "D",
+      "name": "inherited administration and six-phase checks",
+      "sourceStatus": "BLOCKED",
+      "atomicCaseIds": [],
+      "disposition": "BLOCKED",
+      "reason": "Phase 2H-TB Gate B remains 50/51: connected Work browser creation receipt absent; see final attempt evidence"
+    }
+  ],
+  "cases": [
+    {
+      "id": "A01",
+      "group": "identity",
+      "risk": "stale suspended session mutates service",
+      "target": "service Operate API and RPC",
+      "actor": "operations leader",
+      "fixture": "open triage task",
+      "expected": "403 and 42501",
+      "stateAssertion": "Operate revision and jobs unchanged",
+      "status": "PASS",
+      "actual": {
+        "api": 403,
+        "rpc": "42501",
+        "queue": 403,
+        "unchangedOperateRevision": 26
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "A02",
+      "group": "identity",
+      "risk": "removed member retains access",
+      "target": "service Operate API and RPC",
+      "actor": "removed operations leader",
+      "fixture": "open triage task",
+      "expected": "403 and 42501",
+      "stateAssertion": "task unavailable; no transition",
+      "status": "PASS",
+      "actual": {
+        "api": 403,
+        "queue": 403,
+        "successorActor": "0450f890-bbd7-468b-acc9-c0c80b7ae7e1",
+        "unchangedOnDenial": true
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "A03",
+      "group": "identity",
+      "risk": "suspended tenant can authorize service",
+      "target": "service authorization API and RPC",
+      "actor": "operations leader",
+      "fixture": "active service request, suspended tenant",
+      "expected": "403 and 42501",
+      "stateAssertion": "authorization and jobs unchanged",
+      "status": "PASS",
+      "actual": {
+        "api": 403,
+        "authorizationApi": 403,
+        "unchangedOperateRevision": 26
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "A04",
+      "group": "feature",
+      "risk": "unentitled tenant can authorize service",
+      "target": "service authorization API and RPC",
+      "actor": "operations leader",
+      "fixture": "entitlement disabled",
+      "expected": "403 and 42501",
+      "stateAssertion": "authorization and jobs unchanged",
+      "status": "PASS",
+      "actual": {
+        "api": 403,
+        "authorizationApi": 403,
+        "unchangedOperateRevision": 26
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "A05",
+      "group": "feature",
+      "risk": "disabled rollout permits direct execution",
+      "target": "service Operate API and RPC",
+      "actor": "operations leader",
+      "fixture": "flag disabled",
+      "expected": "403 and 42501",
+      "stateAssertion": "Operate revision and jobs unchanged",
+      "status": "PASS",
+      "actual": {
+        "api": 403,
+        "authorizationApi": 403,
+        "rpc": "42501",
+        "pricingRpc": "42501",
+        "approvalRpc": "42501",
+        "jobRpc": "42501",
+        "privilegedJobRpc": "42501",
+        "unrelatedOrgRead": true,
+        "vendorDirectory": true
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "A06",
+      "group": "role",
+      "risk": "wrong role decides approval",
+      "target": "service approval RPC",
+      "actor": "field worker",
+      "fixture": "pending A approval",
+      "expected": "42501",
+      "stateAssertion": "approval remains pending",
+      "status": "PASS",
+      "actual": {
+        "rpc": "42501"
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "A07",
+      "group": "isolation",
+      "risk": "foreign actor authorizes other tenant",
+      "target": "service authorization API",
+      "actor": "A/B operations leaders",
+      "fixture": "both tenant requests",
+      "expected": "403 both directions",
+      "stateAssertion": "both Operate revisions unchanged",
+      "status": "PASS",
+      "actual": {
+        "aToB": 403,
+        "bToA": 403,
+        "scoped": [
+          {
+            "actor": "a_ops",
+            "foreignTenant": "tenant_b_test",
+            "api": {
+              "approval": 403,
+              "pricing": 403,
+              "job": 403,
+              "evidence": 403
+            },
+            "rpc": {
+              "approval": "42501",
+              "pricing": "42501",
+              "job": "42501"
+            }
+          },
+          {
+            "actor": "b_ops",
+            "foreignTenant": "tenant_a_test",
+            "api": {
+              "approval": 403,
+              "pricing": 403,
+              "job": 403,
+              "evidence": 403
+            },
+            "rpc": {
+              "approval": "42501",
+              "pricing": "42501",
+              "job": "42501"
+            }
+          }
+        ],
+        "unchangedRevisions": [
+          34,
+          25
+        ]
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "A08",
+      "group": "task",
+      "risk": "assigned task survives access revocation",
+      "target": "My Work and service API",
+      "actor": "operations leader",
+      "fixture": "open task before removal",
+      "expected": "queue and mutation 403",
+      "stateAssertion": "task and business state unchanged",
+      "status": "PASS",
+      "actual": {
+        "api": 403,
+        "queue": 403,
+        "successorActor": "0450f890-bbd7-468b-acc9-c0c80b7ae7e1",
+        "unchangedOnDenial": true
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "A09",
+      "group": "feature",
+      "risk": "connected gate disables unrelated administration",
+      "target": "vendor, organization, membership, configuration, ordinary Work",
+      "actor": "vendor and tenant administrator",
+      "fixture": "connected flag off",
+      "expected": "unrelated commands retain authority",
+      "stateAssertion": "unrelated result valid; service denied",
+      "status": "PASS",
+      "actual": {
+        "api": 403,
+        "authorizationApi": 403,
+        "rpc": "42501",
+        "pricingRpc": "42501",
+        "approvalRpc": "42501",
+        "jobRpc": "42501",
+        "unrelatedOrgRead": true,
+        "vendorDirectory": true
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B01",
+      "group": "approval",
+      "risk": "currency change reuses USD approval",
+      "target": "pricing and authorization RPC",
+      "actor": "project manager/operations leader",
+      "fixture": "approved A request",
+      "expected": "non-USD rejected",
+      "stateAssertion": "approval history retained; no authorization",
+      "status": "PASS",
+      "actual": {
+        "rpc": "23514",
+        "unchangedOperateRevision": 15
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B02",
+      "group": "approval",
+      "risk": "changed amount reuses approval",
+      "target": "pricing and job RPC",
+      "actor": "project manager",
+      "fixture": "approved A request",
+      "expected": "stale approval rejected",
+      "stateAssertion": "no job; history retained",
+      "status": "PASS",
+      "actual": {
+        "oldAmount": 1514286,
+        "newAmount": 1528572,
+        "staleApprovalHttp": 409,
+        "oldDecisionRetained": "pending"
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B03",
+      "group": "approval",
+      "risk": "scope change reuses approval",
+      "target": "pricing and job RPC",
+      "actor": "project manager",
+      "fixture": "approved A request",
+      "expected": "stale approval rejected",
+      "stateAssertion": "no job; history retained",
+      "status": "PASS",
+      "actual": {
+        "amountUnchanged": 1528572,
+        "oldScopeRevision": 3,
+        "newScopeRevision": 4,
+        "staleApprovalHttp": 409
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B04",
+      "group": "approval",
+      "risk": "another child uses approval",
+      "target": "approval and authorization RPC",
+      "actor": "operations leader",
+      "fixture": "second A child request",
+      "expected": "approval not reusable",
+      "stateAssertion": "no authorization/job",
+      "status": "PASS",
+      "actual": {
+        "wrongChildRpc": "23514",
+        "approvedChild": "8d6ee098-53a6-4672-b4c1-4ed82d4b4caf",
+        "unapprovedChild": "8dc135d9-0dcd-4e9c-adc1-132e724efb01",
+        "approvalRowsForUnapprovedChild": 0
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B05",
+      "group": "approval",
+      "risk": "another parent Work uses approval",
+      "target": "approval and authorization RPC",
+      "actor": "operations leader",
+      "fixture": "second A Work",
+      "expected": "approval not reusable",
+      "stateAssertion": "no authorization/job",
+      "status": "PASS",
+      "actual": {
+        "wrongParentRpc": "23514",
+        "originalWorkId": "tenant_a_test-47b56c6a80374a35b1985f7c90b66fc5",
+        "otherWorkId": "tenant_a_test-113e88a642a6454bafbaafbdf9e729ad"
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B06",
+      "group": "approval",
+      "risk": "old decision loses historical trace",
+      "target": "approval ledger and Work pin",
+      "actor": "tenant administrator",
+      "fixture": "superseded approval",
+      "expected": "history readable but unusable",
+      "stateAssertion": "immutable event count and pin",
+      "status": "PASS",
+      "actual": {
+        "approvalRows": 4,
+        "approvalEvents": 6,
+        "configurationVersionId": "bbb59b62-20fc-4f3d-8ef0-7b945941d3a8"
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B07",
+      "group": "evidence",
+      "risk": "deleted object authorizes service",
+      "target": "customer evidence custody and service RPC",
+      "actor": "operations leader",
+      "fixture": "uploaded then removed PDF",
+      "expected": "service authorization rejected",
+      "stateAssertion": "no authorization/job",
+      "status": "PASS",
+      "actual": {
+        "deletedEvidenceId": "8920788e-dfb3-45be-be24-f5aec7913fe6",
+        "rpc": "23514",
+        "unchangedOperateRevision": 23
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B08",
+      "group": "evidence",
+      "risk": "missing object authorizes service",
+      "target": "service authorization API",
+      "actor": "operations leader",
+      "fixture": "no evidence",
+      "expected": "409",
+      "stateAssertion": "no authorization/job",
+      "status": "PASS",
+      "actual": {
+        "rpc": "23514",
+        "requestId": "b99b2629-541d-450f-a803-771f2b398c17",
+        "unchangedOperateRevision": 23
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B09",
+      "group": "evidence",
+      "risk": "other child evidence authorizes service",
+      "target": "service authorization API/RPC",
+      "actor": "operations leader",
+      "fixture": "two child requests",
+      "expected": "rejected",
+      "stateAssertion": "no authorization/job",
+      "status": "PASS",
+      "actual": {
+        "rpc": "23514",
+        "requestId": "b99b2629-541d-450f-a803-771f2b398c17",
+        "unchangedOperateRevision": 23
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B10",
+      "group": "evidence",
+      "risk": "other Work evidence authorizes service",
+      "target": "service authorization API/RPC",
+      "actor": "operations leader",
+      "fixture": "two Work records",
+      "expected": "rejected",
+      "stateAssertion": "no authorization/job",
+      "status": "PASS",
+      "actual": {
+        "otherWorkEvidenceRpc": "23514",
+        "evidenceId": "52fd738b-e832-47f5-8b5c-e235ecf8fdee",
+        "otherWorkId": "tenant_a_test-113e88a642a6454bafbaafbdf9e729ad",
+        "targetWorkId": "tenant_a_test-47b56c6a80374a35b1985f7c90b66fc5",
+        "unchangedOperateRevision": 34
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B11",
+      "group": "evidence",
+      "risk": "foreign-tenant evidence authorizes service",
+      "target": "service authorization API/RPC",
+      "actor": "operations leader",
+      "fixture": "A/B evidence",
+      "expected": "403 or 409",
+      "stateAssertion": "no authorization/job",
+      "status": "PASS",
+      "actual": {
+        "rpc": "23514",
+        "requestId": "b99b2629-541d-450f-a803-771f2b398c17",
+        "unchangedOperateRevision": 23
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B12",
+      "group": "evidence",
+      "risk": "forged evidence ID authorizes service",
+      "target": "service authorization API/RPC",
+      "actor": "operations leader",
+      "fixture": "random evidence ID",
+      "expected": "409",
+      "stateAssertion": "no authorization/job",
+      "status": "PASS",
+      "actual": {
+        "apiDenials": [
+          409,
+          409
+        ]
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B13",
+      "group": "evidence",
+      "risk": "retained PDF is mistaken for acceptance",
+      "target": "service authorization API/RPC",
+      "actor": "operations leader",
+      "fixture": "uploaded unaccepted source",
+      "expected": "rejected",
+      "stateAssertion": "no authorization/job",
+      "status": "PASS",
+      "actual": {
+        "pdfRetained": true,
+        "authorizationAbsent": true,
+        "prematureJobHttp": 409
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B14",
+      "group": "approval",
+      "risk": "revoked approver remains authoritative",
+      "target": "service authorization RPC",
+      "actor": "operations leader",
+      "fixture": "approved request; approver membership suspended in disposable fixture",
+      "expected": "23514",
+      "stateAssertion": "approved history retained; no new authorization/job",
+      "status": "PASS",
+      "actual": {
+        "approvalId": "24c3c4c6-b974-4a5b-a135-cb2b739c2467",
+        "approverSuspendedFixture": true,
+        "authorizationRpc": "23514",
+        "approvedHistoryRetained": true,
+        "unchangedOperateRevision": 34
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "B15",
+      "group": "approval",
+      "risk": "rejected approval authorizes child request",
+      "target": "service authorization RPC",
+      "actor": "operations leader",
+      "fixture": "priced child with explicit rejection",
+      "expected": "23514",
+      "stateAssertion": "rejected event retained; no authorization/job",
+      "status": "PASS",
+      "actual": {
+        "rejectedApprovalId": "a220d6d8-3d93-4a62-961f-766f0494daab",
+        "authorizationRpc": "23514",
+        "rejectedHistoryRetained": true
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "C01",
+      "group": "concurrency",
+      "risk": "pricing has contradictory decisions",
+      "target": "service pricing RPC",
+      "actor": "two operations leaders",
+      "fixture": "pricing review pending",
+      "expected": "at most one accepted",
+      "stateAssertion": "one final status/event",
+      "status": "PASS",
+      "actual": {
+        "accepted": "Approved",
+        "rejectedCode": "23505",
+        "decisionEvents": 1,
+        "finalOperateRevision": 18
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "C02",
+      "group": "concurrency",
+      "risk": "customer authorization duplicates",
+      "target": "service pricing RPC",
+      "actor": "two operations leaders",
+      "fixture": "approved estimate and valid evidence",
+      "expected": "one accepted or one idempotent",
+      "stateAssertion": "single authorization/event",
+      "status": "PASS",
+      "actual": {
+        "accepted": 1,
+        "denied": "23505",
+        "authorizationEvents": 1,
+        "operateRevision": 24
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "C03",
+      "group": "concurrency",
+      "risk": "approval and rejection both commit",
+      "target": "approval RPC",
+      "actor": "two independent approvers",
+      "fixture": "pending threshold approval",
+      "expected": "one final decision",
+      "stateAssertion": "one terminal ledger status",
+      "status": "PASS",
+      "actual": {
+        "acceptedStatus": "rejected",
+        "deniedCode": "23514",
+        "terminalEvents": 1,
+        "jobs": 0,
+        "approvalId": "a48a5732-67c7-44aa-85dc-bfe7905143c6"
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "C04",
+      "group": "concurrency",
+      "risk": "service authorization duplicates",
+      "target": "service pricing RPC",
+      "actor": "two operations leaders",
+      "fixture": "approved request and evidence",
+      "expected": "one business effect",
+      "stateAssertion": "one authorization/event",
+      "status": "PASS",
+      "actual": {
+        "accepted": 1,
+        "denied": "23505",
+        "authorizationEvents": 1,
+        "requestId": "b99b2629-541d-450f-a803-771f2b398c17"
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "C05",
+      "group": "concurrency",
+      "risk": "parallel jobs duplicate",
+      "target": "job RPC",
+      "actor": "two project managers",
+      "fixture": "authorized pending request",
+      "expected": "at most one executable job",
+      "stateAssertion": "one job identity",
+      "status": "PASS",
+      "actual": {
+        "accepted": 1,
+        "denied": "23505",
+        "requestId": "b99b2629-541d-450f-a803-771f2b398c17",
+        "jobId": "0df0747a-1fd4-4332-9d76-f0ccedf38101",
+        "executableJobs": 1
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "C06",
+      "group": "idempotency",
+      "risk": "identical command creates duplicate effect",
+      "target": "service approval/job RPC",
+      "actor": "same actor",
+      "fixture": "pending command",
+      "expected": "same receipt",
+      "stateAssertion": "one event",
+      "status": "PASS",
+      "actual": {
+        "sameCommandId": "7f282080-97ed-4935-bf81-b8bf1fe44a9d",
+        "identicalReceipts": true,
+        "revision": 16
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "C07",
+      "group": "idempotency",
+      "risk": "key reused with changed payload",
+      "target": "service approval/job RPC",
+      "actor": "same actor",
+      "fixture": "pending command",
+      "expected": "conflict",
+      "stateAssertion": "state unchanged",
+      "status": "PASS",
+      "actual": {
+        "sameCommandId": "7f282080-97ed-4935-bf81-b8bf1fe44a9d",
+        "conflict": "23505",
+        "unchangedRevision": 16
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "D01",
+      "group": "task",
+      "risk": "task completed by another actor remains actionable",
+      "target": "My Work and Operate API",
+      "actor": "operations leaders",
+      "fixture": "open triage task",
+      "expected": "stale command rejected",
+      "stateAssertion": "task removed; one triage",
+      "status": "PASS",
+      "actual": {
+        "staleApi": 409,
+        "taskRemoved": true,
+        "oldUrlNotActionable": true
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "D02",
+      "group": "task",
+      "risk": "opened task survives suspension",
+      "target": "My Work and Operate API",
+      "actor": "operations leader",
+      "fixture": "task open before suspend",
+      "expected": "403",
+      "stateAssertion": "no transition",
+      "status": "PASS",
+      "actual": {
+        "api": 403,
+        "rpc": "42501",
+        "queue": 403,
+        "unchangedOperateRevision": 26
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "D03",
+      "group": "task",
+      "risk": "opened task survives membership removal",
+      "target": "My Work and Operate API",
+      "actor": "operations leader",
+      "fixture": "task open before removal",
+      "expected": "403",
+      "stateAssertion": "no transition",
+      "status": "PASS",
+      "actual": {
+        "api": 403,
+        "queue": 403,
+        "successorActor": "0450f890-bbd7-468b-acc9-c0c80b7ae7e1",
+        "unchangedOnDenial": true
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "D04",
+      "group": "task",
+      "risk": "opened task survives tenant suspension",
+      "target": "My Work and Operate API",
+      "actor": "operations leader",
+      "fixture": "task open before tenant suspension",
+      "expected": "403",
+      "stateAssertion": "no transition",
+      "status": "PASS",
+      "actual": {
+        "api": 403,
+        "authorizationApi": 403,
+        "unchangedOperateRevision": 26
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "D05",
+      "group": "task",
+      "risk": "opened task survives feature disablement",
+      "target": "My Work and Operate API",
+      "actor": "operations leader",
+      "fixture": "task open before flag off",
+      "expected": "403",
+      "stateAssertion": "no transition",
+      "status": "PASS",
+      "actual": {
+        "api": 403,
+        "authorizationApi": 403,
+        "rpc": "42501",
+        "pricingRpc": "42501",
+        "approvalRpc": "42501",
+        "jobRpc": "42501",
+        "privilegedJobRpc": "42501",
+        "unrelatedOrgRead": true,
+        "vendorDirectory": true
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "D06",
+      "group": "task",
+      "risk": "old approval task accepts changed amount",
+      "target": "My Work and approval API",
+      "actor": "independent approver",
+      "fixture": "approval task open before amount change",
+      "expected": "rejected",
+      "stateAssertion": "old task invalid",
+      "status": "PASS",
+      "actual": {
+        "taskId": "service:tenant_a_test-47b56c6a80374a35b1985f7c90b66fc5:8d6ee098-53a6-4672-b4c1-4ed82d4b4caf:decide-approval:2",
+        "taskRemoved": true,
+        "staleApprovalHttp": 409,
+        "oldTaskUrl": "http://127.0.0.1:58819/work/customer/tenant_a_test?work=tenant_a_test-47b56c6a80374a35b1985f7c90b66fc5#phase-operate"
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "D07",
+      "group": "task",
+      "risk": "old approval task accepts changed scope",
+      "target": "My Work and approval API",
+      "actor": "independent approver",
+      "fixture": "approval task open before scope change",
+      "expected": "rejected",
+      "stateAssertion": "old task invalid",
+      "status": "PASS",
+      "actual": {
+        "taskId": "service:tenant_a_test-47b56c6a80374a35b1985f7c90b66fc5:8d6ee098-53a6-4672-b4c1-4ed82d4b4caf:decide-approval:3",
+        "taskRemoved": true,
+        "staleApprovalHttp": 409
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "D08",
+      "group": "task",
+      "risk": "another browser decision leaves stale task",
+      "target": "My Work and approval API",
+      "actor": "independent approver",
+      "fixture": "same approval in two sessions",
+      "expected": "stale action rejected",
+      "stateAssertion": "one decision; task removed",
+      "status": "PASS",
+      "actual": {
+        "otherSessionHttp": 200,
+        "originalSessionStaleHttp": 409,
+        "taskId": "service:tenant_a_test-47b56c6a80374a35b1985f7c90b66fc5:8d6ee098-53a6-4672-b4c1-4ed82d4b4caf:decide-approval:4",
+        "taskRemoved": true
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "D09",
+      "group": "task",
+      "risk": "existing job task creates another job",
+      "target": "My Work and job API",
+      "actor": "project manager",
+      "fixture": "job already created",
+      "expected": "rejected",
+      "stateAssertion": "one job",
+      "status": "PASS",
+      "actual": {
+        "postJobHttp": [
+          409,
+          409
+        ],
+        "primaryJobCounts": [
+          1,
+          1
+        ]
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "D10",
+      "group": "task",
+      "risk": "completed task URL reopens action",
+      "target": "My Work browser",
+      "actor": "project manager",
+      "fixture": "completed job URL",
+      "expected": "action unavailable",
+      "stateAssertion": "one job",
+      "status": "PASS",
+      "actual": {
+        "completedJobTasksRemoved": true
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "D11",
+      "group": "task",
+      "risk": "reassigned task grants old employee authority",
+      "target": "My Work and service API",
+      "actor": "operations leaders",
+      "fixture": "task responsibility changes",
+      "expected": "old actor denied",
+      "stateAssertion": "new actor alone acts",
+      "status": "NOT APPLICABLE",
+      "actual": "Connected-service My Work tasks have no assignee or reassignment command; role and active membership determine visibility.",
+      "evidence": [
+        "lib/d5o/hosted/customer-work-tasks.ts",
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "R01",
+      "group": "regression",
+      "risk": "A browser journey regresses",
+      "target": "TC connected browser suite",
+      "actor": "A authenticated roles",
+      "fixture": "USD 10,000 threshold",
+      "expected": "one approved USD 15,000 job",
+      "stateAssertion": "one job; audit and pin",
+      "status": "PASS",
+      "actual": {
+        "workId": "tenant_a_test-47b56c6a80374a35b1985f7c90b66fc5",
+        "requestId": "6a7d3af6-f59a-40b8-b2a4-10091c4df778",
+        "jobId": "8db568de-1706-4f58-916c-6af0503fa6da",
+        "approvalRows": 1,
+        "configurationVersionId": "bbb59b62-20fc-4f3d-8ef0-7b945941d3a8"
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    },
+    {
+      "id": "R02",
+      "group": "regression",
+      "risk": "B browser journey regresses",
+      "target": "TC connected browser suite",
+      "actor": "B authenticated roles",
+      "fixture": "USD 25,000 threshold",
+      "expected": "one USD 15,000 job without extra approval",
+      "stateAssertion": "one job; no approval row",
+      "status": "PASS",
+      "actual": {
+        "workId": "tenant_b_test-36f79fe077cb47b5978d4c90b5619c3e",
+        "requestId": "0c998484-e9e3-4f3d-9c81-548dd4820a0e",
+        "jobId": "c3844362-de3e-4a3a-b1d4-e4b785b09d8f",
+        "approvalRows": 0,
+        "configurationVersionId": "cd4534b0-0e6a-46bc-8dcc-16769a211d17"
+      },
+      "evidence": [
+        "docs/architecture/evidence/phase2htd-targeted-results.json"
+      ]
+    }
+  ],
+  "phase2hteFollowUp": {
+    "date": "2026-10-25",
+    "localDecision": "LOCALLY QUALIFIED",
+    "originalFiniteCases": "43 PASS, 1 NOT APPLICABLE",
+    "inheritedGateB": "PASS 51/51",
+    "visibleConfirmationAfterReload": true,
+    "onePersistedWorkAndReceiptPerTenant": true,
+    "evidence": "docs/architecture/evidence/phase2hte-gate-b-green-results.json"
+  }
+}

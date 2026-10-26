@@ -1,0 +1,10 @@
+{
+  "tenant": "tenant_a_test",
+  "receiptVisible": true,
+  "persisted": {
+    "workCount": 2,
+    "receiptCount": 2
+  },
+  "route": "http://127.0.0.1:59305/work/connected-work?workspace=tenant_a_test",
+  "expectedTitle": "Phase 2G browser Work A"
+}

@@ -1,0 +1,7 @@
+# Phase 2H-TB employee action coverage
+
+The historical six-phase inventory `D5O_PHASE2HS_ACTION_INVENTORY.json` remains **32/54 browser-qualified rows**. It contains two retained duplicate Design rows, so this is an inventory-row count, not a distinct-action count. This package did not modify those rows or count connected-service actions as unrelated phase completion.
+
+The separate connected-service chain now has browser receipts for nine distinct positive decisions per tenant: save coverage terms, open child request, approve coverage, triage, save estimate, submit pricing revision, approve pricing, record customer authorization, and create job. Tenant A additionally requested and received an independent threshold approval. Customer PDF retention was a browser upload and remains distinct from the authorization decision. The strict preapproval authorization and premature job denials were browser-origin API probes, not successful employee decisions. See `gateB` and `gateBJobs` in `evidence/phase2ht-gate-b-results.json`.
+
+Full browser-qualified action coverage remains narrower: the test did not assert starting each decision from My Work, every intermediate task reconciliation, or all negative security cases. The unqualified historical six-phase inventory rows remain listed in `D5O_PHASE2HS_ACTION_INVENTORY.json`; this package makes no Deploy employee-execution or Operate financial-closeout claim.

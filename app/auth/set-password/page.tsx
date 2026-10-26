@@ -15,6 +15,7 @@ export default function SetPasswordPage() {
   const [busy, setBusy] = useState(false);
   const clientRef = useRef<BrowserClient | null>(null);
   const requestIdRef = useRef<string | null>(null);
+  const [initialInvitation, setInitialInvitation] = useState<string | null>(null);
   useEffect(() => {
     let active = true;
     async function restore() {
@@ -30,6 +31,9 @@ export default function SetPasswordPage() {
         const fragment = new URLSearchParams(window.location.hash.slice(1));
         const query = new URLSearchParams(window.location.search);
         requestIdRef.current = query.get("request");
+        const initial = query.get("initial"), workspace = query.get("workspace");
+        if (initial && workspace && /^[a-z][a-z0-9_-]{2,63}$/.test(workspace))
+          setInitialInvitation(`/work/initial-invitation?workspace=${encodeURIComponent(workspace)}&request=${encodeURIComponent(initial)}`);
         const access = fragment.get("access_token"), refresh = fragment.get("refresh_token");
         const code = query.get("code");
         if ((!access || !refresh) && !code) {
@@ -86,7 +90,9 @@ export default function SetPasswordPage() {
     setPassword(""); setConfirm(""); setReady(false);
     await client.auth.signOut();
     setMessage(setupRecorded
-      ? "Password saved. Sign in normally. Your administrator must separately activate workspace access."
+      ? initialInvitation
+        ? "Password saved. Sign in as this recipient, then accept the administrator invitation."
+        : "Password saved. Sign in normally. Your administrator must separately activate workspace access."
       : "Password saved, but invitation completion could not be recorded. Sign in normally and ask your administrator to reconcile the pending invitation.");
     setBusy(false);
   }
@@ -102,6 +108,7 @@ export default function SetPasswordPage() {
       <label>Confirm password<input type="password" autoComplete="new-password" minLength={12} required value={confirm} onChange={(event) => setConfirm(event.target.value)} /></label>
       <button className="button button-primary" disabled={busy}>{busy ? "Saving…" : "Save password"}</button></form>}
     <p role="status">{message}</p>
+    {initialInvitation && !ready && <p><Link href={`/auth/sign-in?next=${encodeURIComponent(initialInvitation)}`}>Sign in to accept your administrator invitation</Link></p>}
     <p><Link href="/auth/forgot-password">Request a new recovery link</Link> · <Link href="/auth/sign-in">Go to sign-in</Link></p>
   </section></main>;
 }

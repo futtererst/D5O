@@ -2,7 +2,8 @@ import { createHash, randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import { createRybexSupabaseAdminClient, createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
-import { hostedPrototypeContext } from "@/lib/d5o/hosted/prototype-context";
+import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
+import { customerWorkScope } from "@/lib/d5o/hosted/customer-work-scope";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 
 export const dynamic = "force-dynamic";
@@ -67,8 +68,9 @@ function exactBasis(work: WorkRecord, purpose: Purpose, scopeId: string) {
 
 async function scope(request: NextRequest) {
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
-  if (!["rybex", "rotork"].includes(workspace)) return null;
-  const context = await hostedPrototypeContext(workspace);
+  if (!/^[a-z][a-z0-9_-]{1,63}$/.test(workspace)) return null;
+  const context = ["rybex", "rotork"].includes(workspace)
+    ? await hostedPrototypeContext(workspace) : (await customerWorkScope(workspace)).context;
   if (!["project_manager", "operations_leader", "field_supervisor", "billing_commercial_lead"].includes(context.actor.role)) return null;
   return { workspace, context };
 }
@@ -164,6 +166,7 @@ export async function POST(request: NextRequest) {
     return reply(data);
   } catch (error) {
     if (uploadedPath) await createRybexSupabaseAdminClient().storage.from(bucket).remove([uploadedPath]);
+    if (error instanceof HostedStateError) return reply({ error: error.code }, error.status);
     if (error instanceof Error && error.message === "unauthenticated") return reply({ error: "unauthenticated" }, 401);
     if (error instanceof Error && error.message === "support_document_package_assignment_required")
       return reply({ error: error.message }, 403);
@@ -218,6 +221,7 @@ export async function GET(request: NextRequest) {
       "X-Content-Type-Options": "nosniff"
     } });
   } catch (error) {
+    if (error instanceof HostedStateError) return reply({ error: error.code }, error.status);
     if (error instanceof Error && error.message === "unauthenticated") return reply({ error: "unauthenticated" }, 401);
     return reply({ error: "evidence_unavailable" }, 503);
   }

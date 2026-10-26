@@ -1,0 +1,127 @@
+{
+  "baseline": "f53aa89192b776221067cc6a761248e87259f82e",
+  "generatedAt": "2026-10-24T01:53:41.131Z",
+  "suites": {
+    "phase1": {
+      "exitCode": 0,
+      "summary": {
+        "passed": 18,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "evidence": "docs/architecture/evidence/phase2hr-inherited/phase1.json"
+    },
+    "phase1b": {
+      "exitCode": 0,
+      "summary": {
+        "passed": 13,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "evidence": "docs/architecture/evidence/phase2hr-inherited/phase1b.json"
+    },
+    "phase2a": {
+      "exitCode": 0,
+      "summary": {
+        "passed": 11,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "evidence": "docs/architecture/evidence/phase2hr-inherited/phase2a.json"
+    },
+    "phase2b": {
+      "exitCode": 0,
+      "summary": {
+        "passed": 18,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "evidence": "docs/architecture/evidence/phase2hr-inherited/phase2b.json"
+    },
+    "phase2c": {
+      "exitCode": 1,
+      "summary": {
+        "passed": 22,
+        "failed": 1,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "evidence": "docs/architecture/evidence/phase2hr-inherited/phase2c.json",
+      "correctedRerun": {
+        "passed": 23,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "correctedRerunEvidence": "docs/architecture/evidence/phase2hr-inherited/phase2c-corrected.json",
+      "correction": "Restored Connected Work creation-page confirmation after an incompatible redirect"
+    },
+    "phase2d": {
+      "exitCode": 0,
+      "summary": {
+        "passed": 27,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "evidence": "docs/architecture/evidence/phase2hr-inherited/phase2d.json"
+    },
+    "p0a": {
+      "exitCode": 0,
+      "summary": {
+        "passed": 16,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "evidence": "docs/architecture/evidence/phase2hr-inherited/p0a.json"
+    }
+  },
+  "staticChecks": {
+    "phaseContract": {
+      "exitCode": 0,
+      "stdout": "Published phase contract: tenant isolation, version pinning, legacy preservation, configured Rybex/Rotork decision checks, label invariance, protected rules, malformed version fail-closed PASS",
+      "stderr": ""
+    },
+    "phaseConfiguration": {
+      "exitCode": 0,
+      "stdout": "Phase configuration contract: 4 workspace/work-type packs, 6 phases, exact Work Type resolution, structured register validation, draft/approved source guard, label invariance and collision guard PASS",
+      "stderr": ""
+    },
+    "scannerInvariant": {
+      "exitCode": 0,
+      "stdout": "PASS: unsupported scanner modes remain readiness blockers; configured adapter passes configuration check",
+      "stderr": ""
+    }
+  },
+  "phase2hr": {
+    "summary": {
+      "passed": 50,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true
+    },
+    "authenticatedDesignControlInvocations": 47,
+    "evidence": "docs/architecture/evidence/phase2hr-design-browser-results.json"
+  },
+  "blocked": [
+    "Original sealed M1 RUN-MANIFEST.json absent",
+    "Original historical connected pilot fixture absent"
+  ],
+  "cleanup": {
+    "phase2hr": true,
+    "inherited": {
+      "phase1": true,
+      "phase1b": true,
+      "phase2a": true,
+      "phase2b": true,
+      "phase2c": true,
+      "phase2d": true,
+      "p0a": true
+    }
+  }
+}

@@ -1,0 +1,381 @@
+{
+  "baseline": "6e28685f44795b1a3f6b19877d575b609be43729",
+  "environment": "disposable local Supabase/PostgreSQL and authenticated local application",
+  "classification": "PARTIAL",
+  "gates": [
+    {
+      "id": "A",
+      "owner": "scripts/p0a/run-phase2htc-calendar.mjs and scripts/p0a/run-phase2htc-my-work.mjs",
+      "expected": "SLA calculation or explicit fail-closed error; adapter decisions are tenant, actor, Work, request, revision and evidence scoped",
+      "status": "PASS",
+      "cases": [
+        {
+          "name": "normal business calendar",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-calendar-results.json"
+          ]
+        },
+        {
+          "name": "missing holiday list",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-calendar-results.json"
+          ]
+        },
+        {
+          "name": "empty holiday list",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-calendar-results.json"
+          ]
+        },
+        {
+          "name": "invalid calendar structure",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-calendar-results.json"
+          ]
+        },
+        {
+          "name": "missing calendar",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-calendar-results.json"
+          ]
+        },
+        {
+          "name": "wrong-tenant calendar",
+          "status": "NOT APPLICABLE",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-calendar-results.json"
+          ],
+          "note": "The supported calendar is an enumerated tenant configuration, not a tenant-owned calendar object; a foreign identifier is rejected as invalid."
+        },
+        {
+          "name": "overnight shift",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-calendar-results.json"
+          ]
+        },
+        {
+          "name": "Friday-to-Saturday overnight shift",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-calendar-results.json"
+          ]
+        },
+        {
+          "name": "weekend",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-calendar-results.json"
+          ]
+        },
+        {
+          "name": "holiday",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-calendar-results.json"
+          ]
+        },
+        {
+          "name": "daylight saving transition",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-calendar-results.json"
+          ]
+        },
+        {
+          "name": "no future eligible window",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-calendar-results.json"
+          ]
+        },
+        {
+          "name": "approval adapter positive and negative",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-two-tenant-results.json"
+          ]
+        },
+        {
+          "name": "customer evidence adapter positive and negative",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-two-tenant-results.json"
+          ]
+        },
+        {
+          "name": "service authorization adapter authority",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-two-tenant-results.json"
+          ]
+        },
+        {
+          "name": "job adapter authority",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-two-tenant-results.json"
+          ]
+        }
+      ],
+      "evidence": [
+        "docs/architecture/evidence/phase2htc-calendar-results.json",
+        "docs/architecture/evidence/phase2htc-two-tenant-results.json"
+      ]
+    },
+    {
+      "id": "B",
+      "owner": "scripts/p0a/run-phase2htc-my-work.mjs plus inherited approval and Gate A suites",
+      "expected": "unauthorized or stale commands deny without state change; replays and concurrent commands preserve one valid result",
+      "status": "BLOCKED",
+      "cases": [
+        {
+          "name": "unauthenticated, wrong role, nonmember, suspended or removed member, stale session",
+          "status": "BLOCKED",
+          "evidence": [],
+          "note": "Wrong role and nonmember were tested, but suspension, removal and stale-session service-adapter mutation were not all executed."
+        },
+        {
+          "name": "suspended tenant, disabled entitlement, disabled flag, assigned task without command role",
+          "status": "BLOCKED",
+          "evidence": [],
+          "note": "The inherited feature suite covers general command scope; service-specific suspension and disablement through every adapter were not executed."
+        },
+        {
+          "name": "cross-tenant child request, authorization, approval, pricing, evidence, job in both directions",
+          "status": "BLOCKED",
+          "evidence": [],
+          "note": "B-to-A adapter reads and foreign RPC writes passed; the full bidirectional child/pricing/job matrix was not executed."
+        },
+        {
+          "name": "forged workspace, parent Work, child request and job IDs",
+          "status": "BLOCKED",
+          "evidence": [],
+          "note": "Forged parent/request/evidence IDs passed, but no standalone forged job-ID lookup test ran."
+        },
+        {
+          "name": "missing, rejected, other-request, other-Work and other-tenant approval",
+          "status": "BLOCKED",
+          "evidence": [],
+          "note": "The Phase 1B suite covers missing and cross-request approval; rejected, foreign-Work and foreign-tenant combinations were not all rerun through the new adapter."
+        },
+        {
+          "name": "changed estimate amount, scope, currency, config version and revoked approver",
+          "status": "BLOCKED",
+          "evidence": [],
+          "note": "Amount, scope, version and revoked approver are covered by Phase 1B; currency-change service-adapter qualification remains unexecuted."
+        },
+        {
+          "name": "forged, missing, deleted and foreign customer evidence",
+          "status": "BLOCKED",
+          "evidence": [],
+          "note": "Forged and foreign evidence are rejected; deletion and wrong-child provenance were not each exercised."
+        },
+        {
+          "name": "duplicate pricing, customer authorization, threshold approval, service authorization and job",
+          "status": "BLOCKED",
+          "evidence": [],
+          "note": "Exact and conflicting approval, authorization and job receipt replays passed; duplicate pricing and customer-evidence decisions were not all executed."
+        },
+        {
+          "name": "concurrent conflicting approval, authorization and job",
+          "status": "BLOCKED",
+          "evidence": [],
+          "note": "Parallel post-job creation attempts passed; concurrent pending conflicting approval and preauthorization attempts were not executed."
+        },
+        {
+          "name": "conflicting idempotency key, stale revision and task replay",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-two-tenant-results.json"
+          ],
+          "note": "Exact and conflicting receipt replay, stale-state checks and completed task URL replay executed; other stale-task variants remain in the grouped cases below."
+        },
+        {
+          "name": "feature boundary for provisioning, organization, membership, configuration and ordinary Work",
+          "status": "BLOCKED",
+          "evidence": [],
+          "note": "Inherited feature-scope checks ran, but the full service-disabled plus unrelated-administration matrix was not rerun in this package."
+        }
+      ],
+      "evidence": [
+        "docs/architecture/evidence/phase2htc-two-tenant-results.json",
+        "docs/architecture/evidence/phase2htc-approval-integrity-results.json"
+      ]
+    },
+    {
+      "id": "C",
+      "owner": "scripts/p0a/run-phase2htc-my-work.mjs",
+      "expected": "each supported responsibility is opened from My Work by the authorized actor; completed tasks resolve and the next appears",
+      "status": "BLOCKED",
+      "cases": [
+        {
+          "name": "A and B request preparation",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-action-coverage.json"
+          ]
+        },
+        {
+          "name": "A and B coverage review",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-action-coverage.json"
+          ]
+        },
+        {
+          "name": "A and B triage",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-action-coverage.json"
+          ]
+        },
+        {
+          "name": "A and B estimate preparation",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-action-coverage.json"
+          ]
+        },
+        {
+          "name": "A and B pricing review",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-action-coverage.json"
+          ]
+        },
+        {
+          "name": "A and B customer authorization",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-action-coverage.json"
+          ]
+        },
+        {
+          "name": "A independent threshold approval; B no threshold task",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-action-coverage.json"
+          ]
+        },
+        {
+          "name": "A and B service authorization",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-action-coverage.json"
+          ]
+        },
+        {
+          "name": "A and B job creation",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-action-coverage.json"
+          ]
+        },
+        {
+          "name": "completed task, revised request, changed amount or scope, removed or suspended actor, suspended tenant, disabled feature, existing job and replayed task URL",
+          "status": "BLOCKED",
+          "evidence": [],
+          "note": "Completed task URL and job replay passed; revised request, removed/suspended actor, suspended tenant and disabled-feature task variants were not all exercised."
+        }
+      ],
+      "evidence": [
+        "docs/architecture/evidence/phase2htc-action-coverage.json",
+        "docs/architecture/evidence/phase2htc-two-tenant-results.json"
+      ]
+    },
+    {
+      "id": "D",
+      "owner": "scripts/p0a/run-phase2htc-my-work.mjs and inherited suites",
+      "expected": "one authorized browser-created job per tenant, correct thresholds, full regression, preserved pins and cleanup",
+      "status": "BLOCKED",
+      "cases": [
+        {
+          "name": "clean two-tenant browser journey",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-two-tenant-results.json"
+          ]
+        },
+        {
+          "name": "Phase 1B approval integrity",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-approval-integrity-results.json"
+          ]
+        },
+        {
+          "name": "inherited administration and six-phase checks",
+          "status": "BLOCKED",
+          "evidence": [],
+          "note": "Integrated six-phase journey passed, but the full listed inherited suites and historical pilot fixtures were not all run in this package."
+        },
+        {
+          "name": "TypeScript",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-static-results.json"
+          ]
+        },
+        {
+          "name": "ESLint",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-static-results.json"
+          ]
+        },
+        {
+          "name": "production build",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-static-results.json"
+          ]
+        },
+        {
+          "name": "core and connected-service coverage",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-action-coverage.json"
+          ]
+        },
+        {
+          "name": "synthetic cleanup",
+          "status": "PASS",
+          "evidence": [
+            "docs/architecture/evidence/phase2htc-two-tenant-results.json"
+          ]
+        }
+      ],
+      "evidence": [
+        "docs/architecture/evidence/phase2htc-two-tenant-results.json",
+        "docs/architecture/evidence/phase2htc-approval-integrity-results.json",
+        "docs/architecture/evidence/phase2htc-inherited-gate-a-results.json",
+        "docs/architecture/evidence/phase2htc-action-coverage.json"
+      ]
+    }
+  ],
+  "productionPromotionBlockers": [
+    "approved staging migration and recovery",
+    "sealed M1 fixture",
+    "historical connected pilot fixture",
+    "live commercial invitation delivery",
+    "general-customer production routing",
+    "historical phase projection qualification",
+    "existing production readiness failures"
+  ],
+  "finalizedAt": "2026-10-25T12:59:34.776Z",
+  "staticChecks": {
+    "typecheck": "PASS",
+    "eslint": "PASS",
+    "productionBuild": "PASS"
+  },
+  "retryEvidence": [
+    "docs/architecture/evidence/phase2htc-browser-retry-failure.json",
+    "docs/architecture/evidence/phase2htc-my-work-route-retry-failure.json"
+  ]
+}

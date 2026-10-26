@@ -1,0 +1,42 @@
+{
+  "baseline": "88381435a965050402dcd423b4856115246459a3",
+  "branch": "codex/d5o-phase2htd-security-closure",
+  "environment": "isolated worktree, disposable loopback Supabase/PostgreSQL, local Next application, actual Auth and RPC",
+  "localDecision": "PARTIAL",
+  "suites": [
+    {"name":"Phase 2H-TD focused closure and two-tenant browser","status":"PASS","passed":60,"failed":0,"cleanupVerified":true,"evidence":"phase2htd-targeted-results.json"},
+    {"name":"Phase 1B approval integrity","status":"PASS","passed":13,"failed":0,"cleanupVerified":true,"evidence":"phase2htd-phase1b-regression.json"},
+    {"name":"Phase 2H-T approval controls","status":"PASS","passed":14,"failed":0,"cleanupVerified":true,"evidence":"phase2htd-approval-gate-regression.json"},
+    {"name":"Phase 2H-S Develop security","status":"PASS","passed":40,"failed":0,"cleanupVerified":true,"evidence":"phase2htd-develop-gate-regression.json"},
+    {"name":"Phase 2H-TB Gate B browser and connected service","status":"FAIL","passed":50,"failed":1,"cleanupVerified":true,"evidence":"phase2htd-gate-b-final-attempt.json","failure":"Authenticated tenant-neutral Work UI and API isolation: browser connected Work creation receipt did not appear"},
+    {"name":"Phase 2H-TC final My Work browser","status":"PASS","passed":52,"failed":0,"cleanupVerified":true,"evidence":"phase2htd-final-browser-regression.json"},
+    {"name":"Phase 2H-TC deterministic calendar","status":"PASS","passed":13,"failed":0,"cleanupVerified":true,"evidence":"phase2htd-calendar-regression.json"},
+    {"name":"P0-A tenant isolation","status":"PASS","passed":16,"failed":0,"cleanupVerified":true,"evidence":"phase2htd-p0a-regression.json"},
+    {"name":"Rybex/Rotork published phase contract","status":"PASS","evidence":"command output: node scripts/qa-published-phase-contract.mjs"},
+    {"name":"TypeScript","status":"PASS","command":"npm run typecheck"},
+    {"name":"ESLint","status":"PASS","command":"npm run lint"},
+    {"name":"Production build","status":"PASS","command":"npm run build","note":"Required unsandboxed local execution for Windows Turbopack junction creation; no deployment"}
+  ],
+  "retries": [
+    {"name":"Phase 2H-S Develop","outcome":"first setup collision, then Sunday fixture date, then a local Next startup collision; final serial run passed 40/40","evidence":["phase2htd-develop-gate-first-attempt.json","phase2htd-develop-gate-calendar-attempt.json","phase2htd-develop-gate-regression.json"]},
+    {"name":"Phase 2H-TB Gate B","outcome":"three finite attempts, each 50/51; same browser Work creation receipt remained unverified; each cleaned up","evidence":["phase2htd-gate-b-first-attempt.json","phase2htd-gate-b-second-attempt.json","phase2htd-gate-b-final-attempt.json"]},
+    {"name":"Production build","outcome":"sandbox denied Windows junction creation; clean cache and authorized local build passed","evidence":"final command exit 0"}
+  ],
+  "blockedProductionPromotion": ["original sealed M1 fixture","historical connected pilot fixture","approved staging migration and recovery","live commercial invitation delivery","general-customer production routing","historical phase projection verification","existing production readiness failures"],
+  "productionChanged": false,
+  "hostedMigrationApplied": false,
+  "deployed": false,
+  "pushed": false,
+  "merged": false,
+  "phase2hteFollowUp": {
+    "localDecision": "LOCALLY QUALIFIED",
+    "gateB": {"passed": 51, "failed": 0, "cleanupVerified": true,
+      "evidence": "phase2hte-gate-b-green-results.json"},
+    "tcBrowser": {"passed": 52, "failed": 0, "cleanupVerified": true,
+      "evidence": "phase2hte-tc-browser-results.json"},
+    "tdSecurity": {"passed": 60, "failed": 0, "cleanupVerified": true,
+      "evidence": "phase2hte-td-security-results.json"},
+    "approvalIntegrity": {"passed": 13, "failed": 0, "cleanupVerified": true,
+      "evidence": "phase2hte-approval-results.json"}
+  }
+}

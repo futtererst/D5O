@@ -15,6 +15,12 @@
 .d5o-admin-console .d5o-admin-config-decision label { flex:1; }
 .d5o-admin-console .d5o-publication h3,.d5o-admin-console .d5o-publication h4 { margin:.15rem 0 .5rem; }
 .d5o-admin-console .d5o-publication form { display:flex; flex-wrap:wrap; align-items:end; gap:.75rem; }
+.d5o-admin-console .d5o-publication form.connectedStartForm { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:stretch; gap:1rem; max-width:54rem; }
+.d5o-admin-console .d5o-publication form.connectedStartForm label { min-width:0; }
+.d5o-admin-console .d5o-publication form.connectedStartForm .connectedStartWide { grid-column:1/-1; }
+.d5o-admin-console .d5o-publication form.connectedStartForm textarea { width:100%; padding:.65rem .7rem; border:1px solid #bdcfda; border-radius:.4rem; font:inherit; color:#173441; }
+.d5o-admin-console .d5o-publication form.connectedStartForm button { justify-self:start; }
+@media(max-width:700px) { .d5o-admin-console .d5o-publication form.connectedStartForm { grid-template-columns:1fr; } }
 .d5o-admin-console .d5o-publication label { display:grid; gap:.3rem; min-width:min(100%,13rem); font-weight:700; font-size:.85rem; }
 .d5o-admin-console .d5o-publication input,.d5o-admin-console .d5o-publication select { min-height:44px; max-width:100%; padding:.5rem .7rem; border:1px solid #bdcfda; border-radius:.4rem; font:inherit; background:#fff; color:#173441; }
 .d5o-admin-console .d5o-publication button { min-height:44px; border:1px solid #b8cbd7; border-radius:.4rem; padding:.5rem .8rem; background:#fff; color:#112b42; font:700 .9rem Arial,Helvetica,sans-serif; cursor:pointer; }

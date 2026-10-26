@@ -1,0 +1,30 @@
+{
+  "baseline": "f2cf3a12e737c894a7d3a7443c7a11c8e574f52f",
+  "qualification": "PARTIAL",
+  "taskVisibility": { "passed": 8, "failed": 0, "command": "node --experimental-strip-types scripts/p0a/verify-phase2h-task-visibility.mjs" },
+  "typecheck": { "passed": true, "command": "npm run typecheck" },
+  "fullLint": { "passed": true, "command": "npm run lint" },
+  "productionBuild": { "passed": true, "command": "npm run build -- --webpack", "initialSandboxError": "EPERM mkdir .next/server/app/api/work/design-command" },
+  "inheritedPhase2g": {
+    "passed": 48,
+    "failed": 0,
+    "cleanupVerified": true,
+    "result": "phase2h-inherited-phase2g-results.json",
+    "browserScope": "authenticated Work creation and status readback; business transitions executed by RPC fixture"
+  },
+  "dedicatedPhase2h": {
+    "passed": 48,
+    "failed": 0,
+    "cleanupVerified": true,
+    "result": "phase2h-connected-journey-results.json",
+    "browserScope": "eight Define review and handoff decisions across two tenants using separate authenticated actors; other phase decisions remain RPC-driven",
+    "defineBrowserDecisions": 8,
+    "myWorkTaskLinksOpened": 8,
+    "crossTenantDefineHttp": 403,
+    "wrongRoleDefineHttp": 403,
+    "mobileDecisionScreenshots": ["phase2h-browser/a-define-commercial-mobile-before.png", "phase2h-browser/b-define-commercial-mobile-before.png"]
+  },
+  "initialFixtureAttempt": { "passed": 0, "setupError": "p0a_cleanup_container_identity_mismatch", "resolution": "rerun with local disposable Docker access" },
+  "phase2hBrowserActions": { "completedSixPhaseJourneys": 0, "defineDecisions": 8, "blocked": true },
+  "productionChanged": false
+}

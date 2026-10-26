@@ -1,0 +1,14 @@
+{
+  "baseline": "791cf6b1f5318865dc0cae2a1a322606e7a01b25",
+  "startedAt": "2026-10-23T19:36:36.316Z",
+  "tests": [],
+  "setupError": "7:56.939644508+00:00\n2026-10-23T19:37:56.939945Z  INFO source{component_kind=\"source\" component_id=docker_host component_type=docker_logs}: vector::sources::docker_logs: Listening to docker log events.\n2026-10-23T19:37:57.174601Z  INFO vector::topology::running: Running healthchecks.\n2026-10-23T19:37:57.174903Z  INFO vector: Vector has started. debug=\"false\" version=\"0.53.0\" arch=\"x86_64\" revision=\"2b51b40 2026-01-27 21:46:39.386326724\"\n2026-10-23T19:37:57.174928Z  INFO vector::topology::builder: Healthcheck passed.\n2026-10-23T19:37:57.174948Z  INFO vector::topology::builder: Internal log [Healthcheck passed.] is being suppressed to avoid flooding.\n2026-10-23T19:37:57.178028Z  INFO vector::internal_events::api: API server running. address=0.0.0.0:9001 playground=http://0.0.0.0:9001/playground graphql=http://0.0.0.0:9001/graphql\n2026-10-23T19:37:58.279566Z  INFO source{component_kind=\"source\" component_id=docker_host component_type=docker_logs}: vector::sources::docker_logs: Excluded self container. id=d726b1bead6b90fd0c17b90797fa59df2bca8f82765bc3807e60bba454314b07\n2026-10-23T19:37:58.387495Z  INFO source{component_kind=\"source\" component_id=docker_host component_type=docker_logs}: vector::internal_events::docker_logs: Started watching for container logs. container_id=543aa249f10b8b328b4f1c2f7a0bf613b76ce04d546abd2da1eecfffaca80b41\n2026-10-23T19:37:58.389012Z  INFO source{component_kind=\"source\" component_id=docker_host component_type=docker_logs}: vector::internal_events::docker_logs: Internal log [Started watching for container logs.] is being suppressed to avoid flooding.\n2026-10-23T19:37:59.632739Z  INFO source{component_kind=\"source\" component_id=docker_host component_type=docker_logs}: vector::internal_events::docker_logs: Stopped watching for container logs. container_id=3ad10296c8798336e49061d7dc9be9d89c601127a46230a3ff9f8561949dd7e7\n2026-10-23T19:37:59.826097Z  INFO source{component_kind=\"source\" component_id=docker_host component_type=docker_logs}: vector::internal_events::docker_logs: Internal log [Stopped watching for container logs.] is being suppressed to avoid flooding.\nStopping containers...\nsupabase_vector_d5o-p0a-3415c116-a66 container is not ready: unhealthy\nTry rerunning the command with --debug to troubleshoot the error.\n[loopback-docker-adapter] creates=14; published=7; explicitLoopback=true\n\ncleanup={\"projectId\":\"d5o-p0a-3415c116-a66\",\"stopExit\":0,\"networkError\":null,\"projectDirectoryAbsent\":true,\"residualContainers\":[],\"clean\":true}",
+  "cleanup": null,
+  "finishedAt": "2026-10-23T19:38:17.053Z",
+  "summary": {
+    "passed": 0,
+    "failed": 0,
+    "setupError": true,
+    "cleanupVerified": false
+  }
+}

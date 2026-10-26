@@ -45,6 +45,14 @@ export async function POST(request: NextRequest) {
     if (authoritativeD5OCommandsReady() && input.action === "register-record")
       return reply({ error: "connected_creation_required", message: "Canonical work must be created with its identity and catalog row in one transaction." }, 409);
     if (input.action === "create-record" || input.action === "register-record") {
+      if (input.action === "create-record" && authoritativeD5OCommandsReady()) {
+        const session = await createRybexSupabaseServerClient();
+        const availability = await (session.rpc as unknown as (name: string, args: Record<string, unknown>) => Promise<{
+          data: unknown; error: unknown
+        }>)("d5o_hosted_capability_read_v1", { p_workspace_key: workspace });
+        if (availability.error || !(availability.data as { connectedWork?: boolean } | null)?.connectedWork)
+          return reply({ error: "capability_unavailable", message: "Connected Work is unavailable for this organization." }, 403);
+      }
       const candidate = input.action === "create-record" ? input : input.record;
       const inventory = await hostedConfigurationInventory(workspace as WorkspaceKey);
       if (!candidate.phaseConfigurationVersionId ||

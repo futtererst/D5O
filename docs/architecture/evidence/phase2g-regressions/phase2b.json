@@ -1,0 +1,204 @@
+{
+  "baseline": "791cf6b1f5318865dc0cae2a1a322606e7a01b25",
+  "startedAt": "2026-10-23T20:49:32.760Z",
+  "tests": [
+    {
+      "name": "vendor sees validated immutable template directory",
+      "status": "PASS",
+      "detail": {
+        "template": "Service Operations",
+        "version": 1,
+        "outsiderDenied": true
+      }
+    },
+    {
+      "name": "vendor provisions A and B through one authoritative command",
+      "status": "PASS",
+      "detail": {
+        "A": "tenant_a_test",
+        "B": "tenant_b_test",
+        "independentVersions": true
+      }
+    },
+    {
+      "name": "non-vendor and customer cannot provision or mutate template",
+      "status": "PASS",
+      "detail": {
+        "denied": true
+      }
+    },
+    {
+      "name": "replay, collision and duplicate tenant key preserve one result",
+      "status": "PASS",
+      "detail": {
+        "replay": true,
+        "collisionDenied": true
+      }
+    },
+    {
+      "name": "concurrent identical provisioning creates one tenant",
+      "status": "PASS",
+      "detail": {
+        "sameResult": true,
+        "workspaceCount": 1
+      }
+    },
+    {
+      "name": "provider failure remains inactive and vendor recovery replaces only the offer",
+      "status": "PASS",
+      "detail": {
+        "failedState": true,
+        "recoveredState": "awaiting_admin",
+        "duplicateTenant": false,
+        "grantCount": 0
+      }
+    },
+    {
+      "name": "expired initial invitation recovers without a duplicate tenant",
+      "status": "PASS",
+      "detail": {
+        "expiredDenied": true,
+        "oldOfferDenied": true,
+        "recoveryReplaySafe": true
+      }
+    },
+    {
+      "name": "governed template version is validated, published, immutable and retired",
+      "status": "PASS",
+      "detail": {
+        "publishedVersion": "6412cf50-9594-4788-945d-610179fee470",
+        "immutable": true,
+        "unpublishedSelectionDenied": true,
+        "retiredSelectionDenied": true
+      }
+    },
+    {
+      "name": "initial offers are tenant-bound and accepted by exact recipients",
+      "status": "PASS",
+      "detail": {
+        "A": "accepted",
+        "B": "accepted",
+        "replaySafe": true
+      }
+    },
+    {
+      "name": "incomplete tenants cannot create Work or activate",
+      "status": "PASS",
+      "detail": {
+        "workDenied": "42501",
+        "activationDenied": "23514",
+        "customerActivationDenied": true
+      }
+    },
+    {
+      "name": "tenant_a_test publishes its own USD 10000 threshold",
+      "status": "PASS",
+      "detail": {
+        "thresholdMinor": 1000000,
+        "versionId": "a7d9ac75-ef28-4dc7-aad8-4493d3336388"
+      }
+    },
+    {
+      "name": "tenant_b_test publishes its own USD 25000 threshold",
+      "status": "PASS",
+      "detail": {
+        "thresholdMinor": 2500000,
+        "versionId": "282e6582-08ae-4f43-a451-4385d3612056"
+      }
+    },
+    {
+      "name": "tenant_a_test confirms readiness and vendor activates",
+      "status": "PASS",
+      "detail": {
+        "ready": "ready",
+        "activated": "active",
+        "replaySafe": true,
+        "staleDenied": true
+      }
+    },
+    {
+      "name": "tenant_b_test confirms readiness and vendor activates",
+      "status": "PASS",
+      "detail": {
+        "ready": "ready",
+        "activated": "active",
+        "replaySafe": true,
+        "staleDenied": true
+      }
+    },
+    {
+      "name": "same Work and approval commands apply distinct tenant policies",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "required": true,
+          "status": "pending",
+          "versionId": "a7d9ac75-ef28-4dc7-aad8-4493d3336388"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "required": false,
+          "status": "not_required",
+          "versionId": "282e6582-08ae-4f43-a451-4385d3612056"
+        }
+      ]
+    },
+    {
+      "name": "audit and cross-tenant configuration access remain isolated",
+      "status": "PASS",
+      "detail": {
+        "crossTenantDenied": true,
+        "platformEvents": 9
+      }
+    },
+    {
+      "name": "suspended initial administrator immediately loses protected access",
+      "status": "PASS",
+      "detail": {
+        "onboardingDenied": true,
+        "workDenied": true
+      }
+    },
+    {
+      "name": "authenticated vendor and customer onboarding pages render",
+      "status": "PASS",
+      "detail": {
+        "files": [
+          "vendor-directory-1440.png",
+          "vendor-directory-390.png",
+          "vendor-create-review-1440.png",
+          "vendor-create-complete-1440.png",
+          "vendor-tenant-a-1440.png",
+          "customer-onboarding-1440.png",
+          "customer-onboarding-390.png",
+          "initial-admin-accepted-1440.png",
+          "customer-ready-1440.png",
+          "vendor-activated-1440.png"
+        ],
+        "ephemeralPreview": "http://127.0.0.1:54754/platform-admin"
+      }
+    }
+  ],
+  "setupError": null,
+  "cleanup": {
+    "projectId": "d5o-p0a-a33b7d7b-7dd",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "environment": {
+    "projectId": "d5o-p0a-a33b7d7b-7dd",
+    "apiPort": 57621,
+    "loopbackOnly": true
+  },
+  "finishedAt": "2026-10-23T20:51:35.561Z",
+  "summary": {
+    "passed": 18,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  }
+}

@@ -1,0 +1,9 @@
+# Phase 2F historical compatibility
+
+The source branch retains prior Work, configuration versions, approval decisions, Design releases, Deploy and Operate state, and audit events. Phase 2F does not rewrite or repin any of them. Its Operate guard resolves the Work's stored `configuration_version_id` and reads the work-type policy from that exact published version. Published versions predating `requireDocumentationReview` continue under their prior optional-field behavior; a missing work-type policy fails closed.
+
+The new guard is applied only to new `accept-support` decisions. Previously accepted support is not reprocessed. It uses existing support-document provenance and an existing command receipt for replay, so approved historical reviews remain associated with their original Work and turnover. The full historical sealed M1 fixture is still absent; the owned disposable assertions do not reproduce its provenance. An approved staging migration and recovery rehearsal remain required before promotion.
+
+The customer-facing phase order is displayed as Discover → Define → Design → Develop → Deploy → Operate. Early selected-solution approval remains a recorded preparation milestone before Design handoff. No existing event is reclassified as a completed customer-facing Develop phase. The complete persisted phase-status projection is deferred and is a Phase 2F qualification limitation.
+
+The disposable two-tenant journey also published a new Tenant A approval threshold **after** support activation. The same completed Work retained its original `configuration_version_id` and active support state; the new configuration version became active only for later Work. This check passed in the final 45-check result. It verifies pin retention in the owned fixture, not a replay of the missing sealed historical pilot fixture.

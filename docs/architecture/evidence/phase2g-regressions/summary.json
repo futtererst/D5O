@@ -1,0 +1,113 @@
+{
+  "sourceCommit": "8d536b4ce74282fe6c3a0e2dbb66b1752ca51ec2",
+  "startedAt": "2026-10-23T20:43:45.759Z",
+  "suites": {
+    "phase1": {
+      "script": "scripts/p0a/run-service-approval-phase1.mjs",
+      "exitCode": 1,
+      "summary": {
+        "passed": 0,
+        "failed": 0,
+        "setupError": true,
+        "cleanupVerified": false
+      },
+      "stdout": "{\"passed\":0,\"failed\":0,\"setupError\":true,\"cleanupVerified\":false,\"output\":\"docs/architecture/evidence/phase1-two-tenant-results.json\"}",
+      "stderr": ""
+    },
+    "phase1b": {
+      "script": "scripts/p0a/run-connected-approval-phase1b.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 13,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "stdout": "{\"passed\":13,\"failed\":0,\"setupError\":false,\"cleanupVerified\":true,\"output\":\"docs/architecture/evidence/phase1b-connected-results.json\"}",
+      "stderr": ""
+    },
+    "phase2a": {
+      "script": "scripts/p0a/run-phase2a-organization.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 11,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "stdout": "{\"passed\":11,\"failed\":0,\"setupError\":false,\"cleanupVerified\":true,\"output\":\"docs/architecture/evidence/phase2a-two-tenant-results.json\"}",
+      "stderr": ""
+    },
+    "phase2b": {
+      "script": "scripts/p0a/run-phase2b-onboarding.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 18,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "stdout": "{\"passed\":18,\"failed\":0,\"setupError\":false,\"cleanupVerified\":true,\"output\":\"docs/architecture/evidence/phase2b-two-tenant-results.json\"}",
+      "stderr": ""
+    },
+    "phase2c": {
+      "script": "scripts/p0a/run-phase2c-enterprise-admin.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 23,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "stdout": "{\"passed\":23,\"failed\":0,\"setupError\":false,\"cleanupVerified\":true,\"output\":\"docs/architecture/evidence/phase2c-two-tenant-results.json\"}",
+      "stderr": ""
+    },
+    "phase2d": {
+      "script": "scripts/p0a/run-phase2d-six-phase-config.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 27,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "stdout": "{\"passed\":27,\"failed\":0,\"setupError\":false,\"cleanupVerified\":true,\"output\":\"docs/architecture/evidence/phase2d-two-tenant-results.json\"}",
+      "stderr": ""
+    },
+    "p0a": {
+      "script": "scripts/p0a/run-runtime-qualification.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 16,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "stdout": "{\"passed\":16,\"failed\":0,\"setupError\":false,\"cleanupVerified\":true,\"output\":\"docs/architecture/evidence/phase1-p0a-runtime-results.json\"}",
+      "stderr": ""
+    }
+  },
+  "staticChecks": {
+    "phaseContract": {
+      "exitCode": 0,
+      "stdout": "Published phase contract: tenant isolation, version pinning, legacy preservation, configured Rybex/Rotork decision checks, label invariance, protected rules, malformed version fail-closed PASS",
+      "stderr": ""
+    },
+    "phaseConfiguration": {
+      "exitCode": 0,
+      "stdout": "Phase configuration contract: 4 workspace/work-type packs, 6 phases, exact Work Type resolution, structured register validation, draft/approved source guard, label invariance and collision guard PASS",
+      "stderr": ""
+    },
+    "scannerInvariant": {
+      "exitCode": 0,
+      "stdout": "PASS: unsupported scanner modes remain readiness blockers; configured adapter passes configuration check",
+      "stderr": ""
+    }
+  },
+  "blocked": [
+    "Original sealed M1 RUN-MANIFEST.json absent",
+    "Original historical connected pilot fixture absent",
+    "Full authenticated fictional-tenant Work UI remains pilot gated"
+  ],
+  "finishedAt": "2026-10-23T20:59:03.468Z"
+}

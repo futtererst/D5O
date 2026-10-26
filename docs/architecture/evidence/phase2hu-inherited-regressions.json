@@ -1,0 +1,97 @@
+{
+  "phase": "2H-U",
+  "baseline": "639308061ff236ac0afb6487088a44c315e9b554",
+  "runner": "scripts/p0a/run-phase2f-regressions.mjs",
+  "startedAt": "2026-10-25T20:21:35.508Z",
+  "finishedAt": "2026-10-25T20:37:48.353Z",
+  "suites": {
+    "phase1": {
+      "script": "scripts/p0a/run-service-approval-phase1.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 18,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    },
+    "phase1b": {
+      "script": "scripts/p0a/run-connected-approval-phase1b.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 13,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    },
+    "phase2a": {
+      "script": "scripts/p0a/run-phase2a-organization.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 11,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    },
+    "phase2b": {
+      "script": "scripts/p0a/run-phase2b-onboarding.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 18,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    },
+    "phase2c": {
+      "script": "scripts/p0a/run-phase2c-enterprise-admin.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 23,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    },
+    "phase2d": {
+      "script": "scripts/p0a/run-phase2d-six-phase-config.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 27,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    },
+    "p0a": {
+      "script": "scripts/p0a/run-runtime-qualification.mjs",
+      "exitCode": 0,
+      "summary": {
+        "passed": 16,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      }
+    }
+  },
+  "staticChecks": {
+    "phaseContract": {
+      "exitCode": 0,
+      "stdout": "Published phase contract: tenant isolation, version pinning, legacy preservation, configured Rybex/Rotork decision checks, label invariance, protected rules, malformed version fail-closed PASS"
+    },
+    "phaseConfiguration": {
+      "exitCode": 0,
+      "stdout": "Phase configuration contract: 4 workspace/work-type packs, 6 phases, exact Work Type resolution, structured register validation, draft/approved source guard, label invariance and collision guard PASS"
+    },
+    "scannerInvariant": {
+      "exitCode": 0,
+      "stdout": "PASS: unsupported scanner modes remain readiness blockers; configured adapter passes configuration check"
+    }
+  },
+  "inheritedBlockers": [
+    "Original sealed M1 RUN-MANIFEST.json absent",
+    "Original historical connected pilot fixture absent"
+  ]
+}

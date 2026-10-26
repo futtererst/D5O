@@ -6,6 +6,7 @@ import { HostedStateError, hostedPrototypeContext } from "@/lib/d5o/hosted/proto
 import { hostedWorkerContext } from "@/lib/d5o/hosted/worker-context";
 import type { SharedSchedule } from "@/components/d5o/platform/schedule-model";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
+import { customerWorkScope } from "@/lib/d5o/hosted/customer-work-scope";
 
 export const dynamic = "force-dynamic";
 const bucket = "d5o-deploy-evidence";
@@ -17,8 +18,11 @@ const pathFor = (workspace: string, workId: string, id: string) =>
 
 async function target(request: NextRequest) {
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
-  if (!["rybex", "rotork"].includes(workspace)) return null;
-  const context = await hostedPrototypeContext(workspace);
+  // Pilot routes keep their existing restrictions. Independently provisioned
+  // customers use the same membership, lifecycle and capability gate as Work.
+  const context = ["rybex", "rotork"].includes(workspace)
+    ? await hostedPrototypeContext(workspace)
+    : (await customerWorkScope(workspace)).context;
   if (!["admin", "project_manager", "operations_leader"].includes(context.actor.role)) return null;
   const workId = request.nextUrl.searchParams.get("workId") ?? "";
   const documentId = request.nextUrl.searchParams.get("documentId") ?? "";
@@ -98,6 +102,7 @@ export async function POST(request: NextRequest) {
     return reply(data);
   } catch (error) {
     if (uploadedPath) await createRybexSupabaseAdminClient().storage.from(bucket).remove([uploadedPath]);
+    if (error instanceof HostedStateError) return reply({ error: error.code }, error.status);
     if (error instanceof Error && error.message === "unauthenticated") return reply({ error: "unauthenticated" }, 401);
     return reply({ error: "design_document_upload_unavailable" }, 503);
   }
@@ -118,17 +123,19 @@ export async function GET(request: NextRequest) {
     if (error || !data || typeof data !== "object") return reply({ error: "design_document_missing" }, 404);
     const receipt = data as { evidenceId: string; objectPath: string; checksumSha256: string;
       filename: string; sizeBytes: number; uploadedBy: string; uploadedAt: string };
+    // Metadata is an assertion that the private object still exists and still
+    // matches its immutable receipt, so verify bytes for both read forms.
+    const file = await admin.storage.from(bucket).download(receipt.objectPath);
+    if (file.error || !file.data) return reply({ error: "design_document_missing" }, 404);
+    const bytes = Buffer.from(await file.data.arrayBuffer());
+    if (bytes.length !== receipt.sizeBytes ||
+      createHash("sha256").update(bytes).digest("hex") !== receipt.checksumSha256)
+      return reply({ error: "integrity_failed" }, 409);
     if (request.nextUrl.searchParams.get("download") !== "1") return reply({
       evidenceId: receipt.evidenceId,checksumSha256: receipt.checksumSha256,
       filename: receipt.filename,sizeBytes: receipt.sizeBytes,
       uploadedBy: receipt.uploadedBy,uploadedAt: receipt.uploadedAt
     });
-    const file = await admin.storage.from(bucket).download(receipt.objectPath);
-    if (file.error || !file.data) return reply({ error: "design_document_missing" }, 503);
-    const bytes = Buffer.from(await file.data.arrayBuffer());
-    if (bytes.length !== receipt.sizeBytes ||
-      createHash("sha256").update(bytes).digest("hex") !== receipt.checksumSha256)
-      return reply({ error: "integrity_failed" }, 409);
     return new Response(bytes, { headers: {
       "Content-Type": "application/pdf", "Cache-Control": "private, no-store",
       "Content-Disposition": `inline; filename="${receipt.filename.replace(/[^\w. -]/g, "_")}"`,

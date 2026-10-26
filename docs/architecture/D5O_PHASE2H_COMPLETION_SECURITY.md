@@ -1,0 +1,7 @@
+# Phase 2H completion security results
+
+The tenant-neutral customer Work endpoint resolves the authenticated tenant, active membership, role and current Work before invoking an existing hosted command. The new Define draft path accepts a bounded set of business fields, requires an accepted Discover handoff, compares the expected source revision and writes through the authenticated hosted prototype save command. It does not accept a client-supplied tenant ID, actor ID, status, decision or configuration pin. The Design receipt path accepts only a release ID, response and substantive reason; the database checks package and actor authority, tenant ownership, source revision and decision revision.
+
+The disposable two-tenant fixture checks browser-origin premature Define draft denial before accepted intake handoff, cross-tenant draft denial, stale draft revision denial and idempotent Define submission replay. The existing connected fixture also checks cross-tenant Design, Deploy and Operate RPC denial. These do not prove every requested edge case. Direct API and RPC role, revocation, suspension, concurrency and evidence-scope attempts for all remaining browser actions remain unqualified. The generic prototype save RPC's direct mutation surface also needs a dedicated boundary review before claiming all draft writes are fully governed.
+
+No pilot allowlist, platform authority, tenant membership policy, configuration pin, published version or approval guard was changed in this slice.

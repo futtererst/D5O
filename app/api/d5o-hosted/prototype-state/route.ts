@@ -4,6 +4,7 @@ import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server"
 import { hostedD5OTargetReady } from "@/lib/d5o/auth/hosted-target";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 import { hostedPrototypeContext } from "@/lib/d5o/hosted/prototype-context";
+import { customerWorkScope } from "@/lib/d5o/hosted/customer-work-scope";
 import { applyPricingPolicyCommand, type PricingPolicyCommand } from "@/lib/d5o/prototype-work/pricing-policy-command";
 import { assertSnapshotCommercialIntegrity } from "@/lib/d5o/prototype-work/commercial-command";
 import { assertSnapshotDefineIntegrity } from "@/lib/d5o/prototype-work/define-command";
@@ -64,7 +65,8 @@ export async function GET(request: NextRequest) {
   if (!workspacePattern.test(workspace) || !key) return reply({ error: "invalid_target" }, 400);
   if (key === "work" && request.nextUrl.searchParams.get("pricing") === "1") {
     try {
-      const context = await hostedPrototypeContext(workspace);
+      const context = workspace === "rybex" || workspace === "rotork"
+        ? await hostedPrototypeContext(workspace) : (await customerWorkScope(workspace)).context;
       const loaded = await context.read("work");
       return reply({ revision: loaded.revision, policies: loaded.state?.pricingPolicies ?? [], active: loaded.state?.activePricingPolicy ?? null, history: context.actor.role === "admin" ? loaded.state?.pricingPolicyHistory ?? [] : [], canAdmin: context.actor.role === "admin", synthetic: true });
     } catch { return reply({ error: "policy_unavailable" }, 503); }

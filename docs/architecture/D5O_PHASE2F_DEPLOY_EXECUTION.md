@@ -1,0 +1,9 @@
+# Phase 2F Deploy execution
+
+The connected fixture uses the accepted Design package and its exact released demand. A vendor publishes a new governed Service Operations template version in the disposable environment with crew demand required; the two tenants then receive independent copies of that same template through the existing provisioning command. Tenant administrators publish their separate Phase 2D requirements. No application code varies by customer.
+
+The protected sequence is: approved parent purchase authority → approved labor authority → bound active field worker with the required qualification and capacity → dated booking → publication → worker acknowledgment → `d5o_hosted_field_start_command_v1` → measured report and independent review → inspection and independent verification → completion through `d5o_hosted_field_fact_command_v1` → package and whole-Work customer acceptance → independent Operations receipt. Booking and release must agree on package, revision, date and shift. The disposable script uses the current New York business day and a bounded shift; it reports a setup block outside business days rather than weakening the field-start clock.
+
+The strict tenant's pinned `requireReviewedEvidence` policy must reject completion before reviewed evidence exists. The optional tenant must still satisfy measured completion, worker eligibility, inspection and customer acceptance. Field and evidence commands retain their existing role, tenant, revision and audit checks. See `evidence/phase2f-connected-journey-results.json` for actual outcomes; any failed check there is a qualification failure, not a pass.
+
+Synthetic files are uploaded only to the disposable Storage service and registered against the exact Work and package through the existing evidence command. Fixture teardown removes the isolated Supabase project. No production or hosted migration was applied.

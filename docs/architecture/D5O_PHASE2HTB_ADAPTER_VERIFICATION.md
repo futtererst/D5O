@@ -1,0 +1,9 @@
+# Phase 2H-TB adapter verification
+
+The clean disposable Gate B run is `evidence/phase2ht-gate-b-results.json` (51 passed, zero failed; fixture cleanup verified). The authenticated browser used the existing tenant-neutral `service-approval`, `customer-decision-evidence`, and `prototype-operate-command` routes. These routes invoke the existing hosted approval and Operate commands; this package adds no approval store.
+
+Tenant A's USD 15,000 exact estimate under its USD 10,000 pinned threshold returned `approvalRequired: true`. Authorization and job creation before approval both returned HTTP 409. A separate `a_admin` session approved the exact request (HTTP 200), and the Operations actor then retained a customer PDF source, recorded customer authorization, and created one job. Tenant B's USD 15,000 estimate under USD 25,000 returned `approvalRequired: false`; it still required customer evidence and authorization and produced no threshold-approval row.
+
+The browser submitted coverage terms, child request, triage, estimate revision, pricing review, approval, evidence, authorization, and job commands. After reload, the job and pinned configuration remained visible. Cross-tenant approval read, evidence read, and approval mutation each returned HTTP 403. Direct foreign-tenant approval and job RPC calls returned SQLSTATE `42501`; the job count stayed at one. Rejection, stale revision, revoked membership, and suspension paths of the evidence adapter were not independently exhausted in this run.
+
+The existing Phase 1B approval guard requires threshold approval before the combined customer-authorization command. The fixture therefore uploads customer evidence and records the decision after threshold approval. This differs from the requested narrative order, but retains the authoritative business contract.

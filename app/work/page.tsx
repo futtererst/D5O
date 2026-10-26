@@ -36,7 +36,9 @@ export default async function WorkHomePage({ searchParams }: {
     const selected = params?.workspace;
     if (selected && entries.length === 0) redirect("/work");
     if (!selected && entries.length === 1 && entries[0].role === "field_worker")
-      redirect(`/work/my-schedule?workspace=${encodeURIComponent(entries[0].workspaceKey)}`);
+      redirect(entries[0].workspaceKey === "rybex" || entries[0].workspaceKey === "rotork"
+        ? `/work/my-schedule?workspace=${encodeURIComponent(entries[0].workspaceKey)}`
+        : `/work/customer/${encodeURIComponent(entries[0].workspaceKey)}/assignments`);
     if (!selected) return <main className={styles.entry}>
       <div className={styles.brand}>D5O <span>System of work</span></div>
       <section className={styles.intro}>
@@ -46,10 +48,16 @@ export default async function WorkHomePage({ searchParams }: {
       </section>
       <div className={styles.grid}>{entries.map((entry) => <Link className={styles.card}
         data-workspace={entry.workspaceKey} key={entry.workspaceKey}
-        href={`/work?workspace=${encodeURIComponent(entry.workspaceKey)}`}>
+        href={entry.workspaceKey === "rybex" || entry.workspaceKey === "rotork"
+          ? `/work?workspace=${encodeURIComponent(entry.workspaceKey)}`
+          : entry.role === "field_worker"
+            ? `/work/customer/${encodeURIComponent(entry.workspaceKey)}/assignments`
+            : `/work/customer/${encodeURIComponent(entry.workspaceKey)}`}>
         <span className={styles.marker} aria-hidden="true" />
         <div><small>WORKSPACE</small><h2>{entry.workspaceName}</h2>
-          <p>{entry.workspaceKey === "rybex" ? "Technical delivery and controlled turnover" : "Modernization, paid pilots and lifecycle service"}</p>
+          <p>{entry.workspaceKey === "rybex" ? "Technical delivery and controlled turnover"
+            : entry.workspaceKey === "rotork" ? "Modernization, paid pilots and lifecycle service"
+              : "Your organization's configured Work lifecycle"}</p>
           <span className={styles.role}>Your role: {entry.role.replaceAll("_", " ")}</span></div>
         <strong>Open workspace →</strong>
       </Link>)}</div>
@@ -105,7 +113,7 @@ export default async function WorkHomePage({ searchParams }: {
             <p>Review the approved initial choices. Publication pins these rules to future Work; it does not approve a customer award, spending, field work or support activation.</p>
             <dl><dt>Work Types</dt><dd>Technical delivery; Lifecycle service</dd>
               <dt>Work creation</dt><dd>Admin; Project Manager</dd>
-              <dt>Phase order</dt><dd>Discover → Define → Develop → Design → Deploy → Operate</dd></dl>
+              <dt>Phase order</dt><dd>Discover → Define → Design → Develop → Deploy → Operate</dd></dl>
             <form action={publishInitialConfiguration}>
               <input type="hidden" name="commandId" value={crypto.randomUUID()} />
               <label>Discover → Define receiving role

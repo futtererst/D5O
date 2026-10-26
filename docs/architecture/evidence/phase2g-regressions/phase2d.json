@@ -1,0 +1,349 @@
+{
+  "baseline": "6524c7aa3b406bae82fdba7f78f007c9710b7417",
+  "startedAt": "2026-10-23T20:54:08.741Z",
+  "tests": [
+    {
+      "name": "vendor sees validated immutable template directory",
+      "status": "PASS",
+      "detail": {
+        "template": "Service Operations",
+        "version": 1,
+        "outsiderDenied": true
+      }
+    },
+    {
+      "name": "vendor provisions A and B through one authoritative command",
+      "status": "PASS",
+      "detail": {
+        "A": "tenant_a_test",
+        "B": "tenant_b_test",
+        "independentVersions": true
+      }
+    },
+    {
+      "name": "non-vendor and customer cannot provision or mutate template",
+      "status": "PASS",
+      "detail": {
+        "denied": true
+      }
+    },
+    {
+      "name": "replay, collision and duplicate tenant key preserve one result",
+      "status": "PASS",
+      "detail": {
+        "replay": true,
+        "collisionDenied": true
+      }
+    },
+    {
+      "name": "concurrent identical provisioning creates one tenant",
+      "status": "PASS",
+      "detail": {
+        "sameResult": true,
+        "workspaceCount": 1
+      }
+    },
+    {
+      "name": "provider failure remains inactive and vendor recovery replaces only the offer",
+      "status": "PASS",
+      "detail": {
+        "failedState": true,
+        "recoveredState": "awaiting_admin",
+        "duplicateTenant": false,
+        "grantCount": 0
+      }
+    },
+    {
+      "name": "expired initial invitation recovers without a duplicate tenant",
+      "status": "PASS",
+      "detail": {
+        "expiredDenied": true,
+        "oldOfferDenied": true,
+        "recoveryReplaySafe": true
+      }
+    },
+    {
+      "name": "governed template version is validated, published, immutable and retired",
+      "status": "PASS",
+      "detail": {
+        "publishedVersion": "34e4a81f-171d-4cc3-8ae0-43c24bfb8b90",
+        "immutable": true,
+        "unpublishedSelectionDenied": true,
+        "retiredSelectionDenied": true
+      }
+    },
+    {
+      "name": "initial offers are tenant-bound and accepted by exact recipients",
+      "status": "PASS",
+      "detail": {
+        "A": "accepted",
+        "B": "accepted",
+        "replaySafe": true
+      }
+    },
+    {
+      "name": "incomplete tenants cannot create Work or activate",
+      "status": "PASS",
+      "detail": {
+        "workDenied": "42501",
+        "activationDenied": "23514",
+        "customerActivationDenied": true
+      }
+    },
+    {
+      "name": "tenant_a_test publishes its own USD 10000 threshold",
+      "status": "PASS",
+      "detail": {
+        "thresholdMinor": 1000000,
+        "versionId": "b7effc37-fa2e-4a9a-8d74-4518a6f6c595"
+      }
+    },
+    {
+      "name": "tenant_b_test publishes its own USD 25000 threshold",
+      "status": "PASS",
+      "detail": {
+        "thresholdMinor": 2500000,
+        "versionId": "02368123-2260-4151-aadc-67fc9e0c9cb4"
+      }
+    },
+    {
+      "name": "tenant_a_test confirms readiness and vendor activates",
+      "status": "PASS",
+      "detail": {
+        "ready": "ready",
+        "activated": "active",
+        "replaySafe": true,
+        "staleDenied": true
+      }
+    },
+    {
+      "name": "tenant_b_test confirms readiness and vendor activates",
+      "status": "PASS",
+      "detail": {
+        "ready": "ready",
+        "activated": "active",
+        "replaySafe": true,
+        "staleDenied": true
+      }
+    },
+    {
+      "name": "vendor grants and flags connected Work independently",
+      "status": "PASS",
+      "detail": {
+        "A": true,
+        "B": false,
+        "replaySafe": true,
+        "customerDenied": true,
+        "crossTenantReadDenied": true
+      }
+    },
+    {
+      "name": "Discover policy publication controls connected Work creation",
+      "status": "PASS",
+      "detail": {
+        "activeVersion": "a7d3eaf6-501f-4448-91e6-c1de4ccaeda8",
+        "required": true,
+        "invalidPolicyDenied": true,
+        "historicalUnchanged": true
+      }
+    },
+    {
+      "name": "direct RPC enforces entitlement and Discover policy",
+      "status": "PASS",
+      "detail": {
+        "A": "34d6b0d4-8cd5-4031-b2e5-96cdd81145ee",
+        "B": "capability_unavailable",
+        "missingIntakeDenied": true,
+        "coreBypassDenied": true,
+        "replaySafe": true
+      }
+    },
+    {
+      "name": "two tenant administrators publish distinct six-phase requirement sets",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "versionId": "4eb955df-e907-4dce-b695-31c04e466e64",
+          "strict": true,
+          "define": true,
+          "develop": true,
+          "design": true,
+          "deploy": true,
+          "operate": true
+        },
+        {
+          "tenant": "tenant_b_test",
+          "versionId": "1a172ef6-39d6-4a78-b20f-ec81965dcbd6",
+          "strict": false,
+          "define": false,
+          "develop": false,
+          "design": false,
+          "deploy": false,
+          "operate": false
+        }
+      ]
+    },
+    {
+      "name": "pinned Define command rejects missing risk only for strict tenant",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "d4ccace6-1db1-4da4-87a9-7f9ad19ba8be",
+          "policyVersionId": "4eb955df-e907-4dce-b695-31c04e466e64",
+          "decision": "define_risk_narrative_required",
+          "crossTenantDenied": true,
+          "coreBypassDenied": true
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "acb4d603-ce23-4a31-af7b-c8cc5b723cd3",
+          "policyVersionId": "1a172ef6-39d6-4a78-b20f-ec81965dcbd6",
+          "decision": "definition_unavailable",
+          "crossTenantDenied": true,
+          "coreBypassDenied": true
+        }
+      ]
+    },
+    {
+      "name": "Develop guard and historical version pin use the same command authority",
+      "status": "PASS",
+      "detail": {
+        "outcomes": [
+          {
+            "tenant": "tenant_a_test",
+            "decision": "develop_option_evidence_required",
+            "directCoreDenied": true
+          },
+          {
+            "tenant": "tenant_b_test",
+            "decision": "accepted_define_basis_required",
+            "directCoreDenied": true
+          }
+        ],
+        "historicalPinPreserved": true,
+        "historicalDecision": "definition_unavailable"
+      }
+    },
+    {
+      "name": "disabled Tenant B connected Work remains unavailable for the browser check",
+      "status": "PASS",
+      "detail": {
+        "tenant": "tenant_b_test",
+        "capabilityUnavailable": true
+      }
+    },
+    {
+      "name": "vendor suspension blocks existing sessions and direct RPC; reactivation restores only prior rights",
+      "status": "PASS",
+      "detail": {
+        "suspended": "suspended",
+        "reactivated": "active",
+        "existingSessionDenied": true,
+        "backgroundDenied": true,
+        "concurrentTransitionDenied": true,
+        "missingAdministratorDenied": true,
+        "otherTenantUnaffected": true,
+        "restoredWork": "0ac22ac2-4976-4475-b6c3-a019dc2b8ced"
+      }
+    },
+    {
+      "name": "same Work and approval commands apply distinct tenant policies",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "required": true,
+          "status": "pending",
+          "versionId": "4eb955df-e907-4dce-b695-31c04e466e64"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "required": false,
+          "status": "not_required",
+          "versionId": "1a172ef6-39d6-4a78-b20f-ec81965dcbd6"
+        }
+      ]
+    },
+    {
+      "name": "audit and cross-tenant configuration access remain isolated",
+      "status": "PASS",
+      "detail": {
+        "crossTenantDenied": true,
+        "platformEvents": 16
+      }
+    },
+    {
+      "name": "suspended initial administrator immediately loses protected access",
+      "status": "PASS",
+      "detail": {
+        "onboardingDenied": true,
+        "workDenied": true
+      }
+    },
+    {
+      "name": "authenticated vendor and customer onboarding pages render",
+      "status": "PASS",
+      "detail": {
+        "files": [
+          "vendor-directory-1440.png",
+          "vendor-directory-390.png",
+          "vendor-create-review-1440.png",
+          "vendor-create-complete-1440.png",
+          "vendor-tenant-a-1440.png",
+          "customer-configuration-1440.png",
+          "customer-publication-review-1440.png",
+          "customer-define-policy-1440.png",
+          "customer-develop-policy-1440.png",
+          "customer-design-policy-1440.png",
+          "customer-deploy-policy-1440.png",
+          "customer-operate-policy-1440.png",
+          "customer-publication-active-1440.png",
+          "customer-connected-work-1440.png",
+          "customer-configuration-390.png",
+          "customer-onboarding-1440.png",
+          "customer-onboarding-390.png",
+          "customer-feature-unavailable-1440.png",
+          "initial-admin-accepted-1440.png",
+          "customer-ready-1440.png",
+          "vendor-activated-1440.png",
+          "vendor-feature-enabled-1440.png",
+          "vendor-suspended-1440.png"
+        ],
+        "ephemeralPreview": "http://127.0.0.1:60691/platform-admin"
+      }
+    },
+    {
+      "name": "audited rollback creates a new version and preserves historical pins",
+      "status": "PASS",
+      "detail": {
+        "sourceVersion": "4eb955df-e907-4dce-b695-31c04e466e64",
+        "newVersion": "eb80ede0-0e9d-4030-928a-b9594e22a836",
+        "preservedWorkCount": 2,
+        "restoredDiscoverRequirement": true
+      }
+    }
+  ],
+  "setupError": null,
+  "cleanup": {
+    "projectId": "d5o-p0a-ec26781b-e50",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "environment": {
+    "projectId": "d5o-p0a-ec26781b-e50",
+    "apiPort": 57621,
+    "loopbackOnly": true
+  },
+  "finishedAt": "2026-10-23T20:56:55.311Z",
+  "summary": {
+    "passed": 27,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  }
+}

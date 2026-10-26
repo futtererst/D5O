@@ -1,0 +1,52 @@
+{
+  "baseline": "791cf6b1f5318865dc0cae2a1a322606e7a01b25",
+  "branch": "codex/d5o-phase2b-tenant-onboarding",
+  "environment": "separate loopback disposable Supabase runtime for each suite",
+  "suites": {
+    "phase1": {
+      "file": "phase1.json",
+      "summary": {
+        "passed": 18,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "finishedAt": "2026-10-23T13:52:10.279Z"
+    },
+    "phase1b": {
+      "file": "phase1b.json",
+      "summary": {
+        "passed": 13,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "finishedAt": "2026-10-23T13:53:54.854Z"
+    },
+    "phase2a": {
+      "file": "phase2a.json",
+      "summary": {
+        "passed": 11,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "finishedAt": "2026-10-23T13:56:25.693Z"
+    },
+    "p0a": {
+      "file": "p0a.json",
+      "summary": {
+        "passed": 16,
+        "failed": 0,
+        "setupError": false,
+        "cleanupVerified": true
+      },
+      "finishedAt": "2026-10-23T13:58:27.050Z"
+    }
+  },
+  "staticChecks": {
+    "phaseContract": "PASS",
+    "phaseConfiguration": "PASS",
+    "scannerInvariant": "PASS"
+  }
+}

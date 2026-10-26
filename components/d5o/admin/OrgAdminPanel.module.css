@@ -1,0 +1,18 @@
+.root{display:grid;gap:1.25rem;max-width:72rem;color:var(--text,#182438)}
+.intro{margin:0;color:var(--muted,#516077);line-height:1.5}
+.message{border-left:3px solid #355dc1;padding:.7rem 1rem;background:#eef3ff;margin:0}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:.75rem;margin:0}
+.metrics div{border:1px solid #d7dfec;border-radius:.4rem;padding:.8rem 1rem}.metrics dt{color:#526178}.metrics dd{font-size:1.5rem;font-weight:700;margin:.2rem 0 0}
+.toolbar,.actions,.search,.pagination{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap}.toolbar{justify-content:space-between}
+.search label{min-width:min(100%,20rem)}
+.form,.members{display:grid;gap:.85rem;border:1px solid #d7dfec;border-radius:.5rem;padding:1.2rem;background:#fff;max-width:48rem}
+.form h2,.members h3{margin:0;font-size:1.2rem}.form label,.search label,.members label{display:grid;gap:.3rem;font-weight:600;font-size:.9rem}
+.form input,.form select,.form textarea,.search input,.members input,.members select{min-height:2.45rem;border:1px solid #9aabc3;border-radius:.3rem;padding:.4rem .6rem;background:#fff;color:#182438;width:100%}
+.form textarea{min-height:5rem}.root button{min-height:2.35rem;border:1px solid #8ca0c2;border-radius:.3rem;padding:.35rem .75rem;background:#f5f8ff;color:#163666;cursor:pointer}
+.root button:disabled{opacity:.55;cursor:not-allowed}.root button:focus-visible,.root a:focus-visible,.root input:focus-visible,.root select:focus-visible{outline:3px solid #4e78e5;outline-offset:2px}
+.tableWrap{overflow-x:auto;border:1px solid #d7dfec;border-radius:.4rem}.tableWrap table{width:100%;border-collapse:collapse;min-width:39rem}
+.tableWrap th,.tableWrap td{text-align:left;vertical-align:top;padding:.75rem;border-bottom:1px solid #e4eaf2}.tableWrap th{background:#f2f5fa;color:#384964;font-weight:700}
+.tableWrap tr:last-child td{border-bottom:0}.active,.inactive{display:inline-block;padding:.15rem .45rem;border-radius:1rem;background:#e2f3e9;color:#155a37}.inactive{background:#edf0f5;color:#526178}
+.empty{border:1px dashed #aab9ce;padding:1.5rem;border-radius:.4rem;color:#526178}.members form{display:flex;gap:.65rem;align-items:end;flex-wrap:wrap}.members form label{min-width:13rem}
+.personAssignment{display:grid;gap:.35rem;margin-top:.5rem}.personAssignment label{display:grid;gap:.2rem;font-size:.8rem}.personAssignment select{min-width:10rem}
+@media(max-width:700px){.form{padding:.9rem}.tableWrap table{min-width:32rem}.toolbar{align-items:start}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}

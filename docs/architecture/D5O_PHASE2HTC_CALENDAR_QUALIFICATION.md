@@ -1,0 +1,7 @@
+# Phase 2H-TC calendar qualification
+
+`scripts/p0a/run-phase2htc-calendar.mjs` runs against an isolated PostgreSQL/Supabase container with an authenticated tenant actor. It invokes `d5o_hosted_operate_command_v1` for service triage and checks the persisted result, not only the calendar predicate. Each case uses a fixed synthetic business timestamp through the test database clock. The harness cleans its synthetic tenant and container.
+
+The final direct run passed **13/13** with `cleanupVerified: true`: normal business hours; omitted and empty holiday lists; invalid and absent calendars; a forged foreign-tenant calendar identifier; continuous overnight and Friday-to-Saturday operation; weekend and holiday rollover; both daylight-saving transitions; and a calendar with no eligible window inside the bounded search horizon. The evaluator returns a valid window or a specific failure; it does not substitute an alternate calendar. See [machine results](evidence/phase2htc-calendar-results.json).
+
+The supported tenant configuration selects `Business hours` or `Continuous`. It does not expose a tenant-owned calendar ID or arbitrary shift schedule. The forged foreign identifier is rejected as an invalid calendar selection; a separate cross-tenant calendar-object reference is outside this contract. The prior omitted-`holidayDates` SQL-null defect remains covered by the missing-list case. No calendar application code or production configuration changed in this package.

@@ -1,0 +1,62 @@
+{
+  "baseline": "dae8e1fa975bc47ef6d1180b512399683e3c9613",
+  "branch": "codex/d5o-phase2g-tenant-neutral-work",
+  "runnerStartedAt": "2026-10-23T20:43:45.759Z",
+  "runnerFinishedAt": "2026-10-23T20:59:03.468Z",
+  "runnerExitCode": 1,
+  "initialPhase1SetupError": true,
+  "phase1Retry": {
+    "passed": 18,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  },
+  "inheritedSuites": {
+    "phase1b": {
+      "passed": 13,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true
+    },
+    "phase2a": {
+      "passed": 11,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true
+    },
+    "phase2b": {
+      "passed": 18,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true
+    },
+    "phase2c": {
+      "passed": 23,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true
+    },
+    "phase2d": {
+      "passed": 27,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true
+    },
+    "p0a": {
+      "passed": 16,
+      "failed": 0,
+      "setupError": false,
+      "cleanupVerified": true
+    }
+  },
+  "staticCheckExitCodes": {
+    "phaseContract": 0,
+    "phaseConfiguration": 0,
+    "scannerInvariant": 0
+  },
+  "blocked": [
+    "Original sealed M1 RUN-MANIFEST.json absent",
+    "Original historical connected pilot fixture absent",
+    "Full UI-driven six-phase browser journey incomplete"
+  ]
+}

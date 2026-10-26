@@ -1,0 +1,7 @@
+# Phase 2H completion regression results
+
+The isolated disposable connected fixture passed **48/48** checks with `setupError: false` and `cleanupVerified: true`: [`evidence/phase2h-completion-define-results.json`](evidence/phase2h-completion-define-results.json). The fixture includes earlier onboarding, configuration, approval, phase-policy, connected-work, tenant isolation and projection replay assertions, plus the new Define browser path and Design receipt path. A passed backend assertion is not counted as a browser action.
+
+Focused checks passed: `verify-phase2h-define-draft.mjs` (13 assertions), `verify-phase2h-task-visibility.mjs` (15 assertions), `npm run typecheck`, `npm run lint`, and `git diff --check`. An isolated production build succeeded with `next build --webpack`. The default Turbopack build could not resolve `next/package.json` through this worktree's external dependency junction; an initial sandboxed webpack run hit filesystem `EPERM`, while the permitted local webpack run compiled and generated all pages successfully. This is a worktree build environment limitation, not a reported application compile failure.
+
+The original sealed M1 manifest and historical connected pilot fixture remain unavailable. They are separate blocked historical regressions; the disposable replacement does not reproduce their provenance. Full independent browser journeys for Design through Operate are also blocked as completion acceptance tests until their controls are implemented.

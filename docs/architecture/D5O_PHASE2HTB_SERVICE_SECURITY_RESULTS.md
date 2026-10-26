@@ -1,0 +1,7 @@
+# Phase 2H-TB service security results
+
+The clean two-tenant run reports 51 passing checks, zero failing checks, and verified disposable cleanup in `evidence/phase2ht-gate-b-results.json`. Tenant A's preapproval service authorization and job requests both returned HTTP 409 with no executable job. Tenant B's job request before mandatory customer authorization returned HTTP 409. After the valid decisions, each tenant had exactly one executable job; Tenant A had one threshold approval and Tenant B had none.
+
+Cross-tenant service approval read, customer-evidence read, and approval mutation returned HTTP 403. Direct foreign-tenant approval and job RPC calls returned SQLSTATE `42501`, and the protected job count remained one. Existing cross-tenant Deploy/Operate, Design, and customer Work API checks also passed in the inherited suite. The independently rerun Phase 1B approval suite result is in `evidence/phase2ht-approval-gate-results.json`.
+
+Gate D is **incomplete**. This package has not demonstrated every requested wrong-role, revoked/suspended membership, suspended tenant, disabled entitlement/flag, stale approval after changed scope/amount/currency, duplicate and concurrent job, conflicting idempotency key, and stale My Work replay case specifically for the new browser service path. The approval suite covers a subset at the authoritative command boundary; its exact cases must be read from that result rather than assumed to cover the whole matrix. No transport error is treated as an authorization denial.

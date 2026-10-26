@@ -1,0 +1,7 @@
+# Phase 2G security results
+
+The new customer route requires authenticated actor, active membership, active tenant and connected Work capability. The API uses `validLocalScheduleOrigin` for mutations and verifies that a requested presentation Work belongs to the selected workspace before calling an existing command. Business RPCs retain their own role, Work, revision, configuration and evidence checks. Direct phase-status reads require the same tenant, capability and Work identity. The private projection table has RLS enabled and no direct grants to browser roles.
+
+Disposable qualification: foreign phase-status RPC returned SQLSTATE 42501 / `phase_status_forbidden` for both tenants. Authenticated foreign GET and POST to the customer Work API returned HTTP 403 for both tenants. Phase 2F connected security checks within the same fixture passed. No service-role browser mutation was added. Existing pilot `/work?workspace=...` restrictions still returned the unavailable page for fictional tenants.
+
+Not yet directly exercised for this new route: foreign-tenant page navigation, revoked membership, suspended tenant, disabled capability, field-worker directory denial, forged Work IDs, concurrency, stale UI submissions, unauthorized projection table mutation, and cross-tenant evidence upload. Their existing command-level protections are not a substitute for route-level regression evidence. These are qualification gaps.

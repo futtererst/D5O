@@ -1,0 +1,7 @@
+# Phase 2H-R employee action inventory
+
+The executable inventory is [`D5O_PHASE2HR_ACTION_INVENTORY.json`](D5O_PHASE2HR_ACTION_INVENTORY.json). Each row records phase, action, hosted command, role, input/evidence, prerequisite, task source, current customer browser control and qualification level. The JSON totals are computed from its rows. `BROWSER QUALIFIED` means the named action was performed by a signed-in actor through an actual control; a later screenshot of RPC-created state does not qualify.
+
+The generated inventory has **48 required actions**: **20 browser qualified**, **24 backend only**, and **4 with a UI that remains unverified**. Overall browser coverage is **20 / 48 (42%)**. The breakdown is Discover 1/4, Define 7/7, Design 12/16, Develop 0/8, Deploy 0/8, and Operate 0/5. The Design actions now qualified through authenticated controls cover package creation, document draft and private PDF custody, independent document review, dated crew demand, four package reviews, release, and independent receipt. The accepted Design handoff is a legitimate fixture prerequisite established through hosted commands; it is not counted as a newly browser-qualified action.
+
+This inventory is the implementation backlog for the remaining employee lifecycle. Phase 2H-R intentionally implements Design only; Develop, Deploy and Operate remain listed without implying browser qualification. The 50 passing disposable checks are scenario checks, not 50 browser-qualified employee actions.

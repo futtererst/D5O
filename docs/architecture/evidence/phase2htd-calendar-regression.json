@@ -1,0 +1,142 @@
+{
+  "baseline": "6e28685f44795b1a3f6b19877d575b609be43729",
+  "environment": "disposable local Supabase/PostgreSQL",
+  "tests": [
+    {
+      "name": "normal business hours",
+      "status": "PASS",
+      "at": "2026-10-26T14:00:00Z",
+      "outcome": "2026-10-26T18:00:00+00:00",
+      "sqlstate": null,
+      "workId": "357da062-97c0-4e1a-be91-0967f936caca",
+      "configurationVersionId": "0c3a30a9-442d-4c42-ba9a-b522ef96ff78"
+    },
+    {
+      "name": "missing holiday list",
+      "status": "PASS",
+      "at": "2026-10-26T14:00:00Z",
+      "outcome": "2026-10-26T18:00:00+00:00",
+      "sqlstate": null,
+      "workId": "d1a4d472-45b2-47f5-9fbc-2709b3ae788c",
+      "configurationVersionId": "0f3a102e-5d3d-4c83-97fe-f5abfdf089da"
+    },
+    {
+      "name": "empty holiday list",
+      "status": "PASS",
+      "at": "2026-10-26T14:00:00Z",
+      "outcome": "2026-10-26T18:00:00+00:00",
+      "sqlstate": null,
+      "workId": "6b06916a-b3ca-4caa-a7c2-162283f62db7",
+      "configurationVersionId": "d544a479-5c39-42ca-ae5f-82455788c3c1"
+    },
+    {
+      "name": "invalid calendar structure",
+      "status": "PASS",
+      "at": "2026-10-26T14:00:00Z",
+      "outcome": "service_calendar_invalid",
+      "sqlstate": "23514",
+      "workId": "98d753a1-85c8-4d1a-855d-bb331585af94",
+      "configurationVersionId": "9f2c67b9-aa42-4bef-a0dc-9c727f20781e"
+    },
+    {
+      "name": "missing required calendar",
+      "status": "PASS",
+      "at": "2026-10-26T14:00:00Z",
+      "outcome": "service_calendar_invalid",
+      "sqlstate": "23514",
+      "workId": "91dbb433-bb9d-48ab-889a-13850c73b2c6",
+      "configurationVersionId": "f3b2304b-d7a9-495b-81e5-0c5ecd36464b"
+    },
+    {
+      "name": "foreign tenant calendar identifier",
+      "status": "PASS",
+      "at": "2026-10-26T14:00:00Z",
+      "outcome": "service_calendar_invalid",
+      "sqlstate": "23514",
+      "workId": "b1fd2963-bbe8-416a-a6bf-a047a0947653",
+      "configurationVersionId": "618ce9b7-a982-4ce7-8b32-b2d01fecb959"
+    },
+    {
+      "name": "continuous overnight",
+      "status": "PASS",
+      "at": "2026-10-26T23:00:00Z",
+      "outcome": "2026-10-27T03:00:00+00:00",
+      "sqlstate": null,
+      "workId": "891368ea-0f3f-4ba5-bde9-5dd0c80446f5",
+      "configurationVersionId": "765feb50-efea-409b-b60a-08b37be9a295"
+    },
+    {
+      "name": "Friday-to-Saturday continuous",
+      "status": "PASS",
+      "at": "2026-10-23T23:00:00Z",
+      "outcome": "2026-10-24T03:00:00+00:00",
+      "sqlstate": null,
+      "workId": "522265cf-0ce8-4b14-937d-5d5e03dadd88",
+      "configurationVersionId": "41823872-291e-4a4e-9d2e-a45d4f84c1cd"
+    },
+    {
+      "name": "weekend defers to Monday",
+      "status": "PASS",
+      "at": "2026-10-24T14:00:00Z",
+      "outcome": "2026-10-26T16:00:00+00:00",
+      "sqlstate": null,
+      "workId": "b6e22edc-0f83-43ee-b9e6-165371d5ac93",
+      "configurationVersionId": "94f806f1-1e9c-400f-aa73-db7a14bd3c53"
+    },
+    {
+      "name": "configured holiday defers to Tuesday",
+      "status": "PASS",
+      "at": "2026-10-26T14:00:00Z",
+      "outcome": "2026-10-27T16:00:00+00:00",
+      "sqlstate": null,
+      "workId": "98be1615-addc-440e-9e81-919ba574a0ae",
+      "configurationVersionId": "34b76bbf-7af3-4ef0-96db-a23c0ce39f9f"
+    },
+    {
+      "name": "spring daylight-saving transition",
+      "status": "PASS",
+      "at": "2026-03-06T22:00:00Z",
+      "outcome": "2026-03-09T16:00:00+00:00",
+      "sqlstate": null,
+      "workId": "4a5fa1d4-bbfb-4ccf-9ef9-4db2929e7714",
+      "configurationVersionId": "98649d81-126c-4f77-b8e0-200652e5f599"
+    },
+    {
+      "name": "fall daylight-saving transition",
+      "status": "PASS",
+      "at": "2026-10-30T21:00:00Z",
+      "outcome": "2026-11-02T17:00:00+00:00",
+      "sqlstate": null,
+      "workId": "80dc64ff-494c-4f1e-8008-c5e219a3a6e9",
+      "configurationVersionId": "20d7b6f5-3033-485b-9173-3400d44601e8"
+    },
+    {
+      "name": "no eligible window within guard",
+      "status": "PASS",
+      "at": "2026-10-26T14:00:00Z",
+      "outcome": "sla_calendar_unresolvable",
+      "sqlstate": "23514",
+      "workId": "78f874c8-db8a-455c-9f6a-87cddef0585f",
+      "configurationVersionId": "642c15ad-949f-4475-995e-a1516354a1ab"
+    }
+  ],
+  "cleanup": {
+    "projectId": "d5o-p0a-c246c7f8-812",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "clock": {
+    "browserControllable": false,
+    "authenticatedSchemaUsage": false,
+    "authenticatedUpdate": false
+  },
+  "summary": {
+    "passed": 13,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  }
+}

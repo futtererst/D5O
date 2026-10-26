@@ -1,0 +1,165 @@
+{
+  "sourceCommit": "6e28685f44795b1a3f6b19877d575b609be43729",
+  "generatedAt": "2026-10-25T12:59:22.461Z",
+  "sourceEvidence": "docs/architecture/evidence/phase2htc-two-tenant-results.json",
+  "coreOperatingLifecycle": {
+    "source": "docs/architecture/D5O_PHASE2HS_ACTION_INVENTORY.json",
+    "requiredInventoryRows": 54,
+    "browserQualifiedInventoryRows": 32,
+    "duplicateInventoryRows": 2,
+    "note": "Connected-service extension entries are excluded from this denominator."
+  },
+  "connectedServiceExtension": {
+    "tenantA": {
+      "requiredMyWorkEntries": 9,
+      "browserQualifiedMyWorkEntries": 9,
+      "actions": [
+        {
+          "action": "open-request",
+          "actor": "a_pm",
+          "taskId": "service:tenant_a_test-537d15014b2a444280b7bde8fc041f50:open-request",
+          "workId": "tenant_a_test-537d15014b2a444280b7bde8fc041f50",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "approve-agreement",
+          "actor": "a_ops",
+          "taskId": "service:tenant_a_test-537d15014b2a444280b7bde8fc041f50:coverage:046c4f3b-d601-45ba-8f0b-c0bbf36aaae6",
+          "workId": "tenant_a_test-537d15014b2a444280b7bde8fc041f50",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "triage-request",
+          "actor": "a_ops",
+          "taskId": "service:tenant_a_test-537d15014b2a444280b7bde8fc041f50:d8623c87-a3a9-4c5b-a16a-9a6dbc3a8575:triage-request:0",
+          "workId": "tenant_a_test-537d15014b2a444280b7bde8fc041f50",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "prepare-estimate",
+          "actor": "a_pm",
+          "taskId": "service:tenant_a_test-537d15014b2a444280b7bde8fc041f50:d8623c87-a3a9-4c5b-a16a-9a6dbc3a8575:prepare-estimate:0",
+          "workId": "tenant_a_test-537d15014b2a444280b7bde8fc041f50",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "approve-pricing",
+          "actor": "a_ops",
+          "taskId": "service:tenant_a_test-537d15014b2a444280b7bde8fc041f50:d8623c87-a3a9-4c5b-a16a-9a6dbc3a8575:approve-pricing:1",
+          "workId": "tenant_a_test-537d15014b2a444280b7bde8fc041f50",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "request-approval",
+          "actor": "a_pm",
+          "taskId": "service:tenant_a_test-537d15014b2a444280b7bde8fc041f50:d8623c87-a3a9-4c5b-a16a-9a6dbc3a8575:request-approval:1",
+          "workId": "tenant_a_test-537d15014b2a444280b7bde8fc041f50",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "decide-approval",
+          "actor": "a_admin",
+          "taskId": "service:tenant_a_test-537d15014b2a444280b7bde8fc041f50:d8623c87-a3a9-4c5b-a16a-9a6dbc3a8575:decide-approval:1",
+          "workId": "tenant_a_test-537d15014b2a444280b7bde8fc041f50",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "authorize-service",
+          "actor": "a_ops",
+          "taskId": "service:tenant_a_test-537d15014b2a444280b7bde8fc041f50:d8623c87-a3a9-4c5b-a16a-9a6dbc3a8575:authorize-service:1",
+          "workId": "tenant_a_test-537d15014b2a444280b7bde8fc041f50",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "create-job",
+          "actor": "a_pm",
+          "taskId": "service:tenant_a_test-537d15014b2a444280b7bde8fc041f50:d8623c87-a3a9-4c5b-a16a-9a6dbc3a8575:create-job:1",
+          "workId": "tenant_a_test-537d15014b2a444280b7bde8fc041f50",
+          "browserQualified": true,
+          "resolved": true,
+          "urlReplayDenied": true
+        }
+      ],
+      "approvalRequired": true,
+      "jobId": "4b815e81-64e2-4740-a5d3-b50159868d37",
+      "customerAuthorizationEvidenceId": "99595afc-5b7c-4555-b65e-3e9b3b0eb196"
+    },
+    "tenantB": {
+      "requiredMyWorkEntries": 7,
+      "browserQualifiedMyWorkEntries": 7,
+      "actions": [
+        {
+          "action": "open-request",
+          "actor": "b_pm",
+          "taskId": "service:tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872:open-request",
+          "workId": "tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "approve-agreement",
+          "actor": "b_ops",
+          "taskId": "service:tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872:coverage:8b5208d1-8de3-4592-a4d6-5926225bb883",
+          "workId": "tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "triage-request",
+          "actor": "b_ops",
+          "taskId": "service:tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872:654f4a17-dff2-4486-bd1a-cfe46b64e8b2:triage-request:0",
+          "workId": "tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "prepare-estimate",
+          "actor": "b_pm",
+          "taskId": "service:tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872:654f4a17-dff2-4486-bd1a-cfe46b64e8b2:prepare-estimate:0",
+          "workId": "tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "approve-pricing",
+          "actor": "b_ops",
+          "taskId": "service:tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872:654f4a17-dff2-4486-bd1a-cfe46b64e8b2:approve-pricing:1",
+          "workId": "tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "authorize-service",
+          "actor": "b_ops",
+          "taskId": "service:tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872:654f4a17-dff2-4486-bd1a-cfe46b64e8b2:authorize-service:1",
+          "workId": "tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872",
+          "browserQualified": true,
+          "resolved": true
+        },
+        {
+          "action": "create-job",
+          "actor": "b_pm",
+          "taskId": "service:tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872:654f4a17-dff2-4486-bd1a-cfe46b64e8b2:create-job:1",
+          "workId": "tenant_b_test-bc4b2311bd3341ebb28cbd71896ee872",
+          "browserQualified": true,
+          "resolved": true,
+          "urlReplayDenied": true
+        }
+      ],
+      "approvalRequired": false,
+      "jobId": "41963e07-0b60-472e-91b7-8c069e6f4e36",
+      "customerAuthorizationEvidenceId": "8feae886-1fd5-4d84-848d-64ee1c7fe37d"
+    },
+    "totalRequiredMyWorkEntries": 16,
+    "totalBrowserQualifiedMyWorkEntries": 16,
+    "note": "Customer PDF upload and pricing submission are browser decisions inside an actionable task; they do not create additional My Work entries."
+  }
+}
