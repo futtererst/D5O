@@ -1,2 +1,3 @@
 output/pdf/d5o-fictional-support/*.pdf binary
 supabase/migrations/20261027085730_d5o_operate_acceptance_one_time_guard.sql text eol=lf
+supabase/migrations/20261027190000_d5o_field_fact_latest_permit_order.sql text eol=lf
