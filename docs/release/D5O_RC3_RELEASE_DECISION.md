@@ -1,0 +1,11 @@
+# D5O RC3 release decision
+
+**Local verdict: INTEGRATED BROWSER QUALIFIED for the supported parent six-phase Work journey.** Two fictional tenants used the same integrated application against one disposable Supabase project. Each completed authenticated Discover, Define, Design, Develop and Deploy decisions, activated Operate support, and started separate Finance review. Application commit: `4ab521155c814724dd03f68ce20039d77cdd85a9`. Final machine evidence is [`evidence/D5O_RC3_TWO_TENANT_BROWSER.json`](evidence/D5O_RC3_TWO_TENANT_BROWSER.json): 61 passed, 0 failed, cleanup verified. The evidence commit follows this application commit.
+
+The result qualifies the **local** application behavior. It does not qualify production promotion. The existing support-service child request was exercised through browser controls on the same parent Work after the Operate handoff; it must not be described as a child job created during the parent Develop interval. Some Design/Develop controls were opened from Work after My Work responsibility checks rather than from each individual task link. These are traceability and routing limits of the evidence, not evidence of a bypass.
+
+Both tenants retained independent configuration pins, actors, packages, evidence, Work acceptance and audit references. A's stricter risk, method, reviewed-evidence, documentation and USD 10,000 threshold policies were enforced; B's USD 25,000 policy did not require extra threshold approval for a USD 15,000 request. Event-backed phase replay matched, and Finance remained separate from Support. No critical authorization or evidence-integrity bypass was demonstrated by the focused security checks.
+
+Production blockers remain: approved isolated hosted staging is absent; the hosted migration ledger is not proven SQL-equivalent to the RC0/RC3 235-file chain; coordinated database/private-object recovery on a protected historical copy is unproven; production readiness configuration and commercial invitation delivery are not qualified. No hosted resource was created or changed, and no push, merge or deployment was performed.
+
+The next decision should authorize a strictly isolated staging target and protected historical-copy scope, then run the existing staging and migration/recovery gates. Keep the production project `fcawktdjoxvahhgvkebx` outside all staging mutation paths.
