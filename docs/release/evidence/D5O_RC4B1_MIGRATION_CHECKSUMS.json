@@ -1,0 +1,1903 @@
+{
+  "format": "d5o-rc4b1-migration-manifest-v1",
+  "baselineManifestSha256": "29a9408a543f4dcbfd5b4bd8402cae1f85beaf6605ea9a5dfae7b109fa78b616",
+  "existingMigrations": 235,
+  "existingChecksumsMatch": true,
+  "totalExecutable": 236,
+  "excluded": [
+    {
+      "filename": "0016_p1_01b_2_bid_submission_outcome-ShawnT13.sql",
+      "reason": "duplicate version 0016; existing disposable runtime excludes -ShawnT13.sql"
+    }
+  ],
+  "migrations": [
+    {
+      "order": 1,
+      "filename": "0001_core_foundation.sql",
+      "version": "0001",
+      "sha256": "9970d46cd6cdefe411d7c51eaa24af12a9c1e9fcdd017122423739255bcd91c5",
+      "dependsOn": null,
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 2,
+      "filename": "0002_d1_d2_pipeline_projects.sql",
+      "version": "0002",
+      "sha256": "3947432a1c857eec13c481535440985538b74b0a1caa07fe3b2f058fe31373a8",
+      "dependsOn": "0001_core_foundation.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 3,
+      "filename": "0003_workflow_transactions.sql",
+      "version": "0003",
+      "sha256": "e089336b22e642018d78332b4939b666fe98ce8b633015d6b607e2341d09f089",
+      "dependsOn": "0002_d1_d2_pipeline_projects.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 4,
+      "filename": "0004_rls_security_scaffold.sql",
+      "version": "0004",
+      "sha256": "dfeb278d28c6ddc6cb6be12847b160e3bfc85b13079627712e6860f10067c39a",
+      "dependsOn": "0003_workflow_transactions.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 5,
+      "filename": "0005_identity_workspace_security.sql",
+      "version": "0005",
+      "sha256": "188680b9e3adc6756cb0ef8c50a895843554ef0321bc8e6c27719ecf313b8c2c",
+      "dependsOn": "0004_rls_security_scaffold.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 6,
+      "filename": "0006_shared_command_audit_evidence.sql",
+      "version": "0006",
+      "sha256": "84fb66d66074447914e07ea7664d891b50dba6c5b46108181780d54ef9c4199b",
+      "dependsOn": "0005_identity_workspace_security.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 7,
+      "filename": "0007_billing_v2_production_persistence.sql",
+      "version": "0007",
+      "sha256": "ab48b32ec3af5d02cf5df71917b5c59895d0266f503a273e2cdb53dd0466f6f6",
+      "dependsOn": "0006_shared_command_audit_evidence.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 8,
+      "filename": "0008_field_issue_rfi_change_production_persistence.sql",
+      "version": "0008",
+      "sha256": "6581bfc01fcfc715c95cdd191827bc77646804215cfebe03fa77255f93f21204",
+      "dependsOn": "0007_billing_v2_production_persistence.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 9,
+      "filename": "0009_closeout_production_persistence.sql",
+      "version": "0009",
+      "sha256": "c1f3c6a06231340ad963d178c07322a04c7af48145b4f9a5adbc9f50408f93dd",
+      "dependsOn": "0008_field_issue_rfi_change_production_persistence.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 10,
+      "filename": "0010_production_cutover_hardening.sql",
+      "version": "0010",
+      "sha256": "80b9a9dd7e2f982221274c467d6d8b983d64753bd3b9ecc27b2b32de9b017ff2",
+      "dependsOn": "0009_closeout_production_persistence.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 11,
+      "filename": "0011_p1_01a_opportunity_intake_qualification.sql",
+      "version": "0011",
+      "sha256": "f3ee7b1f9c769a04177833227f40fb3e32c638e9fb8a05c14519ba88706c4816",
+      "dependsOn": "0010_production_cutover_hardening.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 12,
+      "filename": "0012_p1_01a_acceptance_remediation.sql",
+      "version": "0012",
+      "sha256": "bac007cc605bebd3e1d90b13501e199fa65908dad531f227b2ed4878fe9edd5d",
+      "dependsOn": "0011_p1_01a_opportunity_intake_qualification.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 13,
+      "filename": "0013_p1_01a_role_accountability_read_model.sql",
+      "version": "0013",
+      "sha256": "f4e04faa65bbddf8a0f25c6ba54a42bf70a35a790dd09850c45d8a3935133273",
+      "dependsOn": "0012_p1_01a_acceptance_remediation.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 14,
+      "filename": "0014_p1_01a_decision_owner_actions.sql",
+      "version": "0014",
+      "sha256": "7037a301181e5155642fc99b4c09361e2cda1eddb5151d145806f306c08b6030",
+      "dependsOn": "0013_p1_01a_role_accountability_read_model.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 15,
+      "filename": "0015_p1_01b_1_pursuit_authorization.sql",
+      "version": "0015",
+      "sha256": "bdd9744a9f623b632860542e853dda59f966eaebf15fe9a4d5617df023f9087d",
+      "dependsOn": "0014_p1_01a_decision_owner_actions.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 16,
+      "filename": "0016_p1_01b_2_bid_submission_outcome.sql",
+      "version": "0016",
+      "sha256": "3731aff4ba8c2e31b98e4219fa84498c4e2309da7aa02d0daa97fdcd33177588",
+      "dependsOn": "0015_p1_01b_1_pursuit_authorization.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 17,
+      "filename": "0017_configuration_foundation_core.sql",
+      "version": "0017",
+      "sha256": "acd2aa06590b8d1113741e4296a9842cc0c0ff54af05926956c9e917c9dabccb",
+      "dependsOn": "0016_p1_01b_2_bid_submission_outcome.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 18,
+      "filename": "0018_configuration_template_packs_versions.sql",
+      "version": "0018",
+      "sha256": "3bbbf4f8b5635a824acdc5e1f02a98c7ab5ac1d79fde900387ad7908a0116ba4",
+      "dependsOn": "0017_configuration_foundation_core.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 19,
+      "filename": "0019_configuration_tenant_activation_versions.sql",
+      "version": "0019",
+      "sha256": "6fdfc1d5acdd209c4b168168467892df952de7e507a4f7f40661691951771d37",
+      "dependsOn": "0018_configuration_template_packs_versions.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 20,
+      "filename": "0020_configuration_phase_gate_definitions.sql",
+      "version": "0020",
+      "sha256": "a3874654190220561dbea6b7b5195bd69fd8c78617de7defebc8759cedd44afd",
+      "dependsOn": "0019_configuration_tenant_activation_versions.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 21,
+      "filename": "0021_configuration_work_types_streams_lanes.sql",
+      "version": "0021",
+      "sha256": "8e817aec5fa3a2b55f77c43ca36f1fa7312b02395f68cd3eb5a284adca6e9d9c",
+      "dependsOn": "0020_configuration_phase_gate_definitions.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 22,
+      "filename": "0022_configuration_roles_permissions_decision_rights.sql",
+      "version": "0022",
+      "sha256": "84601aa08fa94b5c3882524f02365cc3806c9cce727051167d563f349417a4f1",
+      "dependsOn": "0021_configuration_work_types_streams_lanes.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 23,
+      "filename": "0023_configuration_artifact_evidence_definitions.sql",
+      "version": "0023",
+      "sha256": "84347c74d1e3f110b4df055d9c1d2f102e6d7fd3da851131e26baef8d474b4f4",
+      "dependsOn": "0022_configuration_roles_permissions_decision_rights.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 24,
+      "filename": "0024_configuration_kpi_financial_workforce_handoff_governance.sql",
+      "version": "0024",
+      "sha256": "4dba92036cacb3c06ce6109392e00a9c8955976463acef87766780c2f9d69473",
+      "dependsOn": "0023_configuration_artifact_evidence_definitions.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 25,
+      "filename": "0025_configuration_audit_effective_resolution.sql",
+      "version": "0025",
+      "sha256": "359043ee38a971bae291c640da71e96ce5a1a5e6d46a3b295cada3f04325ec06",
+      "dependsOn": "0024_configuration_kpi_financial_workforce_handoff_governance.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 26,
+      "filename": "0026_configuration_template_pack_seed_data.sql",
+      "version": "0026",
+      "sha256": "92750263a7aaee419de89f1fb313811810ee006c80ee2727139680442f6d7a3e",
+      "dependsOn": "0025_configuration_audit_effective_resolution.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 27,
+      "filename": "0027_cfg_runtime_01_pricing_review_readiness.sql",
+      "version": "0027",
+      "sha256": "9ff978f044caff6c1dc0fd9e9e620bd2f81befc5954965314c42ab5a704b2949",
+      "dependsOn": "0026_configuration_template_pack_seed_data.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 28,
+      "filename": "0028_cfg_runtime_02_pursuit_authorization.sql",
+      "version": "0028",
+      "sha256": "cbfe93ecdf2c0db681d18e8afb370876c2244053b5990f364a5029d8720c387a",
+      "dependsOn": "0027_cfg_runtime_01_pricing_review_readiness.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 29,
+      "filename": "0029_cfg_runtime_03_bid_submission_approval.sql",
+      "version": "0029",
+      "sha256": "e1d48c12d02c42545045e462bc52f1ca2e11a52052c704ac54af7d3e0624d7a0",
+      "dependsOn": "0028_cfg_runtime_02_pursuit_authorization.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 30,
+      "filename": "0030_cfg_runtime_03_evidence_persistence_authority.sql",
+      "version": "0030",
+      "sha256": "af0091579d9258c9bc9ddfb79e156a4fbe7ef19159ab74eb0567e4b6ebf87f7a",
+      "dependsOn": "0029_cfg_runtime_03_bid_submission_approval.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 31,
+      "filename": "0031_cfg_runtime_03_actor_profile_identity_coherence.sql",
+      "version": "0031",
+      "sha256": "f4337c332c975c91994b34414fd142aade4df8140ff9f76463b183c430b81664",
+      "dependsOn": "0030_cfg_runtime_03_evidence_persistence_authority.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 32,
+      "filename": "20260928120323_baseline_evidence_scan_reconciliation.sql",
+      "version": "20260928120323",
+      "sha256": "6a244d93074aa83b90bd7b437de13107843ffdc99b1a39f2e197d40eeacd4ca9",
+      "dependsOn": "0031_cfg_runtime_03_actor_profile_identity_coherence.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 33,
+      "filename": "20260928145307_p1_cfg_evidence_custody_acceptance.sql",
+      "version": "20260928145307",
+      "sha256": "5dfcaf06b3712b5eb464951b67daa439b1bcb59848b11a6229ce298bd52977c2",
+      "dependsOn": "20260928120323_baseline_evidence_scan_reconciliation.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 34,
+      "filename": "20260928214119_d5o_m1_work_record_gate.sql",
+      "version": "20260928214119",
+      "sha256": "d18dc96e768cad1240dbef17011461a9ce565d1690a585b2f5cfe5da366f3dbe",
+      "dependsOn": "20260928145307_p1_cfg_evidence_custody_acceptance.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 35,
+      "filename": "20260929121652_d5o_m1_replay_configuration_guard.sql",
+      "version": "20260929121652",
+      "sha256": "9dd4dc9ece353557378e7dfae733b39283832b3fdf2008c03b99d436069d0a90",
+      "dependsOn": "20260928214119_d5o_m1_work_record_gate.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 36,
+      "filename": "20261002000000_d5o_m2_work_record_queue.sql",
+      "version": "20261002000000",
+      "sha256": "efcd61fc7801a42fb339d4853ad9af7e3bc353d3585810993aac636541f23ca9",
+      "dependsOn": "20260929121652_d5o_m1_replay_configuration_guard.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 37,
+      "filename": "20261004230000_d5o_work_package_foundation.sql",
+      "version": "20261004230000",
+      "sha256": "9b5c03025f14ab2c0c6d71c9d088efba69e2797364243b488f2ff9de65eb104b",
+      "dependsOn": "20261002000000_d5o_m2_work_record_queue.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 38,
+      "filename": "20261004233000_d5o_work_package_closed_guard.sql",
+      "version": "20261004233000",
+      "sha256": "f84c6cef592ae541aa58ff731d4d6d56646f2e727c173578b321930fdebc0d69",
+      "dependsOn": "20261004230000_d5o_work_package_foundation.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 39,
+      "filename": "20261004234500_d5o_package_proof_snapshot.sql",
+      "version": "20261004234500",
+      "sha256": "2ffb1c7632f436864a2d2cf4323d5e47ed1ab07bba32f9b3c9da117af1cbde88",
+      "dependsOn": "20261004233000_d5o_work_package_closed_guard.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 40,
+      "filename": "20261005122038_d5o_configured_lifecycle_rules.sql",
+      "version": "20261005122038",
+      "sha256": "1eebba81b8292fe348a94bcde178b6d875858fd06935f055660ebcc3de651380",
+      "dependsOn": "20261004234500_d5o_package_proof_snapshot.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 41,
+      "filename": "20261005200000_d5o_configuration_publication.sql",
+      "version": "20261005200000",
+      "sha256": "c3ca5277189fe5635bafa4a9896494ab3b90383490ddb21637b658a28e0d2c22",
+      "dependsOn": "20261005122038_d5o_configured_lifecycle_rules.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 42,
+      "filename": "20261005210000_d5o_configuration_activation_split.sql",
+      "version": "20261005210000",
+      "sha256": "f0dea15ba3bf13278a5dde4641d75eb3b144454361b174fecd880fdc57c26e80",
+      "dependsOn": "20261005200000_d5o_configuration_publication.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 43,
+      "filename": "20261005220000_d5o_candidate_activation_guard.sql",
+      "version": "20261005220000",
+      "sha256": "5635a5aa5964176b08e35cadee9c18e5c776c9396f2b1b07c61714481e26e3e4",
+      "dependsOn": "20261005210000_d5o_configuration_activation_split.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 44,
+      "filename": "20261005230000_d5o_published_phase_contract.sql",
+      "version": "20261005230000",
+      "sha256": "661264ddfdea38165597d853d90d381311e63ead3430df52b1e00aa4b4fc694a",
+      "dependsOn": "20261005220000_d5o_candidate_activation_guard.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 45,
+      "filename": "20261007013134_d5o_hosted_workspace_authority.sql",
+      "version": "20261007013134",
+      "sha256": "18e09f92e5d6380f2c26f8248e0fae4892936aa27229573ec326a0db1b616956",
+      "dependsOn": "20261005230000_d5o_published_phase_contract.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 46,
+      "filename": "20261007013707_d5o_hosted_workspace_invoker_hardening.sql",
+      "version": "20261007013707",
+      "sha256": "951ef953b723ad8d54ae55f7eedb126f181d0a040fb5213859964a860e71fa77",
+      "dependsOn": "20261007013134_d5o_hosted_workspace_authority.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 47,
+      "filename": "20261007020600_d5o_hosted_work_identity.sql",
+      "version": "20261007020600",
+      "sha256": "1f3120fc5601f630a7679744cfc3dbc844318b870c126e795e29b9540ad0a27b",
+      "dependsOn": "20261007013707_d5o_hosted_workspace_invoker_hardening.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 48,
+      "filename": "20261007022200_d5o_hosted_create_work_authority.sql",
+      "version": "20261007022200",
+      "sha256": "eb1dbc16a0bbb096efb2a4bb79973a124427a9e7769366abc2076432d2dda44e",
+      "dependsOn": "20261007020600_d5o_hosted_work_identity.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 49,
+      "filename": "20261007031000_d5o_hosted_configuration_manifest.sql",
+      "version": "20261007031000",
+      "sha256": "cf23152b841e3de3ad49405a63e862a14a5c5910d75dcde9f8b6b93bd1878617",
+      "dependsOn": "20261007022200_d5o_hosted_create_work_authority.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 50,
+      "filename": "20261007040000_d5o_hosted_synthetic_prototype_state.sql",
+      "version": "20261007040000",
+      "sha256": "ed042a5b491565fe458ca42efd3348dd936b57239ec10b2d40fd31e451bf155b",
+      "dependsOn": "20261007031000_d5o_hosted_configuration_manifest.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 51,
+      "filename": "20261007050000_d5o_hosted_prototype_nested_scope.sql",
+      "version": "20261007050000",
+      "sha256": "ea1261d4a0a05868b5f361ae394b479db782e8912569cf9b28037a4fd2a80f7a",
+      "dependsOn": "20261007040000_d5o_hosted_synthetic_prototype_state.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 52,
+      "filename": "20261007225404_d5o_hosted_worker_boundary.sql",
+      "version": "20261007225404",
+      "sha256": "7d247a83edc301cad174b29fff9fce4e1e28e412048b95c6b749b7facae9239a",
+      "dependsOn": "20261007050000_d5o_hosted_prototype_nested_scope.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 53,
+      "filename": "20261008182443_d5o_hosted_command_writer.sql",
+      "version": "20261008182443",
+      "sha256": "69439186b0f84224918a2055880e972fbe807636862ec3eff1cb4a6044d354dc",
+      "dependsOn": "20261007225404_d5o_hosted_worker_boundary.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 54,
+      "filename": "20261008183310_d5o_prototype_authoritative_writes.sql",
+      "version": "20261008183310",
+      "sha256": "64de4c95014d2d97f0a3a67838c9a45fd95991a5ab863411ecd803eb0f54d87f",
+      "dependsOn": "20261008182443_d5o_hosted_command_writer.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 55,
+      "filename": "20261008185604_d5o_hosted_worker_provisioning.sql",
+      "version": "20261008185604",
+      "sha256": "5e1e681f8a803d0fa87041b67ad5ff32aa58d1e74265be0b77207ed9455881ee",
+      "dependsOn": "20261008183310_d5o_prototype_authoritative_writes.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 56,
+      "filename": "20261008190351_d5o_secret_key_role_compatibility.sql",
+      "version": "20261008190351",
+      "sha256": "896757875408b2099742a2969f6a56780823758112102243dcdf96e76159c4a7",
+      "dependsOn": "20261008185604_d5o_hosted_worker_provisioning.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 57,
+      "filename": "20261008200840_restrict_worker_work_access.sql",
+      "version": "20261008200840",
+      "sha256": "10f4c644c7f74336fc2836f25a464532cf88de90c0714fc1fb159b52096d07bc",
+      "dependsOn": "20261008190351_d5o_secret_key_role_compatibility.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 58,
+      "filename": "20261008203000_d5o_reject_imported_commercial_decisions.sql",
+      "version": "20261008203000",
+      "sha256": "e177cef24ab06c7b51bbaca5c752e8bf0a8102268fd97f522ccc449b2d757d06",
+      "dependsOn": "20261008200840_restrict_worker_work_access.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 59,
+      "filename": "20261008214425_hosted_pilot_role_assignments.sql",
+      "version": "20261008214425",
+      "sha256": "a76dcb58a791b7ab2027cb1994847322069fe72946b579008ea31f9544abaf56",
+      "dependsOn": "20261008203000_d5o_reject_imported_commercial_decisions.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 60,
+      "filename": "20261008221100_d5o_guard_pilot_position.sql",
+      "version": "20261008221100",
+      "sha256": "249675223e295666bad1d4fea0543f2f4609f9fc4ee18ffa21894e063c117fea",
+      "dependsOn": "20261008214425_hosted_pilot_role_assignments.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 61,
+      "filename": "20261008230000_d5o_connected_work_identity.sql",
+      "version": "20261008230000",
+      "sha256": "c75baf84eac7d61ab5471c6e22b2c5610ba289f4366cbc8cec351af11cbf7aa4",
+      "dependsOn": "20261008221100_d5o_guard_pilot_position.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 62,
+      "filename": "20261008231000_d5o_connected_define_commands.sql",
+      "version": "20261008231000",
+      "sha256": "3b7b495876cae855f59d50281b4b06754829cf1db0edf9203ca559a58f03360e",
+      "dependsOn": "20261008230000_d5o_connected_work_identity.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 63,
+      "filename": "20261008232000_d5o_connected_discover_commands.sql",
+      "version": "20261008232000",
+      "sha256": "53276cf79cfb4fab6fb6309ff8f21260b450064dd18400458fe70080602cedfc",
+      "dependsOn": "20261008231000_d5o_connected_define_commands.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 64,
+      "filename": "20261008233000_d5o_connected_draft_projection.sql",
+      "version": "20261008233000",
+      "sha256": "364f4d6b3b13e54372fcaac85f7aace5daf17156a850e8b51bcbf1bae0877bdd",
+      "dependsOn": "20261008232000_d5o_connected_discover_commands.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 65,
+      "filename": "20261008234000_d5o_connected_solution_decision_lock.sql",
+      "version": "20261008234000",
+      "sha256": "90d15f29c98b5f6070d2bcd4851211042b0f057b344bdaab4e9dc8d6cf896c4b",
+      "dependsOn": "20261008233000_d5o_connected_draft_projection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 66,
+      "filename": "20261008235000_d5o_connected_solution_commands.sql",
+      "version": "20261008235000",
+      "sha256": "cb4e05fffc2ec51c3a275da2c70ce482066ee5588ca599fe64defa6f6cc74306",
+      "dependsOn": "20261008234000_d5o_connected_solution_decision_lock.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 67,
+      "filename": "20261008235500_d5o_connected_pricing_policy_commands.sql",
+      "version": "20261008235500",
+      "sha256": "6079af86546d3614336e76217600d4b189688ef56aabaa4179cb7b975075bbe8",
+      "dependsOn": "20261008235000_d5o_connected_solution_commands.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 68,
+      "filename": "20261008240000_d5o_connected_estimate_commands.sql",
+      "version": "20261008240000",
+      "sha256": "d6e90f99947922b30d79e387042140ee36f0a0616950e23929e5d282811dc795",
+      "dependsOn": "20261008235500_d5o_connected_pricing_policy_commands.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 69,
+      "filename": "20261008241000_d5o_connected_offer_review.sql",
+      "version": "20261008241000",
+      "sha256": "4b183d06c1bcd6389d6a3562483954261c0da40459ee70ff8bc536f118e504f9",
+      "dependsOn": "20261008240000_d5o_connected_estimate_commands.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 70,
+      "filename": "20261008242000_d5o_connected_customer_decisions.sql",
+      "version": "20261008242000",
+      "sha256": "82eab7dfcd26b3edc6b046cb8cfc5dfc0e27555c4aa69b8ef8ec6a97cae1063b",
+      "dependsOn": "20261008241000_d5o_connected_offer_review.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 71,
+      "filename": "20261008243000_d5o_connected_design_handoff.sql",
+      "version": "20261008243000",
+      "sha256": "a2cd7751bca83ef594c02d4f2e18056b661af0702132ec118a44073fd54d9516",
+      "dependsOn": "20261008242000_d5o_connected_customer_decisions.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 72,
+      "filename": "20261008244000_d5o_connected_package_creation.sql",
+      "version": "20261008244000",
+      "sha256": "cc19a6e4c65fde3cced11a5fe21da030905ceb00f25526cc9c538ba06468e8a7",
+      "dependsOn": "20261008243000_d5o_connected_design_handoff.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 73,
+      "filename": "20261008244500_d5o_connected_package_projection.sql",
+      "version": "20261008244500",
+      "sha256": "2c9c85cae4ef41d5cc6040c45bfb2916e515fcb20a8f6d74fba20d0f10756ce6",
+      "dependsOn": "20261008244000_d5o_connected_package_creation.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 74,
+      "filename": "20261008245000_d5o_connected_design_drafts.sql",
+      "version": "20261008245000",
+      "sha256": "a7e38635e2ad86474bcdd51185221065ab3c9bb3adb5116faafb2e24f54418a1",
+      "dependsOn": "20261008244500_d5o_connected_package_projection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 75,
+      "filename": "20261008245100_d5o_connected_design_reviews.sql",
+      "version": "20261008245100",
+      "sha256": "68df50715094e4a8ee07fd3a9791e8d9ffb1e9b1cd81d94a9e9ef1e7a7d9a965",
+      "dependsOn": "20261008245000_d5o_connected_design_drafts.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 76,
+      "filename": "20261008245150_d5o_connected_design_demand.sql",
+      "version": "20261008245150",
+      "sha256": "64dc495370d0e369142c3c9064d3c6c206926f8adcb57d24dfa292bfccfbbb9c",
+      "dependsOn": "20261008245100_d5o_connected_design_reviews.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 77,
+      "filename": "20261008245200_d5o_connected_design_release.sql",
+      "version": "20261008245200",
+      "sha256": "fee1a3858eb2a33eb86ae21706405c9fd3978945beceb09966aa217fde55f439",
+      "dependsOn": "20261008245150_d5o_connected_design_demand.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 78,
+      "filename": "20261008245300_d5o_connected_crew_publication.sql",
+      "version": "20261008245300",
+      "sha256": "2de6fae7464becbc2c282aebaca733a1bc48562688aefe9392b7eabd039a5c70",
+      "dependsOn": "20261008245200_d5o_connected_design_release.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 79,
+      "filename": "20261008245400_d5o_connected_field_start.sql",
+      "version": "20261008245400",
+      "sha256": "68d5db83f4629148ff9b5afdf277dd2ad13126e93cd35ec45a6b908adf89f588",
+      "dependsOn": "20261008245300_d5o_connected_crew_publication.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 80,
+      "filename": "20261008245450_d5o_connected_deploy_draft_rebase.sql",
+      "version": "20261008245450",
+      "sha256": "43b53a51a4b0a3f1373b6089a459d6981a80aa0556b09ab474e5f2d75429b1d4",
+      "dependsOn": "20261008245400_d5o_connected_field_start.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 81,
+      "filename": "20261008245500_d5o_connected_field_facts.sql",
+      "version": "20261008245500",
+      "sha256": "9c99a51e9eb5098982655a625516d6aeebdb86dca25a4ae412a245ce736d8b62",
+      "dependsOn": "20261008245450_d5o_connected_deploy_draft_rebase.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 82,
+      "filename": "20261008245600_d5o_connected_field_evidence.sql",
+      "version": "20261008245600",
+      "sha256": "17951636f3d5b9c478632337e0899b3f9e3a33035c3b43ee293a255e1374be98",
+      "dependsOn": "20261008245500_d5o_connected_field_facts.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 83,
+      "filename": "20261008245650_d5o_connected_worker_projection.sql",
+      "version": "20261008245650",
+      "sha256": "1caa89fe7e36269587ba024f9cce089565423aed6daf5f98b64183db259519a4",
+      "dependsOn": "20261008245600_d5o_connected_field_evidence.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 84,
+      "filename": "20261008245700_d5o_connected_acceptance.sql",
+      "version": "20261008245700",
+      "sha256": "279acfc7fde45152dedd0c68bc2e01df4840d5ce000a85539fe4647477b400e8",
+      "dependsOn": "20261008245650_d5o_connected_worker_projection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 85,
+      "filename": "20261008245800_d5o_connected_operate_state.sql",
+      "version": "20261008245800",
+      "sha256": "f6f0d50a9b9f02455f8119b869069c5f7be84cb95d3d5bc5034097bcea4b017b",
+      "dependsOn": "20261008245700_d5o_connected_acceptance.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 86,
+      "filename": "20261008245850_d5o_connected_operate_commands.sql",
+      "version": "20261008245850",
+      "sha256": "4f5b3567ce544340f8fbce2d4db21279ed4a3f86944162f2b560bcb1ed807a67",
+      "dependsOn": "20261008245800_d5o_connected_operate_state.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 87,
+      "filename": "20261008245900_d5o_connected_operate_draft_rebase.sql",
+      "version": "20261008245900",
+      "sha256": "857cb41f8d6903325455f2478933c7ef626daf09243af3caeff499605e7e3b2d",
+      "dependsOn": "20261008245850_d5o_connected_operate_commands.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 88,
+      "filename": "20261008250000_d5o_connected_service_job_command.sql",
+      "version": "20261008250000",
+      "sha256": "2ab403d3f6a200bfac79f033eb6aea6db7036d0476c63f4a9f219f12f8b711b1",
+      "dependsOn": "20261008245900_d5o_connected_operate_draft_rebase.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 89,
+      "filename": "20261008250100_d5o_connected_asset_acceptance.sql",
+      "version": "20261008250100",
+      "sha256": "8865fa770e03746b8dcea7f398ed6514b2e7b4bd0f2bb266d2678b6f40ce1256",
+      "dependsOn": "20261008250000_d5o_connected_service_job_command.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 90,
+      "filename": "20261008250200_d5o_connected_service_projection.sql",
+      "version": "20261008250200",
+      "sha256": "5d614d56ee6746dfd87cc71b7ccedbfc521c384823184c85a5608db15301caf1",
+      "dependsOn": "20261008250100_d5o_connected_asset_acceptance.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 91,
+      "filename": "20261008250300_d5o_connected_service_draft_rebase.sql",
+      "version": "20261008250300",
+      "sha256": "3134340e0c1894ead8e9a2095ccd483b4da14880e41dd6e0af813a0ddfae006d",
+      "dependsOn": "20261008250200_d5o_connected_service_projection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 92,
+      "filename": "20261009094046_d5o_connected_service_basis.sql",
+      "version": "20261009094046",
+      "sha256": "e3eb5027fcd7ca833503c663be61fcb235a7be076d0405441b4d4960bcdf6403",
+      "dependsOn": "20261008250300_d5o_connected_service_draft_rebase.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 93,
+      "filename": "20261009094248_d5o_connected_service_basis_projection.sql",
+      "version": "20261009094248",
+      "sha256": "0059f257fe0ce0d3036be779093c6ff9398f54bdbde4d6a5dc6d8f1651a594c0",
+      "dependsOn": "20261009094046_d5o_connected_service_basis.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 94,
+      "filename": "20261009095342_d5o_connected_service_package.sql",
+      "version": "20261009095342",
+      "sha256": "efe86be67cf03450d6e569160747563d56064036d42214aa2689ab4b4f979343",
+      "dependsOn": "20261009094248_d5o_connected_service_basis_projection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 95,
+      "filename": "20261009095658_d5o_connected_design_source_adapter.sql",
+      "version": "20261009095658",
+      "sha256": "f6b850aca941ffed19357b2253cde0194067d4baa55008a8f397d0fffc69759c",
+      "dependsOn": "20261009095342_d5o_connected_service_package.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 96,
+      "filename": "20261009101200_d5o_connected_service_field_source.sql",
+      "version": "20261009101200",
+      "sha256": "4dd47a530d17bbd58c85e9d8707fa0cc0c7c61286ce413406ccc27e10e97de76",
+      "dependsOn": "20261009095658_d5o_connected_design_source_adapter.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 97,
+      "filename": "20261009102800_d5o_connected_worker_schedule_read.sql",
+      "version": "20261009102800",
+      "sha256": "d04fd6250a7b570ed924d06ae8720a59bfbe77d613a808961819390253fe73c5",
+      "dependsOn": "20261009101200_d5o_connected_service_field_source.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 98,
+      "filename": "20261009104500_d5o_connected_service_return.sql",
+      "version": "20261009104500",
+      "sha256": "206eb4953ef79294dc0ec00d938e57096c69a173a91512abb0d51f344829b4db",
+      "dependsOn": "20261009102800_d5o_connected_worker_schedule_read.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 99,
+      "filename": "20261009110500_d5o_connected_service_pricing.sql",
+      "version": "20261009110500",
+      "sha256": "4b96be95386e5056cd151eba2547b2e7fc870c46a0d447c54b3d251e037f82df",
+      "dependsOn": "20261009104500_d5o_connected_service_return.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 100,
+      "filename": "20261009112000_d5o_connected_partial_service_source.sql",
+      "version": "20261009112000",
+      "sha256": "c1bf25bf9a0befbe48bf108cc208f42253c0ce77cfd546e108880767a9879e7e",
+      "dependsOn": "20261009110500_d5o_connected_service_pricing.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 101,
+      "filename": "20261009123000_d5o_customer_decision_evidence.sql",
+      "version": "20261009123000",
+      "sha256": "2c8474f68f51699707697a406314e1453bc76d6097dd2e7592b082f197d068d1",
+      "dependsOn": "20261009112000_d5o_connected_partial_service_source.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 102,
+      "filename": "20261009124000_d5o_empty_package_draft_compatibility.sql",
+      "version": "20261009124000",
+      "sha256": "043aefa953a86e5ed0577da792baef9aebb34cd374711852a47321f7531086cf",
+      "dependsOn": "20261009123000_d5o_customer_decision_evidence.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 103,
+      "filename": "20261009125000_d5o_pursuit_correction_after_source_change.sql",
+      "version": "20261009125000",
+      "sha256": "42a09e700f5b1ebb88c5a5d087981a679f5969f64118210f9436da0184b5d13b",
+      "dependsOn": "20261009124000_d5o_empty_package_draft_compatibility.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 104,
+      "filename": "20261009181045_d5o_post_acceptance_scope_integrity.sql",
+      "version": "20261009181045",
+      "sha256": "9a2619f1803ff4b5abbb35f71760d9a2b7c6b4b4cfd1f43627293f75e041dca6",
+      "dependsOn": "20261009125000_d5o_pursuit_correction_after_source_change.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 105,
+      "filename": "20261009214103_d5o_connected_workforce.sql",
+      "version": "20261009214103",
+      "sha256": "aef50a9015d2400fbc20e5655ce5281861d636cb2ba9ef29ac6b667d1709a8bd",
+      "dependsOn": "20261009181045_d5o_post_acceptance_scope_integrity.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 106,
+      "filename": "20261009220510_d5o_connected_field_changes.sql",
+      "version": "20261009220510",
+      "sha256": "e214a8fd21f2ac5d6de0dd6fbb85e74c92976f2fd3df045f4db5d29140f7d9c8",
+      "dependsOn": "20261009214103_d5o_connected_workforce.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 107,
+      "filename": "20261009221159_d5o_connected_job_finance.sql",
+      "version": "20261009221159",
+      "sha256": "b4ea87b59efbe9adfe9f160f177da99959853f6325928fdfc0d0c4bd7b74737c",
+      "dependsOn": "20261009220510_d5o_connected_field_changes.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 108,
+      "filename": "20261009232739_d5o_connected_design_field_change.sql",
+      "version": "20261009232739",
+      "sha256": "f59a1a1322bd48d05ef1d45019627e66df50f564bfe1017cea56a93d5213ef53",
+      "dependsOn": "20261009221159_d5o_connected_job_finance.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 109,
+      "filename": "20261009234405_d5o_current_release_field_start.sql",
+      "version": "20261009234405",
+      "sha256": "c0d96fbb61ecc122ef309cc8f30aa66321422efd9233770a8c66e4bcc2da2858",
+      "dependsOn": "20261009232739_d5o_connected_design_field_change.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 110,
+      "filename": "20261010011108_d5o_connected_billing_integrity.sql",
+      "version": "20261010011108",
+      "sha256": "2435008275849a731568997bdde4d0d97e38d77ca938deaf020bacc3de2e2ebf",
+      "dependsOn": "20261009234405_d5o_current_release_field_start.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 111,
+      "filename": "20261010100022_d5o_post_closeout_receivable.sql",
+      "version": "20261010100022",
+      "sha256": "d2d3a56f21beec8b0b6c5b9cf8f18664ea1c34db0fea89a84fde83ba609637c2",
+      "dependsOn": "20261010011108_d5o_connected_billing_integrity.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 112,
+      "filename": "20261010130807_connected_service_financial_disposition.sql",
+      "version": "20261010130807",
+      "sha256": "5ad3528889c0e217e75b951e25b4ec756d29c45952117d597b9af0d775ab4492",
+      "dependsOn": "20261010100022_d5o_post_closeout_receivable.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 113,
+      "filename": "20261010150000_connected_service_billing_terms.sql",
+      "version": "20261010150000",
+      "sha256": "ed15dc1b59de245c551d2d7467f4e115146123e30fd2387bc4cc835bc246f9ed",
+      "dependsOn": "20261010130807_connected_service_financial_disposition.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 114,
+      "filename": "20261010170000_connected_service_action_queue.sql",
+      "version": "20261010170000",
+      "sha256": "57007045eeedc08d8c24e8d61aa1b13637ba5bc6ba2107715bc8ad844aec94e2",
+      "dependsOn": "20261010150000_connected_service_billing_terms.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 115,
+      "filename": "20261010180000_connected_service_invoice.sql",
+      "version": "20261010180000",
+      "sha256": "21efa336decf522fdaa2b894cf9ff9abba39b910971b2952938ce76973fdca07",
+      "dependsOn": "20261010170000_connected_service_action_queue.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 116,
+      "filename": "20261010190000_connected_service_actual_cost.sql",
+      "version": "20261010190000",
+      "sha256": "d69f5c84bbbe2e906d9caa9b13eb18bec7676f403f70880e83a1c981ea7ef13d",
+      "dependsOn": "20261010180000_connected_service_invoice.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 117,
+      "filename": "20261010200000_d5o_completion_reassessment.sql",
+      "version": "20261010200000",
+      "sha256": "02e2c18418c351a115d887015c4fbd32cc9f272b755bccc91dea792e2c0dc10b",
+      "dependsOn": "20261010190000_connected_service_actual_cost.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 118,
+      "filename": "20261010210000_d5o_support_document_obligations.sql",
+      "version": "20261010210000",
+      "sha256": "d0a5176054aec7f28ec96979bdbf166730dfcd227ce1f86a6ac84cc518278215",
+      "dependsOn": "20261010200000_d5o_completion_reassessment.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 119,
+      "filename": "20261011162940_optimize_connected_draft_projection.sql",
+      "version": "20261011162940",
+      "sha256": "962208c69505804b34ac0968e963bd5bba1d471d1e0b159fc72c333fdd84ce42",
+      "dependsOn": "20261010210000_d5o_support_document_obligations.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 120,
+      "filename": "20261012110000_d5o_design_draft_required_arrays.sql",
+      "version": "20261012110000",
+      "sha256": "a23de88797f4883f3989bb08154be56950f9ef33f39b0c3c092789c0f1bae5ff",
+      "dependsOn": "20261011162940_optimize_connected_draft_projection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 121,
+      "filename": "20261012120000_d5o_draft_booking_before_release.sql",
+      "version": "20261012120000",
+      "sha256": "d83e7a1319a549250861ecdfd48bf2743b5c70a0d1ed9063f83d0d2292235419",
+      "dependsOn": "20261012110000_d5o_design_draft_required_arrays.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 122,
+      "filename": "20261012123000_d5o_design_handoff_clarification.sql",
+      "version": "20261012123000",
+      "sha256": "8b7707ee751fdc05958759938ad0dd2b8c5670a14cde0c32e6b427e7f1594b5b",
+      "dependsOn": "20261012120000_d5o_draft_booking_before_release.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 123,
+      "filename": "20261013111633_design_document_custody.sql",
+      "version": "20261013111633",
+      "sha256": "f3f7cf00fa0d48c9160ecb12c6ebdcec97987a2655811077fbddd314e7836661",
+      "dependsOn": "20261012123000_d5o_design_handoff_clarification.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 124,
+      "filename": "20261013140000_d5o_field_start_shift_window.sql",
+      "version": "20261013140000",
+      "sha256": "b4d0db930ec41eee4b5e37e990e43522d417fb0895909d259590e4a8ca817e04",
+      "dependsOn": "20261013111633_design_document_custody.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 125,
+      "filename": "20261013152258_d5o_connected_field_fact_evidence_links.sql",
+      "version": "20261013152258",
+      "sha256": "5c16a0a457e6fa0d37e9fdb6f9ad4be455d7b52a775c3d56f110081d5f19a0e6",
+      "dependsOn": "20261013140000_d5o_field_start_shift_window.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 126,
+      "filename": "20261014164339_carry_unchanged_crew_responses.sql",
+      "version": "20261014164339",
+      "sha256": "816fd3ec9f68f3286dce67fb5205926087b841f9f3748a859515104825ccfaa0",
+      "dependsOn": "20261013152258_d5o_connected_field_fact_evidence_links.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 127,
+      "filename": "20261014223405_guard_cross_work_asset_identity.sql",
+      "version": "20261014223405",
+      "sha256": "ed58f241722ec4eb1eae86204d0fed1e0901c0e786f7a39133c8e99a1869eb54",
+      "dependsOn": "20261014164339_carry_unchanged_crew_responses.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 128,
+      "filename": "20261014230758_link_accepted_delivery_to_existing_asset.sql",
+      "version": "20261014230758",
+      "sha256": "004d4bc5ee16d305d4c96d0f5e54904051f04a306f9052ebf55ea6220c888b4f",
+      "dependsOn": "20261014223405_guard_cross_work_asset_identity.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 129,
+      "filename": "20261014235613_reject_ambiguous_asset_contribution.sql",
+      "version": "20261014235613",
+      "sha256": "f8729108491680188552b895ac44f4cce802f4a999a4e0bf012a50ae9e751043",
+      "dependsOn": "20261014230758_link_accepted_delivery_to_existing_asset.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 130,
+      "filename": "20261014235900_d5o_private_evidence_index.sql",
+      "version": "20261014235900",
+      "sha256": "f5b3d8e73ea960c9f4804fcbdab09b8e2ee791f1f3e7f34762c6906fa02cf62e",
+      "dependsOn": "20261014235613_reject_ambiguous_asset_contribution.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 131,
+      "filename": "20261015111608_restrict_supervisor_private_evidence.sql",
+      "version": "20261015111608",
+      "sha256": "b71a3c959b853e4f9c3d083c0f66693042d03d43fc8bf27b32022eb160c3c0c3",
+      "dependsOn": "20261014235900_d5o_private_evidence_index.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 132,
+      "filename": "20261015123201_scope_support_documents_to_reviewing_supervisor.sql",
+      "version": "20261015123201",
+      "sha256": "d2d720e8a2884ff0b972dd7a9847212bd777cdd2e8fa4805fa915d0f23d1d6fd",
+      "dependsOn": "20261015111608_restrict_supervisor_private_evidence.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 133,
+      "filename": "20261015132434_assign_support_document_supplier.sql",
+      "version": "20261015132434",
+      "sha256": "a391eba82bdf3569cc003d088a913b69ceb942c07f6382d16f23ac1cb7500b23",
+      "dependsOn": "20261015123201_scope_support_documents_to_reviewing_supervisor.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 134,
+      "filename": "20261015153000_scope_supervisor_draft_save_return.sql",
+      "version": "20261015153000",
+      "sha256": "9f2916a7fc88a0966bb428c6a65120288c7510ea7232bfd6646a8a75a82cb6ff",
+      "dependsOn": "20261015132434_assign_support_document_supplier.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 135,
+      "filename": "20261016103345_configured_handoff_roles.sql",
+      "version": "20261016103345",
+      "sha256": "4bd7cf5e36702909b5a44d26170d2de4dcb8f45623598b6b1102c1a59843b3e9",
+      "dependsOn": "20261015153000_scope_supervisor_draft_save_return.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 136,
+      "filename": "20261016104310_configure_handoff_route_admin.sql",
+      "version": "20261016104310",
+      "sha256": "fae829b705ee2f340f2dc960410be08765f274f32cd63767d88c201c9722947e",
+      "dependsOn": "20261016103345_configured_handoff_roles.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 137,
+      "filename": "20261016110000_prioritize_admin_handoff_routes.sql",
+      "version": "20261016110000",
+      "sha256": "fd7cb4542212e1c76d09bb3a3b0f9e84b0c6e72f09bee4b172d9ce2b4ba3be49",
+      "dependsOn": "20261016104310_configure_handoff_route_admin.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 138,
+      "filename": "20261016130000_versioned_hosted_handoff_routes.sql",
+      "version": "20261016130000",
+      "sha256": "04d480736bbf68b1a2e58f85fb4a7ef131c6779775af065975db8d567c553c5f",
+      "dependsOn": "20261016110000_prioritize_admin_handoff_routes.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 139,
+      "filename": "20261016170859_d5o_connected_rom_review.sql",
+      "version": "20261016170859",
+      "sha256": "6a5d79e19fa61392262ded9ec396d5362c84dbd9a04f6251310fb1e3f22f4429",
+      "dependsOn": "20261016130000_versioned_hosted_handoff_routes.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 140,
+      "filename": "20261016190000_d5o_workforce_availability_and_eligibility.sql",
+      "version": "20261016190000",
+      "sha256": "b1cf436568b3197f810bd3bd18a6562a442767548de6ff5cbc31c05de6e1635f",
+      "dependsOn": "20261016170859_d5o_connected_rom_review.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 141,
+      "filename": "20261016200000_d5o_graybar_procurement.sql",
+      "version": "20261016200000",
+      "sha256": "c5f49cac897acac5f9a0597b761f2e53ed7ab918728a4f2e575d7503322297a2",
+      "dependsOn": "20261016190000_d5o_workforce_availability_and_eligibility.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 142,
+      "filename": "20261016210000_d5o_graybar_quote_cost_and_invoice_guards.sql",
+      "version": "20261016210000",
+      "sha256": "752748e816b06a5aa345260f8952ae1f3be551c91436d74db1934e45b097fea2",
+      "dependsOn": "20261016200000_d5o_graybar_procurement.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 143,
+      "filename": "20261016220000_d5o_graybar_job_cost_bridge.sql",
+      "version": "20261016220000",
+      "sha256": "54eec595bcbd2698b1833cb8a6d2ab440ac6ed2699ff890086ed1f9e5228f39b",
+      "dependsOn": "20261016210000_d5o_graybar_quote_cost_and_invoice_guards.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 144,
+      "filename": "20261016230000_d5o_graybar_finance_queue.sql",
+      "version": "20261016230000",
+      "sha256": "b0bc8fff3f55f666586156dff7ee31aa4bed45030be7afc758223b3ce4984ac4",
+      "dependsOn": "20261016220000_d5o_graybar_job_cost_bridge.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 145,
+      "filename": "20261016240000_d5o_graybar_rom_pack_guard.sql",
+      "version": "20261016240000",
+      "sha256": "0043ded5ad388a57cf00089508c9acd66c8b7518b17a51b6fc60bcac654342b7",
+      "dependsOn": "20261016230000_d5o_graybar_finance_queue.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 146,
+      "filename": "20261016250000_d5o_graybar_post_award_rom_reconciliation.sql",
+      "version": "20261016250000",
+      "sha256": "81ba09141ff7e3d6870990f855ccfb098157b3e382f0743d2388f4639870279f",
+      "dependsOn": "20261016240000_d5o_graybar_rom_pack_guard.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 147,
+      "filename": "20261016260000_d5o_design_schedule_correction_hold.sql",
+      "version": "20261016260000",
+      "sha256": "43117ada32cbea19771ce22b514cba5756b37b605bd2864bca32eb19ed736344",
+      "dependsOn": "20261016250000_d5o_graybar_post_award_rom_reconciliation.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 148,
+      "filename": "20261016270000_d5o_schedule_hold_scope_guard.sql",
+      "version": "20261016270000",
+      "sha256": "2c8018c0816340b91851d2dd5bb4c68969238bbafaa53b5c7dd6552535d893d5",
+      "dependsOn": "20261016260000_d5o_design_schedule_correction_hold.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 149,
+      "filename": "20261016280000_d5o_schedule_hold_scope_guard_complete.sql",
+      "version": "20261016280000",
+      "sha256": "e71dcf4d399b0f362ab04057a11cbc76624d4fd21461d4362083adf96d8e984f",
+      "dependsOn": "20261016270000_d5o_schedule_hold_scope_guard.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 150,
+      "filename": "20261017000000_hall_c_work_display_correction.sql",
+      "version": "20261017000000",
+      "sha256": "976d6367827490a71c550b2e35d899448cb598f3edf2d6211793c5b568159edf",
+      "dependsOn": "20261016280000_d5o_schedule_hold_scope_guard_complete.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 151,
+      "filename": "20261017010000_service_only_work_title_correction.sql",
+      "version": "20261017010000",
+      "sha256": "31592c6281877b88f76690f9fc61bd466cce01b51fcf08dc61cfbb7339229a67",
+      "dependsOn": "20261017000000_hall_c_work_display_correction.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 152,
+      "filename": "20261017020000_d5o_connected_design_spend_authority.sql",
+      "version": "20261017020000",
+      "sha256": "710df92f808c634da1dcb3dd6e789d4a74ddc01d72244e9ce4f01883ff300eb2",
+      "dependsOn": "20261017010000_service_only_work_title_correction.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 153,
+      "filename": "20261017030000_d5o_design_spend_queue_correction.sql",
+      "version": "20261017030000",
+      "sha256": "9b98da3019f166a0621467088283507f6201879631c5c360fcc97e52795bc0a3",
+      "dependsOn": "20261017020000_d5o_connected_design_spend_authority.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 154,
+      "filename": "20261017040000_d5o_design_spend_window_balance.sql",
+      "version": "20261017040000",
+      "sha256": "981d9f5d330e68b234290d3a9e6803f3fb0b14de3289bf607c64980b752fcbed",
+      "dependsOn": "20261017030000_d5o_design_spend_queue_correction.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 155,
+      "filename": "20261017050000_d5o_design_spend_expired_window.sql",
+      "version": "20261017050000",
+      "sha256": "cba338cd42dc1d636ac408b00b8462333c125cabfdff0da8bfe7636c42566466",
+      "dependsOn": "20261017040000_d5o_design_spend_window_balance.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 156,
+      "filename": "20261017060000_d5o_purchase_economic_authority.sql",
+      "version": "20261017060000",
+      "sha256": "f74059e00e1cf762a776b610a1076ded67b1bf0bcb992d8ac1d0ff81c2f0726a",
+      "dependsOn": "20261017050000_d5o_design_spend_expired_window.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 157,
+      "filename": "20261017070000_d5o_subcontract_commercial_authority.sql",
+      "version": "20261017070000",
+      "sha256": "b4d950cfb25f8b772b90e2e2df8fb1ff8c843f594c6bd8aef6eddf6d3556fd2a",
+      "dependsOn": "20261017060000_d5o_purchase_economic_authority.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 158,
+      "filename": "20261017080000_d5o_subcontract_invoice_revision_guard.sql",
+      "version": "20261017080000",
+      "sha256": "0089bfb7f2abac0b8f3547d82f62f559378eab7a764c61f0c1263b282bf8908d",
+      "dependsOn": "20261017070000_d5o_subcontract_commercial_authority.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 159,
+      "filename": "20261017090000_d5o_field_labor_economic_authority.sql",
+      "version": "20261017090000",
+      "sha256": "a1cb2fbeeaeb84dc8d60cb8a6e21044a60318499d29e8fa7e1eb34dbaffea2bf",
+      "dependsOn": "20261017080000_d5o_subcontract_invoice_revision_guard.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 160,
+      "filename": "20261017091000_d5o_labor_legacy_publication_and_cost_guard.sql",
+      "version": "20261017091000",
+      "sha256": "da10dfe0e27b2953525fb69a4f6da80995124277edb2495fddfd6cbbe78a7b3e",
+      "dependsOn": "20261017090000_d5o_field_labor_economic_authority.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 161,
+      "filename": "20261017092000_d5o_labor_review_correction_delta.sql",
+      "version": "20261017092000",
+      "sha256": "223d69aeb0a2eea123cb91368c905778eadc0da2fd71340474d0be69bd47571a",
+      "dependsOn": "20261017091000_d5o_labor_legacy_publication_and_cost_guard.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 162,
+      "filename": "20261017093000_d5o_shared_cap_trigger_row_shape.sql",
+      "version": "20261017093000",
+      "sha256": "0228288ececd4caa7f587f333f13864d9c1f8fc1b1cd7dcce98d535e651bbceb",
+      "dependsOn": "20261017092000_d5o_labor_review_correction_delta.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 163,
+      "filename": "20261017094000_d5o_labor_current_actual_projection.sql",
+      "version": "20261017094000",
+      "sha256": "79d5cdb133718e1e24392044bb862306b327dfa27a10b025d16b22e51bae7d22",
+      "dependsOn": "20261017093000_d5o_shared_cap_trigger_row_shape.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 164,
+      "filename": "20261017095000_d5o_schedule_labor_hours_projection.sql",
+      "version": "20261017095000",
+      "sha256": "c7d3f7682f141c198ba41e8cd26d020b00eb3766ea68e8298c38f7eaa17f145f",
+      "dependsOn": "20261017094000_d5o_labor_current_actual_projection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 165,
+      "filename": "20261017096000_d5o_booking_effort_in_typed_writer.sql",
+      "version": "20261017096000",
+      "sha256": "78b02f45a459f6f36753bfa0518e74350f85d53140474400fd20e93aed67ed99",
+      "dependsOn": "20261017095000_d5o_schedule_labor_hours_projection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 166,
+      "filename": "20261017097000_d5o_labor_finance_control_visibility.sql",
+      "version": "20261017097000",
+      "sha256": "84c71f4348ec57076a16b615c023105ea46cd8b307b5517fd76301261e09a237",
+      "dependsOn": "20261017096000_d5o_booking_effort_in_typed_writer.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 167,
+      "filename": "20261017098000_d5o_labor_report_reservation_source.sql",
+      "version": "20261017098000",
+      "sha256": "ca629197a17265a8e66c0390c2ddaa4be6f534329ef6744efd63e64814571f07",
+      "dependsOn": "20261017097000_d5o_labor_finance_control_visibility.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 168,
+      "filename": "20261017100000_d5o_design_no_material_disposition.sql",
+      "version": "20261017100000",
+      "sha256": "7c6dd3ca3f4f126c182691c4e131fff2897c3de1254839ecae0992e8236c6206",
+      "dependsOn": "20261017098000_d5o_labor_report_reservation_source.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 169,
+      "filename": "20261017101000_d5o_release_no_material_design.sql",
+      "version": "20261017101000",
+      "sha256": "c5147001686ae13572390547d8f9f73f53ba37ed92201a30a87bea0984c550d9",
+      "dependsOn": "20261017100000_d5o_design_no_material_disposition.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 170,
+      "filename": "20261017102000_d5o_labor_only_work_authority.sql",
+      "version": "20261017102000",
+      "sha256": "72a388b4111c3d04c12da93583458f871a785775d21b5aba64f5f261ce1bcfe4",
+      "dependsOn": "20261017101000_d5o_release_no_material_design.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 171,
+      "filename": "20261017171132_d5o_design_cost_outlook_assessment.sql",
+      "version": "20261017171132",
+      "sha256": "618e96ad87a89b587bec6a5e2455466c9af0e2ac699b6cc7b359bbad330500e8",
+      "dependsOn": "20261017102000_d5o_labor_only_work_authority.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 172,
+      "filename": "20261017172358_d5o_preaward_work_cost_forecast.sql",
+      "version": "20261017172358",
+      "sha256": "57bf7fe1d0f310b92a473efa697b4a70530048c0fec33eaff1feb7a5df3bba0f",
+      "dependsOn": "20261017171132_d5o_design_cost_outlook_assessment.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 173,
+      "filename": "20261017172557_d5o_design_cost_variable_guard.sql",
+      "version": "20261017172557",
+      "sha256": "239ab9bec94d801d9e076599b1404b94adf0c393cac201a6acbd214db81bc244",
+      "dependsOn": "20261017172358_d5o_preaward_work_cost_forecast.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 174,
+      "filename": "20261017173237_d5o_finance_forecast_queue.sql",
+      "version": "20261017173237",
+      "sha256": "67528b0faf0e3413b175fd83653f5e96b0c66e00b0e97bd9078be8612b296422",
+      "dependsOn": "20261017172557_d5o_design_cost_variable_guard.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 175,
+      "filename": "20261017173653_d5o_outlook_complete_source_guards.sql",
+      "version": "20261017173653",
+      "sha256": "7943ac877706ab535bda2d063d3d1a63b8be90c7014d9de4ce1bc83d8c77c76f",
+      "dependsOn": "20261017173237_d5o_finance_forecast_queue.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 176,
+      "filename": "20261017180000_d5o_draft_save_projection_cache.sql",
+      "version": "20261017180000",
+      "sha256": "3dab8b5c9b1465120fad550f07b6a9d9bf29176fc3860698347d3b0c180f4afd",
+      "dependsOn": "20261017173653_d5o_outlook_complete_source_guards.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 177,
+      "filename": "20261017190000_d5o_cache_design_package_draft_guards.sql",
+      "version": "20261017190000",
+      "sha256": "9ea14cebaef30fcf4580446aaa79127cfc977dfefad826d186e750dbd690d387",
+      "dependsOn": "20261017180000_d5o_draft_save_projection_cache.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 178,
+      "filename": "20261018005615_d5o_design_cost_source_custody.sql",
+      "version": "20261018005615",
+      "sha256": "ce289bdaf82c23bb58d7bd5d3c7e7701c141275a2828ebf221256fec92186853",
+      "dependsOn": "20261017190000_d5o_cache_design_package_draft_guards.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 179,
+      "filename": "20261018011407_d5o_design_cost_evidence_owner_read.sql",
+      "version": "20261018011407",
+      "sha256": "512b243bfa3f7fbde49dfe3be1ae2f25469b66e22a2b3eaa5f781d021276a116",
+      "dependsOn": "20261018005615_d5o_design_cost_source_custody.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 180,
+      "filename": "20261018020000_d5o_spending_delegate_selection.sql",
+      "version": "20261018020000",
+      "sha256": "32e03fa4ea89a49136c07718c98458a485b9d24c19fca119b3fe608e6e8279ee",
+      "dependsOn": "20261018011407_d5o_design_cost_evidence_owner_read.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 181,
+      "filename": "20261018021000_d5o_spending_delegate_review_read_fix.sql",
+      "version": "20261018021000",
+      "sha256": "af33a04d8d1b9cce6c917e2d948ca60ad974a52447097fa0a5f73ba40d5bb769",
+      "dependsOn": "20261018020000_d5o_spending_delegate_selection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 182,
+      "filename": "20261018022000_d5o_design_only_work_authority_queue.sql",
+      "version": "20261018022000",
+      "sha256": "fe33fe09392509eae9614922191df8f363d6c3a8817a92158b8c92b40bdf9b9c",
+      "dependsOn": "20261018021000_d5o_spending_delegate_review_read_fix.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 183,
+      "filename": "20261018023000_d5o_field_labor_queue_scope.sql",
+      "version": "20261018023000",
+      "sha256": "f9b44b336b4d52300e61685e6adce6721b8ec80de2b1defbbe86bccd88778bdf",
+      "dependsOn": "20261018022000_d5o_design_only_work_authority_queue.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 184,
+      "filename": "20261018170056_d5o_internal_design_rate_valuation.sql",
+      "version": "20261018170056",
+      "sha256": "d3860e0975c17de283225972c62a78e4a76d33dfe6ff346bd8ffd787079717cb",
+      "dependsOn": "20261018023000_d5o_field_labor_queue_scope.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 185,
+      "filename": "20261018180000_d5o_purchase_order_delegation.sql",
+      "version": "20261018180000",
+      "sha256": "9aee5d9e670196938e1a4acb4f894cdbc526d09ac678b77918a45f1686d80118",
+      "dependsOn": "20261018170056_d5o_internal_design_rate_valuation.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 186,
+      "filename": "20261018190000_d5o_subcontract_delegate_selection.sql",
+      "version": "20261018190000",
+      "sha256": "184bab507a2e3c36e9db24127183c3042cd4bdd17dab7a1f4461c52b17b59163",
+      "dependsOn": "20261018180000_d5o_purchase_order_delegation.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 187,
+      "filename": "20261018193000_d5o_field_labor_delegate_selection.sql",
+      "version": "20261018193000",
+      "sha256": "ed4e7c40713bc7a545c9198933c1ab8027a6d9e768a4b9500ffb6dc69367192a",
+      "dependsOn": "20261018190000_d5o_subcontract_delegate_selection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 188,
+      "filename": "20261018200000_d5o_internal_rate_delegate_selection.sql",
+      "version": "20261018200000",
+      "sha256": "f5a82d183be900d4f7c682b208c886d563939982096a4a5f143af8b3c72b85fb",
+      "dependsOn": "20261018193000_d5o_field_labor_delegate_selection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 189,
+      "filename": "20261018210000_d5o_design_cost_review_delegate_selection.sql",
+      "version": "20261018210000",
+      "sha256": "74eec1a1145e4e9c15908acebade529ea507adb06a193642990f9701e23ae823",
+      "dependsOn": "20261018200000_d5o_internal_rate_delegate_selection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 190,
+      "filename": "20261018220000_d5o_outlook_review_delegate_selection.sql",
+      "version": "20261018220000",
+      "sha256": "51b965a52e7c4b2758c5573c688612e477f8a02a3578f4084c180e16711484e8",
+      "dependsOn": "20261018210000_d5o_design_cost_review_delegate_selection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 191,
+      "filename": "20261018230000_d5o_service_invoice_documented_net_terms.sql",
+      "version": "20261018230000",
+      "sha256": "b59f41b44c20eda74705c2cfe75dc4b334f35b5f2b08f80eb5cb7ed4ed23cbb3",
+      "dependsOn": "20261018220000_d5o_outlook_review_delegate_selection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 192,
+      "filename": "20261019000000_d5o_field_start_lead_policy.sql",
+      "version": "20261019000000",
+      "sha256": "9615e688d6f9afd3fd6ad93ce655f655c1128a4975741697c13d90bad653926b",
+      "dependsOn": "20261018230000_d5o_service_invoice_documented_net_terms.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 193,
+      "filename": "20261019010000_d5o_configured_delivery_receiver.sql",
+      "version": "20261019010000",
+      "sha256": "b8e0a82cef7bab5f642e3fd4b713277e720caa1d001a41fb2462e58aad43e5ac",
+      "dependsOn": "20261019000000_d5o_field_start_lead_policy.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 194,
+      "filename": "20261019020000_hosted_initial_configuration_publication.sql",
+      "version": "20261019020000",
+      "sha256": "2523f4fc9b31496beba43e14804fc560a9f11e823650d86427d52ad7c44a21b4",
+      "dependsOn": "20261019010000_d5o_configured_delivery_receiver.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 195,
+      "filename": "20261019030000_hosted_initial_configuration_sha256_correction.sql",
+      "version": "20261019030000",
+      "sha256": "3f3e91c207d020c492c282b4ac9873456b7d4724bdab3653e28ee22fecb5625c",
+      "dependsOn": "20261019020000_hosted_initial_configuration_publication.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 196,
+      "filename": "20261019040000_hosted_initial_configuration_empty_queue.sql",
+      "version": "20261019040000",
+      "sha256": "17f1b2c6db236ad611ec3b82bd72499ea986945149c18058666ad82f9f6dfa78",
+      "dependsOn": "20261019030000_hosted_initial_configuration_sha256_correction.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 197,
+      "filename": "20261019050000_hosted_initial_configuration_empty_read.sql",
+      "version": "20261019050000",
+      "sha256": "6b594dcbee11daf12a6c50f5e6d346f8bd8c511a89443959ca42e845bb45b515",
+      "dependsOn": "20261019040000_hosted_initial_configuration_empty_queue.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 198,
+      "filename": "20261019131510_d5o_suspend_synthetic_membership.sql",
+      "version": "20261019131510",
+      "sha256": "44ac18796582888fe3f26dc29407375c7f86971369465b1031f8dfad837411ac",
+      "dependsOn": "20261019050000_hosted_initial_configuration_empty_read.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 199,
+      "filename": "20261019162237_d5o_preserve_legacy_schedule_on_typed_transition.sql",
+      "version": "20261019162237",
+      "sha256": "696ab889341fc6219ad5ad22b91fd0c44539cbedece83a488a812d4663244d82",
+      "dependsOn": "20261019131510_d5o_suspend_synthetic_membership.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 200,
+      "filename": "20261019170000_d5o_field_labor_source_text_precedence.sql",
+      "version": "20261019170000",
+      "sha256": "6eb620e8fe53183209a22f5f3c457fc242fbdca07385afe42bb094411a043841",
+      "dependsOn": "20261019162237_d5o_preserve_legacy_schedule_on_typed_transition.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 201,
+      "filename": "20261019183127_d5o_admin_backend.sql",
+      "version": "20261019183127",
+      "sha256": "df771e7c167ce9dcf53d0823f0994410d5acfb834f6175d56a93ae0f17190179",
+      "dependsOn": "20261019170000_d5o_field_labor_source_text_precedence.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 202,
+      "filename": "20261019213000_d5o_hosted_configuration_management.sql",
+      "version": "20261019213000",
+      "sha256": "c84a3bea6ea3e73d24d9f001159977ec18ca2fe0d62045cafe924aee1a5bc12a",
+      "dependsOn": "20261019183127_d5o_admin_backend.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 203,
+      "filename": "20261020085414_d5o_design_same_day_schedule_hold.sql",
+      "version": "20261020085414",
+      "sha256": "b63fa59ec06b70895f0d3dd268c6eff07d455186b1e3df2727bca3c0ac9be89c",
+      "dependsOn": "20261019213000_d5o_hosted_configuration_management.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 204,
+      "filename": "20261020115849_d5o_admin_invitation_setup.sql",
+      "version": "20261020115849",
+      "sha256": "c9f960023f3890849f94e19af9b3488acab705c357b8dfa98726288a898c939b",
+      "dependsOn": "20261020085414_d5o_design_same_day_schedule_hold.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 205,
+      "filename": "20261020135000_d5o_admin_invitation_role_retry_guard.sql",
+      "version": "20261020135000",
+      "sha256": "2a9b5483ebf4203dbbfed578a80b91e28bd50cb84821de0b1f4679afdbe35163",
+      "dependsOn": "20261020115849_d5o_admin_invitation_setup.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 206,
+      "filename": "20261020180000_d5o_workforce_field_readiness.sql",
+      "version": "20261020180000",
+      "sha256": "3c25af08cacf5ae9c403cdac41897a6a53671898af8c241a0a52363ef3f64aae",
+      "dependsOn": "20261020135000_d5o_admin_invitation_role_retry_guard.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 207,
+      "filename": "20261020193000_d5o_binding_current_publication.sql",
+      "version": "20261020193000",
+      "sha256": "8c9fcdacdf425a99d531cfd3799322de285ad50e405b1ee5a3cb217e6bc32847",
+      "dependsOn": "20261020180000_d5o_workforce_field_readiness.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 208,
+      "filename": "20261020200000_d5o_worker_binding_publication_attribution.sql",
+      "version": "20261020200000",
+      "sha256": "646ce221777a8945123ead66695b6ee3b13323efbe7b7ad72c8bab7cb7e24294",
+      "dependsOn": "20261020193000_d5o_binding_current_publication.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 209,
+      "filename": "20261020223652_d5o_cross_week_empty_publication.sql",
+      "version": "20261020223652",
+      "sha256": "e95788dcd9a1595017517226c6ae95c2c8266fd62012ccaec187a7b5f2fda79c",
+      "dependsOn": "20261020200000_d5o_worker_binding_publication_attribution.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 210,
+      "filename": "20261020231536_d5o_worker_empty_publication_projection.sql",
+      "version": "20261020231536",
+      "sha256": "1cdd15a5eb9b860db0d84c3827988d4c2abf39d08f297ab855dc7de0e414cd2b",
+      "dependsOn": "20261020223652_d5o_cross_week_empty_publication.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 211,
+      "filename": "20261021114905_d5o_field_worker_invitation_proposal.sql",
+      "version": "20261021114905",
+      "sha256": "ad51fd407be42e9505f6588dfce3516b7219723630bf79f5c2e1db092ac11959",
+      "dependsOn": "20261020231536_d5o_worker_empty_publication_projection.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 212,
+      "filename": "20261023111641_d5o_service_approval_policy_phase1.sql",
+      "version": "20261023111641",
+      "sha256": "e66b8fbfdba38c88276c829f351b3f89cd8d40f4f79ad50f7e8efc0556bb84df",
+      "dependsOn": "20261021114905_d5o_field_worker_invitation_proposal.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 213,
+      "filename": "20261023115306_d5o_phase1b_connected_service_approval.sql",
+      "version": "20261023115306",
+      "sha256": "9169ad7bdaece5767f242c268c29d9828f29c00c0d78ccb71c4acdd8ac27412c",
+      "dependsOn": "20261023111641_d5o_service_approval_policy_phase1.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 214,
+      "filename": "20261023123751_d5o_phase2a_organization_people.sql",
+      "version": "20261023123751",
+      "sha256": "35b806bdf59146b088feee8af0375dfbe8ecae8a4befdf039bc769d23aa466de",
+      "dependsOn": "20261023115306_d5o_phase1b_connected_service_approval.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 215,
+      "filename": "20261023140000_d5o_phase2b_tenant_onboarding.sql",
+      "version": "20261023140000",
+      "sha256": "d037c3e95a4ce0dda6325a8264117a838eab91d2a942735fa96350dc5ceb0adc",
+      "dependsOn": "20261023123751_d5o_phase2a_organization_people.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 216,
+      "filename": "20261023141000_d5o_phase2b_onboarding_commands.sql",
+      "version": "20261023141000",
+      "sha256": "f9de353e8005dbec8715e8a48eff3486f1e3312b809af9d2eb8c8d5f68135540",
+      "dependsOn": "20261023140000_d5o_phase2b_tenant_onboarding.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 217,
+      "filename": "20261023142000_d5o_phase2b_vendor_controls.sql",
+      "version": "20261023142000",
+      "sha256": "6f97052b2f97687766a8f6ddf1b3747e307a69ed237e8a257ec9aee97cdedd4b",
+      "dependsOn": "20261023141000_d5o_phase2b_onboarding_commands.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 218,
+      "filename": "20261023143000_d5o_phase2b_template_governance.sql",
+      "version": "20261023143000",
+      "sha256": "0587d11930b29a18c5551033505412c734452bbcce11e7bdb7ed1f0d11885756",
+      "dependsOn": "20261023142000_d5o_phase2b_vendor_controls.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 219,
+      "filename": "20261023150000_d5o_phase2c_lifecycle_features.sql",
+      "version": "20261023150000",
+      "sha256": "c52410967753b1a5dd33128d26bdfb54f44f04e3e3cd0212ae2e27fcbcb1f981",
+      "dependsOn": "20261023143000_d5o_phase2b_template_governance.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 220,
+      "filename": "20261023151000_d5o_phase2c_discover_policy.sql",
+      "version": "20261023151000",
+      "sha256": "18fb136d785dcd6119230559858dc12af86a8daaf40c996d84100bfc41a5c991",
+      "dependsOn": "20261023150000_d5o_phase2c_lifecycle_features.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 221,
+      "filename": "20261023152000_d5o_phase2c_connected_work_gate.sql",
+      "version": "20261023152000",
+      "sha256": "19e88b407c5cc95c28e9cd6076b2fac09c38720c1ca9d39184fe5a2a456cf289",
+      "dependsOn": "20261023151000_d5o_phase2c_discover_policy.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 222,
+      "filename": "20261023153646_d5o_phase2d_phase_policies.sql",
+      "version": "20261023153646",
+      "sha256": "446acc031a27047b7bd7f9b25d00009f5b60418c6028b6f67bb89d408ae2629c",
+      "dependsOn": "20261023152000_d5o_phase2c_connected_work_gate.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 223,
+      "filename": "20261023153752_d5o_phase2d_define_develop_guards.sql",
+      "version": "20261023153752",
+      "sha256": "cc80923fb755bfa224ed700ae834ea836c7134da64d5991aa3611bf0bb72bbe0",
+      "dependsOn": "20261023153646_d5o_phase2d_phase_policies.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 224,
+      "filename": "20261023180000_d5o_phase2f_operate_review_guard.sql",
+      "version": "20261023180000",
+      "sha256": "e06828ccad9b8cc52cefb49de2226c5dc36b1495e702e69b1a0672cf7048f060",
+      "dependsOn": "20261023153752_d5o_phase2d_define_develop_guards.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 225,
+      "filename": "20261023201553_phase2g_phase_status.sql",
+      "version": "20261023201553",
+      "sha256": "166cb56667af6dbffc380ae0503bf6faa55e08797b2a1b264779e5ebd543d30e",
+      "dependsOn": "20261023180000_d5o_phase2f_operate_review_guard.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 226,
+      "filename": "20261024010000_d5o_service_sla_calendar_validation.sql",
+      "version": "20261024010000",
+      "sha256": "3f444078725133e9b6408e62241a2f12e7a25a4fec41fb2800fe69211b898658",
+      "dependsOn": "20261023201553_phase2g_phase_status.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 227,
+      "filename": "20261024011000_d5o_service_job_stable_work_type_key.sql",
+      "version": "20261024011000",
+      "sha256": "e130af53589d9d96d3f34f9a574c7674c599320c7d1ea9505cd2a942ee3d8674",
+      "dependsOn": "20261024010000_d5o_service_sla_calendar_validation.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 228,
+      "filename": "20261024012000_d5o_service_child_identity_guard.sql",
+      "version": "20261024012000",
+      "sha256": "1b2255b7e22f09c81ee9f4624f8d2ee76b6fd19bb8136947f097adbd5e85a1ab",
+      "dependsOn": "20261024011000_d5o_service_job_stable_work_type_key.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 229,
+      "filename": "20261024105438_phase2hs_connected_design_capability_gate.sql",
+      "version": "20261024105438",
+      "sha256": "320a88ffbc24bf7af6a80023f26f35aeadd42d8e7e08cb86c149b37edb9fafec",
+      "dependsOn": "20261024012000_d5o_service_child_identity_guard.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 230,
+      "filename": "20261024112500_phase2hs_overnight_crew_eligibility.sql",
+      "version": "20261024112500",
+      "sha256": "eee419503ada7f35194407aa22dbb2a251bfa0d092d7b24c0ceb9fd0c76ac2fb",
+      "dependsOn": "20261024105438_phase2hs_connected_design_capability_gate.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 231,
+      "filename": "20261024113000_phase2hs_connected_develop_capability_gate.sql",
+      "version": "20261024113000",
+      "sha256": "7b5e9cf4c4002433ac46455b9b08fe19a9335b62df187bb47ffc4e7bf4ef45fb",
+      "dependsOn": "20261024112500_phase2hs_overnight_crew_eligibility.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 232,
+      "filename": "20261024150000_phase2ht_workforce_qualification_expiry.sql",
+      "version": "20261024150000",
+      "sha256": "ae8ebb0cd83c5c6ecc804445fcecb3cec8a8ef72d1b52a8a31f57bfddf4e6c81",
+      "dependsOn": "20261024113000_phase2hs_connected_develop_capability_gate.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 233,
+      "filename": "20261024151000_phase2ht_current_worker_assignment.sql",
+      "version": "20261024151000",
+      "sha256": "8c73747eb163b207095f416b1c67724a0728a2b10479d81d04af95b4d5be68f9",
+      "dependsOn": "20261024150000_phase2ht_workforce_qualification_expiry.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 234,
+      "filename": "20261025010000_d5o_phase2htd_connected_service_capability_boundary.sql",
+      "version": "20261025010000",
+      "sha256": "22727a482e87067c25352e450e652e87725166cbc3091ae036292570f15721fc",
+      "dependsOn": "20261024151000_phase2ht_current_worker_assignment.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 235,
+      "filename": "20261027085730_d5o_operate_acceptance_one_time_guard.sql",
+      "version": "20261027085730",
+      "sha256": "d0ec41ca79f9adbc5a95d3ce814fbf1ce7a8c615ec1ec3d021e686f8edf35bd1",
+      "dependsOn": "20261025010000_d5o_phase2htd_connected_service_capability_boundary.sql",
+      "source": "RC4-B existing manifest"
+    },
+    {
+      "order": 236,
+      "filename": "20261027190000_d5o_field_fact_latest_permit_order.sql",
+      "version": "20261027190000",
+      "sha256": "09a9d75469c591f059863afe48597fe93cba767cfde3e3b86950067ec8aa9b00",
+      "dependsOn": "20261027085730_d5o_operate_acceptance_one_time_guard.sql",
+      "source": "RC4-B.1 forward correction"
+    }
+  ]
+}
