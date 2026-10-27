@@ -1,0 +1,14 @@
+{
+  "baseline": "025b1036f6bdae91d72e409fe897e551ca9a6e23",
+  "startedAt": "2026-10-27T09:04:30.072Z",
+  "tests": [],
+  "setupError": "ted_work_gate.sql...\nApplying migration 20261023153646_d5o_phase2d_phase_policies.sql...\nApplying migration 20261023153752_d5o_phase2d_define_develop_guards.sql...\nApplying migration 20261023180000_d5o_phase2f_operate_review_guard.sql...\nApplying migration 20261023201553_phase2g_phase_status.sql...\nApplying migration 20261024010000_d5o_service_sla_calendar_validation.sql...\nApplying migration 20261024011000_d5o_service_job_stable_work_type_key.sql...\nApplying migration 20261024012000_d5o_service_child_identity_guard.sql...\nApplying migration 20261024105438_phase2hs_connected_design_capability_gate.sql...\nApplying migration 20261024112500_phase2hs_overnight_crew_eligibility.sql...\nApplying migration 20261024113000_phase2hs_connected_develop_capability_gate.sql...\nApplying migration 20261024150000_phase2ht_workforce_qualification_expiry.sql...\nApplying migration 20261024151000_phase2ht_current_worker_assignment.sql...\nApplying migration 20261025010000_d5o_phase2htd_connected_service_capability_boundary.sql...\nApplying migration 20261027085730_d5o_operate_acceptance_one_time_guard.sql...\nStopping containers...\nERROR: syntax error at or near \"support\" (SQLSTATE 42601)                          \nAt statement: 3                                                                    \ncreate function public.d5o_hosted_operate_command_v1(                              \n  p_workspace_key text,p_presentation_id text,p_action text,p_input jsonb,         \n  p_command_id text,p_expected_source_revision bigint,                             \n  p_expected_deploy_revision integer,p_expected_operate_revision integer           \n) returns jsonb language plpgsql volatile security definer set search_path='' as $$\ndeclare v_actor uuid:=auth.uid();v_workspace uuid;v_work uuid;v_state jsonb;       \n  v_source_revision bigint;v_deploy_revision integer;v_operate_revision integer;   \nbegin                                                                              \n  -- Preserve the existing public capability boundary before the one-time          \n  support guard, including its 42501 denial when rollout is disabled.              \n  ^                                                                                \nTry rerunning the command with --debug to troubleshoot the error.\n[loopback-docker-adapter] creates=4; published=1; explicitLoopback=true\n\ncleanup={\"projectId\":\"d5o-p0a-e06bc946-ea9\",\"stopExit\":0,\"networkError\":null,\"projectDirectoryAbsent\":true,\"residualContainers\":[],\"clean\":true}",
+  "cleanup": null,
+  "finishedAt": "2026-10-27T09:05:14.991Z",
+  "summary": {
+    "passed": 0,
+    "failed": 0,
+    "setupError": true,
+    "cleanupVerified": false
+  }
+}

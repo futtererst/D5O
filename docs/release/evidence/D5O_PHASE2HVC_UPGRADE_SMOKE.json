@@ -1,0 +1,50 @@
+{
+  "baseline": "4cf881b506def45564040d767292c5c8c4ecbe48",
+  "source": "9a0886990bc8d1d2cb4e3a28cbc73672501b7240",
+  "pending": [
+    "20261027085730_d5o_operate_acceptance_one_time_guard.sql"
+  ],
+  "markerPreserved": true,
+  "workPinPreserved": true,
+  "auditPreserved": true,
+  "appliedVersions": [
+    "20261027085730"
+  ],
+  "cleanup": {
+    "projectId": "d5o-p0a-04423f11-6f1",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "error": null,
+  "fixture": {
+    "workspaceId": "b2b2001c-d771-4356-ac67-55975124efbb",
+    "actorId": "f8570981-18e8-43d1-b3f1-bbdda93e40f9",
+    "workId": "3707971b-26c1-47c9-9d3d-44669f0ef96a",
+    "configurationVersionId": "0cdd4585-e777-475e-ad5e-9043d3b8d578",
+    "before": {
+      "tenant": "rc0_upgrade_f84d1151df084c9e806dab65f6383e0b|RC0 synthetic pre-upgrade tenant|active",
+      "work": "0cdd4585-e777-475e-ad5e-9043d3b8d578|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|RC0 historical pinned Work",
+      "history": "1|1"
+    },
+    "after": {
+      "tenant": "rc0_upgrade_f84d1151df084c9e806dab65f6383e0b|RC0 synthetic pre-upgrade tenant|active",
+      "work": "0cdd4585-e777-475e-ad5e-9043d3b8d578|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|RC0 historical pinned Work",
+      "history": "1|1"
+    }
+  },
+  "boundary": {
+    "operateRls": true,
+    "anonExecute": false,
+    "evidenceRls": true,
+    "publicDefiner": true,
+    "serviceExecute": false,
+    "publicSearchPath": [
+      "search_path=\"\""
+    ],
+    "authenticatedExecute": true,
+    "priorAuthenticatedExecute": false
+  }
+}

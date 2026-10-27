@@ -1,0 +1,50 @@
+{
+  "baseline": "4cf881b506def45564040d767292c5c8c4ecbe48",
+  "source": "9a0886990bc8d1d2cb4e3a28cbc73672501b7240",
+  "pending": [
+    "20261027085730_d5o_operate_acceptance_one_time_guard.sql"
+  ],
+  "markerPreserved": true,
+  "workPinPreserved": true,
+  "auditPreserved": true,
+  "appliedVersions": [
+    "20261027085730"
+  ],
+  "cleanup": {
+    "projectId": "d5o-p0a-1c5cfbc6-6de",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "error": "AssertionError [ERR_ASSERTION]: search_path_missing",
+  "fixture": {
+    "workspaceId": "b8af1986-9562-49e0-8f23-ce327b84478b",
+    "actorId": "ea410253-996b-4445-8d57-b2ffb70c6f80",
+    "workId": "5e2b38ca-18d2-4ea9-9d9b-eb5f78cde738",
+    "configurationVersionId": "9dec9fac-8010-46ae-8d85-b4676dfab6ae",
+    "before": {
+      "tenant": "rc0_upgrade_fd28f385d5bb444182e519f83079f158|RC0 synthetic pre-upgrade tenant|active",
+      "work": "9dec9fac-8010-46ae-8d85-b4676dfab6ae|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|RC0 historical pinned Work",
+      "history": "1|1"
+    },
+    "after": {
+      "tenant": "rc0_upgrade_fd28f385d5bb444182e519f83079f158|RC0 synthetic pre-upgrade tenant|active",
+      "work": "9dec9fac-8010-46ae-8d85-b4676dfab6ae|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|RC0 historical pinned Work",
+      "history": "1|1"
+    }
+  },
+  "boundary": {
+    "operateRls": true,
+    "anonExecute": false,
+    "evidenceRls": true,
+    "publicDefiner": true,
+    "serviceExecute": false,
+    "publicSearchPath": [
+      "search_path=\"\""
+    ],
+    "authenticatedExecute": true,
+    "priorAuthenticatedExecute": false
+  }
+}
