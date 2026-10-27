@@ -1,0 +1,53 @@
+{
+  "format": "d5o-rc6-gate-status-v1",
+  "productionProject": "fcawktdjoxvahhgvkebx",
+  "rc5EvidenceCommit": "a674bf6ba113b31310428bc9ab79564642542bbe",
+  "frozenApplicationCommit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "frozenSourceCommit": "dcb72a3868e48d536449e109872403974b79fa1b",
+  "humanAuthorization": {
+    "protectedLocalCopy": true,
+    "databaseAndLedger": true,
+    "relevantAuth": true,
+    "privateStorageMetadataAndBytes": true,
+    "restrictedLocalProcessingAndSecureDisposal": true,
+    "newHostedInfrastructure": false
+  },
+  "environment": {
+    "directDatabaseCredentialAvailable": true,
+    "usableDatabaseConnection": false,
+    "directConnectionFailureCategory": "DNS",
+    "sessionPoolerCredentialAvailable": false,
+    "protectedCopyCreated": false,
+    "isolatedRestoreTargetCreated": false,
+    "localVolumeEncryptionVerified": false
+  },
+  "sanitizedSizing": {
+    "databaseBytes": 208555155,
+    "authUserCount": 25,
+    "storageObjectCount": 23,
+    "storageMetadataBytes": 2252301,
+    "hostedLedgerRows": 177,
+    "hostedLedgerSqlTextBytes": 2591780
+  },
+  "discrepancyTriage": {
+    "totalOpen": 140,
+    "storedSqlHashDiffers": 58,
+    "earlySourceVersionAbsent": 44,
+    "laterSourceVersionAbsent": 25,
+    "sqlProvedVersionRemapsUnresolved": 3,
+    "legacyHostedEntriesUnmatched": 10
+  },
+  "gates": {
+    "actualProductionStateReconstructed": "BLOCKED",
+    "historicalSqlEffectiveSchemaEquivalence": "PARTIAL",
+    "blockingDiscrepanciesResolved": "BLOCKED",
+    "forwardMigrationSequenceTested": "BLOCKED",
+    "historicalRecordsPreserved": "BLOCKED",
+    "securityInvariantsPreserved": "BLOCKED",
+    "coordinatedRecovery": "BLOCKED"
+  },
+  "productionMutations": 0,
+  "protectedFilesInGit": 0,
+  "hostedResourcesCreated": 0,
+  "nextRequiredInput": "Access-restricted local file containing the D5O Session pooler PostgreSQL URI; no secret in chat."
+}
