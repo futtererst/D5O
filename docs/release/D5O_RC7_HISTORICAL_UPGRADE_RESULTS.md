@@ -1,0 +1,9 @@
+# RC7 historical restore and upgrade results
+
+**Historical restore: PARTIAL PASS. Upgrade: NO-GO.** A fresh no-network Supabase-compatible PostgreSQL 17.6 container restored the full schema, 25 sanitized Auth users, 25 identity relationships, and selected historical data without a plaintext dump file. The restored ledger has 177 rows, 15 Work records, 15 Work events, four configuration versions, three customer decision evidence rows, 23 Storage metadata rows, and the expected Auth counts. All 763 checked foreign keys had zero orphan rows after data import. Aggregate schema checks found 257 RLS-enabled tables, four policies, 273 functions and 241 SECURITY DEFINER functions across the selected application/Storage schemas.
+
+The late migration probe ran inside one local transaction and was rolled back. Source orders 212–214 executed; order 215 failed because the new invitation role check rejects a completed historical `field_worker` invitation. Orders 216–236 were not reached. After failure, the ledger remained 177 rows, invitation count two, Work count 15 and Storage metadata count 23; the order-215 `tenant_provisioning` table was absent, confirming transaction rollback. The [probe record](evidence/D5O_RC7_LATE_MIGRATION_PROBE.json) contains the bounded diagnostic.
+
+Historical permits: six records across six package groups, no missing `at` values, timestamp ties, or append/timestamp selection disagreement. This limited historical shape does not prove behavior for multiple permits in one package. No application API/browser or synthetic authenticated actor test was run after upgrade because the upgrade stopped at order 215 and Auth credential material was intentionally absent.
+
+The local test used `pg_restore --disable-triggers` for table-order independence, then explicitly checked all foreign keys. This is a restore technique only; it is not a proposed production migration method. The isolated container was never connected to production.

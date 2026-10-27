@@ -1,0 +1,2266 @@
+{
+  "format": "d5o-rc7-discrepancy-register-v1",
+  "count": 140,
+  "categories": {
+    "EARLY_SOURCE_VERSION_ABSENT": 44,
+    "RETAINED_SQL_DIFFERENCE": 54,
+    "SQL_FORMATTING_DIFFERENCE": 4,
+    "LATE_SOURCE_VERSION_ABSENT": 25,
+    "VERSION_REMAPPING_WITH_EQUIVALENT_SQL": 3,
+    "UNMATCHED_HOSTED_HISTORY": 10
+  },
+  "status_counts": {
+    "HISTORICAL_EFFECT_UNRESOLVED": 44,
+    "EFFECT_UNRESOLVED": 54,
+    "SQL_TEXT_EQUIVALENT": 4,
+    "PENDING_DEPENDENCY_BLOCKED": 25,
+    "HISTORY_MAPPING_UNRESOLVED": 3,
+    "UNRESOLVED": 10
+  },
+  "historical_data_blocker": {
+    "source_order": 215,
+    "reason": "one completed historical field_worker invitation violates the replacement requested_role CHECK"
+  },
+  "items": [
+    {
+      "id": "SRC-0001",
+      "source_file": "0001_core_foundation.sql",
+      "source_version": "0001",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "9970d46cd6cdefe411d7c51eaa24af12a9c1e9fcdd017122423739255bcd91c5",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0002",
+      "source_file": "0002_d1_d2_pipeline_projects.sql",
+      "source_version": "0002",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "3947432a1c857eec13c481535440985538b74b0a1caa07fe3b2f058fe31373a8",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0003",
+      "source_file": "0003_workflow_transactions.sql",
+      "source_version": "0003",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "e089336b22e642018d78332b4939b666fe98ce8b633015d6b607e2341d09f089",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0004",
+      "source_file": "0004_rls_security_scaffold.sql",
+      "source_version": "0004",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "dfeb278d28c6ddc6cb6be12847b160e3bfc85b13079627712e6860f10067c39a",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0005",
+      "source_file": "0005_identity_workspace_security.sql",
+      "source_version": "0005",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "188680b9e3adc6756cb0ef8c50a895843554ef0321bc8e6c27719ecf313b8c2c",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0006",
+      "source_file": "0006_shared_command_audit_evidence.sql",
+      "source_version": "0006",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "84fb66d66074447914e07ea7664d891b50dba6c5b46108181780d54ef9c4199b",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0007",
+      "source_file": "0007_billing_v2_production_persistence.sql",
+      "source_version": "0007",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "ab48b32ec3af5d02cf5df71917b5c59895d0266f503a273e2cdb53dd0466f6f6",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0008",
+      "source_file": "0008_field_issue_rfi_change_production_persistence.sql",
+      "source_version": "0008",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "6581bfc01fcfc715c95cdd191827bc77646804215cfebe03fa77255f93f21204",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0009",
+      "source_file": "0009_closeout_production_persistence.sql",
+      "source_version": "0009",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "c1f3c6a06231340ad963d178c07322a04c7af48145b4f9a5adbc9f50408f93dd",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0010",
+      "source_file": "0010_production_cutover_hardening.sql",
+      "source_version": "0010",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "80b9a9dd7e2f982221274c467d6d8b983d64753bd3b9ecc27b2b32de9b017ff2",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0011",
+      "source_file": "0011_p1_01a_opportunity_intake_qualification.sql",
+      "source_version": "0011",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "f3ee7b1f9c769a04177833227f40fb3e32c638e9fb8a05c14519ba88706c4816",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0012",
+      "source_file": "0012_p1_01a_acceptance_remediation.sql",
+      "source_version": "0012",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "bac007cc605bebd3e1d90b13501e199fa65908dad531f227b2ed4878fe9edd5d",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0013",
+      "source_file": "0013_p1_01a_role_accountability_read_model.sql",
+      "source_version": "0013",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "f4e04faa65bbddf8a0f25c6ba54a42bf70a35a790dd09850c45d8a3935133273",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0014",
+      "source_file": "0014_p1_01a_decision_owner_actions.sql",
+      "source_version": "0014",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "7037a301181e5155642fc99b4c09361e2cda1eddb5151d145806f306c08b6030",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0015",
+      "source_file": "0015_p1_01b_1_pursuit_authorization.sql",
+      "source_version": "0015",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "bdd9744a9f623b632860542e853dda59f966eaebf15fe9a4d5617df023f9087d",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0016",
+      "source_file": "0016_p1_01b_2_bid_submission_outcome.sql",
+      "source_version": "0016",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "3731aff4ba8c2e31b98e4219fa84498c4e2309da7aa02d0daa97fdcd33177588",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0017",
+      "source_file": "0017_configuration_foundation_core.sql",
+      "source_version": "0017",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "acd2aa06590b8d1113741e4296a9842cc0c0ff54af05926956c9e917c9dabccb",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0018",
+      "source_file": "0018_configuration_template_packs_versions.sql",
+      "source_version": "0018",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "3bbbf4f8b5635a824acdc5e1f02a98c7ab5ac1d79fde900387ad7908a0116ba4",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0019",
+      "source_file": "0019_configuration_tenant_activation_versions.sql",
+      "source_version": "0019",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "6fdfc1d5acdd209c4b168168467892df952de7e507a4f7f40661691951771d37",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0020",
+      "source_file": "0020_configuration_phase_gate_definitions.sql",
+      "source_version": "0020",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "a3874654190220561dbea6b7b5195bd69fd8c78617de7defebc8759cedd44afd",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0021",
+      "source_file": "0021_configuration_work_types_streams_lanes.sql",
+      "source_version": "0021",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "8e817aec5fa3a2b55f77c43ca36f1fa7312b02395f68cd3eb5a284adca6e9d9c",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0022",
+      "source_file": "0022_configuration_roles_permissions_decision_rights.sql",
+      "source_version": "0022",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "84601aa08fa94b5c3882524f02365cc3806c9cce727051167d563f349417a4f1",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0023",
+      "source_file": "0023_configuration_artifact_evidence_definitions.sql",
+      "source_version": "0023",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "84347c74d1e3f110b4df055d9c1d2f102e6d7fd3da851131e26baef8d474b4f4",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0024",
+      "source_file": "0024_configuration_kpi_financial_workforce_handoff_governance.sql",
+      "source_version": "0024",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "4dba92036cacb3c06ce6109392e00a9c8955976463acef87766780c2f9d69473",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0025",
+      "source_file": "0025_configuration_audit_effective_resolution.sql",
+      "source_version": "0025",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "359043ee38a971bae291c640da71e96ce5a1a5e6d46a3b295cada3f04325ec06",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0026",
+      "source_file": "0026_configuration_template_pack_seed_data.sql",
+      "source_version": "0026",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "92750263a7aaee419de89f1fb313811810ee006c80ee2727139680442f6d7a3e",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0027",
+      "source_file": "0027_cfg_runtime_01_pricing_review_readiness.sql",
+      "source_version": "0027",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "9ff978f044caff6c1dc0fd9e9e620bd2f81befc5954965314c42ab5a704b2949",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0028",
+      "source_file": "0028_cfg_runtime_02_pursuit_authorization.sql",
+      "source_version": "0028",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "cbfe93ecdf2c0db681d18e8afb370876c2244053b5990f364a5029d8720c387a",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0029",
+      "source_file": "0029_cfg_runtime_03_bid_submission_approval.sql",
+      "source_version": "0029",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "e1d48c12d02c42545045e462bc52f1ca2e11a52052c704ac54af7d3e0624d7a0",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0030",
+      "source_file": "0030_cfg_runtime_03_evidence_persistence_authority.sql",
+      "source_version": "0030",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "af0091579d9258c9bc9ddfb79e156a4fbe7ef19159ab74eb0567e4b6ebf87f7a",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-0031",
+      "source_file": "0031_cfg_runtime_03_actor_profile_identity_coherence.sql",
+      "source_version": "0031",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "f4337c332c975c91994b34414fd142aade4df8140ff9f76463b183c430b81664",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20260928120323",
+      "source_file": "20260928120323_baseline_evidence_scan_reconciliation.sql",
+      "source_version": "20260928120323",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "6a244d93074aa83b90bd7b437de13107843ffdc99b1a39f2e197d40eeacd4ca9",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20260928145307",
+      "source_file": "20260928145307_p1_cfg_evidence_custody_acceptance.sql",
+      "source_version": "20260928145307",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "5dfcaf06b3712b5eb464951b67daa439b1bcb59848b11a6229ce298bd52977c2",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20260928214119",
+      "source_file": "20260928214119_d5o_m1_work_record_gate.sql",
+      "source_version": "20260928214119",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "d18dc96e768cad1240dbef17011461a9ce565d1690a585b2f5cfe5da366f3dbe",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20260929121652",
+      "source_file": "20260929121652_d5o_m1_replay_configuration_guard.sql",
+      "source_version": "20260929121652",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "9dd4dc9ece353557378e7dfae733b39283832b3fdf2008c03b99d436069d0a90",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261002000000",
+      "source_file": "20261002000000_d5o_m2_work_record_queue.sql",
+      "source_version": "20261002000000",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "efcd61fc7801a42fb339d4853ad9af7e3bc353d3585810993aac636541f23ca9",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261004230000",
+      "source_file": "20261004230000_d5o_work_package_foundation.sql",
+      "source_version": "20261004230000",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "9b5c03025f14ab2c0c6d71c9d088efba69e2797364243b488f2ff9de65eb104b",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261004233000",
+      "source_file": "20261004233000_d5o_work_package_closed_guard.sql",
+      "source_version": "20261004233000",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "f84c6cef592ae541aa58ff731d4d6d56646f2e727c173578b321930fdebc0d69",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261004234500",
+      "source_file": "20261004234500_d5o_package_proof_snapshot.sql",
+      "source_version": "20261004234500",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "2ffb1c7632f436864a2d2cf4323d5e47ed1ab07bba32f9b3c9da117af1cbde88",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261005122038",
+      "source_file": "20261005122038_d5o_configured_lifecycle_rules.sql",
+      "source_version": "20261005122038",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "1eebba81b8292fe348a94bcde178b6d875858fd06935f055660ebcc3de651380",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261005200000",
+      "source_file": "20261005200000_d5o_configuration_publication.sql",
+      "source_version": "20261005200000",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "c3ca5277189fe5635bafa4a9896494ab3b90383490ddb21637b658a28e0d2c22",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261005210000",
+      "source_file": "20261005210000_d5o_configuration_activation_split.sql",
+      "source_version": "20261005210000",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "f0dea15ba3bf13278a5dde4641d75eb3b144454361b174fecd880fdc57c26e80",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261005220000",
+      "source_file": "20261005220000_d5o_candidate_activation_guard.sql",
+      "source_version": "20261005220000",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "5635a5aa5964176b08e35cadee9c18e5c776c9396f2b1b07c61714481e26e3e4",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261005230000",
+      "source_file": "20261005230000_d5o_published_phase_contract.sql",
+      "source_version": "20261005230000",
+      "hosted_version": null,
+      "category": "EARLY_SOURCE_VERSION_ABSENT",
+      "status": "HISTORICAL_EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "661264ddfdea38165597d853d90d381311e63ead3430df52b1e00aa4b4fc694a",
+      "finding": "Hosted legacy SQL and current schema must be mapped to source effects before replay.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261007013134",
+      "source_file": "20261007013134_d5o_hosted_workspace_authority.sql",
+      "source_version": "20261007013134",
+      "hosted_version": "20261007013631",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "f578586e317ea08a245034e9603e8d4c2edf81c368a598bd575c0532ac72b5f7",
+      "source_sha256": "18e09f92e5d6380f2c26f8248e0fae4892936aa27229573ec326a0db1b616956",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261007013707",
+      "source_file": "20261007013707_d5o_hosted_workspace_invoker_hardening.sql",
+      "source_version": "20261007013707",
+      "hosted_version": "20261007014024",
+      "category": "SQL_FORMATTING_DIFFERENCE",
+      "status": "SQL_TEXT_EQUIVALENT",
+      "retained_sql_comparison": "LEXICALLY_EQUIVALENT_COMMENTS_WHITESPACE",
+      "retained_sql_sha256": "359e52afba189267c80ee937cbde3cccf30ea94d204ea41525e8f857de4f44fc",
+      "source_sha256": "951ef953b723ad8d54ae55f7eedb126f181d0a040fb5213859964a860e71fa77",
+      "finding": "Conservative SQL token stream identical after comments and external whitespace are omitted; ledger identity preserved.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261007020600",
+      "source_file": "20261007020600_d5o_hosted_work_identity.sql",
+      "source_version": "20261007020600",
+      "hosted_version": "20261007015048",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "3bde99269a15eada3e7518de3cb0bb6892d97efae7536d789c11d3e068ea3639",
+      "source_sha256": "1f3120fc5601f630a7679744cfc3dbc844318b870c126e795e29b9540ad0a27b",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261007022200",
+      "source_file": "20261007022200_d5o_hosted_create_work_authority.sql",
+      "source_version": "20261007022200",
+      "hosted_version": "20261007015356",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "fa0efa45ee2fa8d4e5dfcc780fb2280dcf4e89a213090117e311decaf6372f49",
+      "source_sha256": "eb1dbc16a0bbb096efb2a4bb79973a124427a9e7769366abc2076432d2dda44e",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261007031000",
+      "source_file": "20261007031000_d5o_hosted_configuration_manifest.sql",
+      "source_version": "20261007031000",
+      "hosted_version": "20261007020854",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "f7ba02bb6737f25406a531f875e19dc85e781d5889e67cc639bf5a75129af6ec",
+      "source_sha256": "cf23152b841e3de3ad49405a63e862a14a5c5910d75dcde9f8b6b93bd1878617",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261007040000",
+      "source_file": "20261007040000_d5o_hosted_synthetic_prototype_state.sql",
+      "source_version": "20261007040000",
+      "hosted_version": "20261007021942",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "836479cefc53d9248d7567d502a3ff7e62610f2608f9103f86cb4b1c3002e864",
+      "source_sha256": "ed042a5b491565fe458ca42efd3348dd936b57239ec10b2d40fd31e451bf155b",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261007050000",
+      "source_file": "20261007050000_d5o_hosted_prototype_nested_scope.sql",
+      "source_version": "20261007050000",
+      "hosted_version": "20261007025942",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "79d095ce1e0d8bbc523ffa0ca608dbf82713c9193ead563f5ad0389676def135",
+      "source_sha256": "ea1261d4a0a05868b5f361ae394b479db782e8912569cf9b28037a4fd2a80f7a",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261007225404",
+      "source_file": "20261007225404_d5o_hosted_worker_boundary.sql",
+      "source_version": "20261007225404",
+      "hosted_version": "20261007225404",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "4ab1a2e9ea223541d01d6a0bbebf24fde62d3b3dfc4fc12edb0a4092b6f51fc1",
+      "source_sha256": "7d247a83edc301cad174b29fff9fce4e1e28e412048b95c6b749b7facae9239a",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261008182443",
+      "source_file": "20261008182443_d5o_hosted_command_writer.sql",
+      "source_version": "20261008182443",
+      "hosted_version": "20261008182443",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "5d642aa19e266e0801d97f518e58f926c821ec8b4c46b4d76064a2ed1dcfe614",
+      "source_sha256": "69439186b0f84224918a2055880e972fbe807636862ec3eff1cb4a6044d354dc",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261008185604",
+      "source_file": "20261008185604_d5o_hosted_worker_provisioning.sql",
+      "source_version": "20261008185604",
+      "hosted_version": "20261008185604",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "01c314d3688e20236766bd3a09c5498b9014ff6a91c774660d4552063e7761a2",
+      "source_sha256": "5e1e681f8a803d0fa87041b67ad5ff32aa58d1e74265be0b77207ed9455881ee",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261008190351",
+      "source_file": "20261008190351_d5o_secret_key_role_compatibility.sql",
+      "source_version": "20261008190351",
+      "hosted_version": "20261008190351",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "bafc7c04721faf771b8c7f5c3543358c50de70e58b85b1302bcd2f2cfd6f7409",
+      "source_sha256": "896757875408b2099742a2969f6a56780823758112102243dcdf96e76159c4a7",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261008200840",
+      "source_file": "20261008200840_restrict_worker_work_access.sql",
+      "source_version": "20261008200840",
+      "hosted_version": "20261008200840",
+      "category": "SQL_FORMATTING_DIFFERENCE",
+      "status": "SQL_TEXT_EQUIVALENT",
+      "retained_sql_comparison": "LEXICALLY_EQUIVALENT_COMMENTS_WHITESPACE",
+      "retained_sql_sha256": "2d3e1fd290f03e6999ff806bcdebd2a6fab990f434ae210b452717e06193059a",
+      "source_sha256": "10f4c644c7f74336fc2836f25a464532cf88de90c0714fc1fb159b52096d07bc",
+      "finding": "Conservative SQL token stream identical after comments and external whitespace are omitted; ledger identity preserved.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261009220510",
+      "source_file": "20261009220510_d5o_connected_field_changes.sql",
+      "source_version": "20261009220510",
+      "hosted_version": "20261009220510",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "c1e8de97b4ef2831dc4a3488d923dae4a3c1052c307dad6800d38e6a072f2dac",
+      "source_sha256": "e214a8fd21f2ac5d6de0dd6fbb85e74c92976f2fd3df045f4db5d29140f7d9c8",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261009234405",
+      "source_file": "20261009234405_d5o_current_release_field_start.sql",
+      "source_version": "20261009234405",
+      "hosted_version": "20261009234405",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "7cf1eef640a8e83b35261a254550ab14361099c8b94a158a8d1aae22ce171197",
+      "source_sha256": "c0d96fbb61ecc122ef309cc8f30aa66321422efd9233770a8c66e4bcc2da2858",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261010150000",
+      "source_file": "20261010150000_connected_service_billing_terms.sql",
+      "source_version": "20261010150000",
+      "hosted_version": "20261010150000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "52d21004d0c8385ca21140b2daa7f6419ddee224bebb2f7c4e870336191bd0af",
+      "source_sha256": "ed15dc1b59de245c551d2d7467f4e115146123e30fd2387bc4cc835bc246f9ed",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261014164339",
+      "source_file": "20261014164339_carry_unchanged_crew_responses.sql",
+      "source_version": "20261014164339",
+      "hosted_version": "20261014164339",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "4bfcb4cc18c0a0e0ecf96f77a9bd7ed7c327af07312859a71b1f4051b4b53797",
+      "source_sha256": "816fd3ec9f68f3286dce67fb5205926087b841f9f3748a859515104825ccfaa0",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261014235613",
+      "source_file": "20261014235613_reject_ambiguous_asset_contribution.sql",
+      "source_version": "20261014235613",
+      "hosted_version": "20261014235613",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "7f49f0bd8a41b82e942f696f7729506b06f132b0431fb6408dacc08c1e02dcce",
+      "source_sha256": "f8729108491680188552b895ac44f4cce802f4a999a4e0bf012a50ae9e751043",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261014235900",
+      "source_file": "20261014235900_d5o_private_evidence_index.sql",
+      "source_version": "20261014235900",
+      "hosted_version": "20261014235900",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "d49bb7c977b4c0431f97b373321ded4991179fedb750590bf3253438dad777a2",
+      "source_sha256": "f5b3d8e73ea960c9f4804fcbdab09b8e2ee791f1f3e7f34762c6906fa02cf62e",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261015111608",
+      "source_file": "20261015111608_restrict_supervisor_private_evidence.sql",
+      "source_version": "20261015111608",
+      "hosted_version": "20261015111608",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "700fb159a7295c8c1eb49c47aa35d829bf1270df8fc1ad05305348aa282ee577",
+      "source_sha256": "b71a3c959b853e4f9c3d083c0f66693042d03d43fc8bf27b32022eb160c3c0c3",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261016200000",
+      "source_file": "20261016200000_d5o_graybar_procurement.sql",
+      "source_version": "20261016200000",
+      "hosted_version": "20261016200000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "a418fbc574da8e57635a13a45f4f51285b18a6076fa7c492d2a3c557dff2521f",
+      "source_sha256": "c5f49cac897acac5f9a0597b761f2e53ed7ab918728a4f2e575d7503322297a2",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261016210000",
+      "source_file": "20261016210000_d5o_graybar_quote_cost_and_invoice_guards.sql",
+      "source_version": "20261016210000",
+      "hosted_version": "20261016210000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "8aa03bc6f80cd60517a5ac46b7307506711df231e1521fa3a7c0f69bd1a12cb0",
+      "source_sha256": "752748e816b06a5aa345260f8952ae1f3be551c91436d74db1934e45b097fea2",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261016270000",
+      "source_file": "20261016270000_d5o_schedule_hold_scope_guard.sql",
+      "source_version": "20261016270000",
+      "hosted_version": "20261016270000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "d2cbc64209d92ddf13223428ea05923a956c572e143a631f0162b2abd10f14e2",
+      "source_sha256": "2c8018c0816340b91851d2dd5bb4c68969238bbafaa53b5c7dd6552535d893d5",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261016280000",
+      "source_file": "20261016280000_d5o_schedule_hold_scope_guard_complete.sql",
+      "source_version": "20261016280000",
+      "hosted_version": "20261016280000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "add90aebcf76bd77230a74cb130447988e67cf956875a865e8e46ea07bfda8a0",
+      "source_sha256": "e71dcf4d399b0f362ab04057a11cbc76624d4fd21461d4362083adf96d8e984f",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017000000",
+      "source_file": "20261017000000_hall_c_work_display_correction.sql",
+      "source_version": "20261017000000",
+      "hosted_version": "20261017000000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "374fea0bab98670f6a728eff99ca66f00f97e3523d3f82a52fbf9322e564fc93",
+      "source_sha256": "976d6367827490a71c550b2e35d899448cb598f3edf2d6211793c5b568159edf",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017010000",
+      "source_file": "20261017010000_service_only_work_title_correction.sql",
+      "source_version": "20261017010000",
+      "hosted_version": "20261017010000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "4c9ef5b742e64c1e8a1448588e7d8288b18aba4afe764f885d828812fb73726c",
+      "source_sha256": "31592c6281877b88f76690f9fc61bd466cce01b51fcf08dc61cfbb7339229a67",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017020000",
+      "source_file": "20261017020000_d5o_connected_design_spend_authority.sql",
+      "source_version": "20261017020000",
+      "hosted_version": "20261017020000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "24aad1bc561d42bf1cf10dda721ad71d80fb15a55a04545a23db2cda0fe32b1e",
+      "source_sha256": "710df92f808c634da1dcb3dd6e789d4a74ddc01d72244e9ce4f01883ff300eb2",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017030000",
+      "source_file": "20261017030000_d5o_design_spend_queue_correction.sql",
+      "source_version": "20261017030000",
+      "hosted_version": "20261017030000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "1d0dc86d5feaa932ffbda83f8a6da96dd589a004ab12073428dc65ff3dd31f2e",
+      "source_sha256": "9b98da3019f166a0621467088283507f6201879631c5c360fcc97e52795bc0a3",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017040000",
+      "source_file": "20261017040000_d5o_design_spend_window_balance.sql",
+      "source_version": "20261017040000",
+      "hosted_version": "20261017040000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "aead5a23ea6779be28d2b6082a144ae2ec24248e19ee483536534bb78c91bf5f",
+      "source_sha256": "981d9f5d330e68b234290d3a9e6803f3fb0b14de3289bf607c64980b752fcbed",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017050000",
+      "source_file": "20261017050000_d5o_design_spend_expired_window.sql",
+      "source_version": "20261017050000",
+      "hosted_version": "20261017050000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "56367e34bace636c3beb4f8495651f2382a87ef58ca6730d23ec963d398f7ca1",
+      "source_sha256": "cba338cd42dc1d636ac408b00b8462333c125cabfdff0da8bfe7636c42566466",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017060000",
+      "source_file": "20261017060000_d5o_purchase_economic_authority.sql",
+      "source_version": "20261017060000",
+      "hosted_version": "20261017060000",
+      "category": "SQL_FORMATTING_DIFFERENCE",
+      "status": "SQL_TEXT_EQUIVALENT",
+      "retained_sql_comparison": "LEXICALLY_EQUIVALENT_COMMENTS_WHITESPACE",
+      "retained_sql_sha256": "b78aa895ecc1fbe684238f32d297637973f44ebed758d46f46a28dae61ad3d85",
+      "source_sha256": "f74059e00e1cf762a776b610a1076ded67b1bf0bcb992d8ac1d0ff81c2f0726a",
+      "finding": "Conservative SQL token stream identical after comments and external whitespace are omitted; ledger identity preserved.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017090000",
+      "source_file": "20261017090000_d5o_field_labor_economic_authority.sql",
+      "source_version": "20261017090000",
+      "hosted_version": "20261017090000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "78a50a11a45b229acb3190aa50fc7230837bcbdeb6f39810bd7a9293a76b4b87",
+      "source_sha256": "a1cb2fbeeaeb84dc8d60cb8a6e21044a60318499d29e8fa7e1eb34dbaffea2bf",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017091000",
+      "source_file": "20261017091000_d5o_labor_legacy_publication_and_cost_guard.sql",
+      "source_version": "20261017091000",
+      "hosted_version": "20261017091000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "bf373efc6af6272ab00cb5c09e9b1fd40b572b3c42c1054be25f5317eadba377",
+      "source_sha256": "da10dfe0e27b2953525fb69a4f6da80995124277edb2495fddfd6cbbe78a7b3e",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017096000",
+      "source_file": "20261017096000_d5o_booking_effort_in_typed_writer.sql",
+      "source_version": "20261017096000",
+      "hosted_version": "20261017096000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "4c6cbf4b23336e98ea7b6d1c5edebd8a5b45d97a007cda96a3582f5f5954e3fa",
+      "source_sha256": "78b02f45a459f6f36753bfa0518e74350f85d53140474400fd20e93aed67ed99",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017098000",
+      "source_file": "20261017098000_d5o_labor_report_reservation_source.sql",
+      "source_version": "20261017098000",
+      "hosted_version": "20261017098000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "c9ba373ec194147c6141d2cbe2435019d94a4b4250f72a3eece6da338263853b",
+      "source_sha256": "ca629197a17265a8e66c0390c2ddaa4be6f534329ef6744efd63e64814571f07",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017100000",
+      "source_file": "20261017100000_d5o_design_no_material_disposition.sql",
+      "source_version": "20261017100000",
+      "hosted_version": "20261017100000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "2da36ef92623ff6f347cebbd0bac664e1f08647fb9f54fb72f3ba6f126f74b30",
+      "source_sha256": "7c6dd3ca3f4f126c182691c4e131fff2897c3de1254839ecae0992e8236c6206",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017172557",
+      "source_file": "20261017172557_d5o_design_cost_variable_guard.sql",
+      "source_version": "20261017172557",
+      "hosted_version": "20261017172557",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "b32dc7aa1dced9ce9d43a831889a92e447fc11dd404f4c5abd3685da4f4eede7",
+      "source_sha256": "239ab9bec94d801d9e076599b1404b94adf0c393cac201a6acbd214db81bc244",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017173237",
+      "source_file": "20261017173237_d5o_finance_forecast_queue.sql",
+      "source_version": "20261017173237",
+      "hosted_version": "20261017173237",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "b1b9d84f073eef99903d0efb4861ace3893387ba927da80ec129d9501535bce5",
+      "source_sha256": "67528b0faf0e3413b175fd83653f5e96b0c66e00b0e97bd9078be8612b296422",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017173653",
+      "source_file": "20261017173653_d5o_outlook_complete_source_guards.sql",
+      "source_version": "20261017173653",
+      "hosted_version": "20261017173653",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "57573712c812c378bcc66b3ab411f0228cf5f680ac4c70e608e8ec65fd0cd4c3",
+      "source_sha256": "7943ac877706ab535bda2d063d3d1a63b8be90c7014d9de4ce1bc83d8c77c76f",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261017190000",
+      "source_file": "20261017190000_d5o_cache_design_package_draft_guards.sql",
+      "source_version": "20261017190000",
+      "hosted_version": "20261017190000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "c5cfff2fdf621aba16a7b66cc85eba4a6f0643cd9a71bd9c2dcbfeedcd3d5e1d",
+      "source_sha256": "9ea14cebaef30fcf4580446aaa79127cfc977dfefad826d186e750dbd690d387",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261018023000",
+      "source_file": "20261018023000_d5o_field_labor_queue_scope.sql",
+      "source_version": "20261018023000",
+      "hosted_version": "20261018023000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "ad9d111375d9c0d37fb91e271799a6584aac74c81f790c74860f72ba27d32bd4",
+      "source_sha256": "f9b44b336b4d52300e61685e6adce6721b8ec80de2b1defbbe86bccd88778bdf",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261018190000",
+      "source_file": "20261018190000_d5o_subcontract_delegate_selection.sql",
+      "source_version": "20261018190000",
+      "hosted_version": "20261018190000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "83faded338d098a76e0c88a9468ee860a946317c6f74b570cfac8c032114192d",
+      "source_sha256": "184bab507a2e3c36e9db24127183c3042cd4bdd17dab7a1f4461c52b17b59163",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261018210000",
+      "source_file": "20261018210000_d5o_design_cost_review_delegate_selection.sql",
+      "source_version": "20261018210000",
+      "hosted_version": "20261018210000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "eb6f08202f30ea6db1ef569eb2e11d379b31af82a8edb1f33408583b426c6a7d",
+      "source_sha256": "74eec1a1145e4e9c15908acebade529ea507adb06a193642990f9701e23ae823",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261018220000",
+      "source_file": "20261018220000_d5o_outlook_review_delegate_selection.sql",
+      "source_version": "20261018220000",
+      "hosted_version": "20261018220000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "2bce77d652888a80942f448d68e4e86feb8a69ab75163258868530c6a3faad39",
+      "source_sha256": "51b965a52e7c4b2758c5573c688612e477f8a02a3578f4084c180e16711484e8",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261019000000",
+      "source_file": "20261019000000_d5o_field_start_lead_policy.sql",
+      "source_version": "20261019000000",
+      "hosted_version": "20261019000000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "ae2ac3881dc7381d9b1c92611fbd2690322dc674be01ca0b96ecc37c1b0c158f",
+      "source_sha256": "9615e688d6f9afd3fd6ad93ce655f655c1128a4975741697c13d90bad653926b",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261019010000",
+      "source_file": "20261019010000_d5o_configured_delivery_receiver.sql",
+      "source_version": "20261019010000",
+      "hosted_version": "20261019010000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "a6fdc5d0828a676e694c65a4b21ebe29119e836ab3e6083f778dec775ff01b55",
+      "source_sha256": "b8e0a82cef7bab5f642e3fd4b713277e720caa1d001a41fb2462e58aad43e5ac",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261019030000",
+      "source_file": "20261019030000_hosted_initial_configuration_sha256_correction.sql",
+      "source_version": "20261019030000",
+      "hosted_version": "20261019030000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "8998e1ed62da29509dff7f98bac7175b2f20fc77eb9eb5eb7820d8eef0d06697",
+      "source_sha256": "3f3e91c207d020c492c282b4ac9873456b7d4724bdab3653e28ee22fecb5625c",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261019040000",
+      "source_file": "20261019040000_hosted_initial_configuration_empty_queue.sql",
+      "source_version": "20261019040000",
+      "hosted_version": "20261019040000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "06208205065696e8e0dee69f6011c579bc022718511dce45c55836dc536b734e",
+      "source_sha256": "17f1b2c6db236ad611ec3b82bd72499ea986945149c18058666ad82f9f6dfa78",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261019050000",
+      "source_file": "20261019050000_hosted_initial_configuration_empty_read.sql",
+      "source_version": "20261019050000",
+      "hosted_version": "20261019050000",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "5bf4cdceb899ad688cb64d63d794a8df2e1eb2c4acaf6f6cbf4c59e127ec4a6d",
+      "source_sha256": "6b594dcbee11daf12a6c50f5e6d346f8bd8c511a89443959ca42e845bb45b515",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261019162237",
+      "source_file": "20261019162237_d5o_preserve_legacy_schedule_on_typed_transition.sql",
+      "source_version": "20261019162237",
+      "hosted_version": "20261019162237",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "5dabb5e33c4bdad55f54803b19d8e0acb2609790766e9567c4f105192683b681",
+      "source_sha256": "696ab889341fc6219ad5ad22b91fd0c44539cbedece83a488a812d4663244d82",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261019170000",
+      "source_file": "20261019170000_d5o_field_labor_source_text_precedence.sql",
+      "source_version": "20261019170000",
+      "hosted_version": "20261019164403",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "525aaa0c883aeb18b65c91ffec7d34c57b8cf64891bfd2191ff50c73af2d66ec",
+      "source_sha256": "6eb620e8fe53183209a22f5f3c457fc242fbdca07385afe42bb094411a043841",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261019183127",
+      "source_file": "20261019183127_d5o_admin_backend.sql",
+      "source_version": "20261019183127",
+      "hosted_version": "20261019211112",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "11432d84c07113cedacec3b534cc5de84a2047600bd465fece875bbd5258950d",
+      "source_sha256": "df771e7c167ce9dcf53d0823f0994410d5acfb834f6175d56a93ae0f17190179",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261019213000",
+      "source_file": "20261019213000_d5o_hosted_configuration_management.sql",
+      "source_version": "20261019213000",
+      "hosted_version": "20261019221852",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "12d8b2f91e80f4c3f50e0d6613c2a596c94ea2bbf93faa19c795f26c0d59e892",
+      "source_sha256": "c84a3bea6ea3e73d24d9f001159977ec18ca2fe0d62045cafe924aee1a5bc12a",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261020085414",
+      "source_file": "20261020085414_d5o_design_same_day_schedule_hold.sql",
+      "source_version": "20261020085414",
+      "hosted_version": "20261020085806",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "c09e6a66082ccfef8956c97f3bb4c6b870d6d4609b8fe04d6353f592c5741649",
+      "source_sha256": "b63fa59ec06b70895f0d3dd268c6eff07d455186b1e3df2727bca3c0ac9be89c",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261020180000",
+      "source_file": "20261020180000_d5o_workforce_field_readiness.sql",
+      "source_version": "20261020180000",
+      "hosted_version": "20261020203138",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "7b94fa3d05b711ace6e89047169e1ad8736e319cdfde2859b512c1cb3e5fd7af",
+      "source_sha256": "3c25af08cacf5ae9c403cdac41897a6a53671898af8c241a0a52363ef3f64aae",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261020193000",
+      "source_file": "20261020193000_d5o_binding_current_publication.sql",
+      "source_version": "20261020193000",
+      "hosted_version": "20261020205337",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "b48522e313d65e6f67390920590f05f4a93ae9fbe30cf86e5f82cb30348d2315",
+      "source_sha256": "8c9fcdacdf425a99d531cfd3799322de285ad50e405b1ee5a3cb217e6bc32847",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261020223652",
+      "source_file": "20261020223652_d5o_cross_week_empty_publication.sql",
+      "source_version": "20261020223652",
+      "hosted_version": "20261020235720",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "ded3efe8371638c00bb4662c2508a7b306ecaf9b318da952b720345fe8582089",
+      "source_sha256": "e95788dcd9a1595017517226c6ae95c2c8266fd62012ccaec187a7b5f2fda79c",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261020231536",
+      "source_file": "20261020231536_d5o_worker_empty_publication_projection.sql",
+      "source_version": "20261020231536",
+      "hosted_version": "20261020235730",
+      "category": "SQL_FORMATTING_DIFFERENCE",
+      "status": "SQL_TEXT_EQUIVALENT",
+      "retained_sql_comparison": "LEXICALLY_EQUIVALENT_COMMENTS_WHITESPACE",
+      "retained_sql_sha256": "5e5b459ce580e3e58f2d1a628a91131d6a14c04815a6a4d1ee29ba64cfc313e2",
+      "source_sha256": "1cdd15a5eb9b860db0d84c3827988d4c2abf39d08f297ab855dc7de0e414cd2b",
+      "finding": "Conservative SQL token stream identical after comments and external whitespace are omitted; ledger identity preserved.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261021114905",
+      "source_file": "20261021114905_d5o_field_worker_invitation_proposal.sql",
+      "source_version": "20261021114905",
+      "hosted_version": "20261021123923",
+      "category": "RETAINED_SQL_DIFFERENCE",
+      "status": "EFFECT_UNRESOLVED",
+      "retained_sql_comparison": "SQL_TEXT_DIFFERS",
+      "retained_sql_sha256": "bb7963a1ee37da0d841129595215b4039171c4a935248f95a0eb8eae5d3f76ef",
+      "source_sha256": "ad51fd407be42e9505f6588dfce3516b7219723630bf79f5c2e1db092ac11959",
+      "finding": "Retained SQL differs from source; schema, permissions and data effects require per-object review.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023111641",
+      "source_file": "20261023111641_d5o_service_approval_policy_phase1.sql",
+      "source_version": "20261023111641",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "e66b8fbfdba38c88276c829f351b3f89cd8d40f4f79ad50f7e8efc0556bb84df",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023115306",
+      "source_file": "20261023115306_d5o_phase1b_connected_service_approval.sql",
+      "source_version": "20261023115306",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "9169ad7bdaece5767f242c268c29d9828f29c00c0d78ccb71c4acdd8ac27412c",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023123751",
+      "source_file": "20261023123751_d5o_phase2a_organization_people.sql",
+      "source_version": "20261023123751",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "35b806bdf59146b088feee8af0375dfbe8ecae8a4befdf039bc769d23aa466de",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023140000",
+      "source_file": "20261023140000_d5o_phase2b_tenant_onboarding.sql",
+      "source_version": "20261023140000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "d037c3e95a4ce0dda6325a8264117a838eab91d2a942735fa96350dc5ceb0adc",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023141000",
+      "source_file": "20261023141000_d5o_phase2b_onboarding_commands.sql",
+      "source_version": "20261023141000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "f9de353e8005dbec8715e8a48eff3486f1e3312b809af9d2eb8c8d5f68135540",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023142000",
+      "source_file": "20261023142000_d5o_phase2b_vendor_controls.sql",
+      "source_version": "20261023142000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "6f97052b2f97687766a8f6ddf1b3747e307a69ed237e8a257ec9aee97cdedd4b",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023143000",
+      "source_file": "20261023143000_d5o_phase2b_template_governance.sql",
+      "source_version": "20261023143000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "0587d11930b29a18c5551033505412c734452bbcce11e7bdb7ed1f0d11885756",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023150000",
+      "source_file": "20261023150000_d5o_phase2c_lifecycle_features.sql",
+      "source_version": "20261023150000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "c52410967753b1a5dd33128d26bdfb54f44f04e3e3cd0212ae2e27fcbcb1f981",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023151000",
+      "source_file": "20261023151000_d5o_phase2c_discover_policy.sql",
+      "source_version": "20261023151000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "18fb136d785dcd6119230559858dc12af86a8daaf40c996d84100bfc41a5c991",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023152000",
+      "source_file": "20261023152000_d5o_phase2c_connected_work_gate.sql",
+      "source_version": "20261023152000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "19e88b407c5cc95c28e9cd6076b2fac09c38720c1ca9d39184fe5a2a456cf289",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023153646",
+      "source_file": "20261023153646_d5o_phase2d_phase_policies.sql",
+      "source_version": "20261023153646",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "446acc031a27047b7bd7f9b25d00009f5b60418c6028b6f67bb89d408ae2629c",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023153752",
+      "source_file": "20261023153752_d5o_phase2d_define_develop_guards.sql",
+      "source_version": "20261023153752",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "cc80923fb755bfa224ed700ae834ea836c7134da64d5991aa3611bf0bb72bbe0",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023180000",
+      "source_file": "20261023180000_d5o_phase2f_operate_review_guard.sql",
+      "source_version": "20261023180000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "e06828ccad9b8cc52cefb49de2226c5dc36b1495e702e69b1a0672cf7048f060",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261023201553",
+      "source_file": "20261023201553_phase2g_phase_status.sql",
+      "source_version": "20261023201553",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "166cb56667af6dbffc380ae0503bf6faa55e08797b2a1b264779e5ebd543d30e",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261024010000",
+      "source_file": "20261024010000_d5o_service_sla_calendar_validation.sql",
+      "source_version": "20261024010000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "3f444078725133e9b6408e62241a2f12e7a25a4fec41fb2800fe69211b898658",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261024011000",
+      "source_file": "20261024011000_d5o_service_job_stable_work_type_key.sql",
+      "source_version": "20261024011000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "e130af53589d9d96d3f34f9a574c7674c599320c7d1ea9505cd2a942ee3d8674",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261024012000",
+      "source_file": "20261024012000_d5o_service_child_identity_guard.sql",
+      "source_version": "20261024012000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "1b2255b7e22f09c81ee9f4624f8d2ee76b6fd19bb8136947f097adbd5e85a1ab",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261024105438",
+      "source_file": "20261024105438_phase2hs_connected_design_capability_gate.sql",
+      "source_version": "20261024105438",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "320a88ffbc24bf7af6a80023f26f35aeadd42d8e7e08cb86c149b37edb9fafec",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261024112500",
+      "source_file": "20261024112500_phase2hs_overnight_crew_eligibility.sql",
+      "source_version": "20261024112500",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "eee419503ada7f35194407aa22dbb2a251bfa0d092d7b24c0ceb9fd0c76ac2fb",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261024113000",
+      "source_file": "20261024113000_phase2hs_connected_develop_capability_gate.sql",
+      "source_version": "20261024113000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "7b5e9cf4c4002433ac46455b9b08fe19a9335b62df187bb47ffc4e7bf4ef45fb",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261024150000",
+      "source_file": "20261024150000_phase2ht_workforce_qualification_expiry.sql",
+      "source_version": "20261024150000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "ae8ebb0cd83c5c6ecc804445fcecb3cec8a8ef72d1b52a8a31f57bfddf4e6c81",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261024151000",
+      "source_file": "20261024151000_phase2ht_current_worker_assignment.sql",
+      "source_version": "20261024151000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "8c73747eb163b207095f416b1c67724a0728a2b10479d81d04af95b4d5be68f9",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261025010000",
+      "source_file": "20261025010000_d5o_phase2htd_connected_service_capability_boundary.sql",
+      "source_version": "20261025010000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "22727a482e87067c25352e450e652e87725166cbc3091ae036292570f15721fc",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261027085730",
+      "source_file": "20261027085730_d5o_operate_acceptance_one_time_guard.sql",
+      "source_version": "20261027085730",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "d0ec41ca79f9adbc5a95d3ce814fbf1ce7a8c615ec1ec3d021e686f8edf35bd1",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "SRC-20261027190000",
+      "source_file": "20261027190000_d5o_field_fact_latest_permit_order.sql",
+      "source_version": "20261027190000",
+      "hosted_version": null,
+      "category": "LATE_SOURCE_VERSION_ABSENT",
+      "status": "PENDING_DEPENDENCY_BLOCKED",
+      "retained_sql_comparison": "NO_HOSTED_SQL_LINK",
+      "retained_sql_sha256": null,
+      "source_sha256": "6fe726239c15941201f3026ab1a0bb5f42ab89d04fc95b294d54164c5ab4cea8",
+      "finding": "Pending candidate; transaction probe stopped at source order 215 due historical field-worker invitation.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "REMAP-20261020115849",
+      "source_file": "20261020115849_d5o_admin_invitation_setup.sql",
+      "source_version": "20261020115849",
+      "hosted_version": "20261020131219",
+      "category": "VERSION_REMAPPING_WITH_EQUIVALENT_SQL",
+      "status": "HISTORY_MAPPING_UNRESOLVED",
+      "retained_sql_comparison": "LINE_ENDINGS_ONLY",
+      "retained_sql_sha256": "c921dfb8d18f2215584beef92801d4f362f098a4e9d67a53454526dfec114c48",
+      "source_sha256": "c9f960023f3890849f94e19af9b3488acab705c357b8dfa98726288a898c939b",
+      "finding": "SQL line-ending equivalent; hosted version differs from source version.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "REMAP-20261020135000",
+      "source_file": "20261020135000_d5o_admin_invitation_role_retry_guard.sql",
+      "source_version": "20261020135000",
+      "hosted_version": "20261020131240",
+      "category": "VERSION_REMAPPING_WITH_EQUIVALENT_SQL",
+      "status": "HISTORY_MAPPING_UNRESOLVED",
+      "retained_sql_comparison": "LINE_ENDINGS_ONLY",
+      "retained_sql_sha256": "c4ada0e6fff6365a64b0fabfb6ccedab329e4d705a689ab79a98beeefa59516e",
+      "source_sha256": "2a9b5483ebf4203dbbfed578a80b91e28bd50cb84821de0b1f4679afdbe35163",
+      "finding": "SQL line-ending equivalent; hosted version differs from source version.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "REMAP-20261020200000",
+      "source_file": "20261020200000_d5o_worker_binding_publication_attribution.sql",
+      "source_version": "20261020200000",
+      "hosted_version": "20261020205350",
+      "category": "VERSION_REMAPPING_WITH_EQUIVALENT_SQL",
+      "status": "HISTORY_MAPPING_UNRESOLVED",
+      "retained_sql_comparison": "LINE_ENDINGS_ONLY",
+      "retained_sql_sha256": "e9a0b09d5ae2beaabf54899b01132b9db4596f036b52775a20a2faad1d81d5d7",
+      "source_sha256": "646ce221777a8945123ead66695b6ee3b13323efbe7b7ad72c8bab7cb7e24294",
+      "finding": "SQL line-ending equivalent; hosted version differs from source version.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "HOST-001",
+      "source_file": null,
+      "source_version": null,
+      "hosted_version": "001",
+      "category": "UNMATCHED_HOSTED_HISTORY",
+      "status": "UNRESOLVED",
+      "retained_sql_comparison": "RETAINED_SQL_AVAILABLE_PROTECTED_ONLY",
+      "retained_sql_sha256": null,
+      "source_sha256": null,
+      "finding": "Retained SQL present in protected ledger; no frozen source counterpart. Preserve ledger.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "HOST-002",
+      "source_file": null,
+      "source_version": null,
+      "hosted_version": "002",
+      "category": "UNMATCHED_HOSTED_HISTORY",
+      "status": "UNRESOLVED",
+      "retained_sql_comparison": "RETAINED_SQL_AVAILABLE_PROTECTED_ONLY",
+      "retained_sql_sha256": null,
+      "source_sha256": null,
+      "finding": "Retained SQL present in protected ledger; no frozen source counterpart. Preserve ledger.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "HOST-003",
+      "source_file": null,
+      "source_version": null,
+      "hosted_version": "003",
+      "category": "UNMATCHED_HOSTED_HISTORY",
+      "status": "UNRESOLVED",
+      "retained_sql_comparison": "RETAINED_SQL_AVAILABLE_PROTECTED_ONLY",
+      "retained_sql_sha256": null,
+      "source_sha256": null,
+      "finding": "Retained SQL present in protected ledger; no frozen source counterpart. Preserve ledger.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "HOST-004",
+      "source_file": null,
+      "source_version": null,
+      "hosted_version": "004",
+      "category": "UNMATCHED_HOSTED_HISTORY",
+      "status": "UNRESOLVED",
+      "retained_sql_comparison": "RETAINED_SQL_AVAILABLE_PROTECTED_ONLY",
+      "retained_sql_sha256": null,
+      "source_sha256": null,
+      "finding": "Retained SQL present in protected ledger; no frozen source counterpart. Preserve ledger.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "HOST-005",
+      "source_file": null,
+      "source_version": null,
+      "hosted_version": "005",
+      "category": "UNMATCHED_HOSTED_HISTORY",
+      "status": "UNRESOLVED",
+      "retained_sql_comparison": "RETAINED_SQL_AVAILABLE_PROTECTED_ONLY",
+      "retained_sql_sha256": null,
+      "source_sha256": null,
+      "finding": "Retained SQL present in protected ledger; no frozen source counterpart. Preserve ledger.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "HOST-006",
+      "source_file": null,
+      "source_version": null,
+      "hosted_version": "006",
+      "category": "UNMATCHED_HOSTED_HISTORY",
+      "status": "UNRESOLVED",
+      "retained_sql_comparison": "RETAINED_SQL_AVAILABLE_PROTECTED_ONLY",
+      "retained_sql_sha256": null,
+      "source_sha256": null,
+      "finding": "Retained SQL present in protected ledger; no frozen source counterpart. Preserve ledger.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "HOST-007",
+      "source_file": null,
+      "source_version": null,
+      "hosted_version": "007",
+      "category": "UNMATCHED_HOSTED_HISTORY",
+      "status": "UNRESOLVED",
+      "retained_sql_comparison": "RETAINED_SQL_AVAILABLE_PROTECTED_ONLY",
+      "retained_sql_sha256": null,
+      "source_sha256": null,
+      "finding": "Retained SQL present in protected ledger; no frozen source counterpart. Preserve ledger.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "HOST-008",
+      "source_file": null,
+      "source_version": null,
+      "hosted_version": "008",
+      "category": "UNMATCHED_HOSTED_HISTORY",
+      "status": "UNRESOLVED",
+      "retained_sql_comparison": "RETAINED_SQL_AVAILABLE_PROTECTED_ONLY",
+      "retained_sql_sha256": null,
+      "source_sha256": null,
+      "finding": "Retained SQL present in protected ledger; no frozen source counterpart. Preserve ledger.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "HOST-009",
+      "source_file": null,
+      "source_version": null,
+      "hosted_version": "009",
+      "category": "UNMATCHED_HOSTED_HISTORY",
+      "status": "UNRESOLVED",
+      "retained_sql_comparison": "RETAINED_SQL_AVAILABLE_PROTECTED_ONLY",
+      "retained_sql_sha256": null,
+      "source_sha256": null,
+      "finding": "Retained SQL present in protected ledger; no frozen source counterpart. Preserve ledger.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    },
+    {
+      "id": "HOST-010",
+      "source_file": null,
+      "source_version": null,
+      "hosted_version": "010",
+      "category": "UNMATCHED_HOSTED_HISTORY",
+      "status": "UNRESOLVED",
+      "retained_sql_comparison": "RETAINED_SQL_AVAILABLE_PROTECTED_ONLY",
+      "retained_sql_sha256": null,
+      "source_sha256": null,
+      "finding": "Retained SQL present in protected ledger; no frozen source counterpart. Preserve ledger.",
+      "evidence": [
+        "D5O_RC7_RETAINED_SQL_COMPARISON.json",
+        "D5O_RC7_LATE_MIGRATION_PROBE.json"
+      ]
+    }
+  ]
+}

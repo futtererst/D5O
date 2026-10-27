@@ -24,8 +24,8 @@ else throw Error("URI host, port, or username does not match the authorized D5O 
 if (!url.password || url.password.includes("YOUR-PASSWORD")) throw Error("database password missing");
 
 const mount = `type=bind,source=${resolved},target=/run/secret/postgres-url.txt,readonly`;
-const sql = "select current_database(), current_user, current_setting('server_version_num'), current_setting('default_transaction_read_only'), (select count(*) from supabase_migrations.schema_migrations), (select max(version) from supabase_migrations.schema_migrations)";
-const shell = `export PGOPTIONS='-c default_transaction_read_only=on'; uri="$(cat /run/secret/postgres-url.txt)"; psql "$uri" -X -v ON_ERROR_STOP=1 -At -F '|' -c "${sql}"`;
+const sql = "begin transaction read only; select current_database(), current_user, current_setting('server_version_num'), current_setting('transaction_read_only'), (select count(*) from supabase_migrations.schema_migrations), (select max(version) from supabase_migrations.schema_migrations); commit;";
+const shell = `export PGOPTIONS='-c default_transaction_read_only=on'; uri="$(cat /run/secret/postgres-url.txt)"; psql "$uri" -q -X -v ON_ERROR_STOP=1 -At -F '|' -c "${sql}" -c '\\conninfo'`;
 const run = spawnSync("docker", ["run", "--rm", "--pull=never", "--read-only", "--tmpfs", "/tmp",
   "--network", "bridge", "--mount", mount, "postgres:17-alpine", "sh", "-eu", "-c", shell],
   { encoding: "utf8", maxBuffer: 1024 * 1024, timeout: 30000 });
@@ -38,11 +38,17 @@ if (run.status !== 0) {
     /certificate|ssl/.test(stderr) ? "TLS" : "OTHER";
   throw Error(`read_only_connection_failed:exit=${run.status},mode=${mode},cause=${cause}`);
 }
-const fields = run.stdout.trim().split("|");
+const outputLines = run.stdout.trim().split(/\r?\n/);
+const fields = outputLines[0].split("|");
+const clientTls = outputLines.some((line) => /SSL connection/i.test(line));
 if (fields.length !== 6 || fields[0] !== "postgres" || fields[3] !== "on"
-    || fields[4] !== "177" || fields[5] !== "20261021123923")
-  throw Error("production identity or read-only boundary mismatch");
+    || fields[4] !== "177" || fields[5] !== "20261021123923" || !clientTls)
+  throw Error("production identity or read-only boundary mismatch: " + JSON.stringify({
+    fieldCount: fields.length, database: fields[0], databaseRole: fields[1],
+    postgresVersionNum: fields[2], transactionReadOnly: fields[3],
+    ledgerRows: fields[4], lastMigrationVersion: fields[5], clientTls
+  }));
 console.log(JSON.stringify({ validated: true, mode, database: fields[0], databaseRole: fields[1],
   postgresVersionNum: fields[2], transactionReadOnly: fields[3], ledgerRows: Number(fields[4]),
-  lastMigrationVersion: fields[5], credentialFileName: basename(resolved),
+  lastMigrationVersion: fields[5], clientTls, credentialFileName: basename(resolved),
   credentialDirectory: dirname(resolved) }));

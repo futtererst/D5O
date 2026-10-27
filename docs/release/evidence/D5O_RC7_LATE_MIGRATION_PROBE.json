@@ -1,0 +1,133 @@
+{
+  "format": "d5o-rc7-late-migration-probe-v1",
+  "scope": "isolated historical copy; cumulative transaction rolled back",
+  "warning": "A transaction probe does not establish ledger reconciliation, post-commit behavior or recovery.",
+  "results": [
+    {
+      "order": 212,
+      "filename": "20261023111641_d5o_service_approval_policy_phase1.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 213,
+      "filename": "20261023115306_d5o_phase1b_connected_service_approval.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 214,
+      "filename": "20261023123751_d5o_phase2a_organization_people.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 215,
+      "filename": "20261023140000_d5o_phase2b_tenant_onboarding.sql",
+      "result": "FAILED_ROLLED_BACK",
+      "diagnostic": "ERROR:  check constraint \"admin_identity_requests_role_check\" of relation \"admin_identity_requests\" is violated by some row"
+    },
+    {
+      "order": 216,
+      "filename": "20261023141000_d5o_phase2b_onboarding_commands.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 217,
+      "filename": "20261023142000_d5o_phase2b_vendor_controls.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 218,
+      "filename": "20261023143000_d5o_phase2b_template_governance.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 219,
+      "filename": "20261023150000_d5o_phase2c_lifecycle_features.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 220,
+      "filename": "20261023151000_d5o_phase2c_discover_policy.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 221,
+      "filename": "20261023152000_d5o_phase2c_connected_work_gate.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 222,
+      "filename": "20261023153646_d5o_phase2d_phase_policies.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 223,
+      "filename": "20261023153752_d5o_phase2d_define_develop_guards.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 224,
+      "filename": "20261023180000_d5o_phase2f_operate_review_guard.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 225,
+      "filename": "20261023201553_phase2g_phase_status.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 226,
+      "filename": "20261024010000_d5o_service_sla_calendar_validation.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 227,
+      "filename": "20261024011000_d5o_service_job_stable_work_type_key.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 228,
+      "filename": "20261024012000_d5o_service_child_identity_guard.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 229,
+      "filename": "20261024105438_phase2hs_connected_design_capability_gate.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 230,
+      "filename": "20261024112500_phase2hs_overnight_crew_eligibility.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 231,
+      "filename": "20261024113000_phase2hs_connected_develop_capability_gate.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 232,
+      "filename": "20261024150000_phase2ht_workforce_qualification_expiry.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 233,
+      "filename": "20261024151000_phase2ht_current_worker_assignment.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 234,
+      "filename": "20261025010000_d5o_phase2htd_connected_service_capability_boundary.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 235,
+      "filename": "20261027085730_d5o_operate_acceptance_one_time_guard.sql",
+      "result": "NOT_REACHED"
+    },
+    {
+      "order": 236,
+      "filename": "20261027190000_d5o_field_fact_latest_permit_order.sql",
+      "result": "NOT_REACHED"
+    }
+  ]
+}

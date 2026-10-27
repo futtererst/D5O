@@ -1,0 +1,14 @@
+{
+  "format": "d5o-rc7-cleanup-v1",
+  "disposable_containers_removed": [
+    "d5o-rc7-historical-db",
+    "d5o-rc7-recovery-db"
+  ],
+  "containers_remaining": 0,
+  "anonymous_volumes_removed_with_containers": true,
+  "protected_checkpoint_retained_outside_git": true,
+  "protected_checkpoint_acl_protected": true,
+  "allowed_principals": ["SYSTEM", "local_user"],
+  "plain_text_dump_retained": false,
+  "production_modified": false
+}
