@@ -12,7 +12,8 @@ export type CustomerTaskWork = { id: string;
     reviews?: Array<{ id: string; packageId: string; revision?: number; discipline: string; status: string;
       requestedByActorId?: string }>;
     releases?: Array<{
-    id: string; packageId: string; status: string; issuedByActorId?: string }> };
+    id: string; packageId: string; status: string; issuedByActorId?: string }>;
+    changes?: Array<{ id: string; status: string }> };
   definition?: { status?: string; authorityRevision?: number;
   reviews?: { commercial?: string; delivery?: string };
   decisions?: Array<{ action?: string; actorId?: string; reviewRole?: string }>;
@@ -190,6 +191,8 @@ export function designTasks(records: CustomerTaskWork[], role: string,
       title, phase: "Design", status: "available", revision, action
     });
     if (role === "operations_leader") return [
+      ...(record.design?.releases ?? []).filter((item) => item.status === "Hold pending acknowledgment")
+        .map((item) => task(`hold:${item.id}`, "Acknowledge Design field hold", "acknowledge-hold")),
       ...(record.design?.documents ?? []).filter((item) => item.status === "In review"
         && item.submittedByActorId !== actorId)
         .map((item) => task(`document:${item.id}`, "Independently review Design document", "approve-document")),
@@ -204,6 +207,8 @@ export function designTasks(records: CustomerTaskWork[], role: string,
       return [task("prepare", "Prepare Design package", "create-package")];
     if ((record.design?.releases ?? []).some((item) =>
       item.status === "Awaiting receipt" || item.status === "Accepted")) return [];
+    if ((record.design?.changes ?? []).some((item) => item.status === "Open"))
+      return [task("field-change", "Revise customer-authorized Design package", "resolve-change")];
     const documents = record.design?.documents ?? [];
     if (!documents.length) return [task("document", "Prepare Design document", "save-document")];
     if (documents.some((item) => item.status === "In review")) return [];

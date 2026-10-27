@@ -30,7 +30,8 @@ type WorkRow = { id: string; canonicalWorkId?: string; title: string;
     packages?: Array<{ packageId: string }>;
     documents?: Array<{ id: string; status: string; submittedByActorId?: string }>;
     reviews?: Array<{ id: string; packageId: string; discipline: string; status: string; requestedByActorId?: string }>;
-    releases?: Array<{ id: string; packageId: string; status: string; issuedByActorId?: string }> };
+    releases?: Array<{ id: string; packageId: string; status: string; issuedByActorId?: string }>;
+    changes?: Array<{ id: string; source: string; status: string }> };
   deploy?: { permits?: Array<{ packageId?: string; status?: string }>;
     workAcceptance?: { id?: string; receipt?: string; revision?: number } };
   operate?: { activation?: { status?: string }; source?: { workAcceptanceId?: string }; requests?: Array<{
@@ -126,6 +127,43 @@ export async function GET(request: NextRequest) {
         return result;
       });
       const visibleIds = new Set(visible.map((item) => item.id));
+      const fieldChangeTasks: CustomerWorkTask[] = [];
+      if (["admin", "project_manager", "operations_leader", "billing_commercial_lead"].includes(context.actor.role)) {
+        const reads = await Promise.all(visible.map(async (work) => ({ work,
+          result: await call("d5o_hosted_field_change_read_v1", {
+            p_workspace_key: workspace, p_presentation_id: work.id }) })));
+        if (reads.some(({ result }) => result.error || !result.data || typeof result.data !== "object"))
+          return reply({ error: "field_change_queue_unavailable" }, 503);
+        for (const { work, result } of reads) {
+          const changes = (result.data as { changes?: Array<{ id: string; packageId: string;
+            revision: number; status: string; kind?: string; facts?: { submittedBy?: string } }> }).changes ?? [];
+          for (const change of changes) {
+            let phase = "Develop", action = "", title = "";
+            const role = context.actor.role;
+            if (change.kind === "Scope change" && ["Open", "Returned"].includes(change.status)
+              && ["project_manager", "billing_commercial_lead"].includes(role)) {
+              action = "propose"; title = "Prepare commercial Scope change";
+            } else if (change.status === "Proposed" && ["project_manager", "billing_commercial_lead"].includes(role)) {
+              action = "submit-review"; title = "Submit commercial Scope change review";
+            } else if (change.status === "Internal review" && ["admin", "billing_commercial_lead"].includes(role)
+              && change.facts?.submittedBy !== context.actor.id) {
+              action = "review"; title = "Independently review commercial Scope change";
+            } else if (change.status === "Internally approved" && ["project_manager", "operations_leader"].includes(role)) {
+              action = "record-customer"; title = "Record customer Scope change authorization";
+            } else if (change.status === "Customer authorized") {
+              const designChange = work.design?.changes?.find((item) => item.source === `field-change:${change.id}`);
+              if (!designChange && ["admin", "project_manager"].includes(role)) {
+                phase = "Design"; action = "record-change"; title = "Revise customer-authorized Design package";
+              } else if (designChange?.status === "Resolved" && ["project_manager", "operations_leader"].includes(role)) {
+                phase = "Deploy"; action = "resolve"; title = "Resolve authorized field change";
+              }
+            }
+            if (action) fieldChangeTasks.push({ id: `field-change:${work.id}:${change.id}:${action}:${change.revision}`,
+              workId: work.id, packageId: change.packageId, decisionId: change.id,
+              title, phase, action, status: "available", revision: change.revision });
+          }
+        }
+      }
       const roleTasks = (queued.data as Array<Record<string, unknown>>)
         .filter((item) => typeof item.workId === "string" && visibleIds.has(item.workId)
           && item.phase !== "Design" && item.phase !== "Deploy")
@@ -184,7 +222,7 @@ export async function GET(request: NextRequest) {
         })));
       return reply({ workspace, workspaceName: context.actor.workspaceName ?? workspace,
       role: context.actor.role, revision: loaded.revision,
-      tasks: [...discoverTasks,...commercialTasks,...defineTasks(visible, context.actor.role, context.actor.id),
+      tasks: [...discoverTasks,...commercialTasks,...fieldChangeTasks,...defineTasks(visible, context.actor.role, context.actor.id),
         ...designTasks(visible, context.actor.role, context.actor.id, connectedPackages),
         ...designReceiptTasks(visible, context.actor.role, context.actor.id),
         ...developTasks(visible, context.actor.role, schedule.state),

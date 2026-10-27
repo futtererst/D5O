@@ -51,6 +51,12 @@ export function FieldChangeControl({ workspace, workId, packageId, releaseId, re
   }, [workspace, workId, packageId, onHoldChange]);
 
   useEffect(() => { void Promise.resolve().then(load).catch((cause) => setError(cause instanceof Error ? cause.message : "Field changes unavailable")); }, [load]);
+  useEffect(() => {
+    const refresh = () => { void load().catch((cause) => setError(cause instanceof Error ? cause.message : "Field changes unavailable")); };
+    window.addEventListener("focus", refresh);
+    window.addEventListener("hashchange", refresh);
+    return () => { window.removeEventListener("focus", refresh); window.removeEventListener("hashchange", refresh); };
+  }, [load]);
 
   async function send(action: string, change: Change | null, data: Record<string, unknown>) {
 

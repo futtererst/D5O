@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { DesignDocumentEvidence } from "@/components/d5o/platform/DesignDocumentEvidence";
+import { FieldChangeDesignSummary } from "@/components/d5o/platform/FieldChangeDesignSummary";
 import type { CustomerDesignAction } from "@/lib/d5o/hosted/customer-design-contract";
 
 type Document = { id: string; revision: number; title: string; status: string; evidenceId?: string;
@@ -15,7 +16,8 @@ type Package = { packageId: string; name?: string; revision?: number;
   windowStart?: string; windowEnd?: string;
   completionBasis?: { unit?: string; criterion?: string } };
 type DesignWork = { id: string; owner?: string; design?: { packages?: Package[]; documents?: Document[];
-  reviews?: Review[]; releases?: Array<{ packageId: string; status: string }> };
+  reviews?: Review[]; releases?: Array<{ id: string; packageId: string; status: string }>;
+  changes?: Array<{ id: string; packageId: string; source: string; openedRevision: number; status: string }> };
   discovery?: { outcome?: string; designHandoff?: { status?: string; submittedByActorId?: string } };
   definition?: { scopeControl?: { requirements?: Array<{ id: string; state?: string; description?: string }> } } };
 type Props = { workspace: string; work: DesignWork; connectedPackages: Package[]; role: string; busy: boolean;
@@ -27,6 +29,7 @@ const note = "Design decision recorded against the exact connected Work revision
 export function CustomerDesignActions({ workspace, work, connectedPackages, role, busy, onAction }: Props) {
   const [evidenceIds, setEvidenceIds] = useState<Record<string, string>>({});
   const [selectedPackageId, setSelectedPackageId] = useState("");
+  const [changeSource, setChangeSource] = useState("");
   const onEvidence = useCallback((evidenceId: string, documentId: string) =>
     setEvidenceIds((current) => current[documentId] === evidenceId ? current
       : { ...current, [documentId]: evidenceId }), []);
@@ -42,6 +45,9 @@ export function CustomerDesignActions({ workspace, work, connectedPackages, role
     && item.revision === chosen?.revision);
   const activeRelease = work.design?.releases?.some((item) => item.packageId === chosen?.packageId
     && ["Awaiting receipt", "Accepted"].includes(item.status)) ?? false;
+  const packageChanges = work.design?.changes?.filter((item) => item.packageId === chosen?.packageId) ?? [];
+  const heldReleases = work.design?.releases?.filter((item) => item.packageId === chosen?.packageId
+    && item.status === "Hold pending acknowledgment") ?? [];
   async function submit(event: React.FormEvent<HTMLFormElement>, action: CustomerDesignAction,
     build: (data: FormData) => Record<string, unknown>) {
     event.preventDefault();
@@ -77,6 +83,36 @@ export function CustomerDesignActions({ workspace, work, connectedPackages, role
       <button disabled={busy}>Create package</button>
     </form>}
     {chosen && <><p><strong>{chosen.name ?? "Design package"}</strong></p>
+      <FieldChangeDesignSummary workspace={workspace} workId={work.id} packageId={chosen.packageId}
+        onChooseSource={setChangeSource} />
+      {owner && changeSource && !packageChanges.some((item) => item.source === changeSource) &&
+        <form onSubmit={(event) => void submit(event, "record-change", (data) => ({
+          packageId: chosen.packageId, source: changeSource, reason: str(data,"reason"),
+          technicalImpact: str(data,"technicalImpact"), commercialImpact: str(data,"commercialImpact"),
+          scheduleImpact: str(data,"scheduleImpact"), affectedRequirementIds: [], affectedDocumentRefs: [] }))}>
+          <h5>Record customer-authorized field change</h5>
+          <p>Exact source: {changeSource}</p>
+          <label>Design change reason<textarea name="reason" minLength={20} required /></label>
+          <label>Technical impact<textarea name="technicalImpact" minLength={10} required /></label>
+          <label>Commercial impact<textarea name="commercialImpact" /></label>
+          <label>Schedule impact<textarea name="scheduleImpact" minLength={5} required /></label>
+          <button disabled={busy}>Record change and hold active release</button>
+        </form>}
+      {heldReleases.length > 0 && ["admin","field_supervisor","operations_leader"].includes(role) &&
+        heldReleases.map((release) => <form key={release.id} onSubmit={(event) => void submit(event,
+          "acknowledge-hold", (data) => ({ releaseId: release.id, note: str(data,"note") }))}>
+          <h5>Receive Design field hold</h5>
+          <label>Independent acknowledgment reason<textarea name="note" minLength={15} required /></label>
+          <button disabled={busy}>Acknowledge field hold</button>
+        </form>)}
+      {owner && packageChanges.filter((item) => item.status === "Open" &&
+        (chosen.revision ?? 0) > item.openedRevision).map((item) =>
+        <form key={item.id} onSubmit={(event) => void submit(event,"resolve-change",(data) => ({
+          changeId: item.id, note: str(data,"note") }))}>
+          <h5>Resolve revised Design basis</h5>
+          <label>Revision resolution reason<textarea name="note" minLength={20} required /></label>
+          <button disabled={busy}>Resolve reviewed Design change</button>
+        </form>)}
       {packages.length > 1 && <label>Design package<select value={chosen.packageId}
         onChange={(event) => setSelectedPackageId(event.target.value)}>
         {packages.map((item) => <option key={item.packageId} value={item.packageId}>{item.name ?? item.packageId}</option>)}
@@ -178,7 +214,7 @@ export function CustomerDesignActions({ workspace, work, connectedPackages, role
           <label>Independent decision note<textarea name="note" minLength={15} required /></label>
           <button disabled={busy}>Approve {review.discipline} review</button>
         </form>)}
-      {owner && !work.design?.releases?.some((item) => item.packageId === chosen.packageId) &&
+      {owner && !activeRelease &&
         <form onSubmit={(event) => void submit(event, "release-package", (data) => ({
           packageId: chosen.packageId, dueDate: str(data, "dueDate"), note: str(data, "note") }))}>
           <h5>Release package</h5><p>Requires an issued document, complete package basis, dated crew demand, and all required independent reviews.</p>

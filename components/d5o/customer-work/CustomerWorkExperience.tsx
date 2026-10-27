@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { CustomerDefineDraftForm } from "./CustomerDefineDraftForm";
 import { CustomerDesignActions } from "./CustomerDesignActions";
+import { FieldChangeControl } from "@/components/d5o/platform/FieldChangeControl";
 import { CustomerDevelopActions } from "./CustomerDevelopActions";
 import { CustomerDevelopAuthority } from "./CustomerDevelopAuthority";
 import { CustomerServiceActions } from "./CustomerServiceActions";
@@ -45,7 +46,8 @@ type WorkDetail = WorkSummary & { canonicalWorkId: string; workspace: string;
   design?: { authorityRevision?: number; packages?: Array<{ packageId: string; name?: string; method?: string; revision?: number }>;
     documents?: Array<{ id: string; revision: number; title: string; status: string; evidenceId?: string; packageIds?: string[] }>;
     reviews?: Array<{ id: string; packageId: string; discipline: string; status: string }>;
-    releases?: Array<{ packageId: string; status: string }> };
+    releases?: Array<{ id: string; packageId: string; status: string }>;
+    changes?: Array<{ id: string; packageId: string; source: string; openedRevision: number; status: string }> };
   deploy?: { authorityRevision?: number; workAcceptance?: { receipt?: string; id?: string;
     revision?: number } }; operate?: { authorityRevision?: number;
     source?: { workAcceptanceId?: string }; support?: { status?: string };
@@ -121,6 +123,11 @@ export function CustomerWorkExperience({ workspace, initialWorkId, initialTaskId
   useEffect(() => { const controller = new AbortController();
     const timer = setTimeout(() => { void load(controller.signal); }, 0);
     return () => { clearTimeout(timer); controller.abort(); }; }, [load]);
+  useEffect(() => {
+    const refresh = () => { void load(); };
+    window.addEventListener("hashchange", refresh);
+    return () => window.removeEventListener("hashchange", refresh);
+  }, [load]);
   const projection = detail?.phaseStatus?.projection;
   const role = detail?.role ?? list?.role ?? "";
   async function postAction(endpoint: string, payload: Record<string, unknown>, fallback: string) {
@@ -284,7 +291,9 @@ export function CustomerWorkExperience({ workspace, initialWorkId, initialTaskId
       <small>{role.replaceAll("_", " ") || "Loading access"}</small></div>
       <h2>My Work</h2>{list?.tasks?.length ? <ul>{list.tasks.map((task) => {
         const work = list.records.find((item) => item.id === task.workId);
-        const deployLink = task.phase === "Deploy" && task.action
+        const deployLink = task.id.startsWith("field-change:") && task.phase === "Deploy"
+          ? `/work/customer/${encodeURIComponent(workspace)}/deploy?workId=${encodeURIComponent(task.workId)}&package=${encodeURIComponent(task.packageId ?? "")}`
+          : task.phase === "Deploy" && task.action
           ? `/work/customer/${encodeURIComponent(workspace)}/deploy?workId=${encodeURIComponent(task.workId)}&package=${encodeURIComponent(task.packageId ?? "")}&focus=${encodeURIComponent(task.action)}&decision=${encodeURIComponent(task.decisionId ?? "")}&release=${encodeURIComponent(task.releaseId ?? "")}&sourceRevision=${task.sourceRevision ?? 0}&decisionRevision=${task.revision}`
           : null;
         const operateLink = task.phase === "Operate" && task.action
@@ -380,6 +389,10 @@ export function CustomerWorkExperience({ workspace, initialWorkId, initialTaskId
               onChanged={() => load()} />
             <CustomerDevelopActions workspace={workspace} workId={detail.record.id} role={role}
               onChanged={() => load()} />
+            {detail.record.design?.releases?.filter((release) => release.status === "Accepted")
+              .map((release) => <FieldChangeControl key={release.id} mode="commercial"
+                workspace={workspace} workId={detail.record.id} packageId={release.packageId}
+                releaseId={release.id} reports={[]} evidence={[]} onRecordChanged={() => void load()} />)}
             <CustomerCommercialActions work={detail.record as unknown as WorkRecord}
               role={role} busy={busy} onCommand={executeCommercial}
               onSaveInitialOffer={saveInitialOffer} /></>}
