@@ -1,5 +1,15 @@
 # D5O RC3 release decision
 
+## RC3-C closure addendum (2026-10-27)
+
+**Product behavior: PASS for the authoritative six-phase parent Work and post-handover connected-service lifecycle. Original Develop-stage child-service acceptance sequence: NOT MET. Contract reconciliation: DECISION REQUIRED.** The database requires `activation.status = 'Active'` before service request intake or job creation. RC3-C preserved that boundary and qualified the supported Operate sequence. Its final local browser run passed 63/63 checks, with verified cleanup, assigned Design/Develop task-link navigation, forged/completed task-link denial, two independent tenants, one child job each, phase replay and separate Finance review. See [`D5O_RC3C_CONNECTED_SERVICE_CONTRACT.md`](D5O_RC3C_CONNECTED_SERVICE_CONTRACT.md), [`D5O_RC3C_MY_WORK_NAVIGATION.md`](D5O_RC3C_MY_WORK_NAVIGATION.md), [`D5O_RC3C_FINAL_QUALIFICATION.md`](D5O_RC3C_FINAL_QUALIFICATION.md) and [`evidence/D5O_RC3C_TWO_TENANT_BROWSER.json`](evidence/D5O_RC3C_TWO_TENANT_BROWSER.json).
+
+RC3-C application commit: `b1226170a59e678d236d6d85570f01a59c033bc4`. The evidence commit follows it in the isolated branch.
+
+The section below retains the original RC3 decision as historical context. Hosted staging, historical migration equivalence, recovery and production readiness remain separate gates.
+
+## Original RC3 decision
+
 **RC3 verdict: PARTIAL.** The supported parent six-phase Work journey passed locally for two fictional tenants on the same integrated application: authenticated Discover, Define, Design, Develop and Deploy decisions, Operate support activation, and separate Finance review. Application commit: `4ab521155c814724dd03f68ce20039d77cdd85a9`. Final machine evidence is [`evidence/D5O_RC3_TWO_TENANT_BROWSER.json`](evidence/D5O_RC3_TWO_TENANT_BROWSER.json): 61 passed, 0 failed, cleanup verified. The evidence commit follows this application commit.
 
 The result qualifies the **local parent Work** behavior, not the complete requested RC3 acceptance sequence or production promotion. The existing support-service child request was exercised through browser controls on the same parent Work **after** the Operate handoff, rather than in the requested Develop interval. The current My Work service tasks arise in the Operate support-service path; the runner cannot move those decisions earlier without proving that the authoritative business model permits it. Some Design/Develop controls were opened from Work after My Work responsibility checks rather than from each individual task link. The child-service ordering and full task-link routing therefore remain unqualified acceptance items. No authorization bypass was shown.
