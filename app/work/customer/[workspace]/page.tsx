@@ -8,7 +8,7 @@ import "./work.css";
 export const dynamic = "force-dynamic";
 export default async function CustomerWorkPage({ params, searchParams }: {
   params: Promise<{ workspace: string }>;
-  searchParams: Promise<{ work?: string }>;
+  searchParams: Promise<{ work?: string; task?: string }>;
 }) {
   const { workspace } = await params;
   if (!customerWorkspaceKey.test(workspace) || workspace === "rybex" || workspace === "rotork")
@@ -20,7 +20,7 @@ export default async function CustomerWorkPage({ params, searchParams }: {
       redirect(`/auth/sign-in?next=${encodeURIComponent(`/work/customer/${workspace}`)}`);
     notFound();
   }
-  const { work } = await searchParams;
+  const { work, task } = await searchParams;
   return <main className="d5o-customer-work">
     <header className="d5o-customer-work-header">
       <div><p>D5O · Customer Work</p><h1>Work lifecycle</h1>
@@ -31,6 +31,7 @@ export default async function CustomerWorkPage({ params, searchParams }: {
         {scope.context.actor.role === "admin" &&
           <Link href={`/work/admin/configuration?workspace=${encodeURIComponent(workspace)}`}>Configuration</Link>}</nav>
     </header>
-    <CustomerWorkExperience key={workspace} workspace={workspace} initialWorkId={work ?? ""} />
+    <CustomerWorkExperience key={workspace} workspace={workspace} initialWorkId={work ?? ""}
+      initialTaskId={task ?? ""} />
   </main>;
 }

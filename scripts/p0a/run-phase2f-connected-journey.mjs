@@ -9,7 +9,8 @@ import { chromium } from "@playwright/test";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
-const rc3 = process.env.D5O_RC3_BROWSER === "1";
+const rc3c = process.env.D5O_RC3C_BROWSER === "1";
+const rc3 = rc3c || process.env.D5O_RC3_BROWSER === "1";
 const phase2hvc = process.env.D5O_PHASE2HVC === "1";
 const phase2hvcFinal = process.env.D5O_PHASE2HVC_FINAL === "1";
 const phase2hv = rc3 || process.env.D5O_PHASE2HV === "1";
@@ -27,7 +28,9 @@ const phase2hsGateA = process.env.D5O_PHASE2HS_GATE_A === "1" || phase2hsGateB;
 const phase2hr = process.env.D5O_PHASE2HR === "1" || phase2hsGateA;
 const phase2hCompletion = process.env.D5O_PHASE2H_COMPLETION === "1" || phase2hr;
 const phase2h = process.env.D5O_PHASE2H === "1" || phase2hCompletion;
-const output = resolve(root, rc3
+const output = resolve(root, rc3c
+  ? "docs/release/evidence/D5O_RC3C_TWO_TENANT_BROWSER.json"
+  : rc3
   ? "docs/release/evidence/D5O_RC3_TWO_TENANT_BROWSER.json"
   : phase2hvcFinal
   ? "docs/release/evidence/D5O_PHASE2HVC_FINAL_BROWSER.json"
@@ -71,7 +74,8 @@ const evidence = { baseline: process.env.D5O_SOURCE_SHA || (rc3 ? "e3396521099a5
     : "8d536b4ce74282fe6c3a0e2dbb66b1752ca51ec2"),
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
 let rc3PrepublicationDraftId=null;
-const browserEvidenceDir = (legacyPath) => resolve(root,rc3
+const browserEvidenceDir = (legacyPath) => resolve(root,rc3c
+  ? "docs/release/evidence/rc3c-browser" : rc3
   ? "docs/release/evidence/rc3-browser" : phase2htd
   ? "docs/architecture/evidence/phase2htd-browser" : phase2htc
   ? "docs/architecture/evidence/phase2htc-browser" : phase2htGateB
@@ -287,8 +291,12 @@ try {
     await task.waitFor({state:"visible",timeout:30000});
     const href=await task.getAttribute("href");
     assert(href?.includes(workId),`${actor}:wrong_task_work:${href}`);
+    const taskId=new URL(href,"http://127.0.0.1").searchParams.get("task");
+    assert(taskId,`${actor}:task_identity_missing:${href}`);
     await task.click();
-    (evidence.browserTasks??=[]).push({tenant:tenant.workspaceKey,actor,workId,title,href,
+    await page.getByRole("status").filter({hasText:`Assigned responsibility: ${title}`})
+      .waitFor({timeout:30000});
+    (evidence.browserTasks??=[]).push({tenant:tenant.workspaceKey,actor,workId,title,href,taskId,
       origin:"authenticated_my_work_link"});
     return page;
   }
@@ -400,7 +408,32 @@ try {
     prior.resolved=true;
   }
   async function browserDesignAction(actor,tenant,workId,button,prepare=async()=>{},expected=200) {
-    const page=await designPage(actor,tenant,workId);
+    let page=await designPage(actor,tenant,workId);
+    const assignedTitles={
+      "Send awarded Design handoff":"Send awarded Design handoff",
+      "Accept awarded Design handoff":"Receive awarded Design handoff",
+      "Create package":"Prepare Design package",
+      "Save document draft":"Prepare Design document",
+      "Submit document for independent review":"Retain and submit Design PDF",
+      "Approve document":"Independently review Design document",
+      "Issue approved document for use":"Issue approved Design document",
+      "Release for independent receipt":"Complete and release Design package"
+    };
+    const assignedTitle=assignedTitles[button]
+      ?? (button==="Save package basis"
+        ? await page.locator('.d5o-customer-work-list a[href*="#phase-design"]')
+          .filter({hasText:"Retain and submit Design PDF"}).count()
+          ? "Retain and submit Design PDF" : "Complete and release Design package"
+        : null)
+      ?? (button==="Save dated crew demand" || /^Request (Engineering|Delivery|Safety|Quality) review$/.test(button)
+        ? "Complete and release Design package" : null)
+      ?? (/^Approve (Engineering|Delivery|Safety|Quality) review$/.test(button)
+        ? `Review ${button.split(" ")[1]} package basis` : null);
+    let assignedTaskId=null;
+    if(rc3 && assignedTitle) {
+      page=await rc3OpenTask(actor,tenant,workId,assignedTitle);
+      assignedTaskId=new URL(page.url()).searchParams.get("task");
+    }
     await prepare(page);
     const taskBefore=await page.locator('.d5o-customer-work-list a[href*="#phase-design"]')
       .allTextContents();
@@ -441,6 +474,7 @@ try {
     },{workspace:tenant.workspaceKey,workId});
     designActionEvidence.push({tenant:tenant.workspaceKey,workId,actor,button,
       origin:"authenticated_browser_control",httpStatus:response.status(),
+      assignedTaskId,openedFromMyWork:!!assignedTaskId,
       result:body.error??body.action??null,commandId:requestBody.commandId,
       taskBefore,taskAfter:refreshed.tasks,phaseAfter:refreshed.phase,
       decisionRevision:refreshed.revision,configurationVersionId:refreshed.configurationVersionId,
@@ -506,8 +540,12 @@ try {
       .filter({hasText:taskTitles[button]??button});
     await task.waitFor({state:"visible",timeout:30000});
     const taskHref=await task.getAttribute("href");
+    const taskId=new URL(taskHref,"http://127.0.0.1").searchParams.get("task");
+    assert(taskId,`${actor}:${button}:task_identity_missing:${taskHref}`);
     await task.click();
     await page.waitForURL((location)=>location.hash==="#phase-develop",{timeout:15000});
+    await page.getByRole("status").filter({hasText:`Assigned responsibility: ${taskTitles[button]??button}`})
+      .waitFor({timeout:30000});
     try { await prepare(page); }
     catch(error) {
       const panels=await page.locator(".d5o-customer-design-actions").allTextContents();
@@ -556,7 +594,7 @@ try {
     await page.screenshot({path:resolve(dir,screenshot),fullPage:true});
     developActionEvidence.push({tenant:tenant.workspaceKey,workId,actor,button,
       origin:"authenticated_browser_control",httpStatus:response.status(),
-      openedFromMyWork:true,taskHref,request:requestBody,
+      openedFromMyWork:true,taskHref,taskId,request:requestBody,
       commandId:requestBody.commandId,result:body.result??body.error??null,
       taskBefore,taskAfter,phaseAfter:status.phase,developStatus:status.develop,
       configurationVersionId:status.pin,replayMatches:status.replay,screenshot,
@@ -1938,7 +1976,9 @@ try {
         });
         await browserDesignBasis(owner,tenant,workId,prefix==="a"?"":
           "Isolate, restore, inspect, test, and return service to customer");
-        const page=await designPage(owner,tenant,workId);
+        const page=rc3
+          ? await rc3OpenTask(owner,tenant,workId,"Retain and submit Design PDF")
+          : await designPage(owner,tenant,workId);
         await page.getByLabel("Exact document PDF").setInputFiles({name:"phase2hr-method.pdf",
           mimeType:"application/pdf",buffer:Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF")});
         const uploadResponse=page.waitForResponse((response)=>response.url().includes("/api/d5o-hosted/design-document-evidence")
@@ -2201,7 +2241,9 @@ try {
           return requests.map((item)=>item.status);
         },{workspace:tenant.workspaceKey,body:released.requestBody});
         assert.deepEqual(replayRelease,[200,200],`${prefix}:release-replay`);
-        const opsPage=await designPage(ops,tenant,workId);
+        const opsPage=rc3
+          ? await rc3OpenTask(ops,tenant,workId,"Receive released Design package")
+          : await designPage(ops,tenant,workId);
         await opsPage.getByLabel("Package receipt reason").fill("Independently accepted exact fictional Design package");
         const receiptResponse=opsPage.waitForResponse((response)=>response.url().includes("/api/d5o-hosted/customer-work")
           && response.request().method()==="POST");
@@ -2358,6 +2400,38 @@ try {
         versionId:current.record.phaseConfigurationVersionId,browserReceipt});
     }
     return outcomes;
+  });
+  if(rc3c) await check("forged and completed Design task links grant no authority",async()=>{
+    const work=await call("a_admin","d5o_hosted_prototype_read_v1",{
+      p_workspace_key:a.workspaceKey,p_state_key:"work"});
+    assert(!work.error,work.error?.message);
+    const record=work.data.state.records.find((item)=>item.title==="Phase 2D policy qualification");
+    assert(record);
+    const page=await rc3SignedInPage("a_ops");
+    const stale=evidence.browserTasks.find((item)=>item.tenant===a.workspaceKey
+      && item.title==="Receive awarded Design handoff");
+    assert(stale?.taskId,"completed_design_task_not_recorded");
+    const observations=[];
+    for(const [kind,taskId] of [["forged",randomUUID()],["completed",stale.taskId]]) {
+      await page.goto(`http://127.0.0.1:${server.port}/work/customer/${a.workspaceKey}`+
+        `?work=${encodeURIComponent(record.id)}&task=${encodeURIComponent(taskId)}#phase-design`);
+      await page.getByRole("alert").filter({hasText:"This responsibility is no longer available"})
+        .waitFor({timeout:30000});
+      const queue=await page.evaluate(async(workspace)=>{
+        const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`);
+        return {status:response.status,body:await response.json()};
+      },a.workspaceKey);
+      assert.equal(queue.status,200);
+      assert(!(queue.body.tasks??[]).some((item)=>item.id===taskId));
+      observations.push({kind,taskId,staleWarning:true,notInQueue:true});
+    }
+    const after=await call("a_admin","d5o_hosted_prototype_read_v1",{
+      p_workspace_key:a.workspaceKey,p_state_key:"work"});
+    assert(!after.error,after.error?.message);
+    const updated=after.data.state.records.find((item)=>item.id===record.id);
+    assert.equal(updated.phaseConfigurationVersionId,record.phaseConfigurationVersionId);
+    assert.equal(updated.design.authorityRevision,record.design.authorityRevision);
+    return {observations,designRevisionUnchanged:true,configurationPinUnchanged:true};
   });
   if(phase2hr) await check("tenant-neutral Design API rejects foreign, wrong-role, forged and stale actions",async()=>{
     const read=async(actor,tenant)=>{
@@ -3077,6 +3151,28 @@ try {
       outcomes.push({tenant:tenant.workspaceKey,workId:current.work.canonicalWorkId,
         permitId:permit.id,releaseId:permit.releaseId,configurationVersionId:current.work.phaseConfigurationVersionId,
         unauthorizedDenied:true,crossTenantDenied:true});
+    }
+    return outcomes;
+  });
+  if(rc3) await check("connected service is denied before parent support activation",async()=>{
+    const outcomes=[];
+    for(const [prefix,tenant] of [["a",a],["b",b]]) {
+      const before=await connectedBasis(prefix,tenant);
+      assert.notEqual(before.operate.state?.activation?.status,"Active");
+      const result=await call(`${prefix}_pm`,"d5o_hosted_operate_command_v1",{
+        p_workspace_key:tenant.workspaceKey,p_presentation_id:before.work.id,
+        p_action:"open-request",p_input:{assetId:randomUUID(),
+          title:"Premature service request",description:"Must await supported asset and activation",
+          contact:"Fictional customer",impact:"Standard"},
+        p_command_id:randomUUID(),p_expected_source_revision:before.source.revision,
+        p_expected_deploy_revision:before.deploy.revision,
+        p_expected_operate_revision:before.operate.revision});
+      assert(result.error,`${prefix}:premature_service_accepted`);
+      const after=await connectedBasis(prefix,tenant);
+      assert.equal(after.operate.revision,before.operate.revision);
+      assert.equal(after.work.phaseConfigurationVersionId,before.work.phaseConfigurationVersionId);
+      outcomes.push({tenant:tenant.workspaceKey,rpcCode:result.error.code,
+        rpcMessage:result.error.message,operateRevisionUnchanged:true,pinUnchanged:true});
     }
     return outcomes;
   });

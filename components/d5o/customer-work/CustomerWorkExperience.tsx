@@ -84,12 +84,14 @@ function evidenceLabel(value?: string | null) {
   return `${names[kind] ?? readableError(kind)}${reference && kind !== "work_created" ? ` · decision ${reference}` : ""}`;
 }
 
-export function CustomerWorkExperience({ workspace, initialWorkId }: {
-  workspace: string; initialWorkId: string;
+export function CustomerWorkExperience({ workspace, initialWorkId, initialTaskId }: {
+  workspace: string; initialWorkId: string; initialTaskId: string;
 }) {
   const [list, setList] = useState<ListResponse | null>(null);
   const [detail, setDetail] = useState<DetailResponse | null>(null);
   const selected = initialWorkId;
+  const linkedTask = initialTaskId && list?.tasks.find((task) =>
+    task.id === initialTaskId && task.workId === selected);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -291,7 +293,7 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
         const label = <>{task.title}<small>{task.phase} · {work?.title ?? "Work"} · {work?.customer ?? "Customer pending"} · {task.status === "view_only" ? "View context" : "Ready for decision"}{task.dueDate ? ` · Due ${task.dueDate}` : ""}</small></>;
         return <li key={task.id}>{deployLink ? <a href={deployLink}>{label}</a>
           : operateLink ? <Link href={operateLink}>{label}</Link>
-          : <Link href={`/work/customer/${encodeURIComponent(workspace)}?work=${encodeURIComponent(task.workId)}#phase-${task.phase.toLowerCase()}`}>{label}</Link>}</li>;
+          : <Link href={`/work/customer/${encodeURIComponent(workspace)}?work=${encodeURIComponent(task.workId)}&task=${encodeURIComponent(task.id)}#phase-${task.phase.toLowerCase()}`}>{label}</Link>}</li>;
       })}</ul> : !loading && !error ? <p>No current responsibilities for your role. Refresh after a business decision.</p> : null}
       <h2>Work records</h2>{list?.records.length ? <ul>{list.records.map((work) =>
         <li key={work.id}><Link aria-current={selected === work.id ? "page" : undefined}
@@ -313,6 +315,9 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
           <div><dt>Support</dt><dd>{projection?.supportActive ? "Active" : "Pending"}</dd></div>
           <div><dt>Financial closeout</dt><dd>{projection?.financialCloseout ?? "Pending"}</dd></div></dl>
       </header>
+      {initialTaskId && !loading && (linkedTask
+        ? <p role="status">Assigned responsibility: {linkedTask.title} · {linkedTask.phase} · {linkedTask.status === "available" ? "Ready for decision" : "View context"}</p>
+        : <p role="alert">This responsibility is no longer available. Review current My Work before deciding.</p>)}
       {detail.phaseStatus.status === "unresolved" && <p role="status">Historical phase position needs reconciliation. No completion has been inferred.</p>}
       {projection && <><nav className="d5o-customer-phase-nav" aria-label="Work phases">{phases.map((phase) =>
         <a key={phase} href={`#phase-${phase.toLowerCase()}`} aria-current={projection.currentPhase === phase ? "step" : undefined}>
