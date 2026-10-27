@@ -7,8 +7,11 @@ import { createClient } from "@supabase/supabase-js";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
+const phase2hvc=process.env.D5O_PHASE2HVC_UPGRADE==="1";
 const manifest = JSON.parse(readFileSync(join(root, "docs/release/D5O_RC0_MIGRATION_CHECKSUMS.json"), "utf8"));
-const pending = manifest.migrations.filter((item) => item.source.startsWith("local"));
+const pending = phase2hvc
+  ? [{version:"20261027085730",filename:"20261027085730_d5o_operate_acceptance_one_time_guard.sql"}]
+  : manifest.migrations.filter((item) => item.source.startsWith("local"));
 const result = { baseline: manifest.baseline, source: manifest.source, pending: pending.map((item) => item.filename),
   markerPreserved: false, workPinPreserved: false, auditPreserved: false,
   appliedVersions: [], cleanup: null, error: null };
@@ -23,7 +26,7 @@ function sql(query) {
     "-X", "-t", "-A", "-v", "ON_ERROR_STOP=1"], query);
 }
 try {
-  runtime = await createP0aRuntime(root, { migrationCutoff: "20261023" });
+  runtime = await createP0aRuntime(root, { migrationCutoff: phase2hvc?"20261027":"20261023" });
   const key = `rc0_upgrade_${randomUUID().replaceAll("-", "")}`;
   const id = randomUUID();
   sql(`insert into d5o_hosted.workspaces(id,workspace_key,display_name) values ('${id}','${key}','RC0 synthetic pre-upgrade tenant');`);
@@ -79,8 +82,29 @@ try {
   result.fixture = {workspaceId:id,actorId,workId,configurationVersionId:versionId,
     before:{tenant:before,work:pinnedBefore,history:historyBefore},
     after:{tenant:after,work:pinnedAfter,history:historyAfter}};
-  result.appliedVersions = sql(`select version from supabase_migrations.schema_migrations where version >= '20261023' order by version;`).split("\n").filter(Boolean);
+  result.appliedVersions = sql(`select version from supabase_migrations.schema_migrations where version >= '${phase2hvc?"20261027":"20261023"}' order by version;`).split("\n").filter(Boolean);
   assert.deepEqual(result.appliedVersions, pending.map((item) => item.version));
+  if(phase2hvc) {
+    result.boundary=JSON.parse(sql(`select pg_catalog.jsonb_build_object(
+      'publicDefiner',p.prosecdef,'publicSearchPath',p.proconfig,
+      'authenticatedExecute',has_function_privilege('authenticated',p.oid,'EXECUTE'),
+      'anonExecute',has_function_privilege('anon',p.oid,'EXECUTE'),
+      'serviceExecute',has_function_privilege('service_role',p.oid,'EXECUTE'),
+      'priorAuthenticatedExecute',has_function_privilege('authenticated',
+        'd5o_hosted.d5o_hosted_operate_command_phase2hvc_prior_v1(text,text,text,jsonb,text,bigint,integer,integer)'::regprocedure,'EXECUTE'),
+      'operateRls',(select relrowsecurity from pg_class where oid='d5o_hosted.connected_operate_states'::regclass),
+      'evidenceRls',(select relrowsecurity from pg_class where oid='d5o_hosted.customer_decision_evidence'::regclass))::text
+      from pg_proc p where p.oid='public.d5o_hosted_operate_command_v1(text,text,text,jsonb,text,bigint,integer,integer)'::regprocedure;`));
+    assert.equal(result.boundary.publicDefiner,true);
+    assert(result.boundary.publicSearchPath.some((item)=>item==="search_path=\"\""),
+      "restricted_search_path_missing");
+    assert.equal(result.boundary.authenticatedExecute,true);
+    assert.equal(result.boundary.anonExecute,false);
+    assert.equal(result.boundary.serviceExecute,false);
+    assert.equal(result.boundary.priorAuthenticatedExecute,false);
+    assert.equal(result.boundary.operateRls,true);
+    assert.equal(result.boundary.evidenceRls,true);
+  }
 } catch (error) { result.error = String(error); }
 finally {
   if (runtime) result.cleanup = cleanupP0aRuntime(runtime);

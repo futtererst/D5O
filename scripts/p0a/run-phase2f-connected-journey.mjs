@@ -2,13 +2,15 @@ import assert from "node:assert/strict";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import { createServer } from "node:net";
 import { createClient } from "@supabase/supabase-js";
 import { chromium } from "@playwright/test";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
+const phase2hvc = process.env.D5O_PHASE2HVC === "1";
+const phase2hvcFinal = process.env.D5O_PHASE2HVC_FINAL === "1";
 const phase2hv = process.env.D5O_PHASE2HV === "1";
 const phase2hu = process.env.D5O_PHASE2HU === "1" || phase2hv;
 const rc0DeployIntegrity = phase2hu && process.env.D5O_RC0_DEPLOY_INTEGRITY === "1";
@@ -24,7 +26,11 @@ const phase2hsGateA = process.env.D5O_PHASE2HS_GATE_A === "1" || phase2hsGateB;
 const phase2hr = process.env.D5O_PHASE2HR === "1" || phase2hsGateA;
 const phase2hCompletion = process.env.D5O_PHASE2H_COMPLETION === "1" || phase2hr;
 const phase2h = process.env.D5O_PHASE2H === "1" || phase2hCompletion;
-const output = resolve(root, phase2hv
+const output = resolve(root, phase2hvcFinal
+  ? "docs/release/evidence/D5O_PHASE2HVC_FINAL_BROWSER.json"
+  : phase2hvc
+  ? "docs/release/evidence/D5O_PHASE2HVC_OPERATE_INTEGRITY.json"
+  : phase2hv
   ? "docs/architecture/evidence/phase2hv-two-tenant-results.json"
   : rc0DeployIntegrity
   ? "docs/release/D5O_RC0_DEPLOY_INTEGRITY.json"
@@ -51,7 +57,7 @@ const output = resolve(root, phase2hv
   : phase2g
   ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
   : "docs/architecture/evidence/phase2f-connected-journey-results.json");
-const evidence = { baseline: process.env.D5O_SOURCE_SHA || (phase2hv ? "cf781d39e831a6d396f0116326aac59173fd43f4"
+const evidence = { baseline: process.env.D5O_SOURCE_SHA || (phase2hvc || phase2hvcFinal ? "025b1036f6bdae91d72e409fe897e551ca9a6e23" : phase2hv ? "cf781d39e831a6d396f0116326aac59173fd43f4"
   : rc0DeployIntegrity ? "3710ecace04e54769b5761da83f12594562e95b3"
   : phase2hu ? "639308061ff236ac0afb6487088a44c315e9b554"
   : phase2htd ? "88381435a965050402dcd423b4856115246459a3"
@@ -2283,6 +2289,31 @@ try {
       deploy:deployRow?JSON.parse(deployRow):{revision:0,state:{}},
       operate:operateRow?JSON.parse(operateRow):{revision:0,state:{}}};
   };
+  const operateSnapshot=async(prefix,tenant)=>{
+    const basis=await connectedBasis(prefix,tenant);
+    const counts=sql(`select pg_catalog.jsonb_build_object(
+      'events',(select count(*) from d5o_hosted.connected_operate_events
+        where workspace_id=${q(tenant.workspaceId)} and work_id=${q(basis.work.canonicalWorkId)}),
+      'receipts',(select count(*) from d5o_hosted.connected_operate_receipts
+        where workspace_id=${q(tenant.workspaceId)} and work_id=${q(basis.work.canonicalWorkId)}))::text;`);
+    return {revision:basis.operate.revision,state:basis.operate.state,
+      sourceRevision:basis.source.revision,deployRevision:basis.deploy.revision,
+      configurationVersionId:basis.work.phaseConfigurationVersionId,counts:JSON.parse(counts)};
+  };
+  const deniedOperateCase=async(name,prefix,tenant,run,allowedCodes)=>{
+    const before=await operateSnapshot(prefix,tenant);
+    const result=await run();
+    assert(result.error,`${name}:unexpected_success`);
+    assert(allowedCodes.includes(result.error.code),`${name}:wrong_error:${JSON.stringify(result.error)}`);
+    const after=await operateSnapshot(prefix,tenant);
+    assert.deepEqual(after,before,`${name}:protected_state_changed`);
+    const item={name,expected:allowedCodes,actual:{code:result.error.code,message:result.error.message},
+      operateRevision:after.revision,eventCount:after.counts.events,
+      receiptCount:after.counts.receipts,configurationVersionId:after.configurationVersionId,
+      evidenceAssociations:after.state.documentationObligations?.length??0,unchanged:true};
+    (evidence.operateIntegrity ??= []).push(item);
+    return item;
+  };
   const crewCommand=async(prefix,tenant,action,input,id)=>{
     const basis=await connectedBasis(prefix,tenant);
     return call(`${prefix}_admin`,"d5o_hosted_crew_command_v1",{
@@ -3006,7 +3037,9 @@ try {
       button.click()]);
     const body=await response.text().catch(()=>"response body unavailable after navigation");
     assert.equal(response.status(),expected,`deploy_browser:${endpoint}:${body}`);
-    return {status:response.status(),body:body.slice(0,500)};
+    return {status:response.status(),body:body.slice(0,500),
+      ...(phase2hvc && endpoint.includes("prototype-operate-command")
+        ? {command:response.request().postDataJSON()} : {})};
   }
   async function refreshDeployRead(page) {
     const target=page.url();
@@ -3033,10 +3066,18 @@ try {
   }
   async function phase2huField(prefix,tenant) {
     const basis=await connectedBasis(prefix,tenant);
+    if(phase2hvc && prefix==="a") await deniedOperateCase("missing_deploy_completion","a",a,
+      ()=>call("a_ops","d5o_hosted_operate_command_v1",{
+        p_workspace_key:a.workspaceKey,p_presentation_id:basis.work.id,
+        p_action:"receive-handoff",p_input:{workAcceptanceId:randomUUID(),
+          workAcceptanceRevision:1,note:"Rejected premature Operations handoff"},
+        p_command_id:randomUUID(),p_expected_source_revision:basis.source.revision,
+        p_expected_deploy_revision:basis.deploy.revision,
+        p_expected_operate_revision:basis.operate.revision}),["23514"]);
     const publication=basis.schedule.state.publications.at(-1);
     const booking=publication?.assignments.find((item)=>item.packageId===basis.packageId&&item.workId===basis.work.id);
     assert(booking,`${prefix}:published_field_booking_missing`);
-    const dir=resolve(root,phase2hv?"docs/architecture/evidence/phase2hv-browser":"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
+    const dir=resolve(root,phase2hvcFinal?"docs/release/evidence/phase2hvc-final-browser":phase2hvc?"docs/release/evidence/phase2hvc-browser":phase2hv?"docs/architecture/evidence/phase2hv-browser":"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
     const worker=await deployPage(`${prefix}_worker`,tenant,
       `/work/customer/${tenant.workspaceKey}/assignments`,{width:390,height:844});
     console.log(JSON.stringify({deployStep:`${prefix}:open-field`,url:worker.url()}));
@@ -3509,6 +3550,14 @@ try {
   }
   async function phase2huAcceptance(prefix,tenant) {
     const initial=await connectedBasis(prefix,tenant);
+    if(phase2hvc && prefix==="a") await deniedOperateCase("missing_customer_acceptance","a",a,
+      ()=>call("a_ops","d5o_hosted_operate_command_v1",{
+        p_workspace_key:a.workspaceKey,p_presentation_id:initial.work.id,
+        p_action:"receive-handoff",p_input:{workAcceptanceId:randomUUID(),
+          workAcceptanceRevision:1,note:"Rejected handoff without customer acceptance"},
+        p_command_id:randomUUID(),p_expected_source_revision:initial.source.revision,
+        p_expected_deploy_revision:initial.deploy.revision,
+        p_expected_operate_revision:initial.operate.revision}),["23514"]);
     const path=`/work/customer/${tenant.workspaceKey}/deploy?workId=${encodeURIComponent(initial.work.id)}`;
     const pm=await deployPage(`${prefix}_pm`,tenant,path);
     await pm.getByRole("button",{name:"Acceptance & turnover"}).click();
@@ -3588,7 +3637,7 @@ try {
       "/api/d5o-hosted/prototype-deploy-command",200);
     current=await connectedBasis(prefix,tenant);
     assert.equal(current.deploy.state.workAcceptance?.receipt,"Accepted");
-    const dir=resolve(root,phase2hv?"docs/architecture/evidence/phase2hv-browser":"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
+    const dir=resolve(root,phase2hvcFinal?"docs/release/evidence/phase2hvc-final-browser":phase2hvc?"docs/release/evidence/phase2hvc-browser":phase2hv?"docs/architecture/evidence/phase2hv-browser":"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
     await ops.screenshot({path:resolve(dir,`${prefix}-deploy-accepted.png`),fullPage:true});
     await ops.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`);
     await ops.getByRole("heading",{name:"Work lifecycle"}).waitFor();
@@ -3717,6 +3766,13 @@ try {
     await pm.getByLabel("Document reference").fill("Accepted fictional Work turnover and inspection record");
     const asset=await browserDeployDecision(pm,pm.getByRole("button",{name:"Record supported asset identity"}),
       "/api/d5o-hosted/prototype-operate-command");
+    if(phase2hvc && prefix==="a") await deniedOperateCase("activation_before_support_acceptance","a",a,
+      async()=>{const basis=await connectedBasis("a",a);return call("a_ops","d5o_hosted_operate_command_v1",{
+        p_workspace_key:a.workspaceKey,p_presentation_id:basis.work.id,
+        p_action:"activate",p_input:{note:"Premature fictional activation"},
+        p_command_id:randomUUID(),p_expected_source_revision:basis.source.revision,
+        p_expected_deploy_revision:basis.deploy.revision,
+        p_expected_operate_revision:basis.operate.revision});},["23514"]);
     await deployPage(`${prefix}_ops`,tenant,path);
     await queue.getByRole("heading",{name:"Accept support responsibility"}).waitFor();
     const fillSupport=async(page,warranty="Warranty subject to recorded terms")=>{
@@ -3771,18 +3827,40 @@ try {
         const responses=await Promise.all(pending);
         const statuses=responses.map((item)=>item.status()).sort();
         assert.deepEqual(statuses,[200,409],`${prefix}:concurrent_support:${statuses}`);
-        document.concurrentSupport={statuses};
+        document.concurrentSupport={statuses,acceptedCommand:responses.find((item)=>item.status()===200)
+          ?.request().postDataJSON()};
       } finally { await rivalContext.close(); }
       await deployPage(`${prefix}_ops`,tenant,path);
     }
     await queue.getByRole("button",{name:"Activate support"}).waitFor();
-    const activation=await browserDeployDecision(queue,queue.getByRole("button",{name:"Activate support"}),
+    let activation;
+    if(phase2hvc && prefix==="a") {
+      const rivalContext=await designBrowser.newContext({viewport:{width:1440,height:900},
+        storageState:await queue.context().storageState()});
+      try {
+        const rival=await rivalContext.newPage();
+        await rival.goto(`http://127.0.0.1:${server.port}${path}`);
+        await rival.getByRole("button",{name:"Activate support"}).waitFor();
+        const endpoint="/api/d5o-hosted/prototype-operate-command";
+        const wait=(page)=>page.waitForResponse((response)=>response.url().includes(endpoint)
+          && response.request().method()==="POST");
+        const pending=[wait(queue),wait(rival)];
+        await Promise.all([queue.getByRole("button",{name:"Activate support"}).click(),
+          rival.getByRole("button",{name:"Activate support"}).click()]);
+        const responses=await Promise.all(pending);
+        const statuses=responses.map((item)=>item.status()).sort();
+        assert.deepEqual(statuses,[200,409],`${prefix}:concurrent_activation:${statuses}`);
+        activation={status:200,concurrentStatuses:statuses,
+          acceptedCommand:responses.find((item)=>item.status()===200)?.request().postDataJSON()};
+      } finally { await rivalContext.close(); }
+      await deployPage(`${prefix}_ops`,tenant,path);
+    } else activation=await browserDeployDecision(queue,queue.getByRole("button",{name:"Activate support"}),
       "/api/d5o-hosted/prototype-operate-command",200);
     await queue.getByText("Support Active. Financial closeout remains Pending.").waitFor();
     await deployPage(`${prefix}_ops`,tenant,path);
     await queue.getByText("Support Active. Financial closeout remains Pending.").waitFor();
     await queue.getByText("Replay matched").waitFor();
-    const dir=resolve(root,"docs/architecture/evidence/phase2hv-browser");mkdirSync(dir,{recursive:true});
+    const dir=resolve(root,phase2hvcFinal?"docs/release/evidence/phase2hvc-final-browser":phase2hvc?"docs/release/evidence/phase2hvc-browser":"docs/architecture/evidence/phase2hv-browser");mkdirSync(dir,{recursive:true});
     await queue.screenshot({path:resolve(dir,`${prefix}-operate-desktop.png`),fullPage:true});
     await queue.setViewportSize({width:390,height:844});
     await queue.screenshot({path:resolve(dir,`${prefix}-operate-mobile.png`),fullPage:true});
@@ -4953,6 +5031,132 @@ try {
     }
     return outcomes;
   });
+  if(phase2hvc) await check("finite Operate command, documentation and stale-task integrity",async()=>{
+    const aBasis=await connectedBasis("a",a),bBasis=await connectedBasis("b",b);
+    const operateTest=evidence.tests.find((item)=>item.name===
+      "Operate support acceptance follows exact Deploy receipt and pinned documentation policy");
+    const aCommand=operateTest?.detail?.[0]?.browser?.document?.concurrentSupport?.acceptedCommand;
+    assert(aCommand?.commandId && aCommand.action==="accept-support","accepted_browser_command_missing");
+    const aPage=deployPages.get("a_ops");
+    assert(aPage,"receiving_browser_session_missing");
+    const post=async(page,workspace,command)=>page.evaluate(async({workspace,command})=>{
+      const response=await fetch(`/api/d5o-hosted/prototype-operate-command?workspace=${workspace}`,{
+        method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(command)});
+      return {status:response.status,body:await response.json()};
+    },{workspace,command});
+    const exactBefore=await operateSnapshot("a",a);
+    const exact=await post(aPage,a.workspaceKey,aCommand);
+    assert.equal(exact.status,200,`exact_replay:${JSON.stringify(exact)}`);
+    assert.deepEqual(await operateSnapshot("a",a),exactBefore,"exact_replay_mutated_state");
+    evidence.operateIntegrity.push({name:"exact_duplicate_support_acceptance",expected:200,
+      actual:exact.status,unchanged:true,receiptCount:exactBefore.counts.receipts});
+    const conflict=await post(aPage,a.workspaceKey,{...aCommand,
+      warrantyDisposition:"Conflicting reused support command"});
+    assert.equal(conflict.status,409,`conflicting_replay:${JSON.stringify(conflict)}`);
+    assert.deepEqual(await operateSnapshot("a",a),exactBefore,"conflicting_replay_mutated_state");
+    evidence.operateIntegrity.push({name:"conflicting_duplicate_command_id",expected:409,
+      actual:conflict.status,body:conflict.body,unchanged:true});
+    const oldTask=await aPage.goto(`http://127.0.0.1:${server.port}/work/customer/${a.workspaceKey}`+
+      `?work=${encodeURIComponent(aBasis.work.id)}#phase-operate`);
+    assert.equal(oldTask?.status(),200,"old_task_navigation_failed");
+    await aPage.getByRole("heading",{name:"Accepted delivery and support responsibility"}).waitFor();
+    assert.equal(await aPage.getByRole("button",{name:"Accept support ownership"}).count(),0);
+    const completedTaskReplay=await post(aPage,a.workspaceKey,{...aCommand,
+      commandId:randomUUID(),expectedDecisionRevision:aBasis.operate.revision});
+    assert.equal(completedTaskReplay.status,409,
+      `completed_task_replayed:${JSON.stringify(completedTaskReplay)}`);
+    assert.deepEqual(await operateSnapshot("a",a),exactBefore,"completed_task_replay_mutated_state");
+    evidence.operateIntegrity.push({name:"completed_my_work_task_replay",expected:409,
+      actual:completedTaskReplay.status,body:completedTaskReplay.body,unchanged:true});
+    const args=(basis,tenant,action,input,overrides={})=>({
+      p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id,
+      p_action:action,p_input:input,p_command_id:randomUUID(),
+      p_expected_source_revision:basis.source.revision,
+      p_expected_deploy_revision:basis.deploy.revision,
+      p_expected_operate_revision:basis.operate.revision,...overrides});
+    await deniedOperateCase("stale_work_revision","a",a,
+      ()=>call("a_ops","d5o_hosted_operate_command_v1",args(aBasis,a,"activate",
+        {note:"Reject stale Work basis"},{p_expected_source_revision:aBasis.source.revision-1})),["23505"]);
+    await deniedOperateCase("invalid_work_identity","a",a,
+      ()=>call("a_ops","d5o_hosted_operate_command_v1",args(aBasis,a,"activate",
+        {note:"Reject forged Work identity"},{p_presentation_id:randomUUID()})),["42501"]);
+    await deniedOperateCase("foreign_configuration_version_argument","a",a,
+      ()=>call("a_ops","d5o_hosted_operate_command_v1",args(aBasis,a,"activate",
+        {note:"Reject caller selected configuration"},
+        {p_configuration_version_id:bBasis.work.phaseConfigurationVersionId})),["PGRST202"]);
+    const aDoc=aBasis.operate.state.documentationObligations.find((item)=>item.kind==="as-built");
+    const aTurnover=aBasis.deploy.state.turnovers.find((item)=>item.id===aDoc?.turnoverId);
+    const bTurnover=bBasis.deploy.state.turnovers.find((item)=>item.receipt==="Accepted");
+    assert(aDoc&&aTurnover&&bTurnover,"support_document_test_basis_missing");
+    const docArgs=(basis,tenant,turnoverId,evidenceId,overrides={})=>({
+      p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id,p_action:"review",
+      p_turnover_id:turnoverId,p_kind:"as-built",p_evidence_id:evidenceId,
+      p_decision:"Reviewed",p_note:"Independent review of exact fictional document",
+      p_command_id:randomUUID(),p_expected_source_revision:basis.source.revision,
+      p_expected_deploy_revision:basis.deploy.revision,
+      p_expected_operate_revision:basis.operate.revision,...overrides});
+    await deniedOperateCase("forged_document_reference","a",a,
+      ()=>call("a_ops2","d5o_hosted_support_document_command_v1",
+        docArgs(aBasis,a,aTurnover.id,randomUUID())),["23514"]);
+    await deniedOperateCase("wrong_work_documentation","b",b,
+      ()=>call("b_ops","d5o_hosted_support_document_command_v1",
+        docArgs(bBasis,b,bTurnover.id,aDoc.id)),["23514"]);
+    await deniedOperateCase("wrong_package_turnover","a",a,
+      ()=>call("a_ops2","d5o_hosted_support_document_command_v1",
+        docArgs(aBasis,a,bTurnover.id,aDoc.id)),["23514"]);
+    await deniedOperateCase("stale_document_review","a",a,
+      ()=>call("a_ops2","d5o_hosted_support_document_command_v1",
+        docArgs(aBasis,a,aTurnover.id,aDoc.id,
+          {p_expected_operate_revision:aBasis.operate.revision-1})),["23505"]);
+    await deniedOperateCase("unauthorized_document_reviewer","a",a,
+      ()=>call("a_pm","d5o_hosted_support_document_command_v1",
+        docArgs(aBasis,a,aTurnover.id,aDoc.id)),["42501"]);
+    const directory=async()=>{const result=await call("vendor","d5o_platform_provisioning_directory_v1");
+      assert(!result.error,result.error?.message);return result.data.find((item)=>item.workspaceKey===a.workspaceKey);};
+    let tenant=await directory();
+    const entitlementOff=await call("vendor","d5o_platform_capability_command_v1",{
+      p_workspace_key:a.workspaceKey,p_kind:"entitlement",p_enabled:false,
+      p_expected_revision:tenant.connectedWorkEntitlementRevision,p_command_id:randomUUID(),
+      p_reason:"Disposable Operate entitlement denial"});
+    assert(!entitlementOff.error,entitlementOff.error?.message);
+    await deniedOperateCase("revoked_entitlement","a",a,
+      ()=>call("a_ops","d5o_hosted_operate_command_v1",
+        args(aBasis,a,"activate",{note:"Reject revoked entitlement"})),["42501"]);
+    const entitlementOn=await call("vendor","d5o_platform_capability_command_v1",{
+      p_workspace_key:a.workspaceKey,p_kind:"entitlement",p_enabled:true,
+      p_expected_revision:entitlementOff.data.revision,p_command_id:randomUUID(),
+      p_reason:"Restore disposable Operate entitlement"});
+    assert(!entitlementOn.error,entitlementOn.error?.message);
+    const objectPath=sql(`select object_path from d5o_hosted.customer_decision_evidence
+      where id=${q(aDoc.id)}::uuid and workspace_id=${q(a.workspaceId)};`);
+    assert(objectPath,"as_built_storage_path_missing");
+    const removedObject=await admin.storage.from("d5o-deploy-evidence").remove([objectPath]);
+    assert(!removedObject.error,removedObject.error?.message);
+    await deniedOperateCase("deleted_as_built_document","a",a,
+      ()=>call("a_ops2","d5o_hosted_support_document_command_v1",
+        docArgs(aBasis,a,aTurnover.id,aDoc.id)),["23514"]);
+    const people=await call("a_admin","d5o_hosted_org_admin_read_v1",{
+      p_workspace_key:a.workspaceKey,p_kind:"people",p_search:"",p_offset:0,p_limit:25});
+    assert(!people.error,people.error?.message);
+    const receiver=people.data.items.find((item)=>item.actor_user_id===users.a_ops.id);
+    assert(receiver,"receiving_membership_missing");
+    const removed=await call("a_admin","d5o_hosted_org_admin_command_v1",{
+      p_workspace_key:a.workspaceKey,p_action:"member.remove",p_subject_id:receiver.id,p_input:{},
+      p_expected_revision:receiver.revision,p_reason:"Disposable stale receiver denial",
+      p_command_id:randomUUID()});
+    assert(!removed.error,removed.error?.message);
+    const removedSession=await post(aPage,a.workspaceKey,{...aCommand,commandId:randomUUID(),
+      expectedDecisionRevision:aBasis.operate.revision});
+    assert.equal(removedSession.status,403,JSON.stringify(removedSession));
+    const removedRpc=await call("a_ops","d5o_hosted_operate_command_v1",
+      args(aBasis,a,"activate",{note:"Reject removed receiver"}));
+    assert.equal(removedRpc.error?.code,"42501",JSON.stringify(removedRpc));
+    assert.deepEqual(await operateSnapshot("a",a),exactBefore,"removed_receiver_mutated_state");
+    evidence.operateIntegrity.push({name:"removed_receiver_stale_session",expected:{http:403,rpc:"42501"},
+      actual:{http:removedSession.status,rpc:removedRpc.error.code},unchanged:true});
+    return {cases:evidence.operateIntegrity.length,configurationVersionId:exactBefore.configurationVersionId,
+      sourcePinUnchanged:true,removedSessionDenied:true};
+  });
   }
   }
   if(phase2hr) await check("Design adapter denies suspended and removed membership, disabled flag and tenant",async()=>{
@@ -6090,6 +6294,7 @@ finally {
     failed:evidence.tests.filter((t)=>t.status==="FAIL").length,
     setupError:Boolean(evidence.setupError),cleanupVerified:Boolean(evidence.cleanup?.clean)};
   mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
+  mkdirSync(dirname(output),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
   console.log(JSON.stringify({...evidence.summary,output:phase2hv
     ? "docs/architecture/evidence/phase2hv-two-tenant-results.json" : rc0DeployIntegrity
