@@ -1,0 +1,38 @@
+{
+  "format": "d5o-rc9-bridge-atomicity-v1",
+  "probes": [
+    {
+      "phase": "after_pre",
+      "injected_error_sqlstate": "P0001",
+      "full_transaction_rolled_back": true,
+      "historical_invitation_restored": true,
+      "bridge_receipt_absent": true,
+      "ledger_rows": 177
+    },
+    {
+      "phase": "after_frozen_215",
+      "injected_error_sqlstate": "P0001",
+      "full_transaction_rolled_back": true,
+      "historical_invitation_restored": true,
+      "bridge_receipt_absent": true,
+      "ledger_rows": 177
+    },
+    {
+      "phase": "after_post",
+      "injected_error_sqlstate": "P0001",
+      "full_transaction_rolled_back": true,
+      "historical_invitation_restored": true,
+      "bridge_receipt_absent": true,
+      "ledger_rows": 177
+    },
+    {
+      "phase": "after_ledger_insert",
+      "injected_error_sqlstate": "P0001",
+      "full_transaction_rolled_back": true,
+      "historical_invitation_restored": true,
+      "bridge_receipt_absent": true,
+      "ledger_rows": 177
+    }
+  ],
+  "all_passed": true
+}

@@ -1,0 +1,7 @@
+# RC9 private Storage and local recovery
+
+**Gate E: BLOCKED for Storage API serving. Gate F: PARTIAL for local recovery.** The existing authorized protected set contains 23 encrypted private objects (2,252,301 bytes), an encrypted database schema/data checkpoint, relevant Auth state, Storage metadata and per-object hashes outside Git. RC9 reauthenticated the encrypted artifacts without writing plaintext to disk. RC7 verified a fresh pre-upgrade database recovery in 48.4 seconds. RC8 verified a fresh post-upgrade recovery in 34.52 seconds, with 202 ledger rows, 25 sanitized Auth users, 25 identities, 15 Work records, one bridge receipt, all 23 object hashes and matching metadata associations.
+
+These timings are local restoration observations, not production RTO or RPO. Database and object copies were captured at different logical times and are not an atomic production checkpoint. RC9's four deliberately failed bridge operations rolled back to the original 177-entry state with no partial receipt. The local Docker engine stopped during an attempted full Supabase runtime, so Storage API serving was not tested. Direct encrypted-file hash checks do not prove authorized download or anonymous, cross-tenant, revoked-user and missing-object denials. Metadata-ID remapping behavior is also untested.
+
+Protected files remain under the approved local-user/SYSTEM access controls outside Git. No production Auth, Storage, database row or object byte was modified. Preserve these checkpoint files until the authorized recovery follow-up or approved disposal.

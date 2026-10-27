@@ -1,0 +1,19 @@
+{
+  "format": "d5o-rc9-approved-historical-start-v1",
+  "database": "postgres",
+  "ledger_rows": 177,
+  "fingerprints_sha256": {
+    "ledger": "5044bf1b31b2860276c0389b95b10d20475c566c7d4120e909e699d7d6e59aff",
+    "workspaces": "9c58e569b23a8ba455b1a71ef0bf1dae9c8272ec53acb94e1154dec93c96d4bc",
+    "auth_users": "77463d6c489d6a53dfa759082075c9df9a3553db8244715f675462ad1a1289c7",
+    "storage_associations": "c76f925e896ada4eb5951e0be7049ec44e2c08fa766653affe41de20de5e5a55",
+    "legacy_invitation": "b8d4d61473067852073c6fe666f6c947cb01ddbb1fcf6822720f1b727f33a955"
+  },
+  "counts": {
+    "ledger": 177,
+    "workspaces": 2,
+    "auth_users": 25,
+    "storage_associations": 23,
+    "legacy_invitation": 1
+  }
+}

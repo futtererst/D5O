@@ -1,0 +1,133 @@
+{
+  "format": "d5o-rc8-ordered-upgrade-v1",
+  "mode": "cumulative_probe_rollback",
+  "starting_ledger": "177|20261021123923",
+  "results": [
+    {
+      "order": 212,
+      "filename": "20261023111641_d5o_service_approval_policy_phase1.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 213,
+      "filename": "20261023115306_d5o_phase1b_connected_service_approval.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 214,
+      "filename": "20261023123751_d5o_phase2a_organization_people.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 215,
+      "filename": "20261023140000_d5o_phase2b_tenant_onboarding.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 216,
+      "filename": "20261023141000_d5o_phase2b_onboarding_commands.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 217,
+      "filename": "20261023142000_d5o_phase2b_vendor_controls.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 218,
+      "filename": "20261023143000_d5o_phase2b_template_governance.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 219,
+      "filename": "20261023150000_d5o_phase2c_lifecycle_features.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 220,
+      "filename": "20261023151000_d5o_phase2c_discover_policy.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 221,
+      "filename": "20261023152000_d5o_phase2c_connected_work_gate.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 222,
+      "filename": "20261023153646_d5o_phase2d_phase_policies.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 223,
+      "filename": "20261023153752_d5o_phase2d_define_develop_guards.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 224,
+      "filename": "20261023180000_d5o_phase2f_operate_review_guard.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 225,
+      "filename": "20261023201553_phase2g_phase_status.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 226,
+      "filename": "20261024010000_d5o_service_sla_calendar_validation.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 227,
+      "filename": "20261024011000_d5o_service_job_stable_work_type_key.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 228,
+      "filename": "20261024012000_d5o_service_child_identity_guard.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 229,
+      "filename": "20261024105438_phase2hs_connected_design_capability_gate.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 230,
+      "filename": "20261024112500_phase2hs_overnight_crew_eligibility.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 231,
+      "filename": "20261024113000_phase2hs_connected_develop_capability_gate.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 232,
+      "filename": "20261024150000_phase2ht_workforce_qualification_expiry.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 233,
+      "filename": "20261024151000_phase2ht_current_worker_assignment.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 234,
+      "filename": "20261025010000_d5o_phase2htd_connected_service_capability_boundary.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 235,
+      "filename": "20261027085730_d5o_operate_acceptance_one_time_guard.sql",
+      "result": "PASSED_ROLLED_BACK"
+    },
+    {
+      "order": 236,
+      "filename": "20261027190000_d5o_field_fact_latest_permit_order.sql",
+      "result": "PASSED_ROLLED_BACK"
+    }
+  ],
+  "all_25_succeeded": true
+}

@@ -1,0 +1,14 @@
+{
+  "format": "d5o-rc9-final-app-table-check-v1",
+  "network_mode": "none",
+  "actual_ledger_rows": 202,
+  "tables_present": {
+    "config_configuration_versions": false,
+    "config_tenant_configurations": false,
+    "config_tenants": false,
+    "evidence_objects": false,
+    "opportunity_bid_evidence_satisfactions": false,
+    "opportunity_bid_submission_events": false
+  },
+  "all_required_present": false
+}

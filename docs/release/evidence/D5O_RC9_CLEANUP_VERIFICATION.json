@@ -1,0 +1,13 @@
+{
+  "format": "d5o-rc9-cleanup-verification-v1",
+  "disposable_p0a_project_id": "d5o-p0a-52c32201-4ff",
+  "disposable_p0a_project_containers_remaining": 0,
+  "disposable_p0a_networks_remaining": 0,
+  "disposable_p0a_labeled_volumes_remaining": 0,
+  "isolated_historical_containers_remaining": 0,
+  "disposable_p0a_temp_directory_remaining": false,
+  "temporary_node_modules_junction_remaining": false,
+  "protected_encrypted_checkpoints_preserved_outside_git": true,
+  "production_modified": false,
+  "note": "One pg_meta container survived the guarded Supabase stop, was verified by exact project label, then removed with the three RC9 isolated PostgreSQL containers. Final Docker resource queries returned zero matching resources."
+}

@@ -1,0 +1,12 @@
+{
+  "format": "d5o-rc9-clean-catalog-comparator-v1",
+  "isolated_container": "d5o-rc9-clean-db",
+  "network_mode": "none",
+  "applied_count": 5,
+  "last_result": {
+    "order": 6,
+    "result": "FAILED_ROLLED_BACK",
+    "diagnostic": "ERROR:  relation \"storage.buckets\" does not exist"
+  },
+  "full_236": false
+}

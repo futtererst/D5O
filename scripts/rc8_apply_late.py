@@ -16,7 +16,7 @@ target=json.loads(subprocess.run(['docker','inspect','d5o-rc7-historical-db'],ca
 assert target['HostConfig']['NetworkMode']=='none' and not target['HostConfig'].get('PortBindings')
 psql=['docker','exec','-i','d5o-rc7-historical-db','psql','-U','supabase_admin','-d','postgres','-q','-X','-v','ON_ERROR_STOP=1','-At']
 def query(sql):
-    r=subprocess.run(psql+['-c',sql],capture_output=True,text=True,check=True)
+    r=subprocess.run(psql+['-c',sql],capture_output=True,text=True,encoding='utf-8',check=True)
     return r.stdout.strip()
 def table_counts():
     names=query("select quote_ident(n.nspname)||'.'||quote_ident(c.relname) from pg_class c join pg_namespace n on n.oid=c.relnamespace where c.relkind='r' and n.nspname in ('public','d5o_hosted','storage','supabase_migrations') order by 1").splitlines()
@@ -39,6 +39,19 @@ def stable_hashes():
     return dict(line.split('|',1) for line in query(' union all '.join(parts)).splitlines())
 start=query("select count(*)||'|'||max(version) from supabase_migrations.schema_migrations")
 if start!='177|20261021123923': raise RuntimeError('starting historical ledger mismatch')
+fingerprint_file=EV/'D5O_RC9_START_FINGERPRINT.json'
+if fingerprint_file.exists():
+    expected=json.loads(fingerprint_file.read_text())
+    probes={
+      'ledger':"select row_to_json(t)::text from (select version,name,statements from supabase_migrations.schema_migrations order by version) t",
+      'workspaces':"select id::text from d5o_hosted.workspaces order by id",
+      'auth_users':"select id::text from auth.users order by id",
+      'storage_associations':"select id::text||'|'||bucket_id||'|'||name from storage.objects order by id",
+      'legacy_invitation':"select workspace_id::text||'|'||command_id||'|'||requested_role||'|'||status||'|'||fingerprint from d5o_hosted.admin_identity_requests where action='invite' and requested_role='field_worker' and status='setup_completed'"
+    }
+    for name,sql in probes.items():
+        if hashlib.sha256(query(sql).encode()).hexdigest()!=expected['fingerprints_sha256'][name]:
+            raise RuntimeError('approved historical start fingerprint mismatch: '+name)
 probe='--probe' in sys.argv
 before_counts=table_counts() if not probe else None
 before_hashes=stable_hashes() if not probe else None
