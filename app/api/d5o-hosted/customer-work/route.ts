@@ -17,7 +17,15 @@ const reply = (body: unknown, status = 200) => NextResponse.json(body,
 type WorkRow = { id: string; canonicalWorkId?: string; title: string;
   phaseConfigurationVersionId?: string; customer?: string; site?: string; owner?: string;
   type?: string; workspace?: string;
-  discovery?: { pursuitControl?: { handoff?: { status?: string } } };
+  discovery?: { outcome?:string;
+    estimate?: {status?:string;revision?:number;review?:{submittedByActorId?:string;approverRole?:string}};
+    proposal?: {status?:string;package?:{revision?:number};review?:{submittedByActorId?:string;authorityRole?:string}};
+    pursuitControl?: { status?: string; revision?: number;
+    submission?: { actorId?: string; revision?: number };
+    handoff?: { status?: string; actorId?: string; receiverRole?: string;
+      receiverActorId?: string } } };
+  develop?: {revision?:number;review?:{status?:string;revision?:number;
+    approverRole?:string;submittedByActorId?:string}};
   design?: { authorityRevision?: number;
     packages?: Array<{ packageId: string }>;
     documents?: Array<{ id: string; status: string; submittedByActorId?: string }>;
@@ -56,6 +64,67 @@ export async function GET(request: NextRequest) {
       const queued = await call("d5o_hosted_role_actions_v1", { p_workspace_key: workspace });
       if (queued.error || !Array.isArray(queued.data))
         return reply({ error: queued.error?.message ?? "task_queue_unavailable" }, 503);
+      const identity=await call("d5o_hosted_work_queue_identity_v1",{p_workspace_key:workspace});
+      if(identity.error || !identity.data || typeof identity.data!=="object")
+        return reply({error:"queue_identity_unavailable"},503);
+      const owned=new Set((identity.data as {ownedIds?:string[]}).ownedIds??[]);
+      const discoverTasks:CustomerWorkTask[]=visible.flatMap((work)=>{
+        const pursuit=work.discovery?.pursuitControl;
+        if(!pursuit)return [];
+        const mine=context.actor.role==="project_manager" && owned.has(work.id);
+        const result:CustomerWorkTask[]=[];
+        const add=(action:string,title:string,status:"available"|"view_only"="available")=>
+          result.push({id:`discover:${work.id}:${action}:${pursuit.revision??0}`,
+            workId:work.id,title,phase:"Discover",status,revision:pursuit.revision??0,action});
+        if(mine && ["draft","returned","held"].includes(pursuit.status??""))
+          add("intake","Prepare Discover intake");
+        if(pursuit.status==="submitted" && pursuit.submission?.actorId!==context.actor.id &&
+          ["admin","billing_commercial_lead","business_development_lead"].includes(context.actor.role))
+          add("intake-review","Review Discover intake");
+        if(mine && pursuit.status==="qualified" && !["submitted","accepted"].includes(pursuit.handoff?.status??""))
+          add("handoff-prep","Prepare Define handoff");
+        if(pursuit.status==="qualified" && pursuit.handoff?.status==="submitted" &&
+          pursuit.handoff.actorId!==context.actor.id &&
+          (pursuit.handoff.receiverRole ? pursuit.handoff.receiverRole===context.actor.role
+            : pursuit.handoff.receiverActorId===context.actor.id))
+          add("handoff-receive","Receive Define handoff");
+        return result;
+      });
+      const commercialTasks:CustomerWorkTask[]=visible.flatMap((work)=>{
+        if(work.definition?.developHandoff?.status!=="accepted")return [];
+        const mine=context.actor.role==="project_manager" && owned.has(work.id);
+        const result:CustomerWorkTask[]=[];
+        const add=(action:string,title:string,revision:number)=>result.push({
+          id:`commercial:${work.id}:${action}:${revision}`,workId:work.id,title,
+          phase:"Develop",status:"available",revision,action});
+        const solution=work.develop;
+        if(mine && (!solution?.review || solution.review.status==="Returned" ||
+          solution.review.revision!==solution.revision))add("solution-prep","Prepare selected solution",solution?.revision??0);
+        if(solution?.review?.status==="Submitted" &&
+          solution.review.approverRole===context.actor.role &&
+          solution.review.submittedByActorId!==context.actor.id)
+          add("solution-review","Review selected solution",solution.revision??0);
+        const estimate=work.discovery?.estimate;
+        if(mine && solution?.review?.status==="Approved" &&
+          !["Pricing review","Approved"].includes(estimate?.status??""))
+          add("estimate-prep","Prepare detailed estimate",estimate?.revision??0);
+        if(estimate?.status==="Pricing review" && context.actor.role===(estimate.review?.approverRole??"operations_leader") &&
+          estimate.review?.submittedByActorId!==context.actor.id)
+          add("pricing-review","Review detailed pricing",estimate.revision??0);
+        const proposal=work.discovery?.proposal;
+        if(mine && estimate?.status==="Approved" &&
+          !["Internal review","Approved","Submitted"].includes(proposal?.status??""))
+          add("offer-prep","Prepare customer offer",proposal?.package?.revision??0);
+        if(proposal?.status==="Internal review" &&
+          context.actor.role===(proposal.review?.authorityRole??"operations_leader") &&
+          proposal.review?.submittedByActorId!==context.actor.id)
+          add("offer-review","Review customer offer",proposal.package?.revision??0);
+        if(mine && proposal?.status==="Approved")
+          add("customer-submission","Record customer submission",proposal.package?.revision??0);
+        if(mine && proposal?.status==="Submitted" && !work.discovery?.outcome)
+          add("customer-award","Record customer award",proposal.package?.revision??0);
+        return result;
+      });
       const visibleIds = new Set(visible.map((item) => item.id));
       const roleTasks = (queued.data as Array<Record<string, unknown>>)
         .filter((item) => typeof item.workId === "string" && visibleIds.has(item.workId)
@@ -115,7 +184,7 @@ export async function GET(request: NextRequest) {
         })));
       return reply({ workspace, workspaceName: context.actor.workspaceName ?? workspace,
       role: context.actor.role, revision: loaded.revision,
-      tasks: [...defineTasks(visible, context.actor.role, context.actor.id),
+      tasks: [...discoverTasks,...commercialTasks,...defineTasks(visible, context.actor.role, context.actor.id),
         ...designTasks(visible, context.actor.role, context.actor.id, connectedPackages),
         ...designReceiptTasks(visible, context.actor.role, context.actor.id),
         ...developTasks(visible, context.actor.role, schedule.state),
@@ -139,7 +208,8 @@ export async function GET(request: NextRequest) {
     const pinned = resolvePublishedPhaseConfiguration(inventory, workspace as WorkRecord["workspace"],
       record.type ?? "", record as WorkRecord);
     return reply({ workspace, workspaceName: context.actor.workspaceName ?? workspace,
-      role: context.actor.role, canEdit: context.canEdit, revision: loaded.revision,
+      role: context.actor.role, actorId:context.actor.id, actorName:context.actor.name,
+      canEdit: context.canEdit, revision: loaded.revision,
       record, connectedPackages, catalogRevision: catalog.revision,
       operatePolicy: pinned ? { requireDocumentationReview:
         pinned.operateControls?.requireDocumentationReview === true } : null,

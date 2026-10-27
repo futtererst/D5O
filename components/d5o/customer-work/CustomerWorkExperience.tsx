@@ -7,6 +7,12 @@ import { CustomerDevelopActions } from "./CustomerDevelopActions";
 import { CustomerDevelopAuthority } from "./CustomerDevelopAuthority";
 import { CustomerServiceActions } from "./CustomerServiceActions";
 import { CustomerOperateActions } from "./CustomerOperateActions";
+import { PursuitControl } from "@/components/d5o/platform/PursuitControl";
+import { DevelopPlanning } from "@/components/d5o/platform/DevelopPlanning";
+import { CustomerCommercialActions } from "./CustomerCommercialActions";
+import type { PursuitCommand } from "@/components/d5o/platform/pursuit-control";
+import type { CommercialCommand } from "@/lib/d5o/prototype-work/commercial-command";
+import type { WorkspaceKey } from "@/components/d5o/platform/work-types";
 import type { OperateCommand } from "@/lib/d5o/prototype-work/operate-command";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import type { CustomerDesignAction } from "@/lib/d5o/hosted/customer-design-contract";
@@ -28,7 +34,8 @@ type CustomerTask = { id: string; workId: string; title: string; phase: string;
   releaseId?: string; dueDate?: string; action?: string; reviewRole?: string;
   decisionId?: string; sourceRevision?: number };
 type WorkDetail = WorkSummary & { canonicalWorkId: string; workspace: string;
-  discovery?: { outcome?: string; proposal?: { package?: { revision?: number } };
+  discovery?: { outcome?: string; pursuitControl?: {revision?:number};
+    proposal?: { package?: { revision?: number } };
     designHandoff?: { status?: string; revision?: number; authorityRevision?: number;
       submittedByActorId?: string } };
   definition?: { status?: string; authorityRevision?: number;
@@ -45,7 +52,8 @@ type WorkDetail = WorkSummary & { canonicalWorkId: string; workspace: string;
     activation?: { status?: string }; finance?: { status?: string } } };
 type ListResponse = { workspaceName: string; role: string; records: WorkSummary[];
   tasks: CustomerTask[]; error?: string };
-type DetailResponse = { workspaceName: string; role: string; canEdit: boolean;
+type DetailResponse = { workspaceName: string; role: string; actorId: string; actorName: string;
+  canEdit: boolean;
   revision: number; catalogRevision: number; record: WorkDetail; phaseStatus: PhaseStatus;
   operatePolicy: { requireDocumentationReview: boolean } | null;
   connectedPackages: Array<{ packageId: string; name?: string }>;
@@ -128,6 +136,98 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
       setError(readableError(cause instanceof Error ? cause.message : fallback));
       return false;
     } finally { setBusy(false); }
+  }
+  async function executePursuit(workId:string,command:PursuitCommand):Promise<boolean> {
+    if(!detail || busy || detail.record.id!==workId || !detail.phaseStatus.replayMatches)return false;
+    const intent=command.kind==="save"?{...command.fields,...command.workFields}
+      :command.kind==="decide"||command.kind==="respond-handoff"
+        ?{outcome:command.outcome,reason:command.reason}
+        :command.kind==="submit-handoff"?{brief:command.brief}:{};
+    if(command.kind==="request-spend"||command.kind==="decide-spend"){
+      setError("Pursuit spend requires its separate authority path.");return false;
+    }
+    setBusy(true);setError("");
+    try {
+      const response=await fetch(`/api/d5o-hosted/prototype-pursuit-command?workspace=${encodeURIComponent(workspace)}`,{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({workId,action:command.kind==="save"?"save-intake":command.kind,
+          intent,commandId:crypto.randomUUID(),expectedRevision:detail.revision,
+          expectedDecisionRevision:detail.record.discovery?.pursuitControl?.revision??0})});
+      const body=await response.json() as {error?:string;message?:string};
+      if(!response.ok)throw Error(body.message??body.error??"Discover decision unavailable");
+      await load();return true;
+    }catch(cause){setError(readableError(cause instanceof Error?cause.message:"Discover decision unavailable"));
+      return false;
+    }finally{setBusy(false);}
+  }
+  async function saveCommercialDraft(workId:string,transform:(current:WorkRecord)=>WorkRecord) {
+    if(!detail || busy || detail.record.id!==workId)return;
+    setBusy(true);setError("");
+    try {
+      const endpoint=`/api/d5o-hosted/prototype-state?workspace=${encodeURIComponent(workspace)}&key=work`;
+      const read=await fetch(endpoint,{cache:"no-store"});
+      const loaded=await read.json() as {revision:number;state:{records:WorkRecord[]};error?:string};
+      if(!read.ok || !loaded.state?.records)throw Error(loaded.error??"Work draft unavailable");
+      const index=loaded.state.records.findIndex((item)=>item.id===workId);
+      if(index<0)throw Error("Work unavailable");
+      const records=loaded.state.records.map((item,position)=>position===index?transform(item):item);
+      const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({workspace,key:"work",expectedRevision:loaded.revision,
+          state:{...loaded.state,records}})});
+      const body=await response.json() as {error?:string};
+      if(!response.ok)throw Error(body.error??"Work draft was not saved");
+      await load();
+    }catch(cause){setError(readableError(cause instanceof Error?cause.message:"Work draft was not saved"));}
+    finally{setBusy(false);}
+  }
+  async function executeCommercial(command:Omit<CommercialCommand,"expectedRevision">):Promise<boolean> {
+    if(!detail || busy || detail.record.id!==command.workId)return false;
+    const work=detail.record as unknown as WorkRecord;
+    const decisionRevision=command.action.endsWith("solution")
+      ? work.develop?.authorityRevision??0
+      :["save-detailed-estimate","submit-pricing","approve-pricing","return-pricing"].includes(command.action)
+        ? (work.discovery?.estimate as {authorityRevision?:number}|undefined)?.authorityRevision??0
+        :["submit-design-handoff","accept-design-handoff","return-design-handoff"].includes(command.action)
+          ? (work.discovery?.designHandoff as {authorityRevision?:number}|undefined)?.authorityRevision??0
+          :(work.discovery?.proposal as {authorityRevision?:number}|undefined)?.authorityRevision??0;
+    setBusy(true);setError("");
+    try {
+      const response=await fetch(`/api/d5o-hosted/prototype-commercial-command?workspace=${encodeURIComponent(workspace)}`,{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({...command,expectedRevision:detail.revision,
+          expectedDecisionRevision:decisionRevision,commandId:crypto.randomUUID()})});
+      const body=await response.json() as {error?:string;message?:string};
+      if(!response.ok)throw Error(body.message??body.error??"Commercial decision unavailable");
+      await load();return true;
+    }catch(cause){setError(readableError(cause instanceof Error?cause.message:"Commercial decision unavailable"));
+      return false;
+    }finally{setBusy(false);}
+  }
+  async function saveInitialOffer(input:NonNullable<CommercialCommand["offerInput"]>) {
+    if(!detail || busy)return;
+    await saveCommercialDraft(detail.record.id,(work)=>{
+      const discovery=work.discovery;
+      const estimate=discovery?.estimate;
+      const proposal=discovery?.proposal;
+      if(!discovery || !estimate?.detailed || estimate.status!=="Approved" ||
+        !proposal || proposal.package || proposal.status!=="Not started")return work;
+      const now=new Date().toISOString();
+      const offer={revision:1,estimateRevision:estimate.revision,
+        scope:input.scope,assumptions:input.assumptions,exclusions:input.exclusions,
+        commercialTerms:input.commercialTerms,sellPrice:estimate.sellPrice,
+        preparedAt:now,definitionSource:estimate.definitionSource,
+        pricingBasis:{policyId:estimate.detailed.evaluation.policyId,
+          policyVersion:estimate.detailed.evaluation.policyVersion,
+          solutionRevision:estimate.detailed.input.solutionRevision,
+          currency:estimate.detailed.input.currency,
+          includedCostMinor:estimate.detailed.evaluation.includedCostMinor,
+          priceMinor:estimate.detailed.evaluation.proposedPriceMinor}};
+      return {...work,nextAction:"Complete proposal revision 1",
+        discovery:{...discovery,phase:"Proposal",proposal:{...proposal,status:"Draft",package:offer,
+          packageHistory:[offer],history:[...(proposal.history??[]),
+            {revision:1,state:"Draft saved",at:now,
+              note:`Bound to approved estimate revision ${estimate.revision}`}]}}};
+    });
   }
   async function saveDefineDraft(fields: DefineDraftInput) {
     if (!detail || busy) return;
@@ -223,6 +323,11 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
           <dl><div><dt>Entry basis</dt><dd title={status.entryEvidence ?? undefined}>{evidenceLabel(status.entryEvidence)}</dd></div>
             <div><dt>Completion basis</dt><dd title={status.completionEvidence ?? undefined}>{status.completionEvidence ? evidenceLabel(status.completionEvidence) : "Pending"}</dd></div>
             {status.preparationEvidence && <div><dt>Preparation</dt><dd title={status.preparationEvidence}>{evidenceLabel(status.preparationEvidence)}; this does not complete Develop.</dd></div>}</dl>
+          {phase === "Discover" && <PursuitControl key={`${detail.record.id}:${detail.revision}`}
+            work={detail.record as unknown as WorkRecord} actor={detail.actorName}
+            canEdit={detail.canEdit || ["billing_commercial_lead","business_development_lead"].includes(role)}
+            connected onCommand={executePursuit} onUpdate={()=>{}} onNotice={setError}
+            onDefine={()=>document.getElementById("phase-define")?.scrollIntoView()} />}
           {phase === "Define" && <><p>Scope status: {detail.record.definition?.status ?? "Not submitted"}.</p>
             {detail.phaseStatus.replayMatches && detail.defineActions.some((item) => item.action === "submit") &&
               <CustomerDefineDraftForm key={`${detail.record.id}:${detail.revision}`} busy={busy}
@@ -260,10 +365,19 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
                   <button disabled={busy || designNote.trim().length < 15} onClick={() => void respondDesignReceipt(task.releaseId ?? "", "Returned")}>Return released package</button>
                 </div>)}</div>}</>}
           {phase === "Develop" && detail.phaseStatus.replayMatches &&
-            <><CustomerDevelopAuthority workspace={workspace} workId={detail.record.id} role={role}
+            <><DevelopPlanning key={`${detail.record.id}:${detail.revision}`}
+              work={detail.record as unknown as WorkRecord} workspace={workspace as WorkspaceKey}
+              canEdit={detail.canEdit} hosted onUpdate={(id,transform)=>{void saveCommercialDraft(id,transform);}}
+              onCommercialCommand={executeCommercial} onNotice={setError}
+              onDefine={()=>document.getElementById("phase-define")?.scrollIntoView()}
+              onPeople={()=>document.getElementById("phase-develop")?.scrollIntoView()} />
+            <CustomerDevelopAuthority workspace={workspace} workId={detail.record.id} role={role}
               onChanged={() => load()} />
             <CustomerDevelopActions workspace={workspace} workId={detail.record.id} role={role}
-              onChanged={() => load()} /></>}
+              onChanged={() => load()} />
+            <CustomerCommercialActions work={detail.record as unknown as WorkRecord}
+              role={role} busy={busy} onCommand={executeCommercial}
+              onSaveInitialOffer={saveInitialOffer} /></>}
           {phase === "Deploy" && <><p>Whole-Work customer acceptance: {detail.record.deploy?.workAcceptance?.receipt ?? "Pending"}.</p>
             {detail.phaseStatus.replayMatches && ["admin", "project_manager", "field_supervisor", "operations_leader"].includes(role) &&
               <Link href={`/work/customer/${encodeURIComponent(workspace)}/deploy?workId=${encodeURIComponent(detail.record.id)}`}>Open Deploy decisions and evidence</Link>}</>}

@@ -22,7 +22,7 @@ const reply = (body: unknown, status = 200) => NextResponse.json(body, {
 export async function POST(request: NextRequest) {
   if (!validLocalScheduleOrigin(request.headers)) return reply({ error: "invalid_origin" }, 403);
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
-  if (!workspaces.has(workspace)) return reply({ error: "invalid_target" }, 400);
+  if (!/^[a-z][a-z0-9_-]{1,63}$/.test(workspace)) return reply({ error: "invalid_target" }, 400);
   const raw = await request.text();
   if (raw.length > 100_000) return reply({ error: "command_too_large" }, 413);
   try {
@@ -50,6 +50,10 @@ export async function POST(request: NextRequest) {
     if (index < 0) return reply({ error: "work_unavailable" }, 404);
     const current = records[index] as WorkRecord;
     if (current.workspace !== workspace) return reply({ error: "workspace_forbidden" }, 403);
+    // Pilot prototype fallback stays limited to the original allowlist.
+    // Other tenants may execute only the existing canonical Work RPC path.
+    if (!workspaces.has(workspace) && (!authoritativeD5OCommandsReady() || !current.canonicalWorkId))
+      return reply({ error: "invalid_target" }, 403);
     if (authoritativeD5OCommandsReady() && current.canonicalWorkId &&
       ["submit-design-handoff", "accept-design-handoff", "return-design-handoff"].includes(command.action)) {
       if (!command.commandId || !Number.isInteger(command.expectedDecisionRevision) ||

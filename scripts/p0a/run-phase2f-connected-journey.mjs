@@ -9,24 +9,27 @@ import { chromium } from "@playwright/test";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
+const rc3 = process.env.D5O_RC3_BROWSER === "1";
 const phase2hvc = process.env.D5O_PHASE2HVC === "1";
 const phase2hvcFinal = process.env.D5O_PHASE2HVC_FINAL === "1";
-const phase2hv = process.env.D5O_PHASE2HV === "1";
+const phase2hv = rc3 || process.env.D5O_PHASE2HV === "1";
 const phase2hu = process.env.D5O_PHASE2HU === "1" || phase2hv;
 const rc0DeployIntegrity = phase2hu && process.env.D5O_RC0_DEPLOY_INTEGRITY === "1";
 const phase2htd = process.env.D5O_PHASE2HTD === "1";
 const phase2hteDiagnostic = process.env.D5O_PHASE2HTE_DIAGNOSTIC === "1";
 const phase2hteReloadProbe = process.env.D5O_PHASE2HTE_RELOAD_PROBE === "1";
-const phase2htc = process.env.D5O_PHASE2HTC === "1" || phase2htd;
-const phase2htGateA = process.env.D5O_PHASE2HT_GATE_A === "1";
+const phase2htc = rc3 || process.env.D5O_PHASE2HTC === "1" || phase2htd;
+const phase2htGateA = rc3 || process.env.D5O_PHASE2HT_GATE_A === "1";
 const phase2htGateB = process.env.D5O_PHASE2HT_GATE_B === "1" || phase2htc;
-const phase2g = process.env.D5O_PHASE2G === "1";
-const phase2hsGateB = process.env.D5O_PHASE2HS_GATE_B === "1" || phase2htGateA;
+const phase2g = rc3 || process.env.D5O_PHASE2G === "1";
+const phase2hsGateB = rc3 || process.env.D5O_PHASE2HS_GATE_B === "1" || phase2htGateA;
 const phase2hsGateA = process.env.D5O_PHASE2HS_GATE_A === "1" || phase2hsGateB;
 const phase2hr = process.env.D5O_PHASE2HR === "1" || phase2hsGateA;
 const phase2hCompletion = process.env.D5O_PHASE2H_COMPLETION === "1" || phase2hr;
 const phase2h = process.env.D5O_PHASE2H === "1" || phase2hCompletion;
-const output = resolve(root, phase2hvcFinal
+const output = resolve(root, rc3
+  ? "docs/release/evidence/D5O_RC3_TWO_TENANT_BROWSER.json"
+  : phase2hvcFinal
   ? "docs/release/evidence/D5O_PHASE2HVC_FINAL_BROWSER.json"
   : phase2hvc
   ? "docs/release/evidence/D5O_PHASE2HVC_OPERATE_INTEGRITY.json"
@@ -57,7 +60,7 @@ const output = resolve(root, phase2hvcFinal
   : phase2g
   ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
   : "docs/architecture/evidence/phase2f-connected-journey-results.json");
-const evidence = { baseline: process.env.D5O_SOURCE_SHA || (phase2hvc || phase2hvcFinal ? "025b1036f6bdae91d72e409fe897e551ca9a6e23" : phase2hv ? "cf781d39e831a6d396f0116326aac59173fd43f4"
+const evidence = { baseline: process.env.D5O_SOURCE_SHA || (rc3 ? "e3396521099a53955f20f7cfa3951fc255b0f662" : phase2hvc || phase2hvcFinal ? "025b1036f6bdae91d72e409fe897e551ca9a6e23" : phase2hv ? "cf781d39e831a6d396f0116326aac59173fd43f4"
   : rc0DeployIntegrity ? "3710ecace04e54769b5761da83f12594562e95b3"
   : phase2hu ? "639308061ff236ac0afb6487088a44c315e9b554"
   : phase2htd ? "88381435a965050402dcd423b4856115246459a3"
@@ -67,7 +70,9 @@ const evidence = { baseline: process.env.D5O_SOURCE_SHA || (phase2hvc || phase2h
     ? "dae8e1fa975bc47ef6d1180b512399683e3c9613"
     : "8d536b4ce74282fe6c3a0e2dbb66b1752ca51ec2"),
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
-const browserEvidenceDir = (legacyPath) => resolve(root,phase2htd
+let rc3PrepublicationDraftId=null;
+const browserEvidenceDir = (legacyPath) => resolve(root,rc3
+  ? "docs/release/evidence/rc3-browser" : phase2htd
   ? "docs/architecture/evidence/phase2htd-browser" : phase2htc
   ? "docs/architecture/evidence/phase2htc-browser" : phase2htGateB
   ? "docs/architecture/evidence/phase2ht-gate-b-browser" : legacyPath);
@@ -218,6 +223,21 @@ try {
   const call = (key,name,args={}) => clients[key].rpc(name,args);
   const designPages = new Map();
   const designActionEvidence = [];
+  if(rc3) evidence.browserDecisions=[];
+  async function rc3SignedInPage(actor) {
+    if(!server)server=await startNext(url,anon,service);
+    if(!designBrowser)designBrowser=await chromium.launch();
+    let page=designPages.get(actor);
+    if(page)return page;
+    page=await designBrowser.newPage({viewport:{width:1440,height:900}});
+    await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in`);
+    await page.getByLabel("Email").fill(users[actor].email);
+    await page.getByLabel("Password").fill(users[actor].password);
+    await page.getByRole("button",{name:"Continue to your work"}).click();
+    await page.waitForURL((location)=>!location.pathname.startsWith("/auth/sign-in"),{timeout:30000});
+    designPages.set(actor,page);
+    return page;
+  }
   if(phase2hr) evidence.designActions=designActionEvidence;
   async function designPage(actor, tenant, workId) {
     if(!server) server=await startNext(url,anon,service);
@@ -251,6 +271,53 @@ try {
     }
     await page.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden"});
     return page;
+  }
+  async function rc3PhasePage(actor,tenant,workId,phase) {
+    const page=await rc3SignedInPage(actor);
+    await page.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}?work=${workId}#phase-${phase}`);
+    await page.getByText("Loading current Work and phase decisions…").waitFor({state:"hidden",timeout:30000});
+    return page;
+  }
+  async function rc3OpenTask(actor,tenant,workId,title) {
+    const page=await rc3SignedInPage(actor);
+    await page.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`);
+    await page.getByRole("heading",{name:"Work lifecycle"}).waitFor({timeout:30000});
+    const task=page.locator('.d5o-customer-work-list a[href*="?work="]')
+      .filter({hasText:title}).first();
+    await task.waitFor({state:"visible",timeout:30000});
+    const href=await task.getAttribute("href");
+    assert(href?.includes(workId),`${actor}:wrong_task_work:${href}`);
+    await task.click();
+    (evidence.browserTasks??=[]).push({tenant:tenant.workspaceKey,actor,workId,title,href,
+      origin:"authenticated_my_work_link"});
+    return page;
+  }
+  async function rc3Decision(page,tenant,actor,phase,label,control,endpoint="customer-work",expected=200) {
+    await control.waitFor({state:"visible",timeout:30000});
+    let response;
+    try {
+      [response]=await Promise.all([
+        page.waitForResponse((item)=>item.url().includes(`/api/d5o-hosted/${endpoint}`)
+          && item.request().method()==="POST",{timeout:30000}),control.click()
+      ]);
+    } catch(error) {
+      const diagnostics=await page.evaluate(()=>({alerts:[...document.querySelectorAll('[role="alert"]')]
+        .map((item)=>item.textContent),forms:[...document.querySelectorAll("form")]
+        .filter((form)=>form.querySelector("button")?.textContent?.includes("Save customer offer revision"))
+        .map((form)=>({valid:form.checkValidity(),invalid:[...form.elements]
+          .filter((item)=>!item.validity.valid).map((item)=>({name:item.name,value:item.value,
+            reason:item.validationMessage}))}))}));
+      throw Error(`${tenant.workspaceKey}:${label}:${error.message}:${JSON.stringify(diagnostics)}`);
+    }
+    const body=await response.json();
+    assert.equal(response.status(),expected,`${tenant.workspaceKey}:${label}:${JSON.stringify(body)}`);
+    const request=response.request().postDataJSON();
+    evidence.browserDecisions.push({tenant:tenant.workspaceKey,actor,phase,label,
+      origin:"authenticated_browser_control",status:response.status(),
+      commandId:request.commandId??request.command_id??null,
+      workId:request.workId??request.p_presentation_id??null,
+      result:body.result??body.error??null});
+    return {page,body,request,response};
   }
   const serviceTaskEvidence=[];
   if(phase2htc) evidence.serviceTaskNavigation=serviceTaskEvidence;
@@ -942,7 +1009,22 @@ try {
         where workspace_id=${q(tenant.workspaceId)} and state_key='work'),0);`));
       const catalogRevision=Number(sql(`select coalesce((select revision from d5o_hosted.prototype_states
         where workspace_id=${q(tenant.workspaceId)} and state_key='catalog'),0);`));
-      const work=await admin.rpc("d5o_hosted_create_connected_work_v1",{
+      const work=rc3 ? await (async()=>{
+        const page=await rc3SignedInPage(pm);
+        await page.goto(`http://127.0.0.1:${server.port}/work/connected-work?workspace=${tenant.workspaceKey}`);
+        await page.getByLabel("Work name").fill("Phase 2D policy qualification");
+        await page.getByLabel("Customer",{exact:true}).fill("Fictional Customer");
+        await page.getByLabel("Site").fill("Test location");
+        await page.getByLabel("Accountable owner").fill("Test owner");
+        await page.getByLabel("Demand source").fill("Test");
+        await page.getByLabel("Customer need").fill("Need service");
+        await page.getByLabel("Procurement route").fill("Direct");
+        const created=await rc3Decision(page,tenant,pm,"Discover","Create connected Work",
+          page.getByRole("button",{name:"Create connected Work"}),"connected-work",201);
+        await page.getByRole("status").filter({hasText:"Connected Work created: Phase 2D policy qualification"})
+          .waitFor({timeout:30000});
+        return {data:{workId:created.body.result?.workId??created.body.workId},error:null};
+      })() : await admin.rpc("d5o_hosted_create_connected_work_v1",{
         p_workspace_key:tenant.workspaceKey,p_command_id:`phase2d-connected-${who}`,
         p_expected_work_revision:workRevision,p_expected_catalog_revision:catalogRevision,
         p_configuration_version_id:versions[who],p_work_type_key:"lifecycle-service",
@@ -954,6 +1036,11 @@ try {
         p_initial_discovery:{source:"Test",need:"Need service",
           procurement:"Direct",closeDate:""}});
       assert(!work.error,work.error?.message);
+      if(rc3 && !work.data.workId) {
+        work.data.workId=sql(`select id from d5o_hosted.work_records
+          where workspace_id=${q(tenant.workspaceId)}
+            and title='Phase 2D policy qualification' limit 1;`);
+      }
       const presentationId=sql(`select presentation_id from d5o_hosted.work_identity_links
         where workspace_id=${q(tenant.workspaceId)} and work_id=${q(work.data.workId)};`);
       const sourceRevision=Number(sql(`select revision from d5o_hosted.prototype_states
@@ -997,12 +1084,49 @@ try {
   await check("both tenants complete Discover intake and independent Define handoff",async()=>{
     const outcomes=[];
     for(const [prefix,tenant] of [["a",a],["b",b]]) {
-      const owner=`${prefix}_admin`,finance=`${prefix}_finance`,receiver=`${prefix}_ops`;
+      const owner=rc3?`${prefix}_pm`:`${prefix}_admin`,finance=`${prefix}_finance`,receiver=`${prefix}_ops`;
       const initial=await call(owner,"d5o_hosted_prototype_read_v1",{
         p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
       assert(!initial.error,initial.error?.message);
       const record=initial.data.state.records.find((item)=>item.title==="Phase 2D policy qualification");
       assert(record);
+      if(rc3) {
+        let page=await rc3OpenTask(owner,tenant,record.id,"Prepare Discover intake");
+        for(const [label,value] of Object.entries({
+          "Requester":"Fictional customer representative",
+          "Intended customer outcome":"Restore inspected service capability",
+          "Rough value":"15000","Currency":"USD","Required date":"2026-12-01",
+          "Known risk or unknown":"Service outage during inspection"}))
+          await page.getByLabel(label,{exact:true}).fill(value);
+        await rc3Decision(page,tenant,owner,"Discover","Save intake revision",
+          page.getByRole("button",{name:"Save intake revision"}),"prototype-pursuit-command");
+        page=await rc3PhasePage(owner,tenant,record.id,"discover");
+        await rc3Decision(page,tenant,owner,"Discover","Submit intake for pursuit decision",
+          page.getByRole("button",{name:"Submit intake for pursuit decision"}),"prototype-pursuit-command");
+        page=await rc3OpenTask(finance,tenant,record.id,"Review Discover intake");
+        await page.locator("#phase-discover").getByLabel("Decision basis")
+          .fill("Qualified fictional service request for controlled delivery");
+        await rc3Decision(page,tenant,finance,"Discover","Qualify pursuit",
+          page.getByRole("button",{name:"Qualify pursuit"}),"prototype-pursuit-command");
+        page=await rc3OpenTask(owner,tenant,record.id,"Prepare Define handoff");
+        await page.getByLabel("Need, scope boundary and open questions").fill(
+          "Fictional customer service need with a scoped and inspected handoff to Define");
+        await rc3Decision(page,tenant,owner,"Discover","Submit Define handoff",
+          page.getByRole("button",{name:"Submit Define handoff"}),"prototype-pursuit-command");
+        page=await rc3OpenTask(receiver,tenant,record.id,"Receive Define handoff");
+        await page.getByLabel("Receiver response reason").fill(
+          "Accepted scoped fictional handoff for Define review");
+        await rc3Decision(page,tenant,receiver,"Discover","Accept Define handoff",
+          page.getByRole("button",{name:"Accept Define handoff"}),"prototype-pursuit-command");
+        const after=await call(owner,"d5o_hosted_prototype_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+        assert(!after.error,after.error?.message);
+        const updated=after.data.state.records.find((item)=>item.id===record.id);
+        assert.equal(updated.discovery?.pursuitControl?.handoff?.status,"accepted");
+        outcomes.push({tenant:tenant.workspaceKey,workId:record.canonicalWorkId,
+          sourceRevision:after.data.revision,handoff:"accepted",browser:true});
+        continue;
+      }
       let decision=0;
       const invoke=async(actor,action,intent)=>{
         const result=await call(actor,"d5o_hosted_pursuit_command_v1",{
@@ -1042,7 +1166,7 @@ try {
   await check("both tenants submit an authorized and complete Define draft",async()=>{
     const outcomes=[];
     for(const [prefix,tenant,strict] of [["a",a,true],["b",b,false]]) {
-      const owner=`${prefix}_admin`;
+      const owner=rc3?`${prefix}_pm`:`${prefix}_admin`;
       const current=await call(owner,"d5o_hosted_prototype_read_v1",{
         p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
       assert(!current.error,current.error?.message);
@@ -1223,7 +1347,7 @@ try {
   await check("independent Define reviews approve and hand off each pinned baseline",async()=>{
     const outcomes=[];
     for(const [prefix,tenant] of [["a",a],["b",b]]) {
-      const owner=`${prefix}_admin`,finance=`${prefix}_finance`,ops=`${prefix}_ops`;
+      const owner=rc3?`${prefix}_pm`:`${prefix}_admin`,finance=`${prefix}_finance`,ops=`${prefix}_ops`;
       const current=await call(owner,"d5o_hosted_prototype_read_v1",{
         p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
       assert(!current.error,current.error?.message);
@@ -1352,7 +1476,65 @@ try {
   await check("Develop policy rejects missing option evidence and accepts a documented selected solution",async()=>{
     const outcomes=[];
     for(const [prefix,tenant,strict] of [["a",a,true],["b",b,false]]) {
-      const owner=`${prefix}_admin`,ops=`${prefix}_ops`;
+      const owner=rc3?`${prefix}_pm`:`${prefix}_admin`,ops=`${prefix}_ops`;
+      if(rc3) {
+        const source=await call(owner,"d5o_hosted_prototype_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+        assert(!source.error,source.error?.message);
+        const record=source.data.state.records.find((item)=>item.title==="Phase 2D policy qualification");
+        const solutionPage=async()=>{
+          const page=await rc3OpenTask(owner,tenant,record.id,"Prepare selected solution");
+          await page.getByRole("button",{name:"Solution options"}).click();
+          return page;
+        };
+        let page=await solutionPage();
+        const option=page.locator("form").filter({has:page.getByRole("button",{name:"Save option revision"})});
+        for(const [label,value] of Object.entries({"Option name":"Controlled repair",
+          "Technical approach":"Inspect then repair", "Materials / equipment":"Existing stock",
+          "Resource and capacity basis":"Qualified crew", "Schedule and customer windows":"Confirmed window",
+          "Safety, quality and operating basis":"Permit and inspection",
+          "Dependencies and risks":"Managed outage",
+          "Supporting source":"Synthetic inspected option assessment",
+          "Assessment owner":"Project manager"}))await option.getByLabel(label).fill(value);
+        await option.locator('input[name="requirements"]').first().check();
+        await option.locator('select[name="status"]').selectOption("Viable");
+        await rc3Decision(page,tenant,owner,"Develop","Save option revision",
+          option.getByRole("button",{name:"Save option revision"}),"prototype-state");
+        page=await solutionPage();
+        await page.getByLabel("Selection rationale").fill("Bounded repair addresses accepted scope");
+        await rc3Decision(page,tenant,owner,"Develop","Select with rationale",
+          page.getByRole("button",{name:"Select with rationale"}),"prototype-state");
+        page=await rc3OpenTask(owner,tenant,record.id,"Prepare selected solution");
+        await page.getByRole("button",{name:"Delivery strategy"}).click();
+        const strategy=page.locator("form").filter({has:page.getByRole("button",{name:"Save strategy revision"})});
+        for(const [label,value] of Object.entries({
+          "Roles, skills, hours, supervision and productivity":"Qualified service team",
+          "Subcontract, suppliers, quotations and lead times":"Existing stock",
+          "Sequence, dependencies, access and outage windows":"Confirmed site window",
+          "Safety execution approach":"Permit before work",
+          "Verification and quality approach":"Independent inspection",
+          "Risks, mitigation and contingency basis":"Rollback plan"}))
+          await strategy.getByLabel(label).fill(value);
+        await strategy.getByLabel("Target customer date").fill("2026-12-01");
+        await rc3Decision(page,tenant,owner,"Develop","Save strategy revision",
+          strategy.getByRole("button",{name:"Save strategy revision"}),"prototype-state");
+        page=await rc3OpenTask(owner,tenant,record.id,"Prepare selected solution");
+        await page.getByLabel("Review due").fill("2026-12-01");
+        await rc3Decision(page,tenant,owner,"Develop","Submit solution",
+          page.getByRole("button",{name:"Submit solution"}),"prototype-commercial-command");
+        page=await rc3OpenTask(ops,tenant,record.id,"Review selected solution");
+        await page.getByLabel("Decision basis").fill("Independent review of selected fictional solution");
+        await rc3Decision(page,tenant,ops,"Develop","Approve solution",
+          page.getByRole("button",{name:"Approve solution"}),"prototype-commercial-command");
+        const after=await call(owner,"d5o_hosted_prototype_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+        assert(!after.error,after.error?.message);
+        const approved=after.data.state.records.find((item)=>item.id===record.id);
+        assert.equal(approved.develop.review.status,"Approved");
+        outcomes.push({tenant:tenant.workspaceKey,workId:record.canonicalWorkId,
+          versionId:record.phaseConfigurationVersionId,solutionStatus:"Approved",browser:true});
+        continue;
+      }
       let current=await call(owner,"d5o_hosted_prototype_read_v1",{
         p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
       assert(!current.error,current.error?.message);
@@ -1465,7 +1647,46 @@ try {
   await check("both tenants approve a detailed estimate from the selected solution",async()=>{
     const outcomes=[];
     for(const [prefix,tenant] of [["a",a],["b",b]]) {
-      const owner=`${prefix}_admin`,ops=`${prefix}_ops`;
+      const owner=rc3?`${prefix}_pm`:`${prefix}_admin`,ops=`${prefix}_ops`;
+      if(rc3) {
+        const source=await call(owner,"d5o_hosted_prototype_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+        assert(!source.error,source.error?.message);
+        const record=source.data.state.records.find((item)=>item.title==="Phase 2D policy qualification");
+        let page=await rc3OpenTask(owner,tenant,record.id,"Prepare detailed estimate");
+        await page.getByRole("button",{name:"Detailed estimator"}).click();
+        await page.getByLabel("Estimate maturity").selectOption("Budgetary");
+        await page.getByLabel("Risk basis").fill("Synthetic bounded repair contingency");
+        await page.getByText("+ Add sourced cost line").click();
+        const line=page.locator("form").filter({has:page.getByRole("button",{name:"Add cost line"})});
+        for(const [label,value] of Object.entries({
+          "Scope / solution reference":"service-option","Description":"Controlled service inspection and repair",
+          "Quantity or hours":"100","Unit":"hour","Catalog rate ID":"service-hour",
+          "Source / quote reference":"Synthetic rate catalog",
+          "Quantity, productivity or cost assumption":"Qualified crew completes inspected repair",
+          "Calculation basis":"One hundred inspected service hours"}))
+          await line.getByLabel(label).fill(value);
+        await line.getByLabel("Category").selectOption("labor");
+        await line.getByRole("button",{name:"Add cost line"}).click();
+        await rc3Decision(page,tenant,owner,"Develop","Save detailed estimate revision",
+          page.getByRole("button",{name:"Save detailed estimate revision"}),"prototype-commercial-command");
+        page=await rc3OpenTask(owner,tenant,record.id,"Prepare detailed estimate");
+        await page.getByLabel("Pricing review due").fill("2026-12-01");
+        await rc3Decision(page,tenant,owner,"Develop","Submit revision for pricing review",
+          page.getByRole("button",{name:"Submit revision for pricing review"}),"prototype-commercial-command");
+        page=await rc3OpenTask(ops,tenant,record.id,"Review detailed pricing");
+        await page.getByLabel("Independent pricing decision basis").fill("Independent reviewed price and scope");
+        await rc3Decision(page,tenant,ops,"Develop","Approve detailed pricing",
+          page.getByRole("button",{name:"Approve detailed pricing"}),"prototype-commercial-command");
+        const after=await call(owner,"d5o_hosted_prototype_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+        assert(!after.error,after.error?.message);
+        const estimate=after.data.state.records.find((item)=>item.id===record.id).discovery.estimate;
+        assert.equal(estimate.status,"Approved");
+        outcomes.push({tenant:tenant.workspaceKey,workId:record.canonicalWorkId,
+          estimateStatus:"Approved",revision:estimate.revision,browser:true});
+        continue;
+      }
       const current=await call(owner,"d5o_hosted_prototype_read_v1",{
         p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
       assert(!current.error,current.error?.message);
@@ -1507,7 +1728,51 @@ try {
   await check("two fictional customer awards establish exact Design handoff basis",async()=>{
     const outcomes=[];
     for(const [prefix,tenant] of [["a",a],["b",b]]) {
-      const owner=`${prefix}_admin`,ops=`${prefix}_ops`;
+      const owner=rc3?`${prefix}_pm`:`${prefix}_admin`,ops=`${prefix}_ops`;
+      if(rc3) {
+        const source=await call(owner,"d5o_hosted_prototype_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+        assert(!source.error,source.error?.message);
+        const record=source.data.state.records.find((item)=>item.title==="Phase 2D policy qualification");
+        let page=await rc3OpenTask(owner,tenant,record.id,"Prepare customer offer");
+        await page.getByLabel("Customer-facing scope").fill(
+          "Inspect and repair the controlled service component");
+        await page.getByLabel("Assumptions").fill("Customer confirms escorted access");
+        await page.getByLabel("Exclusions").fill("Unrelated equipment and systems");
+        await page.getByLabel("Commercial terms").fill("Synthetic qualification only");
+        await rc3Decision(page,tenant,owner,"Develop","Save customer offer draft",
+          page.getByRole("button",{name:"Save customer offer draft"}),"prototype-state");
+        page=await rc3OpenTask(owner,tenant,record.id,"Prepare customer offer");
+        await page.getByLabel("Offer review due").fill("2026-12-01");
+        await rc3Decision(page,tenant,owner,"Develop","Request independent offer approval",
+          page.getByRole("button",{name:"Request independent offer approval"}),"prototype-commercial-command");
+        page=await rc3OpenTask(ops,tenant,record.id,"Review customer offer");
+        await page.getByLabel("Independent offer decision basis").fill("Independent review of exact fictional offer and price");
+        await rc3Decision(page,tenant,ops,"Develop","Approve customer offer",
+          page.getByRole("button",{name:"Approve customer offer"}),"prototype-commercial-command");
+        page=await rc3OpenTask(owner,tenant,record.id,"Record customer submission");
+        await page.getByLabel("Customer recipient").fill("Fictional customer buyer");
+        await page.getByLabel("Submission method").fill("Customer portal");
+        await page.getByLabel("Customer response due").fill("2026-12-01");
+        await rc3Decision(page,tenant,owner,"Develop","Record exact customer submission",
+          page.getByRole("button",{name:"Record exact customer submission"}),"prototype-commercial-command");
+        page=await rc3OpenTask(owner,tenant,record.id,"Record customer award");
+        await page.getByLabel("Customer award date").fill("2026-10-23");
+        await page.getByLabel("Customer decision basis").fill(
+          "Synthetic buyer awards the exact reviewed service offer");
+        await page.getByLabel("Customer award source").fill(`SYNTHETIC-RC3-AWARD-${prefix.toUpperCase()}`);
+        await rc3Decision(page,tenant,owner,"Develop","Record sourced customer award",
+          page.getByRole("button",{name:"Record sourced customer award"}),"prototype-commercial-command");
+        const after=await call(owner,"d5o_hosted_prototype_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
+        assert(!after.error,after.error?.message);
+        const updated=after.data.state.records.find((item)=>item.id===record.id);
+        assert.equal(updated.discovery.outcome,"Won");
+        outcomes.push({tenant:tenant.workspaceKey,workId:record.canonicalWorkId,
+          offerStatus:updated.discovery.proposal.status,
+          awardSource:updated.discovery.proposal.responseEvents.at(-1).sourceReference,browser:true});
+        continue;
+      }
       const current=await call(owner,"d5o_hosted_prototype_read_v1",{
         p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
       assert(!current.error,current.error?.message);
@@ -1587,7 +1852,26 @@ try {
           await page.getByLabel("Handoff due date").fill("2026-12-01");
         });
         await browserDesignAction(ops,tenant,record.id,"Accept awarded Design handoff",async(page)=>{
-          await page.getByLabel("Receipt reason").fill("Independently received the exact fictional award and reviewed scope");
+          if(!(await page.getByLabel("Receipt reason").isVisible())){
+            await page.reload({waitUntil:"domcontentloaded"});
+            await page.getByRole("heading",{name:"Design actions"}).waitFor({timeout:30000});
+            (evidence.navigationRetries??=[]).push({tenant:tenant.workspaceKey,actor:ops,
+              action:"Design handoff receipt",kind:"read_only_reload"});
+          }
+          try {await page.getByLabel("Receipt reason").fill(
+            "Independently received the exact fictional award and reviewed scope",{timeout:10000});}
+          catch(error){
+            const detail=await page.evaluate(async({workspace,workId})=>{
+              const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}&workId=${workId}`);
+              const body=await response.json();return {httpStatus:response.status,role:body.role,
+                replayMatches:body.phaseStatus?.replayMatches,phaseStatus:body.phaseStatus?.status,
+                handoff:{status:body.record?.discovery?.designHandoff?.status,
+                  submittedByActorId:body.record?.discovery?.designHandoff?.submittedByActorId,
+                  revision:body.record?.discovery?.designHandoff?.revision},rendered:document.querySelector(
+                  ".d5o-customer-design-actions")?.textContent};
+            },{workspace:tenant.workspaceKey,workId:record.id});
+            throw Error(`${prefix}:design_handoff_receipt_unavailable:${error.message}:${JSON.stringify(detail)}`);
+          }
         });
         const browserResult=await call(owner,"d5o_hosted_prototype_read_v1",{
           p_workspace_key:tenant.workspaceKey,p_state_key:"work"});
@@ -2805,6 +3089,7 @@ try {
     const draft=await config("a_admin",a.workspaceKey,"create-draft",pinned,pinned,
       activeRevision,{},`invalid-pin-${randomUUID()}`);
     assert(!draft.error,`draft-fixture:${draft.error?.message}`);
+    if(rc3)rc3PrepublicationDraftId=draft.data.versionId;
     const cases=[["unknown",randomUUID()], ["foreign",versions.b_admin],
       ["draft",draft.data.versionId]];
     const denied=[];
@@ -2980,7 +3265,7 @@ try {
       disabledFeatureRpc:direct.error.code,disabledFeatureHttp:disabled.status,
       unchangedWorkforceRevision:afterWorkforce.data.revision,unrelatedCapabilities};
   });
-  if(!phase2hsGateB) {
+  if(!phase2hsGateB || rc3) {
   const deployCommand=async(prefix,tenant,actor,action,input,id,
     functionName="d5o_hosted_field_fact_command_v1")=>{
     const basis=await connectedBasis(prefix,tenant);
@@ -3000,7 +3285,7 @@ try {
     let page=deployPages.get(actor);
     if(!page) {
       page=await designBrowser.newPage({viewport});
-      const workerSignIn=actor.endsWith("_worker");
+      const workerSignIn=actor.endsWith("_worker") || actor==="b_replacement";
       const firstPath=workerSignIn ? path : "/work";
       await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=${encodeURIComponent(firstPath)}`);
       await page.waitForLoadState("networkidle");
@@ -3031,10 +3316,30 @@ try {
   }
   async function browserDeployDecision(page,button,endpoint,expected=200,method="POST") {
     await button.waitFor({state:"visible"});
+    // A visible server-rendered submit button can still perform a native GET
+    // before Next hydrates its client handler. Wait for the actual React props.
+    const hydrated=await button.elementHandle();
+    await page.waitForFunction((element)=>element?.isConnected &&
+      Object.keys(element).some((key)=>key.startsWith("__reactProps$")),hydrated,
+      {timeout:30000});
     console.log(JSON.stringify({deployStep:"submit-decision",endpoint,button:await button.innerText(),url:page.url()}));
-    const [response]=await Promise.all([
-      page.waitForResponse((item)=>item.url().includes(endpoint)&&item.request().method()===method),
-      button.click()]);
+    let response;
+    try {
+      [response]=await Promise.all([
+        page.waitForResponse((item)=>item.url().includes(endpoint)&&item.request().method()===method),
+        button.click()]);
+    } catch(error) {
+      const diagnostics=await button.evaluate((control)=>({
+        formValid:control.closest("form")?.checkValidity(),
+        invalid:[...(control.closest("form")?.elements??[])].filter((item)=>!item.validity.valid)
+          .map((item)=>({name:item.name,reason:item.validationMessage})),
+        disabled:control.disabled,
+        alerts:[...document.querySelectorAll('[role="alert"]')].map((item)=>item.textContent),
+        status:[...document.querySelectorAll('[role="status"]')].map((item)=>item.textContent).slice(0,5)
+      })).catch(()=>({navigation:page.url()}));
+      throw Error(`deploy_decision_no_response:${endpoint}:${await button.innerText().catch(()=>"unknown")}`+
+        `:${error.message}:${JSON.stringify(diagnostics)}`);
+    }
     const body=await response.text().catch(()=>"response body unavailable after navigation");
     assert.equal(response.status(),expected,`deploy_browser:${endpoint}:${body}`);
     return {status:response.status(),body:body.slice(0,500),
@@ -3078,7 +3383,8 @@ try {
     const booking=publication?.assignments.find((item)=>item.packageId===basis.packageId&&item.workId===basis.work.id);
     assert(booking,`${prefix}:published_field_booking_missing`);
     const dir=resolve(root,phase2hvcFinal?"docs/release/evidence/phase2hvc-final-browser":phase2hvc?"docs/release/evidence/phase2hvc-browser":phase2hv?"docs/architecture/evidence/phase2hv-browser":"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
-    const worker=await deployPage(`${prefix}_worker`,tenant,
+    const workerActor=phase2htGateA&&prefix==="b"?"b_replacement":`${prefix}_worker`;
+    const worker=await deployPage(workerActor,tenant,
       `/work/customer/${tenant.workspaceKey}/assignments`,{width:390,height:844});
     console.log(JSON.stringify({deployStep:`${prefix}:open-field`,url:worker.url()}));
     await worker.getByRole("link",{name:"Open field execution"}).click();
@@ -3703,7 +4009,7 @@ try {
     const aBasis=await connectedBasis("a",a);
     const bBasis=await connectedBasis("b",b);
     const worker=deployPages.get("a_worker");
-    const foreignWorker=deployPages.get("b_worker");
+    const foreignWorker=deployPages.get(phase2htGateA?"b_replacement":"b_worker");
     const manager=deployPages.get("a_ops");
     assert(worker&&foreignWorker&&manager,"browser_identities_unavailable");
     const report=aBasis.deploy.state.reports.find((item)=>item.packageId===aBasis.packageId);
@@ -4581,11 +4887,13 @@ try {
     const prior=versions.a_admin;
     const revision=Number(sql(`select edit_revision from d5o_hosted.configuration_versions
       where id=${q(prior)};`));
-    const draft=await config("a_admin",a.workspaceKey,"create-draft",prior,prior,revision,
-      {},"phase2f-historical-draft");
-    assert(!draft.error,draft.error?.message);
-    const next=draft.data.versionId;
-    const changed=await config("a_admin",a.workspaceKey,"save-policy",next,prior,1,
+    const draft=rc3PrepublicationDraftId?null:await config("a_admin",a.workspaceKey,
+      "create-draft",prior,prior,revision,{},"phase2f-historical-draft");
+    if(draft)assert(!draft.error,draft.error?.message);
+    const next=rc3PrepublicationDraftId??draft.data.versionId;
+    const draftRevision=Number(sql(`select edit_revision from d5o_hosted.configuration_versions
+      where id=${q(next)};`));
+    const changed=await config("a_admin",a.workspaceKey,"save-policy",next,prior,draftRevision,
       {key:"service-approval",thresholdMinor:1100000,currency:"USD",
         comparison:"greater_than",authorityRole:"admin",unavailableBehavior:"block"},
       "phase2f-historical-threshold");
@@ -4910,7 +5218,8 @@ try {
             "Configuration":"Start connected Work",exact:true}).waitFor({timeout:30000});
           if(file.includes("connected-work"))
             await page.getByRole("button",{name:"Create connected Work"}).waitFor({timeout:30000});
-          else await page.getByRole("heading",{name:"Discover intake"}).waitFor({timeout:30000});
+          else await page.getByLabel("Active Discover intake policy")
+            .getByRole("heading",{name:"Discover intake"}).waitFor({timeout:30000});
           await page.screenshot({path:resolve(dir,file),fullPage:true});
           files.push(file);
         }
