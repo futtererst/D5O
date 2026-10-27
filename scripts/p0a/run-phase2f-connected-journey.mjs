@@ -6,10 +6,12 @@ import { dirname, resolve } from "node:path";
 import { createServer } from "node:net";
 import { createClient } from "@supabase/supabase-js";
 import { chromium } from "@playwright/test";
+import { PDFDocument, StandardFonts } from "pdf-lib";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
-const rc3c = process.env.D5O_RC3C_BROWSER === "1";
+const rc4a = process.env.D5O_RC4A_BROWSER === "1";
+const rc3c = rc4a || process.env.D5O_RC3C_BROWSER === "1";
 const rc3 = rc3c || process.env.D5O_RC3_BROWSER === "1";
 const phase2hvc = process.env.D5O_PHASE2HVC === "1";
 const phase2hvcFinal = process.env.D5O_PHASE2HVC_FINAL === "1";
@@ -28,7 +30,9 @@ const phase2hsGateA = process.env.D5O_PHASE2HS_GATE_A === "1" || phase2hsGateB;
 const phase2hr = process.env.D5O_PHASE2HR === "1" || phase2hsGateA;
 const phase2hCompletion = process.env.D5O_PHASE2H_COMPLETION === "1" || phase2hr;
 const phase2h = process.env.D5O_PHASE2H === "1" || phase2hCompletion;
-const output = resolve(root, rc3c
+const output = resolve(root, rc4a
+  ? "docs/release/evidence/D5O_RC4A_SCOPE_CHANGE_BROWSER.json"
+  : rc3c
   ? "docs/release/evidence/D5O_RC3C_TWO_TENANT_BROWSER.json"
   : rc3
   ? "docs/release/evidence/D5O_RC3_TWO_TENANT_BROWSER.json"
@@ -74,7 +78,8 @@ const evidence = { baseline: process.env.D5O_SOURCE_SHA || (rc3 ? "e3396521099a5
     : "8d536b4ce74282fe6c3a0e2dbb66b1752ca51ec2"),
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
 let rc3PrepublicationDraftId=null;
-const browserEvidenceDir = (legacyPath) => resolve(root,rc3c
+const browserEvidenceDir = (legacyPath) => resolve(root,rc4a
+  ? "docs/release/evidence/rc4a-browser" : rc3c
   ? "docs/release/evidence/rc3c-browser" : rc3
   ? "docs/release/evidence/rc3-browser" : phase2htd
   ? "docs/architecture/evidence/phase2htd-browser" : phase2htc
@@ -155,9 +160,10 @@ function installDisposableQualificationClock() {
   evidence.disposableClock={at:`${phase2hv?executionDate:"2026-10-26"}T14:00:00Z`,scope:"field-start and connected Operate commands in disposable database only"};
 }
 async function check(name, run) {
+  if (rc4a && evidence.rc4aReached) return;
   try { evidence.tests.push({ name, status: "PASS", detail: await run() ?? null }); }
   catch (error) { evidence.tests.push({ name, status: "FAIL", detail: String(error.message).slice(0,
-    phase2hsGateB || phase2htGateB ? 5000 : 800) }); }
+    rc4a || phase2hsGateB || phase2htGateB ? 5000 : 800) }); }
   console.log(JSON.stringify({test:name,status:evidence.tests.at(-1).status,
     ...(evidence.tests.at(-1).status==="FAIL"?{detail:evidence.tests.at(-1).detail}:{})}));
   if(phase2hv && evidence.tests.at(-1).status==="FAIL")
@@ -319,7 +325,9 @@ try {
     }
     const body=await response.json();
     assert.equal(response.status(),expected,`${tenant.workspaceKey}:${label}:${JSON.stringify(body)}`);
-    const request=response.request().postDataJSON();
+    let request={};
+    try { request=response.request().postDataJSON() ?? {}; }
+    catch { /* Multipart evidence uploads do not have a JSON request body. */ }
     evidence.browserDecisions.push({tenant:tenant.workspaceKey,actor,phase,label,
       origin:"authenticated_browser_control",status:response.status(),
       commandId:request.commandId??request.command_id??null,
@@ -2401,6 +2409,21 @@ try {
     }
     return outcomes;
   });
+  if(rc4a) {
+    await check("RC4-A browser surface preflight after accepted Design release",async()=>{
+      const work=await call("a_pm","d5o_hosted_prototype_read_v1",{
+        p_workspace_key:a.workspaceKey,p_state_key:"work"});
+      assert(!work.error,work.error?.message);
+      const workId=work.data.state.records.find((item)=>item.title==="Phase 2D policy qualification").id;
+      const page=await rc3SignedInPage("a_pm");
+      const response=await page.goto(`http://127.0.0.1:${server.port}/work?workspace=${a.workspaceKey}&view=record&record=${workId}&section=Design&designTab=Changes`);
+      await page.getByRole("main").waitFor({timeout:30000});
+      await page.getByText("Loading shared Work").waitFor({state:"hidden",timeout:30000}).catch(()=>{});
+      return {status:response?.status(),url:page.url(),headings:await page.getByRole("heading").allTextContents(),
+        buttons:(await page.getByRole("button").allTextContents()).slice(0,45),
+        text:(await page.locator("main").innerText()).slice(0,5000)};
+    });
+  }
   if(rc3c) await check("forged and completed Design task links grant no authority",async()=>{
     const work=await call("a_admin","d5o_hosted_prototype_read_v1",{
       p_workspace_key:a.workspaceKey,p_state_key:"work"});
@@ -2678,6 +2701,285 @@ try {
       p_workspace_key:tenant.workspaceKey,p_action:action,p_input:input,
       p_command_id:`phase2f-${prefix}-${id}`,p_expected_revision:basis.schedule.revision});
   };
+  if(rc4a) {
+    await check("RC4-A two-tenant commercial Scope change browser decisions",async()=>{
+      const outcomes=[];
+      const scopeDir=browserEvidenceDir("docs/release/evidence/rc4a-browser");
+      mkdirSync(scopeDir,{recursive:true});
+      evidence.scopeIntegrity=[];
+      const changeSnapshot=async(prefix,tenant,workId,changeId)=>{
+        const [basis,read]=await Promise.all([connectedBasis(prefix,tenant),call(`${prefix}_pm`,
+          "d5o_hosted_field_change_read_v1",{p_workspace_key:tenant.workspaceKey,
+            p_presentation_id:workId})]);
+        assert(!read.error,read.error?.message);
+        const item=read.data.changes.find((candidate)=>candidate.id===changeId);
+        const counts=JSON.parse(sql(`select pg_catalog.jsonb_build_object(
+          'events',(select count(*) from d5o_hosted.connected_field_change_events
+            where workspace_id=${q(tenant.workspaceId)} and change_id=${q(changeId)}),
+          'receipts',(select count(*) from d5o_hosted.connected_field_change_receipts
+            where workspace_id=${q(tenant.workspaceId)} and result->>'id'=${q(changeId)}))::text;`));
+        return {status:item?.status,revision:item?.revision,facts:item?.facts,
+          events:counts.events,receipts:counts.receipts,sourceRevision:basis.source.revision,
+          designRevision:basis.work.design.authorityRevision,deployRevision:basis.deploy.revision,
+          configurationVersionId:basis.work.phaseConfigurationVersionId};
+      };
+      const fieldCommand=async(actor,prefix,tenant,workId,packageId,changeId,action,input,
+        commandId=randomUUID(),changeRevisionOffset=0)=>{
+        const basis=await connectedBasis(prefix,tenant);
+        const read=await call(`${prefix}_pm`,"d5o_hosted_field_change_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:workId});
+        const change=read.data.changes.find((item)=>item.id===changeId);
+        return call(actor,"d5o_hosted_field_change_command_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:workId,p_package_id:packageId,
+          p_change_id:changeId,p_action:action,p_input:input,p_command_id:commandId,
+          p_expected_source_revision:basis.source.revision,
+          p_expected_design_revision:basis.work.design.authorityRevision,
+          p_expected_deploy_revision:basis.deploy.revision,
+          p_expected_change_revision:change.revision+changeRevisionOffset});
+      };
+      const denied=async(name,actor,prefix,tenant,workId,packageId,changeId,action,input,
+        changeRevisionOffset=0)=>{
+        const before=await changeSnapshot(prefix,tenant,workId,changeId);
+        const result=await fieldCommand(actor,prefix,tenant,workId,packageId,changeId,action,input,
+          randomUUID(),changeRevisionOffset);
+        assert(result.error,`${name}:unexpected_success`);
+        const after=await changeSnapshot(prefix,tenant,workId,changeId);
+        assert.deepEqual(after,before,`${name}:protected_state_changed`);
+        evidence.scopeIntegrity.push({name,tenant:tenant.workspaceKey,actor,
+          response:{code:result.error.code,message:result.error.message},
+          unchanged:true,revision:after.revision,events:after.events,receipts:after.receipts,
+          configurationVersionId:after.configurationVersionId});
+      };
+      for(const [prefix,tenant] of [["a",a],["b",b]]) {
+        const basis=await connectedBasis(prefix,tenant);
+        const pin=basis.work.phaseConfigurationVersionId;
+        const pm=await rc3SignedInPage(`${prefix}_pm`);
+        await pm.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}/deploy?workId=${encodeURIComponent(basis.work.id)}`);
+        await pm.getByRole("button",{name:"Inspections & issues"}).click();
+        const issue=pm.locator("form").filter({has:pm.getByRole("button",{name:"Raise condition and hold further start"})});
+        await issue.getByLabel("Unexpected condition").fill("Additional synthetic customer delivery scope");
+        await issue.getByLabel("Impact and affected scope").fill("Add a separately priced verification step to the accepted package");
+        await rc3Decision(pm,tenant,`${prefix}_pm`,"Deploy","raise Scope change",issue.getByRole("button",{name:"Raise condition and hold further start"}),"field-changes");
+        let state=await call(`${prefix}_pm`,"d5o_hosted_field_change_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
+        assert(!state.error,state.error?.message);
+        const change=state.data.changes.find((item)=>item.status==="Open"&&item.packageId===basis.packageId);
+        assert(change,`${prefix}:scope_change_missing`);
+        const ops=await rc3SignedInPage(`${prefix}_ops`);
+        await ops.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}/deploy?workId=${encodeURIComponent(basis.work.id)}`);
+        await ops.getByRole("button",{name:"Inspections & issues"}).click();
+        const assess=ops.locator("form").filter({has:ops.getByRole("button",{name:"Assess condition"})});
+        await assess.getByLabel("Disposition").selectOption("Scope change");
+        await assess.getByLabel("Independent assessment").fill("Additional delivery scope requires customer and commercial authorization");
+        await rc3Decision(ops,tenant,`${prefix}_ops`,"Deploy","assess Scope change",assess.getByRole("button",{name:"Assess condition"}),"field-changes");
+        await pm.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}?work=${encodeURIComponent(basis.work.id)}#phase-develop`);
+        const proposal=pm.locator("form").filter({has:pm.getByRole("button",{name:"Save Develop change proposal"})});
+        await proposal.getByLabel("Scope difference").fill("Add documented independent operational verification to the accepted package");
+        await proposal.getByLabel("Cost basis and source").fill("Synthetic eight-hour qualified labor estimate");
+        await proposal.getByLabel("Price basis and source").fill("Synthetic customer change quotation");
+        await proposal.getByLabel("Proposed price change").fill("15000");
+        await proposal.getByLabel("Schedule impact").fill("One extra shift");
+        await rc3Decision(pm,tenant,`${prefix}_pm`,"Develop","price Scope change",proposal.getByRole("button",{name:"Save Develop change proposal"}),"field-changes");
+        const submission=pm.locator("form").filter({has:pm.getByRole("button",{name:"Submit independent commercial review"})});
+        await submission.getByLabel("Submission reason").fill("Submit priced customer change for independent review");
+        await rc3Decision(pm,tenant,`${prefix}_pm`,"Develop","submit commercial review",submission.getByRole("button",{name:"Submit independent commercial review"}),"field-changes");
+        const reviewInput={decision:"Approved",reason:"Independent synthetic commercial scope review"};
+        await denied("cross-tenant Scope review",`${prefix==="a"?"b":"a"}_admin`,prefix,tenant,
+          basis.work.id,basis.packageId,change.id,"review",reviewInput);
+        await denied("submitted actor cannot self-review",`${prefix}_pm`,prefix,tenant,
+          basis.work.id,basis.packageId,change.id,"review",reviewInput);
+        await denied("wrong-role Scope review",`${prefix}_ops`,prefix,tenant,
+          basis.work.id,basis.packageId,change.id,"review",reviewInput);
+        await denied("stale Scope revision",`${prefix}_admin`,prefix,tenant,
+          basis.work.id,basis.packageId,change.id,"review",reviewInput,-1);
+        const reviewer=await rc3OpenTask(`${prefix}_admin`,tenant,basis.work.id,
+          "Independently review commercial Scope change");
+        const review=reviewer.locator("form").filter({has:reviewer.getByRole("button",{name:"Record internal decision"})});
+        await review.waitFor({state:"visible",timeout:12000}).catch(async(error)=>{
+          const remote=await reviewer.evaluate(async({workspace,workId})=>{
+            const [changes,work]=await Promise.all([
+              fetch(`/api/d5o-hosted/field-changes?workspace=${workspace}&workId=${workId}`),
+              fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}&workId=${workId}`)]);
+            return {changes:{status:changes.status,body:await changes.json()},
+              work:{status:work.status,body:await work.json()}};
+          },{workspace:tenant.workspaceKey,workId:basis.work.id});
+          throw Error(`${prefix}:scope_review_surface:${reviewer.url()}:phase=${(await reviewer.locator("#phase-develop").innerText()).slice(-2400)}:remote=${JSON.stringify({changes:remote.changes,work:{status:remote.work.status,releases:remote.work.body.record?.design?.releases,error:remote.work.body.error}}).slice(0,2400)}:${error.message}`);
+        });
+        await review.getByLabel("Independent reason").fill("Independent commercial approval of exact synthetic price and schedule");
+        await rc3Decision(reviewer,tenant,`${prefix}_admin`,"Develop","approve Scope change",review.getByRole("button",{name:"Record internal decision"}),"field-changes");
+        await denied("forged customer authorization evidence",`${prefix}_pm`,prefix,tenant,
+          basis.work.id,basis.packageId,change.id,"record-customer",{
+            customerRepresentative:"Fictional buyer",organization:"Fictional customer",
+            authorityBasis:"Exact approved additional scope",evidenceId:randomUUID()});
+        await denied("missing customer authorization evidence",`${prefix}_pm`,prefix,tenant,
+          basis.work.id,basis.packageId,change.id,"record-customer",{
+            customerRepresentative:"Fictional buyer",organization:"Fictional customer",
+            authorityBasis:"Exact approved additional scope"});
+        await pm.reload();
+        const customer=pm.locator("form").filter({has:pm.getByRole("button",{name:"Record separate customer authorization"})});
+        await customer.getByLabel("Fictional customer representative").fill("Fictional customer buyer");
+        await customer.getByLabel("Organization").fill("Fictional customer organization");
+        await customer.getByLabel("Stated customer authority and scope").fill("Fictional buyer's documented authority for the exact fifteen-thousand-dollar added verification scope");
+        const authorization=await PDFDocument.create();
+        const authorizationPage=authorization.addPage([612,792]);
+        const authorizationFont=await authorization.embedFont(StandardFonts.Helvetica);
+        ["SYNTHETIC CUSTOMER SCOPE AUTHORIZATION",`Tenant: ${tenant.workspaceKey}`,
+          `Work: ${basis.work.id}`,`Change: ${change.id}`,
+          "Added scope: independent operational verification of the accepted package",
+          "Authorized customer price change: USD 15,000.00",
+          "Schedule impact: one extra shift",
+          "Approved by: Fictional customer buyer, Fictional customer organization",
+          `Approval date: ${new Date().toISOString().slice(0,10)}`,
+          "Test-only fictional authorization; no external customer or signature involved."
+        ].forEach((line,index)=>authorizationPage.drawText(line,{
+          x:45,y:745-index*34,size:index===0?15:10,font:authorizationFont}));
+        const authorizationBytes=Buffer.from(await authorization.save());
+        await customer.getByLabel("Externally signed acceptance PDF").setInputFiles({
+          name:`${prefix}-scope-authorization.pdf`,mimeType:"application/pdf",
+          buffer:authorizationBytes});
+        await rc3Decision(pm,tenant,`${prefix}_pm`,"Develop","retain customer authorization PDF",
+          customer.getByRole("button",{name:"Retain PDF"}),"customer-decision-evidence");
+        await rc3Decision(pm,tenant,`${prefix}_pm`,"Develop","record customer Scope authorization",
+          customer.getByRole("button",{name:"Record separate customer authorization"}),"field-changes");
+        state=await call(`${prefix}_pm`,"d5o_hosted_field_change_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
+        assert.equal(state.data.changes.find((item)=>item.id===change.id)?.status,"Customer authorized");
+        const retained=state.data.changes.find((item)=>item.id===change.id)?.facts?.customerAuthorization?.document;
+        assert.equal(retained?.purpose,"field-change-authorization");
+        assert.equal(retained?.scopeId,change.id);
+        assert.equal(retained?.sizeBytes,authorizationBytes.length);
+        assert.equal(retained?.checksumSha256,createHash("sha256").update(authorizationBytes).digest("hex"));
+        await denied("premature Scope resolution without revised Design",`${prefix}_ops`,prefix,tenant,
+          basis.work.id,basis.packageId,change.id,"resolve",{
+            reason:"Attempt resolution before newer accepted Design release"});
+        const design=await rc3OpenTask(`${prefix}_pm`,tenant,basis.work.id,
+          "Revise customer-authorized Design package");
+        const source=design.getByRole("button",{name:"Use as Design source"});
+        await source.click();
+        const record=design.locator("form").filter({has:design.getByRole("button",{name:"Record change and hold active release"})});
+        await record.getByLabel("Design change reason").fill("Customer-authorized additional verification changes the accepted Design scope");
+        await record.getByLabel("Technical impact").fill("Add an independent verification step to the release");
+        await record.getByLabel("Commercial impact").fill("USD 15000 additional customer price");
+        await record.getByLabel("Schedule impact").fill("One extra shift");
+        await rc3Decision(design,tenant,`${prefix}_pm`,"Design","record field-origin Design change",
+          record.getByRole("button",{name:"Record change and hold active release"}),"customer-design-action");
+        const hold=await rc3OpenTask(`${prefix}_ops`,tenant,basis.work.id,
+          "Acknowledge Design field hold");
+        const ack=hold.locator("form").filter({has:hold.getByRole("button",{name:"Acknowledge field hold"})});
+        await ack.getByLabel("Independent acknowledgment reason").fill("Independent receipt of the changed field basis and execution hold");
+        await rc3Decision(hold,tenant,`${prefix}_ops`,"Design","acknowledge field hold",
+          ack.getByRole("button",{name:"Acknowledge field hold"}),"customer-design-action");
+        const revised=await rc3OpenTask(`${prefix}_pm`,tenant,basis.work.id,
+          "Revise customer-authorized Design package");
+        const packageForm=revised.locator("form").filter({has:revised.getByRole("heading",{name:"Package basis"})});
+        await packageForm.getByLabel("Scope",{exact:true}).fill("Restore service and perform the customer-authorized additional independent verification");
+        await rc3Decision(revised,tenant,`${prefix}_pm`,"Design","revise controlled package",
+          packageForm.getByRole("button",{name:"Save package basis"}),"customer-design-action");
+        const resolution=revised.locator("form").filter({has:revised.getByRole("button",{name:"Resolve reviewed Design change"})});
+        await resolution.getByLabel("Revision resolution reason").fill("Revised package now records the exact customer-authorized additional verification");
+        await rc3Decision(revised,tenant,`${prefix}_pm`,"Design","resolve revised Design basis",
+          resolution.getByRole("button",{name:"Resolve reviewed Design change"}),"customer-design-action");
+        await browserDesignAction(`${prefix}_pm`,tenant,basis.work.id,"Save dated crew demand",async(page)=>{
+          await page.getByLabel("Qualification").fill("Service technician");
+          await page.getByLabel("Minimum people").fill("1");
+          await page.getByLabel("Estimated person hours").fill("8");
+          await page.getByLabel("Prerequisite").fill("Revised accepted Design release");
+          await page.getByLabel("Required date").fill(executionDate);
+          await page.getByLabel("Shift").fill(executionShift);
+        });
+        for(const discipline of ["Engineering","Delivery","Safety","Quality"]) {
+          await browserDesignAction(`${prefix}_pm`,tenant,basis.work.id,`Request ${discipline} review`,async(page)=>{
+            const form=page.locator("form").filter({has:page.getByRole("heading",{name:`${discipline} review`})});
+            await form.getByLabel("Review due date").fill("2026-12-06");
+          });
+          await browserDesignAction(`${prefix}_ops`,tenant,basis.work.id,`Approve ${discipline} review`,async(page)=>{
+            const form=page.locator("form").filter({has:page.getByRole("heading",{name:`${discipline} review`})});
+            await form.getByLabel("Independent decision note").fill(`Independently approved revised ${discipline} scope basis`);
+          });
+        }
+        await browserDesignAction(`${prefix}_pm`,tenant,basis.work.id,"Release for independent receipt",async(page)=>{
+          await page.getByLabel("Receipt due date").fill("2026-12-08");
+          await page.getByLabel("Release reason").fill("Release reviewed customer-authorized additional scope");
+        });
+        const receiver=await rc3OpenTask(`${prefix}_ops`,tenant,basis.work.id,"Receive released Design package");
+        await receiver.getByLabel("Package receipt reason").fill("Independently received revised customer-authorized Design scope");
+        await rc3Decision(receiver,tenant,`${prefix}_ops`,"Design","accept revised Design release",
+          receiver.getByRole("button",{name:"Accept released package"}),"customer-work");
+        const opsQueue=await rc3SignedInPage(`${prefix}_ops`);
+        await opsQueue.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`);
+        const resolveTask=opsQueue.locator('.d5o-customer-work-list a').filter({hasText:"Resolve authorized field change"}).first();
+        await resolveTask.waitFor({state:"visible",timeout:30000});
+        const resolveHref=await resolveTask.getAttribute("href");
+        assert(resolveHref?.includes(basis.work.id) && resolveHref.includes(encodeURIComponent(basis.packageId)),
+          `${prefix}:wrong_field_change_task:${resolveHref}`);
+        await resolveTask.click();
+        await opsQueue.getByRole("button",{name:"Inspections & issues"}).waitFor({state:"visible"});
+        await opsQueue.locator('button[aria-current="page"]', {hasText:"Inspections & issues"})
+          .waitFor({state:"visible",timeout:15000});
+        const resolutionForm=opsQueue.locator("form").filter({has:opsQueue.getByRole("button",{name:"Resolve against approved basis"})});
+        await resolutionForm.waitFor({state:"visible",timeout:10000}).catch(async(error)=>{
+          const remote=await opsQueue.evaluate(async({workspace,workId})=>{
+            const response=await fetch(`/api/d5o-hosted/field-changes?workspace=${workspace}&workId=${workId}`);
+            return {status:response.status,body:await response.json()};
+          },{workspace:tenant.workspaceKey,workId:basis.work.id});
+          throw Error(`${prefix}:resolution_surface:${opsQueue.url()}:${(await opsQueue.locator('body').innerText()).slice(-2600)}:remote=${JSON.stringify(remote).slice(-2600)}:${error.message}`);
+        });
+        await resolutionForm.getByLabel("Resolution and current Design receipt").fill("Revised Design release independently accepted against the authorized customer change");
+        const resolutionDecision=await rc3Decision(opsQueue,tenant,`${prefix}_ops`,"Deploy","resolve commercial field change",
+          resolutionForm.getByRole("button",{name:"Resolve against approved basis"}),"field-changes");
+        await opsQueue.screenshot({path:resolve(scopeDir,`${prefix}-scope-change-resolved.png`),fullPage:true});
+        const beforeReplay=await changeSnapshot(prefix,tenant,basis.work.id,change.id);
+        const replay=await opsQueue.evaluate(async(command)=>{
+          const send=async(payload)=>{const response=await fetch("/api/d5o-hosted/field-changes",{
+            method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+            return {status:response.status,body:await response.json()};};
+          const [exact,conflict]=await Promise.all([send(command),send({...command,data:{...command.data,
+            reason:"Conflicting reuse of an already recorded command identifier"}})]);
+          return {exact,conflict};
+        },resolutionDecision.request);
+        assert.equal(replay.exact.status,200,`${prefix}:exact_replay:${JSON.stringify(replay.exact)}`);
+        assert.equal(replay.conflict.status,409,`${prefix}:conflicting_replay:${JSON.stringify(replay.conflict)}`);
+        assert.deepEqual(await changeSnapshot(prefix,tenant,basis.work.id,change.id),beforeReplay,
+          `${prefix}:replay_changed_protected_state`);
+        evidence.scopeIntegrity.push({name:"concurrent exact and conflicting resolution replay",tenant:tenant.workspaceKey,
+          exact:replay.exact,conflict:replay.conflict,unchanged:true,
+          revision:beforeReplay.revision,events:beforeReplay.events,receipts:beforeReplay.receipts,
+          configurationVersionId:beforeReplay.configurationVersionId});
+        await denied("stale completed Scope proposal",`${prefix}_pm`,prefix,tenant,
+          basis.work.id,basis.packageId,change.id,"propose",{
+            scopeDifference:"Attempt to rewrite completed delivery scope",
+            costBasis:"Invalid prior cost basis",priceBasis:"Invalid prior price basis",
+            priceAmount:"15000",currency:"USD",scheduleImpact:"One extra shift"},-1);
+        const final=await connectedBasis(prefix,tenant);
+        const finalChange=await call(`${prefix}_ops`,"d5o_hosted_field_change_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
+        assert.equal(finalChange.data.changes.find((item)=>item.id===change.id)?.status,"Resolved");
+        assert.equal(final.work.phaseConfigurationVersionId,pin);
+        assert(final.work.design.releases.some((item)=>item.status==="Accepted"
+          && item.packageRevision>change.packageRevision),`${prefix}:revised_release_not_accepted`);
+        const projection=await call(`${prefix}_admin`,"d5o_hosted_phase_status_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
+        assert(!projection.error,projection.error?.message);
+        assert.equal(projection.data.replayMatches,true,`${prefix}:phase_replay_mismatch`);
+        await opsQueue.reload();
+        const queue=await opsQueue.evaluate(async(workspace)=>{
+          const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`);
+          return {status:response.status,body:await response.json()};
+        },tenant.workspaceKey);
+        assert.equal(queue.status,200);
+        assert(!queue.body.tasks.some((item)=>item.id.startsWith(`field-change:${basis.work.id}:${change.id}:`)),
+          `${prefix}:completed_field_change_task_replayed`);
+        outcomes.push({tenant:tenant.workspaceKey,workId:basis.work.id,changeId:change.id,
+          priceAmount:"15000",thresholdPolicy:"not part of field-change command",
+          status:"Resolved",configurationVersionId:pin,
+          phaseReplayMatches:true,completedTaskAbsent:true,
+          revisedReleaseId:final.work.design.releases.find((item)=>item.status==="Accepted"
+            && item.packageRevision>change.packageRevision)?.id});
+      }
+      return outcomes;
+    });
+    evidence.rc4aReached=true;
+  }
   await check("both connected Works receive independent purchase and labor authority",async()=>{
     const outcomes=[];
     const validUntil=new Date(Date.parse(`${executionDate}T12:00:00Z`)+30*86400000)
@@ -6701,7 +7003,8 @@ finally {
   mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
   mkdirSync(dirname(output),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
-  console.log(JSON.stringify({...evidence.summary,output:phase2hv
+  console.log(JSON.stringify({...evidence.summary,output:rc4a
+    ? "docs/release/evidence/D5O_RC4A_SCOPE_CHANGE_BROWSER.json" : phase2hv
     ? "docs/architecture/evidence/phase2hv-two-tenant-results.json" : rc0DeployIntegrity
     ? "docs/release/D5O_RC0_DEPLOY_INTEGRITY.json" : phase2hu
     ? "docs/architecture/evidence/phase2hu-two-tenant-results.json" : phase2htd

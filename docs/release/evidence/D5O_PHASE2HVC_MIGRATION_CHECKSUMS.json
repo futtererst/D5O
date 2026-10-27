@@ -1,6 +1,6 @@
 {
   "format": "d5o-phase2hvc-migration-manifest-v1",
-  "applicationCommit": "b1226170a59e678d236d6d85570f01a59c033bc4",
+  "applicationCommit": "96f1b7bccec690c1dec26cf66a55e9526f1619f9",
   "rc0ApplicationCommit": "3710ecace04e54769b5761da83f12594562e95b3",
   "rc0ManifestSha256": "908316ebda4d59f15c035ac2dd8bbd036a8b4d9eb24a39b07f4a1ca2491b5c74",
   "historicalCount": 234,
@@ -1891,7 +1891,7 @@
       "filename": "20261027085730_d5o_operate_acceptance_one_time_guard.sql",
       "sha256": "d0ec41ca79f9adbc5a95d3ce814fbf1ce7a8c615ec1ec3d021e686f8edf35bd1",
       "dependsOn": "20261025010000_d5o_phase2htd_connected_service_capability_boundary.sql",
-      "source": "b1226170a59e678d236d6d85570f01a59c033bc4"
+      "source": "96f1b7bccec690c1dec26cf66a55e9526f1619f9"
     }
   ]
 }
