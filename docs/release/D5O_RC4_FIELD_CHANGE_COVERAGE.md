@@ -1,0 +1,18 @@
+# RC4 delivery-stage field-change coverage
+
+The existing field-change domain can govern additional delivery scope **after package Design acceptance** without opening a post-handover connected-service child. The code contains the commercial and revised-package path, but the available RC3-C browser evidence exercises a **Correction**, not an entire **Scope change**. No new qualification run is claimed here.
+
+| Contract question / action | Classification | Evidence and qualification limit |
+| --- | --- | --- |
+| Identify a package-specific issue with report/evidence linkage | SUPPORTED AND VERIFIED | `raise` validates package, accepted release, assigned worker and report/evidence scope; RC3-C records one browser-raised Correction per tenant. |
+| Independent assessment and unresolved-change execution hold | SUPPORTED AND VERIFIED | `assess` excludes the creator; trigger `guard_field_change_deploy_v1` blocks protected completion. RC3-C records the rejection and independent resolution before completion. |
+| Classify additional scope and record scope, cost, price and schedule impact | SUPPORTED BUT NOT QUALIFIED | `assess` allows `Scope change`; `propose` requires those fields and PM/commercial authority. No located two-tenant browser result executes the scope proposal. |
+| Independent internal approval and customer authorization | SUPPORTED BUT NOT QUALIFIED | `review` excludes the submitter; `record-customer` requires a `field-change-authorization` private document bound to the change revision. Source contract inspected; end-to-end browser result absent. |
+| Revised Design basis, independent review and package reauthorization | SUPPORTED BUT NOT QUALIFIED | Design source `field-change:<id>` and `guard_field_change_design_release_v1` require the customer-authorized change in a newer release; `resolve` requires that release to be Accepted. The complete revised-release path has no located executable result. |
+| Audit, command replay and tenant boundary | SUPPORTED BUT NOT QUALIFIED for scope change | Source inserts actor-linked events and idempotent receipts, checks active membership/Work/tenant and rejects conflicting command reuse. RC3-C qualifies general tenant and command boundaries plus the Correction path, not scope-change replay. |
+| Delivery change before an accepted Design release | INCORRECT ACCEPTANCE ASSUMPTION | `accepted_release_required` applies before `raise`. Earlier Design/Develop preparation is outside this field-change contract. |
+| Post-handover service as a delivery change | INCORRECT ACCEPTANCE ASSUMPTION | Service intake requires Support Active and creates a separate child Work; see [RC3-C contract](D5O_RC3C_CONNECTED_SERVICE_CONTRACT.md). |
+
+**Product gap determination:** no material missing capability is demonstrated for after-acceptance delivery scope. The unqualified full scope-change path is a **qualification gap** and should be exercised before relying on it for a commercial delivery change. A requirement for changes before accepted Design, or for a distinct executable child job during parent Develop, would be a **potential missing capability** needing a scoped product decision. Do not treat implemented source checks as executed browser proof.
+
+Primary source: [`20261009220510_d5o_connected_field_changes.sql`](../../supabase/migrations/20261009220510_d5o_connected_field_changes.sql), [`20261009232739_d5o_connected_design_field_change.sql`](../../supabase/migrations/20261009232739_d5o_connected_design_field_change.sql), [`FieldChangeControl.tsx`](../../components/d5o/platform/FieldChangeControl.tsx), [RC3-C machine result](evidence/D5O_RC3C_TWO_TENANT_BROWSER.json).

@@ -1,0 +1,37 @@
+{
+  "format": "d5o-rc4-baseline-verification-v1",
+  "applicationCommit": "b1226170a59e678d236d6d85570f01a59c033bc4",
+  "sourceEvidenceCommit": "e5876ed5977799e531f3f89df3331f0c4e7ea7c5",
+  "branch": "codex/d5o-rc4-release-baseline",
+  "ancestry": {
+    "rc0ApplicationAncestor": true,
+    "rc0EvidenceAncestor": true,
+    "rc2BStagingGuardAncestor": true,
+    "applicationAncestorOfRc3CEvidence": true
+  },
+  "migrationVerification": {
+    "command": "D5O_APPLICATION_COMMIT=b1226170a59e678d236d6d85570f01a59c033bc4 node scripts/p0a/verify-phase2hvc-migrations.mjs",
+    "status": "PASS",
+    "executableFiles": 235,
+    "historicalRc0ChecksumsMatch": true,
+    "forwardFile": "20261027085730_d5o_operate_acceptance_one_time_guard.sql",
+    "forwardSha256": "d0ec41ca79f9adbc5a95d3ce814fbf1ce7a8c615ec1ec3d021e686f8edf35bd1",
+    "manifest": "D5O_PHASE2HVC_MIGRATION_CHECKSUMS.json"
+  },
+  "reusedBrowserEvidence": {
+    "source": "D5O_RC3C_TWO_TENANT_BROWSER.json",
+    "applicationCommit": "b1226170a59e678d236d6d85570f01a59c033bc4",
+    "passed": 63,
+    "failed": 0,
+    "cleanupVerified": true
+  },
+  "rc4NewExecution": {
+    "fieldChangeSourceContractInspection": "PASS",
+    "postActivationServiceSourceContractInspection": "PASS",
+    "fullScopeChangeBrowserJourney": "NOT_RUN",
+    "hostedQualification": "NOT_RUN",
+    "typescriptEslintBuild": "REUSED_RC3C_UNCHANGED_SOURCE"
+  },
+  "productDecision": "DECISION_REQUIRED",
+  "productionChanged": false
+}
