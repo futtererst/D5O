@@ -11,7 +11,8 @@ import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
 const rc4a = process.env.D5O_RC4A_BROWSER === "1";
-const rc3c = rc4a || process.env.D5O_RC3C_BROWSER === "1";
+const rc4b = process.env.D5O_RC4B_BROWSER === "1";
+const rc3c = rc4a || rc4b || process.env.D5O_RC3C_BROWSER === "1";
 const rc3 = rc3c || process.env.D5O_RC3_BROWSER === "1";
 const phase2hvc = process.env.D5O_PHASE2HVC === "1";
 const phase2hvcFinal = process.env.D5O_PHASE2HVC_FINAL === "1";
@@ -30,7 +31,9 @@ const phase2hsGateA = process.env.D5O_PHASE2HS_GATE_A === "1" || phase2hsGateB;
 const phase2hr = process.env.D5O_PHASE2HR === "1" || phase2hsGateA;
 const phase2hCompletion = process.env.D5O_PHASE2H_COMPLETION === "1" || phase2hr;
 const phase2h = process.env.D5O_PHASE2H === "1" || phase2hCompletion;
-const output = resolve(root, rc4a
+const output = resolve(root, rc4b
+  ? "docs/release/evidence/D5O_RC4B_EXECUTION_HOLDS.json"
+  : rc4a
   ? "docs/release/evidence/D5O_RC4A_SCOPE_CHANGE_BROWSER.json"
   : rc3c
   ? "docs/release/evidence/D5O_RC3C_TWO_TENANT_BROWSER.json"
@@ -78,7 +81,8 @@ const evidence = { baseline: process.env.D5O_SOURCE_SHA || (rc3 ? "e3396521099a5
     : "8d536b4ce74282fe6c3a0e2dbb66b1752ca51ec2"),
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
 let rc3PrepublicationDraftId=null;
-const browserEvidenceDir = (legacyPath) => resolve(root,rc4a
+const browserEvidenceDir = (legacyPath) => resolve(root,rc4b
+  ? "docs/release/evidence/rc4b-browser" : rc4a
   ? "docs/release/evidence/rc4a-browser" : rc3c
   ? "docs/release/evidence/rc3c-browser" : rc3
   ? "docs/release/evidence/rc3-browser" : phase2htd
@@ -160,7 +164,7 @@ function installDisposableQualificationClock() {
   evidence.disposableClock={at:`${phase2hv?executionDate:"2026-10-26"}T14:00:00Z`,scope:"field-start and connected Operate commands in disposable database only"};
 }
 async function check(name, run) {
-  if (rc4a && evidence.rc4aReached) return;
+  if ((rc4a && evidence.rc4aReached) || (rc4b && evidence.rc4bReached)) return;
   try { evidence.tests.push({ name, status: "PASS", detail: await run() ?? null }); }
   catch (error) { evidence.tests.push({ name, status: "FAIL", detail: String(error.message).slice(0,
     rc4a || phase2hsGateB || phase2htGateB ? 5000 : 800) }); }
@@ -2701,8 +2705,9 @@ try {
       p_workspace_key:tenant.workspaceKey,p_action:action,p_input:input,
       p_command_id:`phase2f-${prefix}-${id}`,p_expected_revision:basis.schedule.revision});
   };
-  if(rc4a) {
-    await check("RC4-A two-tenant commercial Scope change browser decisions",async()=>{
+  const runCommercialScopeJourney=async()=>{
+    await check(rc4b ? "RC4-B two-tenant commercial Scope change execution holds" :
+      "RC4-A two-tenant commercial Scope change browser decisions",async()=>{
       const outcomes=[];
       const scopeDir=browserEvidenceDir("docs/release/evidence/rc4a-browser");
       mkdirSync(scopeDir,{recursive:true});
@@ -2750,9 +2755,76 @@ try {
           unchanged:true,revision:after.revision,events:after.events,receipts:after.receipts,
           configurationVersionId:after.configurationVersionId});
       };
+      const pendingStart=async(stage,prefix,tenant,action,expected)=>{
+        const before=await connectedBasis(prefix,tenant);
+        const counts=()=>JSON.parse(sql(`select pg_catalog.jsonb_build_object(
+          'events',(select count(*) from d5o_hosted.connected_deploy_events
+            where workspace_id=${q(tenant.workspaceId)} and work_id=${q(before.work.canonicalWorkId)}),
+          'receipts',(select count(*) from d5o_hosted.connected_deploy_receipts
+            where workspace_id=${q(tenant.workspaceId)} and work_id=${q(before.work.canonicalWorkId)}))::text;`));
+        const beforeCounts=counts();
+        const beforeProjection=await call(`${prefix}_ops`,"d5o_hosted_phase_status_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:before.work.id});
+        assert(!beforeProjection.error,beforeProjection.error?.message);
+        const commandId=randomUUID();
+        const result=await call(`${prefix}_ops`,"d5o_hosted_field_start_command_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:before.work.id,
+          p_package_id:before.packageId,p_action:action,
+          p_reason:`RC4-B ${stage}: verify current approved delivery basis`,
+          p_command_id:commandId,p_expected_source_revision:before.source.revision,
+          p_expected_design_revision:before.work.design.authorityRevision,
+          p_expected_schedule_revision:before.schedule.revision,
+          p_expected_deploy_revision:before.deploy.revision});
+        const after=await connectedBasis(prefix,tenant);
+        assert.equal(result.error?.code,expected,`${prefix}:${stage}:${JSON.stringify(result)}`);
+        assert.match(result.error.message,/open_field_change_blocks_start/,
+          `${prefix}:${stage}:noncausal_hold:${result.error.message}`);
+        assert.deepEqual(after.deploy.state,before.deploy.state,`${prefix}:${stage}:deploy_changed`);
+        assert.equal(after.deploy.revision,before.deploy.revision,`${prefix}:${stage}:deploy_revision_changed`);
+        assert.equal(after.work.phaseConfigurationVersionId,before.work.phaseConfigurationVersionId);
+        assert.deepEqual(counts(),beforeCounts,`${prefix}:${stage}:audit_or_receipts_changed`);
+        const afterProjection=await call(`${prefix}_ops`,"d5o_hosted_phase_status_read_v1",{
+          p_workspace_key:tenant.workspaceKey,p_presentation_id:before.work.id});
+        assert(!afterProjection.error,afterProjection.error?.message);
+        assert.deepEqual(afterProjection.data.projection,beforeProjection.data.projection,
+          `${prefix}:${stage}:phase_projection_changed`);
+        const finding={stage,tenant:tenant.workspaceKey,action,commandId,
+          response:{code:result.error.code,message:result.error.message},
+          before:{sourceRevision:before.source.revision,designRevision:before.work.design.authorityRevision,
+            scheduleRevision:before.schedule.revision,deployRevision:before.deploy.revision,
+            configurationVersionId:before.work.phaseConfigurationVersionId,
+            auditEvents:beforeCounts.events,receipts:beforeCounts.receipts,
+            evidenceAssociations:before.deploy.state.evidence?.length??0,
+            phaseReplayMatches:beforeProjection.data.replayMatches},
+          after:{deployRevision:after.deploy.revision,
+            configurationVersionId:after.work.phaseConfigurationVersionId},unchanged:true};
+        (evidence.rc4bHolds??=[]).push(finding);
+        return finding;
+      };
       for(const [prefix,tenant] of [["a",a],["b",b]]) {
         const basis=await connectedBasis(prefix,tenant);
         const pin=basis.work.phaseConfigurationVersionId;
+        if(rc4b) {
+          const currentPermit=basis.deploy.state.permits?.findLast((item)=>
+            item.packageId===basis.packageId);
+          assert.equal(currentPermit?.status,"Authorized",`${prefix}:control_permit_missing`);
+          assert.equal(currentPermit.releaseId,basis.work.design.releases.findLast((item)=>
+            item.packageId===basis.packageId && item.status==="Accepted")?.id);
+          const controlPage=await rc3SignedInPage(`${prefix}_ops`);
+          await controlPage.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}/deploy?workId=${encodeURIComponent(basis.work.id)}`);
+          await controlPage.getByRole("button",{name:"Crew & readiness"}).click();
+          const hold=controlPage.locator("form").filter({has:controlPage.getByRole("button",{name:"Hold work now"})});
+          await hold.locator('[name="note"]').fill("Controlled RC4-B permit hold before commercial change");
+          await rc3Decision(controlPage,tenant,`${prefix}_ops`,"Deploy","hold baseline field permit",
+            hold.getByRole("button",{name:"Hold work now"}),"prototype-deploy-command");
+          const held=await connectedBasis(prefix,tenant);
+          assert.equal(held.deploy.state.permits?.at(-1)?.status,"Held");
+          (evidence.rc4bControls??=[]).push({tenant:tenant.workspaceKey,
+            workId:basis.work.id,packageId:basis.packageId,releaseId:currentPermit.releaseId,
+            scheduleRevision:basis.schedule.revision,configurationVersionId:pin,
+            initialPermitId:currentPermit.id,browserAuthorizedBeforeChange:true,
+            browserHeldBeforeChange:true});
+        }
         const pm=await rc3SignedInPage(`${prefix}_pm`);
         await pm.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}/deploy?workId=${encodeURIComponent(basis.work.id)}`);
         await pm.getByRole("button",{name:"Inspections & issues"}).click();
@@ -2783,6 +2855,7 @@ try {
         const submission=pm.locator("form").filter({has:pm.getByRole("button",{name:"Submit independent commercial review"})});
         await submission.getByLabel("Submission reason").fill("Submit priced customer change for independent review");
         await rc3Decision(pm,tenant,`${prefix}_pm`,"Develop","submit commercial review",submission.getByRole("button",{name:"Submit independent commercial review"}),"field-changes");
+        if(rc4b) await pendingStart("proposed",prefix,tenant,"resume","23514");
         const reviewInput={decision:"Approved",reason:"Independent synthetic commercial scope review"};
         await denied("cross-tenant Scope review",`${prefix==="a"?"b":"a"}_admin`,prefix,tenant,
           basis.work.id,basis.packageId,change.id,"review",reviewInput);
@@ -2807,6 +2880,7 @@ try {
         });
         await review.getByLabel("Independent reason").fill("Independent commercial approval of exact synthetic price and schedule");
         await rc3Decision(reviewer,tenant,`${prefix}_admin`,"Develop","approve Scope change",review.getByRole("button",{name:"Record internal decision"}),"field-changes");
+        if(rc4b) await pendingStart("internal-review-complete",prefix,tenant,"resume","23514");
         await denied("forged customer authorization evidence",`${prefix}_pm`,prefix,tenant,
           basis.work.id,basis.packageId,change.id,"record-customer",{
             customerRepresentative:"Fictional buyer",organization:"Fictional customer",
@@ -2844,6 +2918,7 @@ try {
         state=await call(`${prefix}_pm`,"d5o_hosted_field_change_read_v1",{
           p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
         assert.equal(state.data.changes.find((item)=>item.id===change.id)?.status,"Customer authorized");
+        if(rc4b) await pendingStart("customer-authorized",prefix,tenant,"resume","23514");
         const retained=state.data.changes.find((item)=>item.id===change.id)?.facts?.customerAuthorization?.document;
         assert.equal(retained?.purpose,"field-change-authorization");
         assert.equal(retained?.scopeId,change.id);
@@ -2905,6 +2980,8 @@ try {
         await receiver.getByLabel("Package receipt reason").fill("Independently received revised customer-authorized Design scope");
         await rc3Decision(receiver,tenant,`${prefix}_ops`,"Design","accept revised Design release",
           receiver.getByRole("button",{name:"Accept released package"}),"customer-work");
+        if(rc4b) await pendingStart("revised-design-accepted-change-open",prefix,tenant,
+          "authorize-start","23514");
         const opsQueue=await rc3SignedInPage(`${prefix}_ops`);
         await opsQueue.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`);
         const resolveTask=opsQueue.locator('.d5o-customer-work-list a').filter({hasText:"Resolve authorized field change"}).first();
@@ -2954,6 +3031,24 @@ try {
         const finalChange=await call(`${prefix}_ops`,"d5o_hosted_field_change_read_v1",{
           p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
         assert.equal(finalChange.data.changes.find((item)=>item.id===change.id)?.status,"Resolved");
+        if(rc4b) {
+          await browserDevelopAction(`${prefix}_ops`,tenant,basis.work.id,"Authorize field start",async(page)=>{
+            const form=page.locator("form").filter({has:page.getByRole("button",{name:"Authorize field start"})});
+            await form.locator("textarea").fill("Authorize revised accepted package after commercial Scope change resolution");
+          });
+          const reauthorized=await connectedBasis(prefix,tenant);
+          const revisedRelease=reauthorized.work.design.releases.findLast((item)=>
+            item.packageId===basis.packageId && item.status==="Accepted");
+          const permit=reauthorized.deploy.state.permits.at(-1);
+          assert.equal(permit?.status,"Authorized");
+          assert.equal(permit?.releaseId,revisedRelease?.id);
+          assert.notEqual(permit?.id,evidence.rc4bControls.at(-1).initialPermitId);
+          (evidence.rc4bReauthorization??=[]).push({tenant:tenant.workspaceKey,
+            workId:basis.work.id,changeId:change.id,newPermitId:permit.id,
+            revisedReleaseId:revisedRelease.id,oldPermitId:evidence.rc4bControls.at(-1).initialPermitId,
+            configurationVersionId:reauthorized.work.phaseConfigurationVersionId,
+            browserAuthorized:true});
+        }
         assert.equal(final.work.phaseConfigurationVersionId,pin);
         assert(final.work.design.releases.some((item)=>item.status==="Accepted"
           && item.packageRevision>change.packageRevision),`${prefix}:revised_release_not_accepted`);
@@ -2978,8 +3073,10 @@ try {
       }
       return outcomes;
     });
-    evidence.rc4aReached=true;
-  }
+    if(rc4a) evidence.rc4aReached=true;
+    if(rc4b) evidence.rc4bReached=true;
+  };
+  if(rc4a) await runCommercialScopeJourney();
   await check("both connected Works receive independent purchase and labor authority",async()=>{
     const outcomes=[];
     const validUntil=new Date(Date.parse(`${executionDate}T12:00:00Z`)+30*86400000)
@@ -3456,6 +3553,7 @@ try {
     }
     return outcomes;
   });
+  if(rc4b) await runCommercialScopeJourney();
   if(rc3) await check("connected service is denied before parent support activation",async()=>{
     const outcomes=[];
     for(const [prefix,tenant] of [["a",a],["b",b]]) {
@@ -7003,7 +7101,8 @@ finally {
   mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
   mkdirSync(dirname(output),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
-  console.log(JSON.stringify({...evidence.summary,output:rc4a
+  console.log(JSON.stringify({...evidence.summary,output:rc4b
+    ? "docs/release/evidence/D5O_RC4B_EXECUTION_HOLDS.json" : rc4a
     ? "docs/release/evidence/D5O_RC4A_SCOPE_CHANGE_BROWSER.json" : phase2hv
     ? "docs/architecture/evidence/phase2hv-two-tenant-results.json" : rc0DeployIntegrity
     ? "docs/release/D5O_RC0_DEPLOY_INTEGRITY.json" : phase2hu
