@@ -6,6 +6,9 @@ import { defineTasks, designTasks, designReceiptTasks, developTasks, serviceTask
   type ServiceTaskWork, type ServiceApprovalTaskState, type CustomerWorkTask } from "@/lib/d5o/hosted/customer-work-tasks";
 import { buildCustomerDefineDraft, parseDefineDraft } from "@/lib/d5o/hosted/customer-define-draft";
 import { deliveryRoleActions } from "@/lib/d5o/hosted/delivery-role-actions";
+import { supportRoleActions } from "@/lib/d5o/hosted/support-role-actions";
+import { hostedConfigurationInventory } from "@/lib/d5o/hosted/configuration-inventory";
+import { resolvePublishedPhaseConfiguration } from "@/components/d5o/platform/published-phase-configuration";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 
 export const dynamic = "force-dynamic";
@@ -82,13 +85,24 @@ export async function GET(request: NextRequest) {
           revision: item.revision, packageId: item.packageId ?? undefined,
           releaseId: item.releaseId ?? undefined, action: item.focus,
           decisionId: item.decisionId, sourceRevision: item.sourceRevision }));
-      const operateHandoffs: CustomerWorkTask[] = context.actor.role === "operations_leader"
-        ? visible.filter((item) => item.deploy?.workAcceptance?.receipt === "Accepted" &&
-          !item.operate?.source?.workAcceptanceId).map((item) => ({
-            id: `operate-handoff:${item.id}:${item.deploy?.workAcceptance?.id}`,
-            workId: item.id, title: "Receive accepted Deploy handoff", phase: "Operate",
-            status: "available", revision: item.deploy?.workAcceptance?.revision ?? 0,
-            action: "receive-handoff" })) : [];
+      const operateTasks: CustomerWorkTask[] = supportRoleActions(visible as WorkRecord[],
+        context.actor.id, context.actor.role).filter((item) => item.position !== "waiting")
+        .map((item) => ({ id: `operate:${item.workId}:${item.kind}:${item.decisionId}:${item.documentKind ?? ""}`,
+          workId: item.workId, title: ({ "receive-handoff": "Receive accepted Deploy handoff",
+            "add-asset": "Identify supported asset", "accept-support": "Accept support responsibility",
+            activate: "Activate support", "supply-document": "Supply support document",
+            "review-document": "Review support document" } as Record<string, string>)[item.kind], phase: "Operate",
+          status: item.position === "available" ? "available" : "view_only",
+          revision: item.decisionRevision, action: item.kind,
+          packageId: item.packageId, decisionId: item.decisionId,
+          sourceRevision: item.sourceRevision }));
+      const financeTasks: CustomerWorkTask[] = context.actor.role === "billing_commercial_lead"
+        ? (visible as WorkRecord[]).filter((item) => item.deploy?.workAcceptance?.receipt === "Accepted" &&
+          item.operate?.activation?.status === "Active" && item.operate?.finance?.status === "Pending")
+          .map((item) => ({ id: `operate-finance:${item.id}:${item.operate?.authorityRevision ?? 0}`,
+            workId: item.id, title: "Review financial closeout obligation", phase: "Operate",
+            status: "available", revision: item.operate?.authorityRevision ?? 0,
+            action: "update-finance" })) : [];
       const serviceApprovals: Record<string, ServiceApprovalTaskState> = {};
       await Promise.all(visible.flatMap((work) => (work.operate?.requests ?? [])
         .filter((item) => item.serviceEstimate?.status === "Approved")
@@ -106,7 +120,7 @@ export async function GET(request: NextRequest) {
         ...designReceiptTasks(visible, context.actor.role, context.actor.id),
         ...developTasks(visible, context.actor.role, schedule.state),
         ...authorityTasks, ...serviceTasks(visible as ServiceTaskWork[], context.actor.role,
-          serviceApprovals, context.actor.id), ...roleTasks, ...deployTasks, ...operateHandoffs],
+          serviceApprovals, context.actor.id), ...roleTasks, ...deployTasks, ...operateTasks, ...financeTasks],
       records: visible
         .map(({ id, title, customer, site, owner, type, phaseConfigurationVersionId }) =>
           ({ id, title, customer, site, owner, type, phaseConfigurationVersionId })) });
@@ -121,9 +135,14 @@ export async function GET(request: NextRequest) {
     const connectedPackages = (Array.isArray(catalog.state?.packages) ? catalog.state.packages as
       Array<{ id?: string; workId?: string; name?: string }> : [])
       .filter((item) => item.workId === workId).map((item) => ({ packageId: item.id, name: item.name }));
+    const inventory = await hostedConfigurationInventory(workspace as WorkRecord["workspace"]);
+    const pinned = resolvePublishedPhaseConfiguration(inventory, workspace as WorkRecord["workspace"],
+      record.type ?? "", record as WorkRecord);
     return reply({ workspace, workspaceName: context.actor.workspaceName ?? workspace,
       role: context.actor.role, canEdit: context.canEdit, revision: loaded.revision,
       record, connectedPackages, catalogRevision: catalog.revision,
+      operatePolicy: pinned ? { requireDocumentationReview:
+        pinned.operateControls?.requireDocumentationReview === true } : null,
       defineActions: defineTasks([record], context.actor.role, context.actor.id),
       designActions: designReceiptTasks([record], context.actor.role, context.actor.id),
       phaseStatus: status.data });

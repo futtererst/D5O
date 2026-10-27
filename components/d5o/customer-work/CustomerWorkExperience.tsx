@@ -6,6 +6,8 @@ import { CustomerDesignActions } from "./CustomerDesignActions";
 import { CustomerDevelopActions } from "./CustomerDevelopActions";
 import { CustomerDevelopAuthority } from "./CustomerDevelopAuthority";
 import { CustomerServiceActions } from "./CustomerServiceActions";
+import { CustomerOperateActions } from "./CustomerOperateActions";
+import type { OperateCommand } from "@/lib/d5o/prototype-work/operate-command";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import type { CustomerDesignAction } from "@/lib/d5o/hosted/customer-design-contract";
 import type { DefineDraftInput } from "@/lib/d5o/hosted/customer-define-draft";
@@ -45,6 +47,7 @@ type ListResponse = { workspaceName: string; role: string; records: WorkSummary[
   tasks: CustomerTask[]; error?: string };
 type DetailResponse = { workspaceName: string; role: string; canEdit: boolean;
   revision: number; catalogRevision: number; record: WorkDetail; phaseStatus: PhaseStatus;
+  operatePolicy: { requireDocumentationReview: boolean } | null;
   connectedPackages: Array<{ packageId: string; name?: string }>;
   defineActions: CustomerTask[]; designActions: CustomerTask[]; error?: string };
 
@@ -110,7 +113,6 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
     return () => { clearTimeout(timer); controller.abort(); }; }, [load]);
   const projection = detail?.phaseStatus?.projection;
   const role = detail?.role ?? list?.role ?? "";
-  const canOperate = role === "operations_leader" && detail?.canEdit;
   async function postAction(endpoint: string, payload: Record<string, unknown>, fallback: string) {
     if (!detail || busy) return false;
     setBusy(true); setError("");
@@ -145,6 +147,14 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
     if (await postAction("/api/d5o-hosted/customer-work", { command: domain, arguments: args },
       "Decision was not recorded")) setReason("");
   }
+  async function executeOperate(intent: Omit<OperateCommand, "workId" | "expectedRevision" | "commandId">) {
+    if (!detail || busy || !detail.phaseStatus.replayMatches) return false;
+    return postAction("/api/d5o-hosted/prototype-operate-command", {
+      ...intent, expectedRevision: detail.revision,
+      expectedDeployRevision: detail.record.deploy?.authorityRevision ?? 0,
+      expectedDecisionRevision: detail.record.operate?.authorityRevision ?? 0
+    }, "Operate decision was not recorded");
+  }
   async function respondDesignReceipt(releaseId: string, responseValue: "Accepted" | "Returned") {
     if (!detail || busy || designNote.trim().length < 15) return;
     if (await postAction("/api/d5o-hosted/customer-work", { command: "design-receipt",
@@ -175,8 +185,12 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
         const deployLink = task.phase === "Deploy" && task.action
           ? `/work/customer/${encodeURIComponent(workspace)}/deploy?workId=${encodeURIComponent(task.workId)}&package=${encodeURIComponent(task.packageId ?? "")}&focus=${encodeURIComponent(task.action)}&decision=${encodeURIComponent(task.decisionId ?? "")}&release=${encodeURIComponent(task.releaseId ?? "")}&sourceRevision=${task.sourceRevision ?? 0}&decisionRevision=${task.revision}`
           : null;
+        const operateLink = task.phase === "Operate" && task.action
+          ? `/work/customer/${encodeURIComponent(workspace)}?work=${encodeURIComponent(task.workId)}#phase-operate`
+          : null;
         const label = <>{task.title}<small>{task.phase} · {work?.title ?? "Work"} · {work?.customer ?? "Customer pending"} · {task.status === "view_only" ? "View context" : "Ready for decision"}{task.dueDate ? ` · Due ${task.dueDate}` : ""}</small></>;
         return <li key={task.id}>{deployLink ? <a href={deployLink}>{label}</a>
+          : operateLink ? <Link href={operateLink}>{label}</Link>
           : <Link href={`/work/customer/${encodeURIComponent(workspace)}?work=${encodeURIComponent(task.workId)}#phase-${task.phase.toLowerCase()}`}>{label}</Link>}</li>;
       })}</ul> : !loading && !error ? <p>No current responsibilities for your role. Refresh after a business decision.</p> : null}
       <h2>Work records</h2>{list?.records.length ? <ul>{list.records.map((work) =>
@@ -254,22 +268,12 @@ export function CustomerWorkExperience({ workspace, initialWorkId }: {
             {detail.phaseStatus.replayMatches && ["admin", "project_manager", "field_supervisor", "operations_leader"].includes(role) &&
               <Link href={`/work/customer/${encodeURIComponent(workspace)}/deploy?workId=${encodeURIComponent(detail.record.id)}`}>Open Deploy decisions and evidence</Link>}</>}
           {phase === "Operate" && <><p>Support {status.supportStatus ?? "Pending"}; financial closeout {status.financialCloseout ?? "Pending"}.</p>
+            {detail.phaseStatus.replayMatches &&
+              <CustomerOperateActions work={detail.record as unknown as WorkRecord}
+                role={role} policy={detail.operatePolicy} busy={busy} onCommand={executeOperate} />}
             {detail.phaseStatus.replayMatches && detail.record.operate?.activation?.status === "Active" &&
               <CustomerServiceActions work={detail.record as unknown as WorkRecord}
                 sourceRevision={detail.revision} role={role} onChanged={() => load()} />}</>}
-          {canOperate && detail.phaseStatus.replayMatches && phase === "Operate" && status.status === "active" &&
-            detail.record.deploy?.workAcceptance?.receipt === "Accepted" &&
-            <div className="d5o-customer-actions">
-              {!detail.record.operate?.source?.workAcceptanceId &&
-                <button disabled={busy} onClick={() => void command("receive-handoff", {
-                  workAcceptanceId: detail.record.deploy?.workAcceptance?.id,
-                  workAcceptanceRevision: detail.record.deploy?.workAcceptance?.revision,
-                  note: "Operations receives accepted Work" })}>Receive accepted handoff</button>}
-              {detail.record.operate?.support?.status === "Accepted" &&
-                detail.record.operate?.activation?.status !== "Active" &&
-                <button disabled={busy} onClick={() => void command("activate", {
-                  note: "Support ownership and documentation reviewed" })}>Activate accepted support</button>}
-            </div>}
         </section>; })}
         <footer className="d5o-customer-work-audit">Status revision {detail.phaseStatus.projectionRevision ?? "unresolved"} · Last authoritative event {detail.phaseStatus.sourceEvent ?? "historical reconciliation"} · Replay {detail.phaseStatus.replayMatches ? "matched" : "unavailable"}</footer>
       </>}</>}

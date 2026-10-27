@@ -9,7 +9,8 @@ import { chromium } from "@playwright/test";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
-const phase2hu = process.env.D5O_PHASE2HU === "1";
+const phase2hv = process.env.D5O_PHASE2HV === "1";
+const phase2hu = process.env.D5O_PHASE2HU === "1" || phase2hv;
 const rc0DeployIntegrity = phase2hu && process.env.D5O_RC0_DEPLOY_INTEGRITY === "1";
 const phase2htd = process.env.D5O_PHASE2HTD === "1";
 const phase2hteDiagnostic = process.env.D5O_PHASE2HTE_DIAGNOSTIC === "1";
@@ -23,7 +24,9 @@ const phase2hsGateA = process.env.D5O_PHASE2HS_GATE_A === "1" || phase2hsGateB;
 const phase2hr = process.env.D5O_PHASE2HR === "1" || phase2hsGateA;
 const phase2hCompletion = process.env.D5O_PHASE2H_COMPLETION === "1" || phase2hr;
 const phase2h = process.env.D5O_PHASE2H === "1" || phase2hCompletion;
-const output = resolve(root, rc0DeployIntegrity
+const output = resolve(root, phase2hv
+  ? "docs/architecture/evidence/phase2hv-two-tenant-results.json"
+  : rc0DeployIntegrity
   ? "docs/release/D5O_RC0_DEPLOY_INTEGRITY.json"
   : phase2hu
   ? "docs/architecture/evidence/phase2hu-two-tenant-results.json"
@@ -48,7 +51,8 @@ const output = resolve(root, rc0DeployIntegrity
   : phase2g
   ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
   : "docs/architecture/evidence/phase2f-connected-journey-results.json");
-const evidence = { baseline: process.env.D5O_SOURCE_SHA || (rc0DeployIntegrity ? "3710ecace04e54769b5761da83f12594562e95b3"
+const evidence = { baseline: process.env.D5O_SOURCE_SHA || (phase2hv ? "cf781d39e831a6d396f0116326aac59173fd43f4"
+  : rc0DeployIntegrity ? "3710ecace04e54769b5761da83f12594562e95b3"
   : phase2hu ? "639308061ff236ac0afb6487088a44c315e9b554"
   : phase2htd ? "88381435a965050402dcd423b4856115246459a3"
   : phase2htc ? "6e28685f44795b1a3f6b19877d575b609be43729"
@@ -66,7 +70,9 @@ if(phase2htGateA) evidence.gateASecurity=[];
 // local business date so that its schedule is actually eligible for execution.
 const useQualificationClock=process.env.D5O_DISPOSABLE_QUALIFICATION_CLOCK==="1" ||
   phase2hu || phase2hsGateB || phase2htGateA || phase2htGateB;
-let executionDate = useQualificationClock ? "2026-10-26" : new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York",
+let executionDate = phase2hv ? new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York",
+  year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())
+  : useQualificationClock ? "2026-10-26" : new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York",
   year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 const executionDay = new Date(`${executionDate}T12:00:00Z`).getUTCDay();
 const executionHour = useQualificationClock ? 10 : Number(new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York",
@@ -112,7 +118,7 @@ function installDisposableQualificationClock() {
     revoke all on schema d5o_qualification from public,anon,authenticated;
     create table d5o_qualification.clock(fixed_at timestamptz not null);
     revoke all on d5o_qualification.clock from public,anon,authenticated;
-    insert into d5o_qualification.clock values ('2026-10-26T14:00:00Z');
+    insert into d5o_qualification.clock values ('${phase2hv?executionDate:"2026-10-26"}T14:00:00Z');
     create function d5o_qualification.fixed_now() returns timestamptz
       language sql stable security definer set search_path=''
       as 'select fixed_at from d5o_qualification.clock limit 1';
@@ -131,7 +137,7 @@ function installDisposableQualificationClock() {
       if v_replaced=v_source then raise exception 'operate_clock_seam_missing'; end if;
       execute v_replaced;
     end $clock$;`);
-  evidence.disposableClock={at:"2026-10-26T14:00:00Z",scope:"field-start and connected Operate commands in disposable database only"};
+  evidence.disposableClock={at:`${phase2hv?executionDate:"2026-10-26"}T14:00:00Z`,scope:"field-start and connected Operate commands in disposable database only"};
 }
 async function check(name, run) {
   try { evidence.tests.push({ name, status: "PASS", detail: await run() ?? null }); }
@@ -139,6 +145,8 @@ async function check(name, run) {
     phase2hsGateB || phase2htGateB ? 5000 : 800) }); }
   console.log(JSON.stringify({test:name,status:evidence.tests.at(-1).status,
     ...(evidence.tests.at(-1).status==="FAIL"?{detail:evidence.tests.at(-1).detail}:{})}));
+  if(phase2hv && evidence.tests.at(-1).status==="FAIL")
+    throw Error(`phase2hv_stopped_after_failed_gate:${name}`);
 }
 async function rc0Case(name, run) {
   try {
@@ -3028,7 +3036,7 @@ try {
     const publication=basis.schedule.state.publications.at(-1);
     const booking=publication?.assignments.find((item)=>item.packageId===basis.packageId&&item.workId===basis.work.id);
     assert(booking,`${prefix}:published_field_booking_missing`);
-    const dir=resolve(root,"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
+    const dir=resolve(root,phase2hv?"docs/architecture/evidence/phase2hv-browser":"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
     const worker=await deployPage(`${prefix}_worker`,tenant,
       `/work/customer/${tenant.workspaceKey}/assignments`,{width:390,height:844});
     console.log(JSON.stringify({deployStep:`${prefix}:open-field`,url:worker.url()}));
@@ -3580,7 +3588,7 @@ try {
       "/api/d5o-hosted/prototype-deploy-command",200);
     current=await connectedBasis(prefix,tenant);
     assert.equal(current.deploy.state.workAcceptance?.receipt,"Accepted");
-    const dir=resolve(root,"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
+    const dir=resolve(root,phase2hv?"docs/architecture/evidence/phase2hv-browser":"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
     await ops.screenshot({path:resolve(dir,`${prefix}-deploy-accepted.png`),fullPage:true});
     await ops.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`);
     await ops.getByRole("heading",{name:"Work lifecycle"}).waitFor();
@@ -3686,7 +3694,123 @@ try {
       p_expected_deploy_revision:basis.deploy.revision,
       p_expected_operate_revision:basis.operate.revision});
   };
+  async function phase2hvOperate(prefix,tenant) {
+    const before=await connectedBasis(prefix,tenant);
+    const path=`/work/customer/${tenant.workspaceKey}?work=${encodeURIComponent(before.work.id)}`;
+    const queue=await deployPage(`${prefix}_ops`,tenant,`/work/customer/${tenant.workspaceKey}`);
+    await queue.getByRole("link",{name:/Receive accepted Deploy handoff/}).waitFor();
+    await queue.getByRole("link",{name:/Receive accepted Deploy handoff/}).click();
+    await queue.getByRole("heading",{name:"Accepted delivery and support responsibility"}).waitFor();
+    const acceptance=queue.getByRole("link",{name:"Open retained customer acceptance"});
+    await acceptance.waitFor();
+    const fileResponse=await queue.request.get(new URL(await acceptance.getAttribute("href"),queue.url()).href);
+    assert.equal(fileResponse.status(),200,`${prefix}:acceptance-file`);
+    await queue.getByLabel("Handoff review and remaining conditions").fill(
+      "Operations reviewed accepted fictional delivery and continuing obligations");
+    const received=await browserDeployDecision(queue,queue.getByRole("button",{name:"Receive accepted handoff"}),
+      "/api/d5o-hosted/prototype-operate-command");
+    const pm=await deployPage(`${prefix}_pm`,tenant,path);
+    await pm.getByRole("heading",{name:"Accepted delivery and support responsibility"}).waitFor();
+    await pm.getByLabel("System name").fill(`Fictional ${prefix.toUpperCase()} supported service asset`);
+    await pm.getByLabel("Type",{exact:true}).fill("Service asset");
+    await pm.getByLabel("Location").fill("Fictional service site");
+    await pm.getByLabel("Document reference").fill("Accepted fictional Work turnover and inspection record");
+    const asset=await browserDeployDecision(pm,pm.getByRole("button",{name:"Record supported asset identity"}),
+      "/api/d5o-hosted/prototype-operate-command");
+    await deployPage(`${prefix}_ops`,tenant,path);
+    await queue.getByRole("heading",{name:"Accept support responsibility"}).waitFor();
+    const fillSupport=async(page,warranty="Warranty subject to recorded terms")=>{
+      await page.getByLabel("Customer support contact").fill("Fictional Customer Representative");
+      await page.getByLabel("Escalation path").fill("Fictional support escalation queue");
+      await page.getByLabel("Request intake route").fill("Fictional service intake route");
+      await page.getByLabel("Warranty disposition").fill(warranty);
+      await page.getByLabel("Service disposition").fill("Service coverage needs approval");
+      await page.getByLabel("Reviewed documentation reference").fill("Accepted turnover and inspection documentation");
+      await page.getByLabel("Residual obligation owner").fill("Fictional Operations receiver");
+    };
+    const support=async(expected=200)=>{
+      await fillSupport(queue);
+      return browserDeployDecision(queue,queue.getByRole("button",{name:"Accept support ownership"}),
+        "/api/d5o-hosted/prototype-operate-command",expected);
+    };
+    const firstSupport=await support(prefix==="a"?409:200);
+    let document=null;
+    if(prefix==="a") {
+      assert.match(firstSupport.body,/support_document_review_required/);
+      await deployPage(`${prefix}_pm`,tenant,path);
+      const docForm=pm.locator("form").filter({has:pm.getByRole("button",{name:"Retain and submit document"})}).first();
+      await docForm.getByLabel("Fictional PDF").setInputFiles({name:"fictional-as-built.pdf",
+        mimeType:"application/pdf",buffer:Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF")});
+      await docForm.getByLabel("Supply note").fill("Fictional as-built record for independent support review");
+      const upload=await browserDeployDecision(pm,docForm.getByRole("button",{name:"Retain and submit document"}),
+        "/api/d5o-hosted/customer-decision-evidence",200);
+      await pm.getByText("Retained document submitted for independent review.").waitFor();
+      const reviewer=await deployPage(`${prefix}_ops2`,tenant,path);
+      await reviewer.getByRole("heading",{name:"Accepted delivery and support responsibility"}).waitFor();
+      const reviewForm=reviewer.locator("form").filter({has:reviewer.getByRole("button",{name:"Record independent review"})}).first();
+      await reviewForm.getByLabel("Review reason").fill("Independent review of exact fictional as-built record");
+      const review=await browserDeployDecision(reviewer,reviewForm.getByRole("button",{name:"Record independent review"}),
+        "/api/d5o-hosted/prototype-operate-command",200);
+      document={upload,review};
+      await deployPage(`${prefix}_ops`,tenant,path);
+      await queue.getByRole("heading",{name:"Accept support responsibility"}).waitFor();
+      const rivalContext=await designBrowser.newContext({viewport:{width:1440,height:900},
+        storageState:await queue.context().storageState()});
+      const rival=await rivalContext.newPage();
+      try {
+        await rival.goto(`http://127.0.0.1:${server.port}${path}`);
+        await rival.getByRole("heading",{name:"Accept support responsibility"}).waitFor();
+        await fillSupport(queue);
+        await fillSupport(rival,"Conflicting fictional warranty disposition");
+        const endpoint="/api/d5o-hosted/prototype-operate-command";
+        const responseFor=(page)=>page.waitForResponse((response)=>response.url().includes(endpoint)
+          && response.request().method()==="POST");
+        const pending=[responseFor(queue),responseFor(rival)];
+        await Promise.all([queue.getByRole("button",{name:"Accept support ownership"}).click(),
+          rival.getByRole("button",{name:"Accept support ownership"}).click()]);
+        const responses=await Promise.all(pending);
+        const statuses=responses.map((item)=>item.status()).sort();
+        assert.deepEqual(statuses,[200,409],`${prefix}:concurrent_support:${statuses}`);
+        document.concurrentSupport={statuses};
+      } finally { await rivalContext.close(); }
+      await deployPage(`${prefix}_ops`,tenant,path);
+    }
+    await queue.getByRole("button",{name:"Activate support"}).waitFor();
+    const activation=await browserDeployDecision(queue,queue.getByRole("button",{name:"Activate support"}),
+      "/api/d5o-hosted/prototype-operate-command",200);
+    await queue.getByText("Support Active. Financial closeout remains Pending.").waitFor();
+    await deployPage(`${prefix}_ops`,tenant,path);
+    await queue.getByText("Support Active. Financial closeout remains Pending.").waitFor();
+    await queue.getByText("Replay matched").waitFor();
+    const dir=resolve(root,"docs/architecture/evidence/phase2hv-browser");mkdirSync(dir,{recursive:true});
+    await queue.screenshot({path:resolve(dir,`${prefix}-operate-desktop.png`),fullPage:true});
+    await queue.setViewportSize({width:390,height:844});
+    await queue.screenshot({path:resolve(dir,`${prefix}-operate-mobile.png`),fullPage:true});
+    await queue.setViewportSize({width:1440,height:900});
+    await deployPage(`${prefix}_ops`,tenant,`/work/customer/${tenant.workspaceKey}`);
+    await queue.getByRole("heading",{name:"Work lifecycle"}).waitFor();
+    assert.equal(await queue.getByRole("link",{name:/Accept support responsibility/}).count(),0);
+    assert.equal(await queue.getByRole("link",{name:/Activate support/}).count(),0);
+    const current=await connectedBasis(prefix,tenant);
+    assert.equal(current.operate.state.activation?.status,"Active");
+    assert.equal(current.operate.state.finance.status,"Pending");
+    assert.equal(current.work.phaseConfigurationVersionId,versions[`${prefix}_admin`]);
+    const phase=await call(`${prefix}_ops`,"d5o_hosted_phase_status_read_v1",{
+      p_workspace_key:tenant.workspaceKey,p_presentation_id:current.work.id});
+    assert(!phase.error,phase.error?.message);
+    assert.equal(phase.data.replayMatches,true);
+    assert.equal(phase.data.projection.supportActive,true);
+    assert.equal(phase.data.projection.financialCloseout,"Pending");
+    return {tenant:tenant.workspaceKey,workId:current.work.canonicalWorkId,
+      workAcceptanceId:current.deploy.state.workAcceptance.id,configurationVersionId:current.work.phaseConfigurationVersionId,
+      documentationPolicyRejection:prefix==="a"?firstSupport.body:null,
+      financialCloseout:current.operate.state.finance.status,activation:current.operate.state.activation.status,
+      phaseProjectionRevision:phase.data.projectionRevision,reloadAndReplayMatched:true,
+      browser:{received,asset,firstSupport,document,activation},
+      screenshots:[`${prefix}-operate-desktop.png`,`${prefix}-operate-mobile.png`]};
+  }
   await check("Operate support acceptance follows exact Deploy receipt and pinned documentation policy",async()=>{
+    if(phase2hv) return [await phase2hvOperate("a",a),await phase2hvOperate("b",b)];
     const outcomes=[];
     for(const [prefix,tenant] of [["a",a],["b",b]]) {
       let current=await connectedBasis(prefix,tenant);
@@ -3773,6 +3897,124 @@ try {
         configurationVersionId:current.work.phaseConfigurationVersionId});
     }
     return outcomes;
+  });
+  if(phase2hv) await check("Operate API and RPC reject foreign, wrong-role, forged, stale and evidence-conflicting commands",async()=>{
+    const before=await connectedBasis("a",a);
+    const input={customerContact:"Fictional Customer Representative",
+      escalation:"Fictional support escalation queue",intakeRoute:"Fictional service intake route",
+      warrantyDisposition:"Conflicting warranty claim",serviceDisposition:"Conflicting service claim",
+      documentation:"Unreviewed replacement",residualOwner:"Fictional Operations receiver"};
+    const args=(presentationId=before.work.id,operateRevision=before.operate.revision,commandId=randomUUID())=>({
+      p_workspace_key:a.workspaceKey,p_presentation_id:presentationId,p_action:"accept-support",
+      p_input:input,p_command_id:commandId,p_expected_source_revision:before.source.revision,
+      p_expected_deploy_revision:before.deploy.revision,p_expected_operate_revision:operateRevision});
+    const wrongRole=await call("a_pm","d5o_hosted_operate_command_v1",args());
+    const foreign=await call("b_ops","d5o_hosted_operate_command_v1",args());
+    const forged=await call("a_ops","d5o_hosted_operate_command_v1",args(randomUUID()));
+    const stale=await call("a_ops","d5o_hosted_operate_command_v1",args(before.work.id,0));
+    for(const [name,result] of Object.entries({wrongRole,foreign,forged,stale}))
+      assert(result.error,`${name}:unexpected_acceptance`);
+    const acceptanceEvidence=before.deploy.state.workAcceptance.source?.replace(/^evidence:/,"");
+    const turnover=before.deploy.state.turnovers.find((item)=>item.receipt==="Accepted");
+    assert(acceptanceEvidence&&turnover,"support_evidence_basis_missing");
+    const wrongEvidence=await call("a_pm","d5o_hosted_support_document_command_v1",{
+      p_workspace_key:a.workspaceKey,p_presentation_id:before.work.id,p_action:"submit",
+      p_turnover_id:turnover.id,p_kind:"as-built",p_evidence_id:acceptanceEvidence,
+      p_decision:null,p_note:"Wrong-purpose customer acceptance document",
+      p_command_id:randomUUID(),p_expected_source_revision:before.source.revision,
+      p_expected_deploy_revision:before.deploy.revision,
+      p_expected_operate_revision:before.operate.revision});
+    assert(wrongEvidence.error,"wrong_purpose_evidence_accepted");
+    const originalCommand=sql(`select command_id from d5o_hosted.connected_operate_events
+      where workspace_id=${q(a.workspaceId)} and work_id=${q(before.work.canonicalWorkId)}
+        and action='accept-support' order by decision_revision desc limit 1;`);
+    assert(originalCommand,"support_acceptance_receipt_missing");
+    const conflictingReplay=await call("a_ops","d5o_hosted_operate_command_v1",
+      args(before.work.id,before.operate.revision,originalCommand));
+    assert.equal(conflictingReplay.error?.code,"23505",JSON.stringify(conflictingReplay));
+    const foreignPage=deployPages.get("b_ops"),managerPage=deployPages.get("a_pm");
+    assert(foreignPage&&managerPage,"authenticated_operate_sessions_missing");
+    const post=async(page)=>page.evaluate(async({workspace,workId,source,deploy,operate})=>{
+      const response=await fetch(`/api/d5o-hosted/prototype-operate-command?workspace=${workspace}`,{
+        method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+          workId,action:"accept-support",commandId:crypto.randomUUID(),
+          expectedRevision:source,expectedDeployRevision:deploy,expectedDecisionRevision:operate,
+          escalation:"Forged support escalation",intakeRoute:"Forged support intake"})});
+      return {status:response.status,body:await response.json()};
+    },{workspace:a.workspaceKey,workId:before.work.id,source:before.source.revision,
+      deploy:before.deploy.revision,operate:before.operate.revision});
+    const foreignHttp=await post(foreignPage),wrongRoleHttp=await post(managerPage);
+    assert.equal(foreignHttp.status,403,JSON.stringify(foreignHttp));
+    assert.equal(wrongRoleHttp.status,403,JSON.stringify(wrongRoleHttp));
+    const privateDocument=before.operate.state.documentationObligations?.find((item)=>item.kind==="as-built");
+    assert(privateDocument,"reviewed_document_missing");
+    const privateProbe=await foreignPage.evaluate(async({workspace,workId,evidenceId})=>{
+      const query=new URLSearchParams({workspace,workId,evidenceId});
+      return (await fetch(`/api/d5o-hosted/customer-decision-evidence?${query}`)).status;
+    },{workspace:a.workspaceKey,workId:before.work.id,evidenceId:privateDocument.id});
+    assert.equal(privateProbe,403);
+    const receiverPage=deployPages.get("a_ops");
+    assert(receiverPage,"receiving_employee_session_missing");
+    const people=await call("a_admin","d5o_hosted_org_admin_read_v1",{
+      p_workspace_key:a.workspaceKey,p_kind:"people",p_search:"",p_offset:0,p_limit:25});
+    assert(!people.error,people.error?.message);
+    const receiver=people.data.items.find((item)=>item.actor_user_id===users.a_ops.id);
+    assert(receiver,"receiving_membership_missing");
+    const membership=(action,revision)=>call("a_admin","d5o_hosted_org_admin_command_v1",{
+      p_workspace_key:a.workspaceKey,p_action:action,p_subject_id:receiver.id,p_input:{},
+      p_expected_revision:revision,p_reason:"Disposable Operate receiving authority check",
+      p_command_id:randomUUID()});
+    const suspended=await membership("member.suspend",receiver.revision);
+    assert(!suspended.error,suspended.error?.message);
+    const suspendedHttp=await post(receiverPage);
+    const suspendedRpc=await call("a_ops","d5o_hosted_operate_command_v1",args());
+    assert.equal(suspendedHttp.status,403);
+    assert.equal(suspendedRpc.error?.code,"42501");
+    const restored=await membership("member.reactivate",suspended.data.record.revision);
+    assert(!restored.error,restored.error?.message);
+    const directory=async()=>{
+      const result=await call("vendor","d5o_platform_provisioning_directory_v1");
+      assert(!result.error,result.error?.message);
+      return result.data.find((item)=>item.workspaceKey===a.workspaceKey);
+    };
+    let tenant=await directory();
+    const disabled=await call("vendor","d5o_platform_capability_command_v1",{
+      p_workspace_key:a.workspaceKey,p_kind:"flag",p_enabled:false,
+      p_expected_revision:tenant.connectedWorkFlagRevision,p_command_id:randomUUID(),
+      p_reason:"Disposable Operate rollout denial"});
+    assert(!disabled.error,disabled.error?.message);
+    const disabledHttp=await post(receiverPage);
+    const disabledRpc=await call("a_ops","d5o_hosted_operate_command_v1",args());
+    assert.equal(disabledHttp.status,403);
+    assert.equal(disabledRpc.error?.code,"42501");
+    const enabled=await call("vendor","d5o_platform_capability_command_v1",{
+      p_workspace_key:a.workspaceKey,p_kind:"flag",p_enabled:true,
+      p_expected_revision:disabled.data.revision,p_command_id:randomUUID(),
+      p_reason:"Restore disposable Operate rollout"});
+    assert(!enabled.error,enabled.error?.message);
+    tenant=await directory();
+    const tenantOff=await call("vendor","d5o_platform_lifecycle_command_v1",{
+      p_workspace_key:a.workspaceKey,p_action:"suspend",p_expected_revision:tenant.revision,
+      p_command_id:randomUUID(),p_reason:"Disposable Operate tenant suspension"});
+    assert(!tenantOff.error,tenantOff.error?.message);
+    const tenantHttp=await post(receiverPage);
+    const tenantRpc=await call("a_ops","d5o_hosted_operate_command_v1",args());
+    assert.equal(tenantHttp.status,403);
+    assert.equal(tenantRpc.error?.code,"42501");
+    const tenantOn=await call("vendor","d5o_platform_lifecycle_command_v1",{
+      p_workspace_key:a.workspaceKey,p_action:"reactivate",p_expected_revision:tenantOff.data.revision,
+      p_command_id:randomUUID(),p_reason:"Restore disposable Operate tenant"});
+    assert(!tenantOn.error,tenantOn.error?.message);
+    const after=await connectedBasis("a",a);
+    assert.equal(after.operate.revision,before.operate.revision);
+    assert.equal(after.work.phaseConfigurationVersionId,before.work.phaseConfigurationVersionId);
+    return {rpc:{wrongRole:wrongRole.error.code,foreign:foreign.error.code,
+      forged:forged.error.code,stale:stale.error.code,wrongEvidence:wrongEvidence.error.code,
+      conflictingReplay:conflictingReplay.error.code},http:{foreign:foreignHttp.status,
+      wrongRole:wrongRoleHttp.status,privateDocument:privateProbe,
+      suspendedMember:suspendedHttp.status,disabledFeature:disabledHttp.status,
+      suspendedTenant:tenantHttp.status},
+      unchangedOperateRevision:after.operate.revision,unchangedConfigurationVersion:after.work.phaseConfigurationVersionId};
   });
   if(phase2htGateB && !evidence.tests.some((item)=>item.status==="FAIL")) await check("both tenants open and triage connected service through authenticated browser controls",async()=>{
     const outcomes=[];
@@ -4682,6 +4924,34 @@ try {
       disabledRpc:disabledRpc.error?.message,tenantStatus,
       tenantRpc:tenantRpc.error?.message,
       unchangedDeployRevision:after.deploy.revision};
+  });
+  if(phase2hv) await check("Finance receives separate My Work follow-up after support activation",async()=>{
+    const outcomes=[];
+    for(const [prefix,tenant] of [["a",a],["b",b]]) {
+      const page=await deployPage(`${prefix}_finance`,tenant,`/work/customer/${tenant.workspaceKey}`);
+      const task=page.getByRole("link",{name:/Review financial closeout obligation/});
+      await task.waitFor();await task.click();
+      await page.getByRole("heading",{name:"Review financial closeout obligation"}).waitFor();
+      await page.getByText("Support Active. Financial closeout remains Pending.").waitFor();
+      await page.getByLabel("Finance review and next action").fill("Verify accepted Work and reconcile the outstanding financial obligation");
+      const response=await browserDeployDecision(page,page.getByRole("button",{name:"Start Finance review"}),
+        "/api/d5o-hosted/prototype-operate-command",200);
+      await page.getByText("Support Active. Financial closeout remains In review.").waitFor();
+      await deployPage(`${prefix}_finance`,tenant,`/work/customer/${tenant.workspaceKey}`);
+      assert.equal(await page.getByRole("link",{name:/Review financial closeout obligation/}).count(),0);
+      const basis=await connectedBasis(prefix,tenant);
+      assert.equal(basis.operate.state.activation.status,"Active");
+      assert.equal(basis.operate.state.finance.status,"In review");
+      const phase=await call(`${prefix}_finance`,"d5o_hosted_phase_status_read_v1",{
+        p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
+      assert(!phase.error,phase.error?.message);
+      assert.equal(phase.data.projection.financialCloseout,"In review");
+      assert.equal(phase.data.replayMatches,true);
+      outcomes.push({tenant:tenant.workspaceKey,http:response.status,
+        support:basis.operate.state.activation.status,finance:basis.operate.state.finance.status,
+        taskResolved:true,replayMatches:true});
+    }
+    return outcomes;
   });
   }
   }
@@ -5821,7 +6091,8 @@ finally {
     setupError:Boolean(evidence.setupError),cleanupVerified:Boolean(evidence.cleanup?.clean)};
   mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
-  console.log(JSON.stringify({...evidence.summary,output:rc0DeployIntegrity
+  console.log(JSON.stringify({...evidence.summary,output:phase2hv
+    ? "docs/architecture/evidence/phase2hv-two-tenant-results.json" : rc0DeployIntegrity
     ? "docs/release/D5O_RC0_DEPLOY_INTEGRITY.json" : phase2hu
     ? "docs/architecture/evidence/phase2hu-two-tenant-results.json" : phase2htd
     ? "docs/architecture/evidence/phase2htd-targeted-results.json" : phase2htc

@@ -66,7 +66,9 @@ export function supportRoleActions(records: WorkRecord[], actorId: string, role:
     else if (!state.activation && !state.assetLinks?.some((item) => item.status === "Accepted")) add("activate", "Operations leader", role === "operations_leader",
       "Review operational readiness and resolve any outstanding prerequisites before authorization.");
     }
-    if (state?.source && (state.support || state.assetLinks?.some((item) => item.status === "Accepted"))) {
+    // Documentation review may be a prerequisite to support acceptance, so route it as soon as
+    // the exact Deploy source has been linked. Waiting for state.support deadlocks strict tenants.
+    if (state?.source) {
       for (const doc of supportDocumentationPositions(work).filter((item) => item.status !== "Reviewed")) {
         const review = doc.status === "Submitted";
         if (role === "field_supervisor") {
