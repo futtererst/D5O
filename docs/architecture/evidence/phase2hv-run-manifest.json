@@ -1,0 +1,68 @@
+{
+  "applicationCommit": "776bc00e2ea93a21c7f9e496fc6c67fd9adcaad8",
+  "sourceBaseline": "cf781d39e831a6d396f0116326aac59173fd43f4",
+  "resultFile": "phase2hv-two-tenant-results.json",
+  "resultSha256": "c74c86ae62ff65def9be42d497a06eef7b909deb3713d54e7652dd684a2294e0",
+  "finishedAt": "2026-10-27T07:57:55.109Z",
+  "passed": 49,
+  "failed": 0,
+  "cleanupVerified": true,
+  "screenshots": [
+    {
+      "file": "a-completion-review.png",
+      "sha256": "efc4466ed56b4fc50b1507ef7093c2cd4cb1b545188c135c6f27fc9afc07c1df"
+    },
+    {
+      "file": "a-deploy-accepted.png",
+      "sha256": "f67a1f52eefd94b344d9d37168f20a0dc5c64f45f55b84df1b17f8ce231fa36f"
+    },
+    {
+      "file": "a-field-assigned-mobile.png",
+      "sha256": "a354425d3032c02390c91948c01b89d2ca691d0b9585e17246f8fa06dfcfe217"
+    },
+    {
+      "file": "a-field-complete-mobile.png",
+      "sha256": "6bde96d3d47bf674ac424f71ba75f59cde8f7aff469f53f5631258b54304ee51"
+    },
+    {
+      "file": "a-operate-desktop.png",
+      "sha256": "4cae4c4c9cb56468d461fb395640858ad2148d27f3acabb1fb51e9db2368f114"
+    },
+    {
+      "file": "a-operate-handoff-task.png",
+      "sha256": "ad47619276d538e78c5085edb6e77140f3dd5f9de1a14d247695150acb0a85fb"
+    },
+    {
+      "file": "a-operate-mobile.png",
+      "sha256": "b26240ce579ee595f86736417994255605399017cef18145e0565ce3509755ce"
+    },
+    {
+      "file": "b-completion-review.png",
+      "sha256": "84c33aa7d4e42e2a567bbf45b69e9708d148ca7b30a69c2ac78e12a33d0b1b67"
+    },
+    {
+      "file": "b-deploy-accepted.png",
+      "sha256": "ddd9608c9fa06bcb8235f10a59541b46b506ddd1503e599041ac2ce1e547b1f4"
+    },
+    {
+      "file": "b-field-assigned-mobile.png",
+      "sha256": "fd72fb342a91f9b6bded03d8a7f5517a7e7b129beca545f456b0683eb3dfc411"
+    },
+    {
+      "file": "b-field-complete-mobile.png",
+      "sha256": "c4723110e798ab0255352164bc662ecb4ea8a1a170a9e1ed82247e567e654833"
+    },
+    {
+      "file": "b-operate-desktop.png",
+      "sha256": "ff391b15961be6c71849d24f7ca810e606d303aa57762400f1e18f5ec9d7ff69"
+    },
+    {
+      "file": "b-operate-handoff-task.png",
+      "sha256": "ddaf3afece49cac4cdb4f7b7f3a35977f30698b3376fbf038237b88a546a5d86"
+    },
+    {
+      "file": "b-operate-mobile.png",
+      "sha256": "606702e35d2f8f49866e3143b78f2c7c7aa01543eb3b49a655716c4908fe2cd0"
+    }
+  ]
+}
