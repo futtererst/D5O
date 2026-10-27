@@ -36961,5 +36961,8 @@
     "failed": 0,
     "setupError": false,
     "cleanupVerified": true
-  }
+  },
+  "qualifiedApplicationCommit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "forwardMigrationSha256": "6fe726239c15941201f3026ab1a0bb5f42ab89d04fc95b294d54164c5ab4cea8",
+  "migrationManifestSha256": "fcde654ef840e065ce2a229b6c1d21f5535b2a5ab89dfd606cbd6c0b157073a1"
 }

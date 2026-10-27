@@ -1,6 +1,6 @@
 # RC4-B.1 completion, turnover and acceptance
 
-Application and forward correction: `9c0be3569fb88bf21ba8ced24a58a8804cbeda47` on `codex/d5o-rc4b1-integrity-closure`. Source baseline: `96f1b7bccec690c1dec26cf66a55e9526f1619f9`. Evidence: [final machine result](evidence/D5O_RC4B1_INTEGRITY.json) (SHA-256 `e45a6228150162a59e2acb0495552fb6b0b166070668c4019f0aaa8758c7ca49`), [browser captures](evidence/rc4b1-browser), and the [preserved failing run](evidence/D5O_RC4B1_PERMIT_FAILURE.json). The final disposable run passed **47/47**, with `setupError=false` and `cleanup.clean=true`.
+Application and forward correction: `8b6b0d9e4aa484d0f0db1d075a969b79e01b0989` on `codex/d5o-rc4b1-integrity-closure`. Source baseline: `96f1b7bccec690c1dec26cf66a55e9526f1619f9`. Evidence: [final machine result](evidence/D5O_RC4B1_INTEGRITY.json) (SHA-256 `b44efbb4f275cfc4795449e51a2a85a4ececb1b4b784c12768753d370e6923ec`), [browser captures](evidence/rc4b1-browser), and the [preserved failing run](evidence/D5O_RC4B1_PERMIT_FAILURE.json). The final disposable run passed **47/47**, with `setupError=false` and `cleanup.clean=true`.
 
 ## Causal controls
 

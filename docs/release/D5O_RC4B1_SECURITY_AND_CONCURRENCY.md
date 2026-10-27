@@ -1,6 +1,6 @@
 # RC4-B.1 Scope integrity and concurrency
 
-The final [machine run](evidence/D5O_RC4B1_INTEGRITY.json) passed 47/47 in an isolated disposable Supabase fixture, with two fictional tenants, independent actors, pinned configurations, actual browser decisions and clean teardown. Application correction: `9c0be3569fb88bf21ba8ced24a58a8804cbeda47`.
+The final [machine run](evidence/D5O_RC4B1_INTEGRITY.json) passed 47/47 in an isolated disposable Supabase fixture, with two fictional tenants, independent actors, pinned configurations, actual browser decisions and clean teardown. Application correction: `8b6b0d9e4aa484d0f0db1d075a969b79e01b0989`.
 
 | Case | Actual outcome | Protected-state check |
 | --- | --- | --- |

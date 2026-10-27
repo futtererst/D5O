@@ -1,6 +1,6 @@
 # RC4-B.1 protected-command eligibility
 
-Source baseline: application `96f1b7bccec690c1dec26cf66a55e9526f1619f9`; corrected application and migration commit `9c0be3569fb88bf21ba8ced24a58a8804cbeda47`; RC4-B evidence `171efdde107bdc7f7fcd8f90da4414832ded4b73`. This matrix describes the effective RPC definitions in `20261027190000_d5o_field_fact_latest_permit_order.sql`, `20261019010000_d5o_configured_delivery_receiver.sql`, `20261020180000_d5o_workforce_field_readiness.sql`, and the `20261009220510_d5o_connected_field_changes.sql` trigger. The API route `prototype-deploy-command` dispatches to these RPCs for connected Work.
+Source baseline: application `96f1b7bccec690c1dec26cf66a55e9526f1619f9`; corrected application and migration commit `8b6b0d9e4aa484d0f0db1d075a969b79e01b0989`; RC4-B evidence `171efdde107bdc7f7fcd8f90da4414832ded4b73`. This matrix describes the effective RPC definitions in `20261027190000_d5o_field_fact_latest_permit_order.sql`, `20261019010000_d5o_configured_delivery_receiver.sql`, `20261020180000_d5o_workforce_field_readiness.sql`, and the `20261009220510_d5o_connected_field_changes.sql` trigger. The API route `prototype-deploy-command` dispatches to these RPCs for connected Work.
 
 | Action | Required basis and actor | Scope guard | Eligibility control |
 | --- | --- | --- | --- |
