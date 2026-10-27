@@ -1,0 +1,12 @@
+{
+  "format": "d5o-rc8-ledger-verification-v1",
+  "historical_rows_preserved_version_name_statement_count": 177,
+  "historical_rows_retained_sql_hash_checked": 167,
+  "corrected_utf8_sql_hash_mismatch_versions": [],
+  "legacy_rows_without_prior_retained_sql_hash": 10,
+  "new_migrations_exact_frozen_sql_verified": 25,
+  "order_215_actual_statement_count": 3,
+  "order_215_contains_pre_frozen_post": true,
+  "total_ledger_rows": 202,
+  "fabricated_entries": false
+}

@@ -1,17 +1,17 @@
 """Compare restored historical ledger SQL with frozen source without exporting SQL."""
-import hashlib, json, re, subprocess
+import hashlib, json, re, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EV = ROOT / "docs/release/evidence"
 manifest = json.loads((EV / "D5O_RC5_COMPLETE_236_MIGRATION_MANIFEST.json").read_text())
 comparison = json.loads((EV / "D5O_RC5_LEDGER_COMPARISON.json").read_text())
-query = "select row_to_json(t)::text from (select version,name,statements from supabase_migrations.schema_migrations order by version) t"
+query = "select row_to_json(t)::text from (select version,name,statements from supabase_migrations.schema_migrations where version<='20261021123923' order by version) t"
 cmd = ["docker", "exec", "d5o-rc7-historical-db", "psql", "-U", "supabase_admin", "-d", "postgres", "-q", "-X", "-v", "ON_ERROR_STOP=1", "-At", "-c", query]
 check = subprocess.run(["docker", "inspect", "d5o-rc7-historical-db"], capture_output=True, text=True, check=True)
 target = json.loads(check.stdout)[0]
 assert target["HostConfig"]["NetworkMode"] == "none" and not target["HostConfig"].get("PortBindings")
-run = subprocess.run(cmd, capture_output=True, text=True, check=True)
+run = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", check=True)
 ledger = {r["version"]: r for r in map(json.loads, run.stdout.splitlines())}
 assert len(ledger) == 177
 sha = lambda x: hashlib.sha256(x.encode()).hexdigest()
@@ -36,7 +36,9 @@ def sql_tokens(s):
             if m:
                 tag=m.group(); end=s.find(tag,i+len(tag))
                 if end<0: return None
-                out.append(s[i:end+len(tag)]); i=end+len(tag); continue
+                inner=sql_tokens(s[i+len(tag):end])
+                if inner is None:return None
+                out.append((tag,tuple(inner))); i=end+len(tag); continue
         if c in "'\"":
             start=i; i+=1
             while i<n:
@@ -52,8 +54,13 @@ def sql_tokens(s):
             m=re.match(r'[A-Za-z_][A-Za-z_0-9$]*',s[i:]); out.append(m.group()); i+=len(m.group()); continue
         if c.isdigit():
             m=re.match(r'\d+(?:\.\d+)?(?:[eE][+-]?\d+)?',s[i:]); out.append(m.group()); i+=len(m.group()); continue
+        if c in '+-*/<>=~!@#%^&|?:':
+            m=re.match(r'[+*/<>=~!@#%^&|?:-]+',s[i:]); out.append(('operator',m.group())); i+=len(m.group()); continue
         out.append(c); i+=1
     return out
+assert sql_tokens('select a>=b') != sql_tokens('select a> =b')
+assert sql_tokens("select 'a b'") != sql_tokens("select 'ab'")
+assert sql_tokens('do $$begin perform 1; end$$') == sql_tokens('do $$ begin  perform 1 ; end $$')
 results = []
 counts = {}
 for row in comparison["source_migrations"]:
@@ -90,8 +97,10 @@ for row in comparison["source_migrations"]:
         "whitespace_erased_equal_candidate_only": whitespace_erased_equal,
         "sql_token_equivalent": token_equal if hosted is not None else None,
         "historical_execution_proven": bool(hosted and kind != "SQL_TEXT_DIFFERS")})
-out = {"format": "d5o-rc7-retained-sql-comparison-v1", "starting_ledger_count": len(ledger),
+out = {"format": "d5o-rc8-retained-sql-comparison-utf8-v1", "starting_ledger_count": len(ledger),
     "counts": counts, "rows": results,
     "note": "SQL_TEXT_DIFFERS requires semantic, object, permission, and data-effect review. Source-only versions remain unproved."}
-(EV / "D5O_RC7_RETAINED_SQL_COMPARISON.json").write_text(json.dumps(out, indent=2) + "\n")
+name = sys.argv[1] if len(sys.argv)>1 else "D5O_RC8_RETAINED_SQL_COMPARISON_UTF8.json"
+if name != "D5O_RC8_RETAINED_SQL_COMPARISON_UTF8.json": raise RuntimeError("unexpected output file")
+(EV / name).write_text(json.dumps(out, indent=2) + "\n")
 print(json.dumps(counts))
