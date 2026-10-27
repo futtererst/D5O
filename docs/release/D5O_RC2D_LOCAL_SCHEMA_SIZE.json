@@ -1,0 +1,25 @@
+{
+  "format": "d5o-rc2d-local-free-schema-size-v1",
+  "sourceCommit": "8e1ff9a20fc252800dfa798b613225db0b034d97",
+  "migrationManifestSha256": "908316ebda4d59f15c035ac2dd8bbd036a8b4d9eb24a39b07f4a1ca2491b5c74",
+  "migrationCount": 234,
+  "environment": "disposable loopback-only Supabase; synthetic; no hosted resource",
+  "database": {
+    "postgresVersion": "15.8",
+    "databaseBytes": 31585071,
+    "hostedRelationBytes": 3596288,
+    "hostedTableCount": 167,
+    "hostedFunctionCount": 106,
+    "appliedMigrationCount": 234
+  },
+  "cleanup": {
+    "projectId": "d5o-p0a-31a639e8-50e",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "error": null,
+  "disposableProjectId": "d5o-p0a-31a639e8-50e"
+}

@@ -1,0 +1,72 @@
+{
+  "format": "d5o-rc2d-zero-cost-preflight-v1",
+  "observedDate": "2026-10-27",
+  "sourceCommit": "8e1ff9a20fc252800dfa798b613225db0b034d97",
+  "applicationCommit": "c3ce6d26f305d7c204e5366c84f1fcb9aa6d4e44",
+  "migrationManifestSha256": "908316ebda4d59f15c035ac2dd8bbd036a8b4d9eb24a39b07f4a1ca2491b5c74",
+  "supabase": {
+    "observedOrganizations": 1,
+    "existingOrganizationId": "kizwlcyhydylfmwbxmpq",
+    "existingOrganizationPlan": "pro",
+    "observedProjects": 11,
+    "observedFreeOrganizations": 0,
+    "productionProjectRefDenylist": "fcawktdjoxvahhgvkebx",
+    "publishedFreePlan": {
+      "monthlyBaseUsd": 0,
+      "activeProjectAllowance": 2,
+      "databaseQuotaBytes": 500000000,
+      "storageQuotaBytes": 1000000000,
+      "singleObjectLimitBytes": 50000000,
+      "egressQuotaBytes": 5000000000,
+      "fixedDiskBytes": 2000000000,
+      "automaticBackups": false,
+      "branching": false
+    },
+    "newFreeOrganizationEligibility": "published route exists; account-specific creation screen and payment requirement not verified",
+    "newFreeOrganizationCreated": false,
+    "newFreeProjectCreated": false,
+    "stagingProjectRef": null,
+    "stagingDatabaseIdentity": null,
+    "stagingAuthIdentity": null,
+    "stagingStorageIdentity": null,
+    "stagingApiCredentialIdentity": null
+  },
+  "vercel": {
+    "existingProjectId": "prj_HF8KhxUFvONQlpMr53FdhEgmIpFG",
+    "teamId": "team_YSItyDw0cqxobdy4YBp9osYV",
+    "teamPlan": null,
+    "ssoProtectionForNonCustomDomains": true,
+    "environmentVariableNamesCount": 18,
+    "genericPreviewVariableNamesCount": 7,
+    "branchScopedPreviewVariableNamesCount": 0,
+    "oneDayBillingQuery": {
+      "requestedFromUtc": "2026-10-26T00:00:00Z",
+      "requestedToUtc": "2026-10-27T00:00:00Z",
+      "returnedPeriodStartUtc": "2026-10-25T07:00:00.000Z",
+      "returnedPeriodEndUtc": "2026-10-26T07:00:00.000Z",
+      "teamBilledCostUsd": 1.305961330883,
+      "teamEffectiveCostUsd": 1.951122621205,
+      "recordCount": 871,
+      "periodMismatch": true
+    },
+    "remainingIncludedUsage": null,
+    "incrementalPreviewCostGuaranteedZero": false,
+    "previewDeploymentId": null,
+    "deployedApplicationSha": null
+  },
+  "localMeasurement": {
+    "sourceFile": "D5O_RC2D_LOCAL_SCHEMA_SIZE.json",
+    "appliedMigrations": 234,
+    "databaseBytes": 31585071,
+    "postgresVersion": "15.8",
+    "disposableCleanupPassed": true,
+    "provesHostedFreeFit": false
+  },
+  "authorization": {
+    "freeOrganizationCreation": false,
+    "freeProjectCreation": false,
+    "previewDeployment": false,
+    "hostedMigrationApplication": false
+  },
+  "decision": "BLOCKED"
+}
