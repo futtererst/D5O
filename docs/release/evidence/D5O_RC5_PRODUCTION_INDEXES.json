@@ -1,0 +1,3265 @@
+{
+  "project": "fcawktdjoxvahhgvkebx",
+  "capturedAtUtc": "2026-10-27",
+  "queryFamily": "indexes",
+  "rows": [
+    {
+      "schemaname": "auth",
+      "tablename": "audit_log_entries",
+      "indexname": "audit_log_entries_pkey",
+      "indexdef": "CREATE UNIQUE INDEX audit_log_entries_pkey ON auth.audit_log_entries USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "audit_log_entries",
+      "indexname": "audit_logs_instance_id_idx",
+      "indexdef": "CREATE INDEX audit_logs_instance_id_idx ON auth.audit_log_entries USING btree (instance_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "custom_oauth_providers",
+      "indexname": "custom_oauth_providers_created_at_idx",
+      "indexdef": "CREATE INDEX custom_oauth_providers_created_at_idx ON auth.custom_oauth_providers USING btree (created_at)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "custom_oauth_providers",
+      "indexname": "custom_oauth_providers_enabled_idx",
+      "indexdef": "CREATE INDEX custom_oauth_providers_enabled_idx ON auth.custom_oauth_providers USING btree (enabled)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "custom_oauth_providers",
+      "indexname": "custom_oauth_providers_identifier_idx",
+      "indexdef": "CREATE INDEX custom_oauth_providers_identifier_idx ON auth.custom_oauth_providers USING btree (identifier)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "custom_oauth_providers",
+      "indexname": "custom_oauth_providers_identifier_key",
+      "indexdef": "CREATE UNIQUE INDEX custom_oauth_providers_identifier_key ON auth.custom_oauth_providers USING btree (identifier)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "custom_oauth_providers",
+      "indexname": "custom_oauth_providers_pkey",
+      "indexdef": "CREATE UNIQUE INDEX custom_oauth_providers_pkey ON auth.custom_oauth_providers USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "custom_oauth_providers",
+      "indexname": "custom_oauth_providers_provider_type_idx",
+      "indexdef": "CREATE INDEX custom_oauth_providers_provider_type_idx ON auth.custom_oauth_providers USING btree (provider_type)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "flow_state",
+      "indexname": "flow_state_created_at_idx",
+      "indexdef": "CREATE INDEX flow_state_created_at_idx ON auth.flow_state USING btree (created_at DESC)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "flow_state",
+      "indexname": "flow_state_pkey",
+      "indexdef": "CREATE UNIQUE INDEX flow_state_pkey ON auth.flow_state USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "flow_state",
+      "indexname": "idx_auth_code",
+      "indexdef": "CREATE INDEX idx_auth_code ON auth.flow_state USING btree (auth_code)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "flow_state",
+      "indexname": "idx_user_id_auth_method",
+      "indexdef": "CREATE INDEX idx_user_id_auth_method ON auth.flow_state USING btree (user_id, authentication_method)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "identities",
+      "indexname": "identities_email_idx",
+      "indexdef": "CREATE INDEX identities_email_idx ON auth.identities USING btree (email text_pattern_ops)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "identities",
+      "indexname": "identities_pkey",
+      "indexdef": "CREATE UNIQUE INDEX identities_pkey ON auth.identities USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "identities",
+      "indexname": "identities_provider_id_provider_unique",
+      "indexdef": "CREATE UNIQUE INDEX identities_provider_id_provider_unique ON auth.identities USING btree (provider_id, provider)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "identities",
+      "indexname": "identities_user_id_idx",
+      "indexdef": "CREATE INDEX identities_user_id_idx ON auth.identities USING btree (user_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "instances",
+      "indexname": "instances_pkey",
+      "indexdef": "CREATE UNIQUE INDEX instances_pkey ON auth.instances USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_amr_claims",
+      "indexname": "amr_id_pk",
+      "indexdef": "CREATE UNIQUE INDEX amr_id_pk ON auth.mfa_amr_claims USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_amr_claims",
+      "indexname": "mfa_amr_claims_session_id_authentication_method_pkey",
+      "indexdef": "CREATE UNIQUE INDEX mfa_amr_claims_session_id_authentication_method_pkey ON auth.mfa_amr_claims USING btree (session_id, authentication_method)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_challenges",
+      "indexname": "mfa_challenge_created_at_idx",
+      "indexdef": "CREATE INDEX mfa_challenge_created_at_idx ON auth.mfa_challenges USING btree (created_at DESC)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_challenges",
+      "indexname": "mfa_challenges_pkey",
+      "indexdef": "CREATE UNIQUE INDEX mfa_challenges_pkey ON auth.mfa_challenges USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_factors",
+      "indexname": "factor_id_created_at_idx",
+      "indexdef": "CREATE INDEX factor_id_created_at_idx ON auth.mfa_factors USING btree (user_id, created_at)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_factors",
+      "indexname": "mfa_factors_last_challenged_at_key",
+      "indexdef": "CREATE UNIQUE INDEX mfa_factors_last_challenged_at_key ON auth.mfa_factors USING btree (last_challenged_at)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_factors",
+      "indexname": "mfa_factors_pkey",
+      "indexdef": "CREATE UNIQUE INDEX mfa_factors_pkey ON auth.mfa_factors USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_factors",
+      "indexname": "mfa_factors_user_friendly_name_unique",
+      "indexdef": "CREATE UNIQUE INDEX mfa_factors_user_friendly_name_unique ON auth.mfa_factors USING btree (friendly_name, user_id) WHERE (TRIM(BOTH FROM friendly_name) <> ''::text)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_factors",
+      "indexname": "mfa_factors_user_id_idx",
+      "indexdef": "CREATE INDEX mfa_factors_user_id_idx ON auth.mfa_factors USING btree (user_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_factors",
+      "indexname": "unique_phone_factor_per_user",
+      "indexdef": "CREATE UNIQUE INDEX unique_phone_factor_per_user ON auth.mfa_factors USING btree (user_id, phone)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_recovery_code_sets",
+      "indexname": "mfa_recovery_code_sets_mfa_factor_id_key",
+      "indexdef": "CREATE UNIQUE INDEX mfa_recovery_code_sets_mfa_factor_id_key ON auth.mfa_recovery_code_sets USING btree (mfa_factor_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_recovery_code_sets",
+      "indexname": "mfa_recovery_code_sets_pkey",
+      "indexdef": "CREATE UNIQUE INDEX mfa_recovery_code_sets_pkey ON auth.mfa_recovery_code_sets USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_recovery_code_sets",
+      "indexname": "mfa_recovery_code_sets_user_id_key",
+      "indexdef": "CREATE UNIQUE INDEX mfa_recovery_code_sets_user_id_key ON auth.mfa_recovery_code_sets USING btree (user_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_recovery_codes",
+      "indexname": "mfa_recovery_codes_pkey",
+      "indexdef": "CREATE UNIQUE INDEX mfa_recovery_codes_pkey ON auth.mfa_recovery_codes USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "mfa_recovery_codes",
+      "indexname": "mfa_recovery_codes_set_id_idx",
+      "indexdef": "CREATE INDEX mfa_recovery_codes_set_id_idx ON auth.mfa_recovery_codes USING btree (mfa_recovery_code_set_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "oauth_authorizations",
+      "indexname": "oauth_auth_pending_exp_idx",
+      "indexdef": "CREATE INDEX oauth_auth_pending_exp_idx ON auth.oauth_authorizations USING btree (expires_at) WHERE (status = 'pending'::auth.oauth_authorization_status)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "oauth_authorizations",
+      "indexname": "oauth_authorizations_authorization_code_key",
+      "indexdef": "CREATE UNIQUE INDEX oauth_authorizations_authorization_code_key ON auth.oauth_authorizations USING btree (authorization_code)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "oauth_authorizations",
+      "indexname": "oauth_authorizations_authorization_id_key",
+      "indexdef": "CREATE UNIQUE INDEX oauth_authorizations_authorization_id_key ON auth.oauth_authorizations USING btree (authorization_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "oauth_authorizations",
+      "indexname": "oauth_authorizations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX oauth_authorizations_pkey ON auth.oauth_authorizations USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "oauth_client_states",
+      "indexname": "idx_oauth_client_states_created_at",
+      "indexdef": "CREATE INDEX idx_oauth_client_states_created_at ON auth.oauth_client_states USING btree (created_at)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "oauth_client_states",
+      "indexname": "oauth_client_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX oauth_client_states_pkey ON auth.oauth_client_states USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "oauth_clients",
+      "indexname": "oauth_clients_deleted_at_idx",
+      "indexdef": "CREATE INDEX oauth_clients_deleted_at_idx ON auth.oauth_clients USING btree (deleted_at)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "oauth_clients",
+      "indexname": "oauth_clients_pkey",
+      "indexdef": "CREATE UNIQUE INDEX oauth_clients_pkey ON auth.oauth_clients USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "oauth_consents",
+      "indexname": "oauth_consents_active_client_idx",
+      "indexdef": "CREATE INDEX oauth_consents_active_client_idx ON auth.oauth_consents USING btree (client_id) WHERE (revoked_at IS NULL)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "oauth_consents",
+      "indexname": "oauth_consents_active_user_client_idx",
+      "indexdef": "CREATE INDEX oauth_consents_active_user_client_idx ON auth.oauth_consents USING btree (user_id, client_id) WHERE (revoked_at IS NULL)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "oauth_consents",
+      "indexname": "oauth_consents_pkey",
+      "indexdef": "CREATE UNIQUE INDEX oauth_consents_pkey ON auth.oauth_consents USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "oauth_consents",
+      "indexname": "oauth_consents_user_client_unique",
+      "indexdef": "CREATE UNIQUE INDEX oauth_consents_user_client_unique ON auth.oauth_consents USING btree (user_id, client_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "oauth_consents",
+      "indexname": "oauth_consents_user_order_idx",
+      "indexdef": "CREATE INDEX oauth_consents_user_order_idx ON auth.oauth_consents USING btree (user_id, granted_at DESC)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "one_time_tokens",
+      "indexname": "one_time_tokens_pkey",
+      "indexdef": "CREATE UNIQUE INDEX one_time_tokens_pkey ON auth.one_time_tokens USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "one_time_tokens",
+      "indexname": "one_time_tokens_relates_to_hash_idx",
+      "indexdef": "CREATE INDEX one_time_tokens_relates_to_hash_idx ON auth.one_time_tokens USING hash (relates_to)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "one_time_tokens",
+      "indexname": "one_time_tokens_token_hash_hash_idx",
+      "indexdef": "CREATE INDEX one_time_tokens_token_hash_hash_idx ON auth.one_time_tokens USING hash (token_hash)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "one_time_tokens",
+      "indexname": "one_time_tokens_user_id_token_type_key",
+      "indexdef": "CREATE UNIQUE INDEX one_time_tokens_user_id_token_type_key ON auth.one_time_tokens USING btree (user_id, token_type)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "refresh_tokens",
+      "indexname": "refresh_tokens_instance_id_idx",
+      "indexdef": "CREATE INDEX refresh_tokens_instance_id_idx ON auth.refresh_tokens USING btree (instance_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "refresh_tokens",
+      "indexname": "refresh_tokens_instance_id_user_id_idx",
+      "indexdef": "CREATE INDEX refresh_tokens_instance_id_user_id_idx ON auth.refresh_tokens USING btree (instance_id, user_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "refresh_tokens",
+      "indexname": "refresh_tokens_parent_idx",
+      "indexdef": "CREATE INDEX refresh_tokens_parent_idx ON auth.refresh_tokens USING btree (parent)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "refresh_tokens",
+      "indexname": "refresh_tokens_pkey",
+      "indexdef": "CREATE UNIQUE INDEX refresh_tokens_pkey ON auth.refresh_tokens USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "refresh_tokens",
+      "indexname": "refresh_tokens_session_id_revoked_idx",
+      "indexdef": "CREATE INDEX refresh_tokens_session_id_revoked_idx ON auth.refresh_tokens USING btree (session_id, revoked)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "refresh_tokens",
+      "indexname": "refresh_tokens_token_unique",
+      "indexdef": "CREATE UNIQUE INDEX refresh_tokens_token_unique ON auth.refresh_tokens USING btree (token)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "refresh_tokens",
+      "indexname": "refresh_tokens_updated_at_idx",
+      "indexdef": "CREATE INDEX refresh_tokens_updated_at_idx ON auth.refresh_tokens USING btree (updated_at DESC)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "saml_providers",
+      "indexname": "saml_providers_entity_id_key",
+      "indexdef": "CREATE UNIQUE INDEX saml_providers_entity_id_key ON auth.saml_providers USING btree (entity_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "saml_providers",
+      "indexname": "saml_providers_pkey",
+      "indexdef": "CREATE UNIQUE INDEX saml_providers_pkey ON auth.saml_providers USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "saml_providers",
+      "indexname": "saml_providers_sso_provider_id_idx",
+      "indexdef": "CREATE INDEX saml_providers_sso_provider_id_idx ON auth.saml_providers USING btree (sso_provider_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "saml_relay_states",
+      "indexname": "saml_relay_states_created_at_idx",
+      "indexdef": "CREATE INDEX saml_relay_states_created_at_idx ON auth.saml_relay_states USING btree (created_at DESC)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "saml_relay_states",
+      "indexname": "saml_relay_states_for_email_idx",
+      "indexdef": "CREATE INDEX saml_relay_states_for_email_idx ON auth.saml_relay_states USING btree (for_email)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "saml_relay_states",
+      "indexname": "saml_relay_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX saml_relay_states_pkey ON auth.saml_relay_states USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "saml_relay_states",
+      "indexname": "saml_relay_states_sso_provider_id_idx",
+      "indexdef": "CREATE INDEX saml_relay_states_sso_provider_id_idx ON auth.saml_relay_states USING btree (sso_provider_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "schema_migrations",
+      "indexname": "schema_migrations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX schema_migrations_pkey ON auth.schema_migrations USING btree (version)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_tokens",
+      "indexname": "scim_tokens_expires_at_idx",
+      "indexdef": "CREATE INDEX scim_tokens_expires_at_idx ON auth.scim_tokens USING btree (expires_at)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_tokens",
+      "indexname": "scim_tokens_pkey",
+      "indexdef": "CREATE UNIQUE INDEX scim_tokens_pkey ON auth.scim_tokens USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_tokens",
+      "indexname": "scim_tokens_revoked_at_idx",
+      "indexdef": "CREATE INDEX scim_tokens_revoked_at_idx ON auth.scim_tokens USING btree (revoked_at)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_tokens",
+      "indexname": "scim_tokens_sso_provider_id_idx",
+      "indexdef": "CREATE INDEX scim_tokens_sso_provider_id_idx ON auth.scim_tokens USING btree (sso_provider_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_tokens",
+      "indexname": "scim_tokens_token_hash_key",
+      "indexdef": "CREATE UNIQUE INDEX scim_tokens_token_hash_key ON auth.scim_tokens USING btree (token_hash)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_users",
+      "indexname": "scim_users_created_at_idx",
+      "indexdef": "CREATE INDEX scim_users_created_at_idx ON auth.scim_users USING btree (sso_provider_id, created_at, id) WHERE (deleted_at IS NULL)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_users",
+      "indexname": "scim_users_deleted_at_idx",
+      "indexdef": "CREATE INDEX scim_users_deleted_at_idx ON auth.scim_users USING btree (deleted_at)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_users",
+      "indexname": "scim_users_external_id_key",
+      "indexdef": "CREATE UNIQUE INDEX scim_users_external_id_key ON auth.scim_users USING btree (sso_provider_id, external_id) WHERE ((external_id IS NOT NULL) AND (deleted_at IS NULL))"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_users",
+      "indexname": "scim_users_id_idx",
+      "indexdef": "CREATE INDEX scim_users_id_idx ON auth.scim_users USING btree (sso_provider_id, id) WHERE (deleted_at IS NULL)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_users",
+      "indexname": "scim_users_pkey",
+      "indexdef": "CREATE UNIQUE INDEX scim_users_pkey ON auth.scim_users USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_users",
+      "indexname": "scim_users_sso_provider_id_idx",
+      "indexdef": "CREATE INDEX scim_users_sso_provider_id_idx ON auth.scim_users USING btree (sso_provider_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_users",
+      "indexname": "scim_users_updated_at_idx",
+      "indexdef": "CREATE INDEX scim_users_updated_at_idx ON auth.scim_users USING btree (sso_provider_id, updated_at, id) WHERE (deleted_at IS NULL)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_users",
+      "indexname": "scim_users_user_id_idx",
+      "indexdef": "CREATE INDEX scim_users_user_id_idx ON auth.scim_users USING btree (user_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_users",
+      "indexname": "scim_users_user_name_idx",
+      "indexdef": "CREATE INDEX scim_users_user_name_idx ON auth.scim_users USING btree (sso_provider_id, user_name COLLATE \"C\", id) WHERE (deleted_at IS NULL)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "scim_users",
+      "indexname": "scim_users_user_name_key",
+      "indexdef": "CREATE UNIQUE INDEX scim_users_user_name_key ON auth.scim_users USING btree (sso_provider_id, user_name) WHERE (deleted_at IS NULL)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "sessions",
+      "indexname": "sessions_not_after_idx",
+      "indexdef": "CREATE INDEX sessions_not_after_idx ON auth.sessions USING btree (not_after DESC)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "sessions",
+      "indexname": "sessions_oauth_client_id_idx",
+      "indexdef": "CREATE INDEX sessions_oauth_client_id_idx ON auth.sessions USING btree (oauth_client_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "sessions",
+      "indexname": "sessions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX sessions_pkey ON auth.sessions USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "sessions",
+      "indexname": "sessions_user_id_idx",
+      "indexdef": "CREATE INDEX sessions_user_id_idx ON auth.sessions USING btree (user_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "sessions",
+      "indexname": "user_id_created_at_idx",
+      "indexdef": "CREATE INDEX user_id_created_at_idx ON auth.sessions USING btree (user_id, created_at)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "sso_domains",
+      "indexname": "sso_domains_domain_idx",
+      "indexdef": "CREATE UNIQUE INDEX sso_domains_domain_idx ON auth.sso_domains USING btree (lower(domain))"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "sso_domains",
+      "indexname": "sso_domains_pkey",
+      "indexdef": "CREATE UNIQUE INDEX sso_domains_pkey ON auth.sso_domains USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "sso_domains",
+      "indexname": "sso_domains_sso_provider_id_idx",
+      "indexdef": "CREATE INDEX sso_domains_sso_provider_id_idx ON auth.sso_domains USING btree (sso_provider_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "sso_providers",
+      "indexname": "sso_providers_pkey",
+      "indexdef": "CREATE UNIQUE INDEX sso_providers_pkey ON auth.sso_providers USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "sso_providers",
+      "indexname": "sso_providers_resource_id_idx",
+      "indexdef": "CREATE UNIQUE INDEX sso_providers_resource_id_idx ON auth.sso_providers USING btree (lower(resource_id))"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "sso_providers",
+      "indexname": "sso_providers_resource_id_pattern_idx",
+      "indexdef": "CREATE INDEX sso_providers_resource_id_pattern_idx ON auth.sso_providers USING btree (resource_id text_pattern_ops)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "confirmation_token_idx",
+      "indexdef": "CREATE UNIQUE INDEX confirmation_token_idx ON auth.users USING btree (confirmation_token) WHERE ((confirmation_token)::text !~ '^[0-9 ]*$'::text)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "email_change_token_current_idx",
+      "indexdef": "CREATE UNIQUE INDEX email_change_token_current_idx ON auth.users USING btree (email_change_token_current) WHERE ((email_change_token_current)::text !~ '^[0-9 ]*$'::text)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "email_change_token_new_idx",
+      "indexdef": "CREATE UNIQUE INDEX email_change_token_new_idx ON auth.users USING btree (email_change_token_new) WHERE ((email_change_token_new)::text !~ '^[0-9 ]*$'::text)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "idx_users_created_at_desc",
+      "indexdef": "CREATE INDEX idx_users_created_at_desc ON auth.users USING btree (created_at DESC)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "idx_users_email",
+      "indexdef": "CREATE INDEX idx_users_email ON auth.users USING btree (email)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "idx_users_last_sign_in_at_desc",
+      "indexdef": "CREATE INDEX idx_users_last_sign_in_at_desc ON auth.users USING btree (last_sign_in_at DESC)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "idx_users_name",
+      "indexdef": "CREATE INDEX idx_users_name ON auth.users USING btree (((raw_user_meta_data ->> 'name'::text))) WHERE ((raw_user_meta_data ->> 'name'::text) IS NOT NULL)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "reauthentication_token_idx",
+      "indexdef": "CREATE UNIQUE INDEX reauthentication_token_idx ON auth.users USING btree (reauthentication_token) WHERE ((reauthentication_token)::text !~ '^[0-9 ]*$'::text)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "recovery_token_idx",
+      "indexdef": "CREATE UNIQUE INDEX recovery_token_idx ON auth.users USING btree (recovery_token) WHERE ((recovery_token)::text !~ '^[0-9 ]*$'::text)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "users_email_partial_key",
+      "indexdef": "CREATE UNIQUE INDEX users_email_partial_key ON auth.users USING btree (email) WHERE (is_sso_user = false)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "users_instance_id_email_idx",
+      "indexdef": "CREATE INDEX users_instance_id_email_idx ON auth.users USING btree (instance_id, lower((email)::text))"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "users_instance_id_idx",
+      "indexdef": "CREATE INDEX users_instance_id_idx ON auth.users USING btree (instance_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "users_is_anonymous_idx",
+      "indexdef": "CREATE INDEX users_is_anonymous_idx ON auth.users USING btree (is_anonymous)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "users_phone_key",
+      "indexdef": "CREATE UNIQUE INDEX users_phone_key ON auth.users USING btree (phone)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "users",
+      "indexname": "users_pkey",
+      "indexdef": "CREATE UNIQUE INDEX users_pkey ON auth.users USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "webauthn_challenges",
+      "indexname": "webauthn_challenges_expires_at_idx",
+      "indexdef": "CREATE INDEX webauthn_challenges_expires_at_idx ON auth.webauthn_challenges USING btree (expires_at)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "webauthn_challenges",
+      "indexname": "webauthn_challenges_pkey",
+      "indexdef": "CREATE UNIQUE INDEX webauthn_challenges_pkey ON auth.webauthn_challenges USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "webauthn_challenges",
+      "indexname": "webauthn_challenges_user_id_idx",
+      "indexdef": "CREATE INDEX webauthn_challenges_user_id_idx ON auth.webauthn_challenges USING btree (user_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "webauthn_credentials",
+      "indexname": "webauthn_credentials_credential_id_key",
+      "indexdef": "CREATE UNIQUE INDEX webauthn_credentials_credential_id_key ON auth.webauthn_credentials USING btree (credential_id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "webauthn_credentials",
+      "indexname": "webauthn_credentials_pkey",
+      "indexdef": "CREATE UNIQUE INDEX webauthn_credentials_pkey ON auth.webauthn_credentials USING btree (id)"
+    },
+    {
+      "schemaname": "auth",
+      "tablename": "webauthn_credentials",
+      "indexname": "webauthn_credentials_user_id_idx",
+      "indexdef": "CREATE INDEX webauthn_credentials_user_id_idx ON auth.webauthn_credentials USING btree (user_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "admin_binding_corrections",
+      "indexname": "admin_binding_corrections_pkey",
+      "indexdef": "CREATE UNIQUE INDEX admin_binding_corrections_pkey ON d5o_hosted.admin_binding_corrections USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "admin_identity_requests",
+      "indexname": "admin_identity_requests_pkey",
+      "indexdef": "CREATE UNIQUE INDEX admin_identity_requests_pkey ON d5o_hosted.admin_identity_requests USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "admin_membership_reasons",
+      "indexname": "admin_membership_reasons_pkey",
+      "indexdef": "CREATE UNIQUE INDEX admin_membership_reasons_pkey ON d5o_hosted.admin_membership_reasons USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "admin_succession_events",
+      "indexname": "admin_succession_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX admin_succession_events_pkey ON d5o_hosted.admin_succession_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "configuration_admin_events",
+      "indexname": "configuration_admin_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX configuration_admin_events_pkey ON d5o_hosted.configuration_admin_events USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "configuration_admin_events",
+      "indexname": "configuration_admin_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX configuration_admin_events_workspace_id_command_id_key ON d5o_hosted.configuration_admin_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "configuration_admin_receipts",
+      "indexname": "configuration_admin_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX configuration_admin_receipts_pkey ON d5o_hosted.configuration_admin_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "configuration_create_rights",
+      "indexname": "configuration_create_rights_pkey",
+      "indexdef": "CREATE UNIQUE INDEX configuration_create_rights_pkey ON d5o_hosted.configuration_create_rights USING btree (configuration_version_id, work_type_key, workspace_role)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "configuration_handoff_roles",
+      "indexname": "configuration_handoff_roles_pkey",
+      "indexdef": "CREATE UNIQUE INDEX configuration_handoff_roles_pkey ON d5o_hosted.configuration_handoff_roles USING btree (configuration_version_id, route_key)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "configuration_tenants",
+      "indexname": "configuration_tenants_id_workspace_id_key",
+      "indexdef": "CREATE UNIQUE INDEX configuration_tenants_id_workspace_id_key ON d5o_hosted.configuration_tenants USING btree (id, workspace_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "configuration_tenants",
+      "indexname": "configuration_tenants_pkey",
+      "indexdef": "CREATE UNIQUE INDEX configuration_tenants_pkey ON d5o_hosted.configuration_tenants USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "configuration_versions",
+      "indexname": "configuration_versions_id_tenant_id_key",
+      "indexdef": "CREATE UNIQUE INDEX configuration_versions_id_tenant_id_key ON d5o_hosted.configuration_versions USING btree (id, tenant_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "configuration_versions",
+      "indexname": "configuration_versions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX configuration_versions_pkey ON d5o_hosted.configuration_versions USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "configuration_versions",
+      "indexname": "configuration_versions_tenant_id_version_number_key",
+      "indexdef": "CREATE UNIQUE INDEX configuration_versions_tenant_id_version_number_key ON d5o_hosted.configuration_versions USING btree (tenant_id, version_number)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "configuration_work_types",
+      "indexname": "configuration_work_types_pkey",
+      "indexdef": "CREATE UNIQUE INDEX configuration_work_types_pkey ON d5o_hosted.configuration_work_types USING btree (configuration_version_id, work_type_key)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_create_receipts",
+      "indexname": "connected_create_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_create_receipts_pkey ON d5o_hosted.connected_create_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_crew_profile_events",
+      "indexname": "connected_crew_profile_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_crew_profile_events_pkey ON d5o_hosted.connected_crew_profile_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_crew_profiles",
+      "indexname": "connected_crew_profiles_actor_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_crew_profiles_actor_key ON d5o_hosted.connected_crew_profiles USING btree (workspace_id, actor_user_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_crew_profiles",
+      "indexname": "connected_crew_profiles_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_crew_profiles_pkey ON d5o_hosted.connected_crew_profiles USING btree (workspace_id, id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_crew_profiles",
+      "indexname": "connected_crew_profiles_workspace_id_person_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_crew_profiles_workspace_id_person_key ON d5o_hosted.connected_crew_profiles USING btree (workspace_id, person)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_define_events",
+      "indexname": "connected_define_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_define_events_pkey ON d5o_hosted.connected_define_events USING btree (workspace_id, work_id, decision_revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_define_events",
+      "indexname": "connected_define_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_define_events_workspace_id_command_id_key ON d5o_hosted.connected_define_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_define_receipts",
+      "indexname": "connected_define_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_define_receipts_pkey ON d5o_hosted.connected_define_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_define_states",
+      "indexname": "connected_define_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_define_states_pkey ON d5o_hosted.connected_define_states USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_deploy_events",
+      "indexname": "connected_deploy_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_deploy_events_pkey ON d5o_hosted.connected_deploy_events USING btree (workspace_id, work_id, decision_revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_deploy_events",
+      "indexname": "connected_deploy_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_deploy_events_workspace_id_command_id_key ON d5o_hosted.connected_deploy_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_deploy_receipts",
+      "indexname": "connected_deploy_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_deploy_receipts_pkey ON d5o_hosted.connected_deploy_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_deploy_states",
+      "indexname": "connected_deploy_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_deploy_states_pkey ON d5o_hosted.connected_deploy_states USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_design_events",
+      "indexname": "connected_design_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_design_events_pkey ON d5o_hosted.connected_design_events USING btree (workspace_id, work_id, decision_revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_design_events",
+      "indexname": "connected_design_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_design_events_workspace_id_command_id_key ON d5o_hosted.connected_design_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_design_handoff_events",
+      "indexname": "connected_design_handoff_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_design_handoff_events_pkey ON d5o_hosted.connected_design_handoff_events USING btree (workspace_id, work_id, decision_revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_design_handoff_events",
+      "indexname": "connected_design_handoff_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_design_handoff_events_workspace_id_command_id_key ON d5o_hosted.connected_design_handoff_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_design_handoff_receipts",
+      "indexname": "connected_design_handoff_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_design_handoff_receipts_pkey ON d5o_hosted.connected_design_handoff_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_design_handoffs",
+      "indexname": "connected_design_handoffs_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_design_handoffs_pkey ON d5o_hosted.connected_design_handoffs USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_design_receipts",
+      "indexname": "connected_design_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_design_receipts_pkey ON d5o_hosted.connected_design_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_design_states",
+      "indexname": "connected_design_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_design_states_pkey ON d5o_hosted.connected_design_states USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_estimate_events",
+      "indexname": "connected_estimate_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_estimate_events_pkey ON d5o_hosted.connected_estimate_events USING btree (workspace_id, work_id, decision_revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_estimate_events",
+      "indexname": "connected_estimate_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_estimate_events_workspace_id_command_id_key ON d5o_hosted.connected_estimate_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_estimate_receipts",
+      "indexname": "connected_estimate_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_estimate_receipts_pkey ON d5o_hosted.connected_estimate_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_estimate_states",
+      "indexname": "connected_estimate_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_estimate_states_pkey ON d5o_hosted.connected_estimate_states USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_field_change_events",
+      "indexname": "connected_field_change_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_field_change_events_pkey ON d5o_hosted.connected_field_change_events USING btree (change_id, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_field_change_events",
+      "indexname": "connected_field_change_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_field_change_events_workspace_id_command_id_key ON d5o_hosted.connected_field_change_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_field_change_receipts",
+      "indexname": "connected_field_change_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_field_change_receipts_pkey ON d5o_hosted.connected_field_change_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_field_changes",
+      "indexname": "connected_field_changes_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_field_changes_pkey ON d5o_hosted.connected_field_changes USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_job_bill_history",
+      "indexname": "connected_job_bill_history_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_job_bill_history_pkey ON d5o_hosted.connected_job_bill_history USING btree (workspace_id, bill_id, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_job_bills",
+      "indexname": "connected_job_bills_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_job_bills_pkey ON d5o_hosted.connected_job_bills USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_job_cash_events",
+      "indexname": "connected_job_cash_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_job_cash_events_pkey ON d5o_hosted.connected_job_cash_events USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_job_costs",
+      "indexname": "connected_job_costs_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_job_costs_pkey ON d5o_hosted.connected_job_costs USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_job_costs",
+      "indexname": "graybar_cost_source_once",
+      "indexdef": "CREATE UNIQUE INDEX graybar_cost_source_once ON d5o_hosted.connected_job_costs USING btree (workspace_id, work_id, source) WHERE ((source ~~ 'Graybar PO %'::text) OR (source ~~ 'Graybar invoice %'::text))"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_job_finance_events",
+      "indexname": "connected_job_finance_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_job_finance_events_pkey ON d5o_hosted.connected_job_finance_events USING btree (workspace_id, work_id, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_job_finance_events",
+      "indexname": "connected_job_finance_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_job_finance_events_workspace_id_command_id_key ON d5o_hosted.connected_job_finance_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_job_finance_receipts",
+      "indexname": "connected_job_finance_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_job_finance_receipts_pkey ON d5o_hosted.connected_job_finance_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_job_finance_states",
+      "indexname": "connected_job_finance_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_job_finance_states_pkey ON d5o_hosted.connected_job_finance_states USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_offer_events",
+      "indexname": "connected_offer_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_offer_events_pkey ON d5o_hosted.connected_offer_events USING btree (workspace_id, work_id, decision_revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_offer_events",
+      "indexname": "connected_offer_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_offer_events_workspace_id_command_id_key ON d5o_hosted.connected_offer_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_offer_receipts",
+      "indexname": "connected_offer_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_offer_receipts_pkey ON d5o_hosted.connected_offer_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_offer_states",
+      "indexname": "connected_offer_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_offer_states_pkey ON d5o_hosted.connected_offer_states USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_operate_events",
+      "indexname": "connected_operate_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_operate_events_pkey ON d5o_hosted.connected_operate_events USING btree (workspace_id, work_id, decision_revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_operate_events",
+      "indexname": "connected_operate_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_operate_events_workspace_id_command_id_key ON d5o_hosted.connected_operate_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_operate_receipts",
+      "indexname": "connected_operate_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_operate_receipts_pkey ON d5o_hosted.connected_operate_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_operate_states",
+      "indexname": "connected_operate_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_operate_states_pkey ON d5o_hosted.connected_operate_states USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_package_receipts",
+      "indexname": "connected_package_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_package_receipts_pkey ON d5o_hosted.connected_package_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_package_states",
+      "indexname": "connected_package_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_package_states_pkey ON d5o_hosted.connected_package_states USING btree (workspace_id, package_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_pricing_active",
+      "indexname": "connected_pricing_active_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_pricing_active_pkey ON d5o_hosted.connected_pricing_active USING btree (workspace_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_pricing_events",
+      "indexname": "connected_pricing_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_pricing_events_pkey ON d5o_hosted.connected_pricing_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_pricing_policies",
+      "indexname": "connected_pricing_policies_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_pricing_policies_pkey ON d5o_hosted.connected_pricing_policies USING btree (workspace_id, policy_id, version)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_pricing_receipts",
+      "indexname": "connected_pricing_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_pricing_receipts_pkey ON d5o_hosted.connected_pricing_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_pursuit_events",
+      "indexname": "connected_pursuit_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_pursuit_events_pkey ON d5o_hosted.connected_pursuit_events USING btree (workspace_id, work_id, decision_revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_pursuit_events",
+      "indexname": "connected_pursuit_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_pursuit_events_workspace_id_command_id_key ON d5o_hosted.connected_pursuit_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_pursuit_receipts",
+      "indexname": "connected_pursuit_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_pursuit_receipts_pkey ON d5o_hosted.connected_pursuit_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_pursuit_states",
+      "indexname": "connected_pursuit_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_pursuit_states_pkey ON d5o_hosted.connected_pursuit_states USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_rom_design_events",
+      "indexname": "connected_rom_design_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_rom_design_events_pkey ON d5o_hosted.connected_rom_design_events USING btree (workspace_id, work_id, decision_revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_rom_design_events",
+      "indexname": "connected_rom_design_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_rom_design_events_workspace_id_command_id_key ON d5o_hosted.connected_rom_design_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_rom_design_receipts",
+      "indexname": "connected_rom_design_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_rom_design_receipts_pkey ON d5o_hosted.connected_rom_design_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_rom_design_states",
+      "indexname": "connected_rom_design_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_rom_design_states_pkey ON d5o_hosted.connected_rom_design_states USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_schedule_events",
+      "indexname": "connected_schedule_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_schedule_events_pkey ON d5o_hosted.connected_schedule_events USING btree (workspace_id, decision_revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_schedule_events",
+      "indexname": "connected_schedule_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_schedule_events_workspace_id_command_id_key ON d5o_hosted.connected_schedule_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_schedule_receipts",
+      "indexname": "connected_schedule_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_schedule_receipts_pkey ON d5o_hosted.connected_schedule_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_schedule_states",
+      "indexname": "connected_schedule_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_schedule_states_pkey ON d5o_hosted.connected_schedule_states USING btree (workspace_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_billing_terms",
+      "indexname": "connected_service_billing_terms_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_billing_terms_pkey ON d5o_hosted.connected_service_billing_terms USING btree (workspace_id, parent_work_id, request_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_billing_terms_events",
+      "indexname": "connected_service_billing_terms_eve_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_billing_terms_eve_workspace_id_command_id_key ON d5o_hosted.connected_service_billing_terms_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_billing_terms_events",
+      "indexname": "connected_service_billing_terms_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_billing_terms_events_pkey ON d5o_hosted.connected_service_billing_terms_events USING btree (workspace_id, parent_work_id, request_id, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_billing_terms_receipts",
+      "indexname": "connected_service_billing_terms_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_billing_terms_receipts_pkey ON d5o_hosted.connected_service_billing_terms_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_cost_entries",
+      "indexname": "connected_service_cost_entries_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_cost_entries_pkey ON d5o_hosted.connected_service_cost_entries USING btree (workspace_id, entry_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_cost_entries",
+      "indexname": "connected_service_cost_lookup",
+      "indexdef": "CREATE INDEX connected_service_cost_lookup ON d5o_hosted.connected_service_cost_entries USING btree (workspace_id, parent_work_id, request_id, recorded_at)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_cost_entries",
+      "indexname": "connected_service_cost_once_reversed",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_cost_once_reversed ON d5o_hosted.connected_service_cost_entries USING btree (workspace_id, reverses_entry_id) WHERE (kind = 'Reversal'::text)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_cost_entries",
+      "indexname": "connected_service_cost_unique_source",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_cost_unique_source ON d5o_hosted.connected_service_cost_entries USING btree (workspace_id, parent_work_id, request_id, lower(source_ref)) WHERE (kind = ANY (ARRAY['Original'::text, 'Replacement'::text]))"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_cost_events",
+      "indexname": "connected_service_cost_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_cost_events_pkey ON d5o_hosted.connected_service_cost_events USING btree (workspace_id, event_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_cost_events",
+      "indexname": "connected_service_cost_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_cost_events_workspace_id_command_id_key ON d5o_hosted.connected_service_cost_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_cost_receipts",
+      "indexname": "connected_service_cost_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_cost_receipts_pkey ON d5o_hosted.connected_service_cost_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_cost_states",
+      "indexname": "connected_service_cost_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_cost_states_pkey ON d5o_hosted.connected_service_cost_states USING btree (workspace_id, parent_work_id, request_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_finance_events",
+      "indexname": "connected_service_finance_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_finance_events_pkey ON d5o_hosted.connected_service_finance_events USING btree (workspace_id, parent_work_id, request_id, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_finance_events",
+      "indexname": "connected_service_finance_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_finance_events_workspace_id_command_id_key ON d5o_hosted.connected_service_finance_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_finance_receipts",
+      "indexname": "connected_service_finance_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_finance_receipts_pkey ON d5o_hosted.connected_service_finance_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_finance_states",
+      "indexname": "connected_service_finance_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_finance_states_pkey ON d5o_hosted.connected_service_finance_states USING btree (workspace_id, parent_work_id, request_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_invoice_events",
+      "indexname": "connected_service_invoice_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_invoice_events_pkey ON d5o_hosted.connected_service_invoice_events USING btree (workspace_id, event_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_invoice_events",
+      "indexname": "connected_service_invoice_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_invoice_events_workspace_id_command_id_key ON d5o_hosted.connected_service_invoice_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_invoice_payments",
+      "indexname": "connected_service_invoice_pay_workspace_id_invoice_id_sourc_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_invoice_pay_workspace_id_invoice_id_sourc_key ON d5o_hosted.connected_service_invoice_payments USING btree (workspace_id, invoice_id, source_ref)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_invoice_payments",
+      "indexname": "connected_service_invoice_payments_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_invoice_payments_pkey ON d5o_hosted.connected_service_invoice_payments USING btree (workspace_id, payment_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_invoice_receipts",
+      "indexname": "connected_service_invoice_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_invoice_receipts_pkey ON d5o_hosted.connected_service_invoice_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_invoices",
+      "indexname": "connected_service_invoices_parent_idx",
+      "indexdef": "CREATE INDEX connected_service_invoices_parent_idx ON d5o_hosted.connected_service_invoices USING btree (workspace_id, parent_work_id, request_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_invoices",
+      "indexname": "connected_service_invoices_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_invoices_pkey ON d5o_hosted.connected_service_invoices USING btree (workspace_id, invoice_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_invoices",
+      "indexname": "connected_service_invoices_workspace_id_invoice_number_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_invoices_workspace_id_invoice_number_key ON d5o_hosted.connected_service_invoices USING btree (workspace_id, invoice_number)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_invoices",
+      "indexname": "connected_service_invoices_workspace_id_parent_work_id_requ_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_invoices_workspace_id_parent_work_id_requ_key ON d5o_hosted.connected_service_invoices USING btree (workspace_id, parent_work_id, request_id, request_cycle_at)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_work",
+      "indexname": "connected_service_work_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_work_pkey ON d5o_hosted.connected_service_work USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_service_work",
+      "indexname": "connected_service_work_workspace_id_presentation_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_service_work_workspace_id_presentation_id_key ON d5o_hosted.connected_service_work USING btree (workspace_id, presentation_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_solution_events",
+      "indexname": "connected_solution_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_solution_events_pkey ON d5o_hosted.connected_solution_events USING btree (workspace_id, work_id, decision_revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_solution_events",
+      "indexname": "connected_solution_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX connected_solution_events_workspace_id_command_id_key ON d5o_hosted.connected_solution_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_solution_receipts",
+      "indexname": "connected_solution_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_solution_receipts_pkey ON d5o_hosted.connected_solution_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_solution_states",
+      "indexname": "connected_solution_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_solution_states_pkey ON d5o_hosted.connected_solution_states USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_workforce_commands",
+      "indexname": "connected_workforce_commands_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_workforce_commands_pkey ON d5o_hosted.connected_workforce_commands USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "connected_workforce_states",
+      "indexname": "connected_workforce_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX connected_workforce_states_pkey ON d5o_hosted.connected_workforce_states USING btree (workspace_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "crew_binding_events",
+      "indexname": "crew_binding_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX crew_binding_events_pkey ON d5o_hosted.crew_binding_events USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "crew_bindings",
+      "indexname": "crew_bindings_pkey",
+      "indexdef": "CREATE UNIQUE INDEX crew_bindings_pkey ON d5o_hosted.crew_bindings USING btree (workspace_id, actor_user_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "crew_bindings",
+      "indexname": "crew_bindings_workspace_id_person_key",
+      "indexdef": "CREATE UNIQUE INDEX crew_bindings_workspace_id_person_key ON d5o_hosted.crew_bindings USING btree (workspace_id, person)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "customer_decision_evidence",
+      "indexname": "customer_decision_evidence_object_path_key",
+      "indexdef": "CREATE UNIQUE INDEX customer_decision_evidence_object_path_key ON d5o_hosted.customer_decision_evidence USING btree (object_path)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "customer_decision_evidence",
+      "indexname": "customer_decision_evidence_pkey",
+      "indexdef": "CREATE UNIQUE INDEX customer_decision_evidence_pkey ON d5o_hosted.customer_decision_evidence USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "customer_decision_evidence",
+      "indexname": "customer_decision_evidence_storage_object_id_key",
+      "indexdef": "CREATE UNIQUE INDEX customer_decision_evidence_storage_object_id_key ON d5o_hosted.customer_decision_evidence USING btree (storage_object_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "customer_decision_evidence",
+      "indexname": "customer_decision_evidence_workspace_id_id_work_id_key",
+      "indexdef": "CREATE UNIQUE INDEX customer_decision_evidence_workspace_id_id_work_id_key ON d5o_hosted.customer_decision_evidence USING btree (workspace_id, id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_claims",
+      "indexname": "design_cost_claims_one_successor",
+      "indexdef": "CREATE UNIQUE INDEX design_cost_claims_one_successor ON d5o_hosted.design_cost_claims USING btree (supersedes_id) WHERE ((supersedes_id IS NOT NULL) AND (status = 'Reviewed'::text))"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_claims",
+      "indexname": "design_cost_claims_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_cost_claims_pkey ON d5o_hosted.design_cost_claims USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_claims",
+      "indexname": "design_cost_claims_work",
+      "indexdef": "CREATE INDEX design_cost_claims_work ON d5o_hosted.design_cost_claims USING btree (workspace_id, work_id, commitment_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_events",
+      "indexname": "design_cost_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_cost_events_pkey ON d5o_hosted.design_cost_events USING btree (workspace_id, work_id, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_events",
+      "indexname": "design_cost_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX design_cost_events_workspace_id_command_id_key ON d5o_hosted.design_cost_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_evidence",
+      "indexname": "design_cost_evidence_claim_id_key",
+      "indexdef": "CREATE UNIQUE INDEX design_cost_evidence_claim_id_key ON d5o_hosted.design_cost_evidence USING btree (claim_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_evidence",
+      "indexname": "design_cost_evidence_object_path_key",
+      "indexdef": "CREATE UNIQUE INDEX design_cost_evidence_object_path_key ON d5o_hosted.design_cost_evidence USING btree (object_path)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_evidence",
+      "indexname": "design_cost_evidence_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_cost_evidence_pkey ON d5o_hosted.design_cost_evidence USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_evidence",
+      "indexname": "design_cost_evidence_storage_object_id_key",
+      "indexdef": "CREATE UNIQUE INDEX design_cost_evidence_storage_object_id_key ON d5o_hosted.design_cost_evidence USING btree (storage_object_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_links",
+      "indexname": "design_cost_links_ledger_cost_id_key",
+      "indexdef": "CREATE UNIQUE INDEX design_cost_links_ledger_cost_id_key ON d5o_hosted.design_cost_links USING btree (ledger_cost_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_links",
+      "indexname": "design_cost_links_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_cost_links_pkey ON d5o_hosted.design_cost_links USING btree (commitment_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_positions",
+      "indexname": "design_cost_positions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_cost_positions_pkey ON d5o_hosted.design_cost_positions USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_rate_basis",
+      "indexname": "design_cost_rate_basis_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_cost_rate_basis_pkey ON d5o_hosted.design_cost_rate_basis USING btree (claim_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_rate_basis",
+      "indexname": "design_cost_rate_basis_work",
+      "indexdef": "CREATE INDEX design_cost_rate_basis_work ON d5o_hosted.design_cost_rate_basis USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_cost_receipts",
+      "indexname": "design_cost_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_cost_receipts_pkey ON d5o_hosted.design_cost_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_document_evidence",
+      "indexname": "design_document_evidence_object_path_key",
+      "indexdef": "CREATE UNIQUE INDEX design_document_evidence_object_path_key ON d5o_hosted.design_document_evidence USING btree (object_path)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_document_evidence",
+      "indexname": "design_document_evidence_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_document_evidence_pkey ON d5o_hosted.design_document_evidence USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_document_evidence",
+      "indexname": "design_document_evidence_storage_object_id_key",
+      "indexdef": "CREATE UNIQUE INDEX design_document_evidence_storage_object_id_key ON d5o_hosted.design_document_evidence USING btree (storage_object_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_document_evidence",
+      "indexname": "design_document_evidence_workspace_id_work_id_document_id_d_key",
+      "indexdef": "CREATE UNIQUE INDEX design_document_evidence_workspace_id_work_id_document_id_d_key ON d5o_hosted.design_document_evidence USING btree (workspace_id, work_id, document_id, document_revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_internal_rate_events",
+      "indexname": "design_internal_rate_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_internal_rate_events_pkey ON d5o_hosted.design_internal_rate_events USING btree (workspace_id, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_internal_rate_events",
+      "indexname": "design_internal_rate_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX design_internal_rate_events_workspace_id_command_id_key ON d5o_hosted.design_internal_rate_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_internal_rate_positions",
+      "indexname": "design_internal_rate_positions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_internal_rate_positions_pkey ON d5o_hosted.design_internal_rate_positions USING btree (workspace_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_internal_rate_receipts",
+      "indexname": "design_internal_rate_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_internal_rate_receipts_pkey ON d5o_hosted.design_internal_rate_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_internal_rates",
+      "indexname": "design_internal_rates_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_internal_rates_pkey ON d5o_hosted.design_internal_rates USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_internal_rates",
+      "indexname": "design_internal_rates_scope",
+      "indexdef": "CREATE INDEX design_internal_rates_scope ON d5o_hosted.design_internal_rates USING btree (workspace_id, rate_key, effective_from, effective_until)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_spend_authorities",
+      "indexname": "design_spend_authorities_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_spend_authorities_pkey ON d5o_hosted.design_spend_authorities USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_spend_authorities",
+      "indexname": "design_spend_authorities_work",
+      "indexdef": "CREATE INDEX design_spend_authorities_work ON d5o_hosted.design_spend_authorities USING btree (workspace_id, work_id, created_at)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_spend_commitments",
+      "indexname": "design_spend_commitments_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_spend_commitments_pkey ON d5o_hosted.design_spend_commitments USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_spend_commitments",
+      "indexname": "design_spend_commitments_work",
+      "indexdef": "CREATE INDEX design_spend_commitments_work ON d5o_hosted.design_spend_commitments USING btree (workspace_id, work_id, status)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_spend_events",
+      "indexname": "design_spend_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_spend_events_pkey ON d5o_hosted.design_spend_events USING btree (workspace_id, work_id, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_spend_events",
+      "indexname": "design_spend_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX design_spend_events_workspace_id_command_id_key ON d5o_hosted.design_spend_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_spend_positions",
+      "indexname": "design_spend_positions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_spend_positions_pkey ON d5o_hosted.design_spend_positions USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "design_spend_receipts",
+      "indexname": "design_spend_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX design_spend_receipts_pkey ON d5o_hosted.design_spend_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_document_extractions",
+      "indexname": "graybar_document_extractions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX graybar_document_extractions_pkey ON d5o_hosted.graybar_document_extractions USING btree (document_id, version)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_documents",
+      "indexname": "graybar_documents_pkey",
+      "indexdef": "CREATE UNIQUE INDEX graybar_documents_pkey ON d5o_hosted.graybar_documents USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_documents",
+      "indexname": "graybar_documents_storage_path_key",
+      "indexdef": "CREATE UNIQUE INDEX graybar_documents_storage_path_key ON d5o_hosted.graybar_documents USING btree (storage_path)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_documents",
+      "indexname": "graybar_documents_workspace_id_work_id_id_key",
+      "indexdef": "CREATE UNIQUE INDEX graybar_documents_workspace_id_work_id_id_key ON d5o_hosted.graybar_documents USING btree (workspace_id, work_id, id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_events",
+      "indexname": "graybar_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX graybar_events_pkey ON d5o_hosted.graybar_events USING btree (workspace_id, work_id, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_events",
+      "indexname": "graybar_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX graybar_events_workspace_id_command_id_key ON d5o_hosted.graybar_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_job_cost_links",
+      "indexname": "graybar_job_cost_links_cost_id_key",
+      "indexdef": "CREATE UNIQUE INDEX graybar_job_cost_links_cost_id_key ON d5o_hosted.graybar_job_cost_links USING btree (cost_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_job_cost_links",
+      "indexname": "graybar_one_commitment_per_material",
+      "indexdef": "CREATE UNIQUE INDEX graybar_one_commitment_per_material ON d5o_hosted.graybar_job_cost_links USING btree (workspace_id, work_id, order_id, material_id) WHERE (kind = 'Committed'::text)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_job_cost_links",
+      "indexname": "graybar_one_invoice_cost_per_material",
+      "indexdef": "CREATE UNIQUE INDEX graybar_one_invoice_cost_per_material ON d5o_hosted.graybar_job_cost_links USING btree (workspace_id, work_id, invoice_id, material_id) WHERE (kind = 'Incurred'::text)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_job_cost_receipts",
+      "indexname": "graybar_job_cost_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX graybar_job_cost_receipts_pkey ON d5o_hosted.graybar_job_cost_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_products",
+      "indexname": "graybar_products_pkey",
+      "indexdef": "CREATE UNIQUE INDEX graybar_products_pkey ON d5o_hosted.graybar_products USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_products",
+      "indexname": "graybar_products_workspace_id_graybar_sku_key",
+      "indexdef": "CREATE UNIQUE INDEX graybar_products_workspace_id_graybar_sku_key ON d5o_hosted.graybar_products USING btree (workspace_id, graybar_sku)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_receipts",
+      "indexname": "graybar_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX graybar_receipts_pkey ON d5o_hosted.graybar_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "graybar_states",
+      "indexname": "graybar_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX graybar_states_pkey ON d5o_hosted.graybar_states USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "handoff_configuration_events",
+      "indexname": "handoff_configuration_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX handoff_configuration_events_pkey ON d5o_hosted.handoff_configuration_events USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "handoff_configuration_events",
+      "indexname": "handoff_configuration_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX handoff_configuration_events_workspace_id_command_id_key ON d5o_hosted.handoff_configuration_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "handoff_configuration_receipts",
+      "indexname": "handoff_configuration_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX handoff_configuration_receipts_pkey ON d5o_hosted.handoff_configuration_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "handoff_route_events",
+      "indexname": "handoff_route_events_configuration_version_id_route_key_rev_key",
+      "indexdef": "CREATE UNIQUE INDEX handoff_route_events_configuration_version_id_route_key_rev_key ON d5o_hosted.handoff_route_events USING btree (configuration_version_id, route_key, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "handoff_route_events",
+      "indexname": "handoff_route_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX handoff_route_events_pkey ON d5o_hosted.handoff_route_events USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "handoff_route_events",
+      "indexname": "handoff_route_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX handoff_route_events_workspace_id_command_id_key ON d5o_hosted.handoff_route_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "handoff_route_receipts",
+      "indexname": "handoff_route_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX handoff_route_receipts_pkey ON d5o_hosted.handoff_route_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "initial_configuration_events",
+      "indexname": "initial_configuration_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX initial_configuration_events_pkey ON d5o_hosted.initial_configuration_events USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "initial_configuration_events",
+      "indexname": "initial_configuration_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX initial_configuration_events_workspace_id_command_id_key ON d5o_hosted.initial_configuration_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "initial_configuration_receipts",
+      "indexname": "initial_configuration_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX initial_configuration_receipts_pkey ON d5o_hosted.initial_configuration_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_actuals",
+      "indexname": "labor_actuals_cost_id_key",
+      "indexdef": "CREATE UNIQUE INDEX labor_actuals_cost_id_key ON d5o_hosted.labor_actuals USING btree (cost_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_actuals",
+      "indexname": "labor_actuals_pkey",
+      "indexdef": "CREATE UNIQUE INDEX labor_actuals_pkey ON d5o_hosted.labor_actuals USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_actuals",
+      "indexname": "labor_actuals_workspace_id_work_id_report_id_report_revisio_key",
+      "indexdef": "CREATE UNIQUE INDEX labor_actuals_workspace_id_work_id_report_id_report_revisio_key ON d5o_hosted.labor_actuals USING btree (workspace_id, work_id, report_id, report_revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_authorities",
+      "indexname": "labor_authorities_pkey",
+      "indexdef": "CREATE UNIQUE INDEX labor_authorities_pkey ON d5o_hosted.labor_authorities USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_authorities",
+      "indexname": "labor_one_current_approved_authority",
+      "indexdef": "CREATE UNIQUE INDEX labor_one_current_approved_authority ON d5o_hosted.labor_authorities USING btree (workspace_id, work_id) WHERE (status = 'Approved'::text)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_authority_events",
+      "indexname": "labor_authority_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX labor_authority_events_pkey ON d5o_hosted.labor_authority_events USING btree (workspace_id, work_id, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_authority_events",
+      "indexname": "labor_authority_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX labor_authority_events_workspace_id_command_id_key ON d5o_hosted.labor_authority_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_authority_positions",
+      "indexname": "labor_authority_positions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX labor_authority_positions_pkey ON d5o_hosted.labor_authority_positions USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_authority_receipts",
+      "indexname": "labor_authority_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX labor_authority_receipts_pkey ON d5o_hosted.labor_authority_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_booking_intents",
+      "indexname": "labor_booking_intents_pkey",
+      "indexdef": "CREATE UNIQUE INDEX labor_booking_intents_pkey ON d5o_hosted.labor_booking_intents USING btree (workspace_id, assignment_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_cost_adjustments",
+      "indexname": "labor_cost_adjustments_actual_id_key",
+      "indexdef": "CREATE UNIQUE INDEX labor_cost_adjustments_actual_id_key ON d5o_hosted.labor_cost_adjustments USING btree (actual_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_cost_adjustments",
+      "indexname": "labor_cost_adjustments_pkey",
+      "indexdef": "CREATE UNIQUE INDEX labor_cost_adjustments_pkey ON d5o_hosted.labor_cost_adjustments USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_reservations",
+      "indexname": "labor_active_reservations",
+      "indexdef": "CREATE INDEX labor_active_reservations ON d5o_hosted.labor_reservations USING btree (workspace_id, work_id, status)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_reservations",
+      "indexname": "labor_reservations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX labor_reservations_pkey ON d5o_hosted.labor_reservations USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "labor_reservations",
+      "indexname": "labor_reservations_workspace_id_publication_id_assignment_i_key",
+      "indexdef": "CREATE UNIQUE INDEX labor_reservations_workspace_id_publication_id_assignment_i_key ON d5o_hosted.labor_reservations USING btree (workspace_id, publication_id, assignment_id, person)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "membership_assignment_events",
+      "indexname": "membership_assignment_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX membership_assignment_events_pkey ON d5o_hosted.membership_assignment_events USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "membership_assignment_events",
+      "indexname": "membership_assignment_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX membership_assignment_events_workspace_id_command_id_key ON d5o_hosted.membership_assignment_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "memberships",
+      "indexname": "d5o_hosted_memberships_actor_idx",
+      "indexdef": "CREATE INDEX d5o_hosted_memberships_actor_idx ON d5o_hosted.memberships USING btree (actor_user_id, status, workspace_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "memberships",
+      "indexname": "memberships_pkey",
+      "indexdef": "CREATE UNIQUE INDEX memberships_pkey ON d5o_hosted.memberships USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "memberships",
+      "indexname": "memberships_workspace_id_actor_user_id_key",
+      "indexdef": "CREATE UNIQUE INDEX memberships_workspace_id_actor_user_id_key ON d5o_hosted.memberships USING btree (workspace_id, actor_user_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "outlook_assessments",
+      "indexname": "outlook_assessments_pkey",
+      "indexdef": "CREATE UNIQUE INDEX outlook_assessments_pkey ON d5o_hosted.outlook_assessments USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "outlook_assessments",
+      "indexname": "outlook_assessments_work",
+      "indexdef": "CREATE INDEX outlook_assessments_work ON d5o_hosted.outlook_assessments USING btree (workspace_id, work_id, created_at)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "prototype_state_revisions",
+      "indexname": "d5o_hosted_prototype_revisions_recent_idx",
+      "indexdef": "CREATE INDEX d5o_hosted_prototype_revisions_recent_idx ON d5o_hosted.prototype_state_revisions USING btree (workspace_id, recorded_at DESC)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "prototype_state_revisions",
+      "indexname": "prototype_state_revisions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX prototype_state_revisions_pkey ON d5o_hosted.prototype_state_revisions USING btree (workspace_id, state_key, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "prototype_states",
+      "indexname": "prototype_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX prototype_states_pkey ON d5o_hosted.prototype_states USING btree (workspace_id, state_key)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "purchase_authorities",
+      "indexname": "purchase_authorities_pkey",
+      "indexdef": "CREATE UNIQUE INDEX purchase_authorities_pkey ON d5o_hosted.purchase_authorities USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "purchase_authority_events",
+      "indexname": "purchase_authority_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX purchase_authority_events_pkey ON d5o_hosted.purchase_authority_events USING btree (workspace_id, work_id, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "purchase_authority_events",
+      "indexname": "purchase_authority_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX purchase_authority_events_workspace_id_command_id_key ON d5o_hosted.purchase_authority_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "purchase_authority_positions",
+      "indexname": "purchase_authority_positions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX purchase_authority_positions_pkey ON d5o_hosted.purchase_authority_positions USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "purchase_authority_receipts",
+      "indexname": "purchase_authority_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX purchase_authority_receipts_pkey ON d5o_hosted.purchase_authority_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "purchase_reservations",
+      "indexname": "purchase_reservations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX purchase_reservations_pkey ON d5o_hosted.purchase_reservations USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "purchase_reservations",
+      "indexname": "purchase_reservations_workspace_id_work_id_order_id_key",
+      "indexdef": "CREATE UNIQUE INDEX purchase_reservations_workspace_id_work_id_order_id_key ON d5o_hosted.purchase_reservations USING btree (workspace_id, work_id, order_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "spending_delegate_categories",
+      "indexname": "spending_delegate_categories_pkey",
+      "indexdef": "CREATE UNIQUE INDEX spending_delegate_categories_pkey ON d5o_hosted.spending_delegate_categories USING btree (workspace_id, category)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "spending_delegate_events",
+      "indexname": "spending_delegate_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX spending_delegate_events_pkey ON d5o_hosted.spending_delegate_events USING btree (workspace_id, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "spending_delegate_events",
+      "indexname": "spending_delegate_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX spending_delegate_events_workspace_id_command_id_key ON d5o_hosted.spending_delegate_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "spending_delegate_positions",
+      "indexname": "spending_delegate_positions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX spending_delegate_positions_pkey ON d5o_hosted.spending_delegate_positions USING btree (workspace_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "spending_delegate_receipts",
+      "indexname": "spending_delegate_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX spending_delegate_receipts_pkey ON d5o_hosted.spending_delegate_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "spending_delegate_rules",
+      "indexname": "spending_delegate_one_sponsor",
+      "indexdef": "CREATE UNIQUE INDEX spending_delegate_one_sponsor ON d5o_hosted.spending_delegate_rules USING btree (workspace_id, category, role_name) WHERE ((kind = 'sponsor'::text) AND (status = 'Active'::text))"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "spending_delegate_rules",
+      "indexname": "spending_delegate_rules_pkey",
+      "indexdef": "CREATE UNIQUE INDEX spending_delegate_rules_pkey ON d5o_hosted.spending_delegate_rules USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "spending_delegate_rules",
+      "indexname": "spending_delegate_rules_workspace_id_id_key",
+      "indexdef": "CREATE UNIQUE INDEX spending_delegate_rules_workspace_id_id_key ON d5o_hosted.spending_delegate_rules USING btree (workspace_id, id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "subcontract_companies",
+      "indexname": "subcontract_companies_pkey",
+      "indexdef": "CREATE UNIQUE INDEX subcontract_companies_pkey ON d5o_hosted.subcontract_companies USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "subcontract_companies",
+      "indexname": "subcontract_companies_workspace_id_name_key",
+      "indexdef": "CREATE UNIQUE INDEX subcontract_companies_workspace_id_name_key ON d5o_hosted.subcontract_companies USING btree (workspace_id, name)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "subcontract_cost_links",
+      "indexname": "subcontract_cost_links_cost_id_key",
+      "indexdef": "CREATE UNIQUE INDEX subcontract_cost_links_cost_id_key ON d5o_hosted.subcontract_cost_links USING btree (cost_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "subcontract_cost_links",
+      "indexname": "subcontract_cost_links_workspace_id_work_id_reservation_id__key",
+      "indexdef": "CREATE UNIQUE INDEX subcontract_cost_links_workspace_id_work_id_reservation_id__key ON d5o_hosted.subcontract_cost_links USING btree (workspace_id, work_id, reservation_id, kind)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "subcontract_events",
+      "indexname": "subcontract_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX subcontract_events_pkey ON d5o_hosted.subcontract_events USING btree (workspace_id, work_id, revision)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "subcontract_events",
+      "indexname": "subcontract_events_workspace_id_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX subcontract_events_workspace_id_command_id_key ON d5o_hosted.subcontract_events USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "subcontract_receipts",
+      "indexname": "subcontract_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX subcontract_receipts_pkey ON d5o_hosted.subcontract_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "subcontract_reservations",
+      "indexname": "subcontract_initial_reservation_once",
+      "indexdef": "CREATE UNIQUE INDEX subcontract_initial_reservation_once ON d5o_hosted.subcontract_reservations USING btree (workspace_id, work_id, agreement_id) WHERE (variation_id IS NULL)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "subcontract_reservations",
+      "indexname": "subcontract_reservations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX subcontract_reservations_pkey ON d5o_hosted.subcontract_reservations USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "subcontract_reservations",
+      "indexname": "subcontract_reservations_workspace_id_work_id_agreement_id__key",
+      "indexdef": "CREATE UNIQUE INDEX subcontract_reservations_workspace_id_work_id_agreement_id__key ON d5o_hosted.subcontract_reservations USING btree (workspace_id, work_id, agreement_id, variation_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "subcontract_states",
+      "indexname": "subcontract_states_pkey",
+      "indexdef": "CREATE UNIQUE INDEX subcontract_states_pkey ON d5o_hosted.subcontract_states USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "synthetic_beta_admin_bootstrap",
+      "indexname": "synthetic_beta_admin_bootstrap_command_id_key",
+      "indexdef": "CREATE UNIQUE INDEX synthetic_beta_admin_bootstrap_command_id_key ON d5o_hosted.synthetic_beta_admin_bootstrap USING btree (command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "synthetic_beta_admin_bootstrap",
+      "indexname": "synthetic_beta_admin_bootstrap_pkey",
+      "indexdef": "CREATE UNIQUE INDEX synthetic_beta_admin_bootstrap_pkey ON d5o_hosted.synthetic_beta_admin_bootstrap USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "synthetic_beta_admin_bootstrap",
+      "indexname": "synthetic_beta_admin_bootstrap_workspace_id_key",
+      "indexdef": "CREATE UNIQUE INDEX synthetic_beta_admin_bootstrap_workspace_id_key ON d5o_hosted.synthetic_beta_admin_bootstrap USING btree (workspace_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "work_command_receipts",
+      "indexname": "work_command_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX work_command_receipts_pkey ON d5o_hosted.work_command_receipts USING btree (workspace_id, command_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "work_events",
+      "indexname": "work_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX work_events_pkey ON d5o_hosted.work_events USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "work_events",
+      "indexname": "work_events_work_id_record_version_key",
+      "indexdef": "CREATE UNIQUE INDEX work_events_work_id_record_version_key ON d5o_hosted.work_events USING btree (work_id, record_version)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "work_identity_links",
+      "indexname": "work_identity_links_pkey",
+      "indexdef": "CREATE UNIQUE INDEX work_identity_links_pkey ON d5o_hosted.work_identity_links USING btree (workspace_id, work_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "work_identity_links",
+      "indexname": "work_identity_links_workspace_id_presentation_id_key",
+      "indexdef": "CREATE UNIQUE INDEX work_identity_links_workspace_id_presentation_id_key ON d5o_hosted.work_identity_links USING btree (workspace_id, presentation_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "work_records",
+      "indexname": "d5o_hosted_work_records_workspace_idx",
+      "indexdef": "CREATE INDEX d5o_hosted_work_records_workspace_idx ON d5o_hosted.work_records USING btree (workspace_id, created_at DESC, id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "work_records",
+      "indexname": "work_records_id_workspace_id_key",
+      "indexdef": "CREATE UNIQUE INDEX work_records_id_workspace_id_key ON d5o_hosted.work_records USING btree (id, workspace_id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "work_records",
+      "indexname": "work_records_pkey",
+      "indexdef": "CREATE UNIQUE INDEX work_records_pkey ON d5o_hosted.work_records USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "workspaces",
+      "indexname": "workspaces_pkey",
+      "indexdef": "CREATE UNIQUE INDEX workspaces_pkey ON d5o_hosted.workspaces USING btree (id)"
+    },
+    {
+      "schemaname": "d5o_hosted",
+      "tablename": "workspaces",
+      "indexname": "workspaces_workspace_key_key",
+      "indexdef": "CREATE UNIQUE INDEX workspaces_workspace_key_key ON d5o_hosted.workspaces USING btree (workspace_key)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "acceptance_records",
+      "indexname": "acceptance_records_pkey",
+      "indexdef": "CREATE UNIQUE INDEX acceptance_records_pkey ON public.acceptance_records USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "acceptance_records",
+      "indexname": "idx_acceptance_records_project_status",
+      "indexdef": "CREATE INDEX idx_acceptance_records_project_status ON public.acceptance_records USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "activity_events",
+      "indexname": "activity_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX activity_events_pkey ON public.activity_events USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "activity_events",
+      "indexname": "idx_activity_entity",
+      "indexdef": "CREATE INDEX idx_activity_entity ON public.activity_events USING btree (entity_type, entity_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "archive_package_items",
+      "indexname": "archive_package_items_pkey",
+      "indexdef": "CREATE UNIQUE INDEX archive_package_items_pkey ON public.archive_package_items USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "as_built_records",
+      "indexname": "as_built_records_pkey",
+      "indexdef": "CREATE UNIQUE INDEX as_built_records_pkey ON public.as_built_records USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "attachments",
+      "indexname": "attachments_pkey",
+      "indexdef": "CREATE UNIQUE INDEX attachments_pkey ON public.attachments USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "attachments",
+      "indexname": "idx_attachments_project",
+      "indexdef": "CREATE INDEX idx_attachments_project ON public.attachments USING btree (project_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "audit_events",
+      "indexname": "audit_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX audit_events_pkey ON public.audit_events USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "audit_events",
+      "indexname": "idx_audit_entity",
+      "indexdef": "CREATE INDEX idx_audit_entity ON public.audit_events USING btree (entity_type, entity_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "billing_backup_items",
+      "indexname": "billing_backup_items_pkey",
+      "indexdef": "CREATE UNIQUE INDEX billing_backup_items_pkey ON public.billing_backup_items USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "budget_baseline_items",
+      "indexname": "budget_baseline_items_pkey",
+      "indexdef": "CREATE UNIQUE INDEX budget_baseline_items_pkey ON public.budget_baseline_items USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "budget_baselines",
+      "indexname": "budget_baselines_pkey",
+      "indexdef": "CREATE UNIQUE INDEX budget_baselines_pkey ON public.budget_baselines USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "budget_baselines",
+      "indexname": "idx_budget_baselines_project",
+      "indexdef": "CREATE INDEX idx_budget_baselines_project ON public.budget_baselines USING btree (project_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "change_event_backups",
+      "indexname": "change_event_backups_pkey",
+      "indexdef": "CREATE UNIQUE INDEX change_event_backups_pkey ON public.change_event_backups USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "change_event_links",
+      "indexname": "change_event_links_pkey",
+      "indexdef": "CREATE UNIQUE INDEX change_event_links_pkey ON public.change_event_links USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "change_events",
+      "indexname": "change_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX change_events_pkey ON public.change_events USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "change_events",
+      "indexname": "idx_change_events_notice_deadline",
+      "indexdef": "CREATE INDEX idx_change_events_notice_deadline ON public.change_events USING btree (notice_deadline)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "change_events",
+      "indexname": "idx_change_events_project_status",
+      "indexdef": "CREATE INDEX idx_change_events_project_status ON public.change_events USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "change_pricing_records",
+      "indexname": "change_pricing_records_pkey",
+      "indexdef": "CREATE UNIQUE INDEX change_pricing_records_pkey ON public.change_pricing_records USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "changed_conditions",
+      "indexname": "changed_conditions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX changed_conditions_pkey ON public.changed_conditions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "closeout_packages",
+      "indexname": "closeout_packages_pkey",
+      "indexdef": "CREATE UNIQUE INDEX closeout_packages_pkey ON public.closeout_packages USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "closeout_packages",
+      "indexname": "idx_closeout_packages_project_status",
+      "indexdef": "CREATE INDEX idx_closeout_packages_project_status ON public.closeout_packages USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "closeout_requirements",
+      "indexname": "closeout_requirements_pkey",
+      "indexdef": "CREATE UNIQUE INDEX closeout_requirements_pkey ON public.closeout_requirements USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "closeout_requirements",
+      "indexname": "idx_closeout_requirements_project_status",
+      "indexdef": "CREATE INDEX idx_closeout_requirements_project_status ON public.closeout_requirements USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "comments",
+      "indexname": "comments_pkey",
+      "indexdef": "CREATE UNIQUE INDEX comments_pkey ON public.comments USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "comments",
+      "indexname": "idx_comments_entity",
+      "indexdef": "CREATE INDEX idx_comments_entity ON public.comments USING btree (entity_type, entity_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "commercial_exposure_items",
+      "indexname": "commercial_exposure_items_pkey",
+      "indexdef": "CREATE UNIQUE INDEX commercial_exposure_items_pkey ON public.commercial_exposure_items USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "companies",
+      "indexname": "companies_pkey",
+      "indexdef": "CREATE UNIQUE INDEX companies_pkey ON public.companies USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "companies",
+      "indexname": "idx_companies_workspace_type",
+      "indexdef": "CREATE INDEX idx_companies_workspace_type ON public.companies USING btree (workspace_id, company_type)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "contacts",
+      "indexname": "contacts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX contacts_pkey ON public.contacts USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "contacts",
+      "indexname": "idx_contacts_company",
+      "indexdef": "CREATE INDEX idx_contacts_company ON public.contacts USING btree (company_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "contract_baselines",
+      "indexname": "contract_baselines_pkey",
+      "indexdef": "CREATE UNIQUE INDEX contract_baselines_pkey ON public.contract_baselines USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "contract_baselines",
+      "indexname": "idx_contract_baselines_project",
+      "indexdef": "CREATE INDEX idx_contract_baselines_project ON public.contract_baselines USING btree (project_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "corrective_actions",
+      "indexname": "corrective_actions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX corrective_actions_pkey ON public.corrective_actions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "corrective_actions",
+      "indexname": "idx_corrective_actions_due",
+      "indexdef": "CREATE INDEX idx_corrective_actions_due ON public.corrective_actions USING btree (due_date)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "corrective_actions",
+      "indexname": "idx_corrective_actions_project_status",
+      "indexdef": "CREATE INDEX idx_corrective_actions_project_status ON public.corrective_actions USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "cost_codes",
+      "indexname": "cost_codes_pkey",
+      "indexdef": "CREATE UNIQUE INDEX cost_codes_pkey ON public.cost_codes USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "cost_codes",
+      "indexname": "cost_codes_workspace_id_code_key",
+      "indexdef": "CREATE UNIQUE INDEX cost_codes_workspace_id_code_key ON public.cost_codes USING btree (workspace_id, code)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "crew_members",
+      "indexname": "crew_members_pkey",
+      "indexdef": "CREATE UNIQUE INDEX crew_members_pkey ON public.crew_members USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "crew_plans",
+      "indexname": "crew_plans_pkey",
+      "indexdef": "CREATE UNIQUE INDEX crew_plans_pkey ON public.crew_plans USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "crews",
+      "indexname": "crews_pkey",
+      "indexdef": "CREATE UNIQUE INDEX crews_pkey ON public.crews USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "crews",
+      "indexname": "idx_crews_workspace_status",
+      "indexdef": "CREATE INDEX idx_crews_workspace_status ON public.crews USING btree (workspace_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "d5o_gates",
+      "indexname": "d5o_gates_pkey",
+      "indexdef": "CREATE UNIQUE INDEX d5o_gates_pkey ON public.d5o_gates USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "d5o_gates",
+      "indexname": "idx_d5o_gates_project_phase",
+      "indexdef": "CREATE INDEX idx_d5o_gates_project_phase ON public.d5o_gates USING btree (project_id, phase)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "daily_report_crew_members",
+      "indexname": "daily_report_crew_members_pkey",
+      "indexdef": "CREATE UNIQUE INDEX daily_report_crew_members_pkey ON public.daily_report_crew_members USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "daily_reports",
+      "indexname": "daily_reports_pkey",
+      "indexdef": "CREATE UNIQUE INDEX daily_reports_pkey ON public.daily_reports USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "daily_reports",
+      "indexname": "idx_daily_reports_project_date",
+      "indexdef": "CREATE INDEX idx_daily_reports_project_date ON public.daily_reports USING btree (project_id, report_date)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "daily_reports",
+      "indexname": "idx_daily_reports_status",
+      "indexdef": "CREATE INDEX idx_daily_reports_status ON public.daily_reports USING btree (report_status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "employees",
+      "indexname": "employees_pkey",
+      "indexdef": "CREATE UNIQUE INDEX employees_pkey ON public.employees USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "employees",
+      "indexname": "idx_employees_workspace_status",
+      "indexdef": "CREATE INDEX idx_employees_workspace_status ON public.employees USING btree (workspace_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "entity_attachments",
+      "indexname": "entity_attachments_pkey",
+      "indexdef": "CREATE UNIQUE INDEX entity_attachments_pkey ON public.entity_attachments USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "entity_attachments",
+      "indexname": "idx_entity_attachments_entity",
+      "indexdef": "CREATE INDEX idx_entity_attachments_entity ON public.entity_attachments USING btree (entity_type, entity_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "equipment",
+      "indexname": "equipment_pkey",
+      "indexdef": "CREATE UNIQUE INDEX equipment_pkey ON public.equipment USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "equipment_readiness_items",
+      "indexname": "equipment_readiness_items_pkey",
+      "indexdef": "CREATE UNIQUE INDEX equipment_readiness_items_pkey ON public.equipment_readiness_items USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "equipment_usage_entries",
+      "indexname": "equipment_usage_entries_pkey",
+      "indexdef": "CREATE UNIQUE INDEX equipment_usage_entries_pkey ON public.equipment_usage_entries USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "field_blockers",
+      "indexname": "field_blockers_pkey",
+      "indexdef": "CREATE UNIQUE INDEX field_blockers_pkey ON public.field_blockers USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "field_delays",
+      "indexname": "field_delays_pkey",
+      "indexdef": "CREATE UNIQUE INDEX field_delays_pkey ON public.field_delays USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "field_photo_records",
+      "indexname": "field_photo_records_pkey",
+      "indexdef": "CREATE UNIQUE INDEX field_photo_records_pkey ON public.field_photo_records USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "flow_down_obligations",
+      "indexname": "flow_down_obligations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX flow_down_obligations_pkey ON public.flow_down_obligations USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "flow_down_obligations",
+      "indexname": "idx_flow_down_project_status",
+      "indexdef": "CREATE INDEX idx_flow_down_project_status ON public.flow_down_obligations USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "gate_artifacts",
+      "indexname": "gate_artifacts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX gate_artifacts_pkey ON public.gate_artifacts USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "gate_artifacts",
+      "indexname": "idx_gate_artifacts_project_status",
+      "indexdef": "CREATE INDEX idx_gate_artifacts_project_status ON public.gate_artifacts USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "gc_performance_profiles",
+      "indexname": "gc_performance_profiles_pkey",
+      "indexdef": "CREATE UNIQUE INDEX gc_performance_profiles_pkey ON public.gc_performance_profiles USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "go_no_go_score_dimensions",
+      "indexname": "go_no_go_score_dimensions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX go_no_go_score_dimensions_pkey ON public.go_no_go_score_dimensions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "go_no_go_scores",
+      "indexname": "go_no_go_scores_pkey",
+      "indexdef": "CREATE UNIQUE INDEX go_no_go_scores_pkey ON public.go_no_go_scores USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "go_no_go_scores",
+      "indexname": "idx_go_no_go_scores_opportunity",
+      "indexdef": "CREATE INDEX idx_go_no_go_scores_opportunity ON public.go_no_go_scores USING btree (opportunity_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "improvement_actions",
+      "indexname": "idx_improvement_actions_status_due",
+      "indexdef": "CREATE INDEX idx_improvement_actions_status_due ON public.improvement_actions USING btree (status, due_date)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "improvement_actions",
+      "indexname": "improvement_actions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX improvement_actions_pkey ON public.improvement_actions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "installed_quantities",
+      "indexname": "idx_installed_quantities_project",
+      "indexdef": "CREATE INDEX idx_installed_quantities_project ON public.installed_quantities USING btree (project_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "installed_quantities",
+      "indexname": "installed_quantities_pkey",
+      "indexdef": "CREATE UNIQUE INDEX installed_quantities_pkey ON public.installed_quantities USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "jha_records",
+      "indexname": "jha_records_pkey",
+      "indexdef": "CREATE UNIQUE INDEX jha_records_pkey ON public.jha_records USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "labor_hour_entries",
+      "indexname": "labor_hour_entries_pkey",
+      "indexdef": "CREATE UNIQUE INDEX labor_hour_entries_pkey ON public.labor_hour_entries USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "lessons_learned",
+      "indexname": "idx_lessons_project_status",
+      "indexdef": "CREATE INDEX idx_lessons_project_status ON public.lessons_learned USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "lessons_learned",
+      "indexname": "lessons_learned_pkey",
+      "indexdef": "CREATE UNIQUE INDEX lessons_learned_pkey ON public.lessons_learned USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "lien_waivers",
+      "indexname": "idx_lien_waivers_project_status",
+      "indexdef": "CREATE INDEX idx_lien_waivers_project_status ON public.lien_waivers USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "lien_waivers",
+      "indexname": "lien_waivers_pkey",
+      "indexdef": "CREATE UNIQUE INDEX lien_waivers_pkey ON public.lien_waivers USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "material_readiness_items",
+      "indexname": "material_readiness_items_pkey",
+      "indexdef": "CREATE UNIQUE INDEX material_readiness_items_pkey ON public.material_readiness_items USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "material_receipts",
+      "indexname": "material_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX material_receipts_pkey ON public.material_receipts USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "materials",
+      "indexname": "materials_pkey",
+      "indexdef": "CREATE UNIQUE INDEX materials_pkey ON public.materials USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "mobilization_plans",
+      "indexname": "idx_mobilization_project_status",
+      "indexdef": "CREATE INDEX idx_mobilization_project_status ON public.mobilization_plans USING btree (project_id, readiness_status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "mobilization_plans",
+      "indexname": "mobilization_plans_pkey",
+      "indexdef": "CREATE UNIQUE INDEX mobilization_plans_pkey ON public.mobilization_plans USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "notice_requirements",
+      "indexname": "idx_notice_requirements_project",
+      "indexdef": "CREATE INDEX idx_notice_requirements_project ON public.notice_requirements USING btree (project_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "notice_requirements",
+      "indexname": "notice_requirements_pkey",
+      "indexdef": "CREATE UNIQUE INDEX notice_requirements_pkey ON public.notice_requirements USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "opportunities",
+      "indexname": "idx_opportunities_bid_due",
+      "indexdef": "CREATE INDEX idx_opportunities_bid_due ON public.opportunities USING btree (bid_due_date)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "opportunities",
+      "indexname": "idx_opportunities_workspace_status",
+      "indexdef": "CREATE INDEX idx_opportunities_workspace_status ON public.opportunities USING btree (workspace_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "opportunities",
+      "indexname": "opportunities_pkey",
+      "indexdef": "CREATE UNIQUE INDEX opportunities_pkey ON public.opportunities USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "opportunity_documents",
+      "indexname": "idx_opportunity_documents_opportunity",
+      "indexdef": "CREATE INDEX idx_opportunity_documents_opportunity ON public.opportunity_documents USING btree (opportunity_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "opportunity_documents",
+      "indexname": "opportunity_documents_pkey",
+      "indexdef": "CREATE UNIQUE INDEX opportunity_documents_pkey ON public.opportunity_documents USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "opportunity_reviews",
+      "indexname": "opportunity_reviews_pkey",
+      "indexdef": "CREATE UNIQUE INDEX opportunity_reviews_pkey ON public.opportunity_reviews USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "organizations",
+      "indexname": "organizations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX organizations_pkey ON public.organizations USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pay_applications",
+      "indexname": "idx_pay_apps_due",
+      "indexdef": "CREATE INDEX idx_pay_apps_due ON public.pay_applications USING btree (payment_due_date)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pay_applications",
+      "indexname": "idx_pay_apps_project_status",
+      "indexdef": "CREATE INDEX idx_pay_apps_project_status ON public.pay_applications USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pay_applications",
+      "indexname": "pay_applications_pkey",
+      "indexdef": "CREATE UNIQUE INDEX pay_applications_pkey ON public.pay_applications USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "permissions",
+      "indexname": "permissions_permission_key_key",
+      "indexdef": "CREATE UNIQUE INDEX permissions_permission_key_key ON public.permissions USING btree (permission_key)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "permissions",
+      "indexname": "permissions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX permissions_pkey ON public.permissions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "permit_access_items",
+      "indexname": "permit_access_items_pkey",
+      "indexdef": "CREATE UNIQUE INDEX permit_access_items_pkey ON public.permit_access_items USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "production_rate_records",
+      "indexname": "production_rate_records_pkey",
+      "indexdef": "CREATE UNIQUE INDEX production_rate_records_pkey ON public.production_rate_records USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_decisions",
+      "indexname": "project_decisions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX project_decisions_pkey ON public.project_decisions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_issues",
+      "indexname": "project_issues_pkey",
+      "indexdef": "CREATE UNIQUE INDEX project_issues_pkey ON public.project_issues USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_performance_scorecards",
+      "indexname": "project_performance_scorecards_pkey",
+      "indexdef": "CREATE UNIQUE INDEX project_performance_scorecards_pkey ON public.project_performance_scorecards USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_risks",
+      "indexname": "project_risks_pkey",
+      "indexdef": "CREATE UNIQUE INDEX project_risks_pkey ON public.project_risks USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_setup_artifacts",
+      "indexname": "project_setup_artifacts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX project_setup_artifacts_pkey ON public.project_setup_artifacts USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "projects",
+      "indexname": "idx_projects_health",
+      "indexdef": "CREATE INDEX idx_projects_health ON public.projects USING btree (health_status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "projects",
+      "indexname": "idx_projects_workspace_phase",
+      "indexdef": "CREATE INDEX idx_projects_workspace_phase ON public.projects USING btree (workspace_id, d5o_phase)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "projects",
+      "indexname": "projects_pkey",
+      "indexdef": "CREATE UNIQUE INDEX projects_pkey ON public.projects USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "punch_items",
+      "indexname": "idx_punch_items_project_status",
+      "indexdef": "CREATE INDEX idx_punch_items_project_status ON public.punch_items USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "punch_items",
+      "indexname": "punch_items_pkey",
+      "indexdef": "CREATE UNIQUE INDEX punch_items_pkey ON public.punch_items USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quality_deficiencies",
+      "indexname": "idx_quality_deficiencies_project_status",
+      "indexdef": "CREATE INDEX idx_quality_deficiencies_project_status ON public.quality_deficiencies USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quality_deficiencies",
+      "indexname": "quality_deficiencies_pkey",
+      "indexdef": "CREATE UNIQUE INDEX quality_deficiencies_pkey ON public.quality_deficiencies USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quality_inspections",
+      "indexname": "idx_quality_inspections_project_status",
+      "indexdef": "CREATE INDEX idx_quality_inspections_project_status ON public.quality_inspections USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quality_inspections",
+      "indexname": "quality_inspections_pkey",
+      "indexdef": "CREATE UNIQUE INDEX quality_inspections_pkey ON public.quality_inspections USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "rfi_links",
+      "indexname": "rfi_links_pkey",
+      "indexdef": "CREATE UNIQUE INDEX rfi_links_pkey ON public.rfi_links USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "rfis",
+      "indexname": "idx_rfis_due",
+      "indexdef": "CREATE INDEX idx_rfis_due ON public.rfis USING btree (due_date)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "rfis",
+      "indexname": "idx_rfis_project_status",
+      "indexdef": "CREATE INDEX idx_rfis_project_status ON public.rfis USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "rfis",
+      "indexname": "rfis_pkey",
+      "indexdef": "CREATE UNIQUE INDEX rfis_pkey ON public.rfis USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "risk_library_items",
+      "indexname": "risk_library_items_pkey",
+      "indexdef": "CREATE UNIQUE INDEX risk_library_items_pkey ON public.risk_library_items USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "role_permissions",
+      "indexname": "role_permissions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX role_permissions_pkey ON public.role_permissions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "role_permissions",
+      "indexname": "role_permissions_role_id_permission_id_key",
+      "indexdef": "CREATE UNIQUE INDEX role_permissions_role_id_permission_id_key ON public.role_permissions USING btree (role_id, permission_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "roles",
+      "indexname": "roles_organization_id_role_key_key",
+      "indexdef": "CREATE UNIQUE INDEX roles_organization_id_role_key_key ON public.roles USING btree (organization_id, role_key)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "roles",
+      "indexname": "roles_pkey",
+      "indexdef": "CREATE UNIQUE INDEX roles_pkey ON public.roles USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "safety_incidents",
+      "indexname": "idx_safety_incidents_project_status",
+      "indexdef": "CREATE INDEX idx_safety_incidents_project_status ON public.safety_incidents USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "safety_incidents",
+      "indexname": "safety_incidents_pkey",
+      "indexdef": "CREATE UNIQUE INDEX safety_incidents_pkey ON public.safety_incidents USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "safety_observations",
+      "indexname": "idx_safety_observations_project_status",
+      "indexdef": "CREATE INDEX idx_safety_observations_project_status ON public.safety_observations USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "safety_observations",
+      "indexname": "safety_observations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX safety_observations_pkey ON public.safety_observations USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "safety_plans",
+      "indexname": "safety_plans_pkey",
+      "indexdef": "CREATE UNIQUE INDEX safety_plans_pkey ON public.safety_plans USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "schedule_baselines",
+      "indexname": "idx_schedule_baselines_project",
+      "indexdef": "CREATE INDEX idx_schedule_baselines_project ON public.schedule_baselines USING btree (project_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "schedule_baselines",
+      "indexname": "schedule_baselines_pkey",
+      "indexdef": "CREATE UNIQUE INDEX schedule_baselines_pkey ON public.schedule_baselines USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "schedule_milestones",
+      "indexname": "schedule_milestones_pkey",
+      "indexdef": "CREATE UNIQUE INDEX schedule_milestones_pkey ON public.schedule_milestones USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "schedule_of_value_lines",
+      "indexname": "idx_sov_project",
+      "indexdef": "CREATE INDEX idx_sov_project ON public.schedule_of_value_lines USING btree (project_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "schedule_of_value_lines",
+      "indexname": "schedule_of_value_lines_pkey",
+      "indexdef": "CREATE UNIQUE INDEX schedule_of_value_lines_pkey ON public.schedule_of_value_lines USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "scope_matrix_items",
+      "indexname": "idx_scope_matrix_project_type",
+      "indexdef": "CREATE INDEX idx_scope_matrix_project_type ON public.scope_matrix_items USING btree (project_id, item_type)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "scope_matrix_items",
+      "indexname": "scope_matrix_items_pkey",
+      "indexdef": "CREATE UNIQUE INDEX scope_matrix_items_pkey ON public.scope_matrix_items USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "status_history",
+      "indexname": "idx_status_history_entity",
+      "indexdef": "CREATE INDEX idx_status_history_entity ON public.status_history USING btree (entity_type, entity_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "status_history",
+      "indexname": "status_history_pkey",
+      "indexdef": "CREATE UNIQUE INDEX status_history_pkey ON public.status_history USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "submittal_links",
+      "indexname": "submittal_links_pkey",
+      "indexdef": "CREATE UNIQUE INDEX submittal_links_pkey ON public.submittal_links USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "submittals",
+      "indexname": "idx_submittals_due",
+      "indexdef": "CREATE INDEX idx_submittals_due ON public.submittals USING btree (review_due_date)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "submittals",
+      "indexname": "idx_submittals_project_status",
+      "indexdef": "CREATE INDEX idx_submittals_project_status ON public.submittals USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "submittals",
+      "indexname": "submittals_pkey",
+      "indexdef": "CREATE UNIQUE INDEX submittals_pkey ON public.submittals USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supervisor_signoffs",
+      "indexname": "supervisor_signoffs_pkey",
+      "indexdef": "CREATE UNIQUE INDEX supervisor_signoffs_pkey ON public.supervisor_signoffs USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "test_records",
+      "indexname": "idx_test_records_project_status",
+      "indexdef": "CREATE INDEX idx_test_records_project_status ON public.test_records USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "test_records",
+      "indexname": "test_records_pkey",
+      "indexdef": "CREATE UNIQUE INDEX test_records_pkey ON public.test_records USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "toolbox_talks",
+      "indexname": "toolbox_talks_pkey",
+      "indexdef": "CREATE UNIQUE INDEX toolbox_talks_pkey ON public.toolbox_talks USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "user_profiles",
+      "indexname": "user_profiles_auth_user_id_key",
+      "indexdef": "CREATE UNIQUE INDEX user_profiles_auth_user_id_key ON public.user_profiles USING btree (auth_user_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "user_profiles",
+      "indexname": "user_profiles_pkey",
+      "indexdef": "CREATE UNIQUE INDEX user_profiles_pkey ON public.user_profiles USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "utility_locate_records",
+      "indexname": "utility_locate_records_pkey",
+      "indexdef": "CREATE UNIQUE INDEX utility_locate_records_pkey ON public.utility_locate_records USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vendor_performance_profiles",
+      "indexname": "vendor_performance_profiles_pkey",
+      "indexdef": "CREATE UNIQUE INDEX vendor_performance_profiles_pkey ON public.vendor_performance_profiles USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "warranty_records",
+      "indexname": "warranty_records_pkey",
+      "indexdef": "CREATE UNIQUE INDEX warranty_records_pkey ON public.warranty_records USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "work_packages",
+      "indexname": "idx_work_packages_project_status",
+      "indexdef": "CREATE INDEX idx_work_packages_project_status ON public.work_packages USING btree (project_id, status)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "work_packages",
+      "indexname": "work_packages_pkey",
+      "indexdef": "CREATE UNIQUE INDEX work_packages_pkey ON public.work_packages USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_evidence_requirements",
+      "indexname": "idx_workflow_evidence_instance",
+      "indexdef": "CREATE INDEX idx_workflow_evidence_instance ON public.workflow_evidence_requirements USING btree (workflow_instance_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_evidence_requirements",
+      "indexname": "workflow_evidence_requirements_pkey",
+      "indexdef": "CREATE UNIQUE INDEX workflow_evidence_requirements_pkey ON public.workflow_evidence_requirements USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_instances",
+      "indexname": "idx_workflow_instances_due",
+      "indexdef": "CREATE INDEX idx_workflow_instances_due ON public.workflow_instances USING btree (due_date)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_instances",
+      "indexname": "idx_workflow_instances_phase",
+      "indexdef": "CREATE INDEX idx_workflow_instances_phase ON public.workflow_instances USING btree (d5o_phase)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_instances",
+      "indexname": "idx_workflow_instances_project",
+      "indexdef": "CREATE INDEX idx_workflow_instances_project ON public.workflow_instances USING btree (project_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_instances",
+      "indexname": "idx_workflow_instances_resolution",
+      "indexdef": "CREATE INDEX idx_workflow_instances_resolution ON public.workflow_instances USING btree (resolution_state)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_instances",
+      "indexname": "idx_workflow_instances_type",
+      "indexdef": "CREATE INDEX idx_workflow_instances_type ON public.workflow_instances USING btree (workflow_type)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_instances",
+      "indexname": "idx_workflow_instances_workspace",
+      "indexdef": "CREATE INDEX idx_workflow_instances_workspace ON public.workflow_instances USING btree (workspace_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_instances",
+      "indexname": "workflow_instances_pkey",
+      "indexdef": "CREATE UNIQUE INDEX workflow_instances_pkey ON public.workflow_instances USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_signals",
+      "indexname": "idx_workflow_signals_instance",
+      "indexdef": "CREATE INDEX idx_workflow_signals_instance ON public.workflow_signals USING btree (workflow_instance_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_signals",
+      "indexname": "workflow_signals_pkey",
+      "indexdef": "CREATE UNIQUE INDEX workflow_signals_pkey ON public.workflow_signals USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_source_links",
+      "indexname": "idx_workflow_source_links_instance",
+      "indexdef": "CREATE INDEX idx_workflow_source_links_instance ON public.workflow_source_links USING btree (workflow_instance_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_source_links",
+      "indexname": "idx_workflow_source_links_source",
+      "indexdef": "CREATE INDEX idx_workflow_source_links_source ON public.workflow_source_links USING btree (source_module, source_record_type, source_record_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_source_links",
+      "indexname": "workflow_source_links_pkey",
+      "indexdef": "CREATE UNIQUE INDEX workflow_source_links_pkey ON public.workflow_source_links USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_transactions",
+      "indexname": "idx_workflow_transactions_instance",
+      "indexdef": "CREATE INDEX idx_workflow_transactions_instance ON public.workflow_transactions USING btree (workflow_instance_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_transactions",
+      "indexname": "idx_workflow_transactions_type",
+      "indexdef": "CREATE INDEX idx_workflow_transactions_type ON public.workflow_transactions USING btree (transaction_type)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_transactions",
+      "indexname": "workflow_transactions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX workflow_transactions_pkey ON public.workflow_transactions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workspace_memberships",
+      "indexname": "idx_memberships_workspace_user",
+      "indexdef": "CREATE INDEX idx_memberships_workspace_user ON public.workspace_memberships USING btree (workspace_id, user_profile_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workspace_memberships",
+      "indexname": "workspace_memberships_pkey",
+      "indexdef": "CREATE UNIQUE INDEX workspace_memberships_pkey ON public.workspace_memberships USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workspace_memberships",
+      "indexname": "workspace_memberships_workspace_id_user_profile_id_key",
+      "indexdef": "CREATE UNIQUE INDEX workspace_memberships_workspace_id_user_profile_id_key ON public.workspace_memberships USING btree (workspace_id, user_profile_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workspaces",
+      "indexname": "idx_workspaces_org",
+      "indexdef": "CREATE INDEX idx_workspaces_org ON public.workspaces USING btree (organization_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workspaces",
+      "indexname": "workspaces_pkey",
+      "indexdef": "CREATE UNIQUE INDEX workspaces_pkey ON public.workspaces USING btree (id)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "buckets",
+      "indexname": "bname",
+      "indexdef": "CREATE UNIQUE INDEX bname ON storage.buckets USING btree (name)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "buckets",
+      "indexname": "buckets_pkey",
+      "indexdef": "CREATE UNIQUE INDEX buckets_pkey ON storage.buckets USING btree (id)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "buckets_analytics",
+      "indexname": "buckets_analytics_pkey",
+      "indexdef": "CREATE UNIQUE INDEX buckets_analytics_pkey ON storage.buckets_analytics USING btree (id)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "buckets_analytics",
+      "indexname": "buckets_analytics_unique_name_idx",
+      "indexdef": "CREATE UNIQUE INDEX buckets_analytics_unique_name_idx ON storage.buckets_analytics USING btree (name) WHERE (deleted_at IS NULL)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "buckets_vectors",
+      "indexname": "buckets_vectors_pkey",
+      "indexdef": "CREATE UNIQUE INDEX buckets_vectors_pkey ON storage.buckets_vectors USING btree (id)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "migrations",
+      "indexname": "migrations_name_key",
+      "indexdef": "CREATE UNIQUE INDEX migrations_name_key ON storage.migrations USING btree (name)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "migrations",
+      "indexname": "migrations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX migrations_pkey ON storage.migrations USING btree (id)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "objects",
+      "indexname": "idx_objects_bucket_id_name",
+      "indexdef": "CREATE INDEX idx_objects_bucket_id_name ON storage.objects USING btree (bucket_id, name COLLATE \"C\")"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "objects",
+      "indexname": "idx_objects_bucket_id_name_lower",
+      "indexdef": "CREATE INDEX idx_objects_bucket_id_name_lower ON storage.objects USING btree (bucket_id, lower(name) COLLATE \"C\")"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "objects",
+      "indexname": "idx_objects_current_version",
+      "indexdef": "CREATE UNIQUE INDEX idx_objects_current_version ON storage.objects USING btree (bucket_id, name COLLATE \"C\") WHERE (archived_at IS NULL)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "objects",
+      "indexname": "idx_objects_delete_markers",
+      "indexdef": "CREATE INDEX idx_objects_delete_markers ON storage.objects USING btree (bucket_id, name COLLATE \"C\") WHERE is_delete_marker"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "objects",
+      "indexname": "idx_objects_null_version",
+      "indexdef": "CREATE UNIQUE INDEX idx_objects_null_version ON storage.objects USING btree (bucket_id, name COLLATE \"C\") WHERE (NOT is_versioned)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "objects",
+      "indexname": "name_prefix_search",
+      "indexdef": "CREATE INDEX name_prefix_search ON storage.objects USING btree (name text_pattern_ops)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "objects",
+      "indexname": "objects_bucket_id_name_version_key",
+      "indexdef": "CREATE UNIQUE INDEX objects_bucket_id_name_version_key ON storage.objects USING btree (bucket_id, name COLLATE \"C\", version) NULLS NOT DISTINCT"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "objects",
+      "indexname": "objects_pkey",
+      "indexdef": "CREATE UNIQUE INDEX objects_pkey ON storage.objects USING btree (id)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "s3_multipart_uploads",
+      "indexname": "idx_multipart_uploads_list",
+      "indexdef": "CREATE INDEX idx_multipart_uploads_list ON storage.s3_multipart_uploads USING btree (bucket_id, key, created_at)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "s3_multipart_uploads",
+      "indexname": "s3_multipart_uploads_pkey",
+      "indexdef": "CREATE UNIQUE INDEX s3_multipart_uploads_pkey ON storage.s3_multipart_uploads USING btree (id)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "s3_multipart_uploads_parts",
+      "indexname": "s3_multipart_uploads_parts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX s3_multipart_uploads_parts_pkey ON storage.s3_multipart_uploads_parts USING btree (id)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "vector_indexes",
+      "indexname": "vector_indexes_name_bucket_id_idx",
+      "indexdef": "CREATE UNIQUE INDEX vector_indexes_name_bucket_id_idx ON storage.vector_indexes USING btree (name, bucket_id)"
+    },
+    {
+      "schemaname": "storage",
+      "tablename": "vector_indexes",
+      "indexname": "vector_indexes_pkey",
+      "indexdef": "CREATE UNIQUE INDEX vector_indexes_pkey ON storage.vector_indexes USING btree (id)"
+    }
+  ]
+}

@@ -1,0 +1,751 @@
+{
+  "project": "fcawktdjoxvahhgvkebx",
+  "capturedAtUtc": "2026-10-27",
+  "queryFamily": "triggers",
+  "rows": [
+    {
+      "schema": "d5o_hosted",
+      "relation": "configuration_create_rights",
+      "tgname": "d5o_hosted_create_right_guard",
+      "definition": "CREATE TRIGGER d5o_hosted_create_right_guard BEFORE INSERT OR DELETE OR UPDATE ON d5o_hosted.configuration_create_rights FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_configuration_child_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "configuration_handoff_roles",
+      "tgname": "d5o_hosted_handoff_route_guard",
+      "definition": "CREATE TRIGGER d5o_hosted_handoff_route_guard BEFORE INSERT OR DELETE OR UPDATE ON d5o_hosted.configuration_handoff_roles FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_configuration_child_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "configuration_versions",
+      "tgname": "d5o_hosted_configuration_version_guard",
+      "definition": "CREATE TRIGGER d5o_hosted_configuration_version_guard BEFORE INSERT OR UPDATE ON d5o_hosted.configuration_versions FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_configuration_version_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "configuration_work_types",
+      "tgname": "d5o_hosted_work_type_guard",
+      "definition": "CREATE TRIGGER d5o_hosted_work_type_guard BEFORE INSERT OR DELETE OR UPDATE ON d5o_hosted.configuration_work_types FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_configuration_child_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "connected_deploy_states",
+      "tgname": "capture_reviewed_labor",
+      "definition": "CREATE TRIGGER capture_reviewed_labor AFTER UPDATE ON d5o_hosted.connected_deploy_states FOR EACH ROW WHEN (old.state IS DISTINCT FROM new.state) EXECUTE FUNCTION d5o_hosted.capture_reviewed_labor_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "connected_deploy_states",
+      "tgname": "d5o_check_work_receipt_scope",
+      "definition": "CREATE TRIGGER d5o_check_work_receipt_scope BEFORE INSERT OR UPDATE ON d5o_hosted.connected_deploy_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.check_work_receipt_scope_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "connected_deploy_states",
+      "tgname": "guard_field_change_deploy",
+      "definition": "CREATE TRIGGER guard_field_change_deploy BEFORE INSERT OR UPDATE ON d5o_hosted.connected_deploy_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_field_change_deploy_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "connected_deploy_states",
+      "tgname": "guard_graybar_field_material",
+      "definition": "CREATE TRIGGER guard_graybar_field_material BEFORE UPDATE ON d5o_hosted.connected_deploy_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_graybar_field_material_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "connected_design_states",
+      "tgname": "guard_field_change_design_release",
+      "definition": "CREATE TRIGGER guard_field_change_design_release BEFORE INSERT OR UPDATE ON d5o_hosted.connected_design_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_field_change_design_release_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "connected_design_states",
+      "tgname": "guard_schedule_hold_package_scope",
+      "definition": "CREATE TRIGGER guard_schedule_hold_package_scope BEFORE UPDATE OF state ON d5o_hosted.connected_design_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_schedule_hold_package_scope_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "connected_estimate_states",
+      "tgname": "guard_graybar_rom_source",
+      "definition": "CREATE TRIGGER guard_graybar_rom_source BEFORE INSERT OR UPDATE ON d5o_hosted.connected_estimate_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_graybar_rom_source_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "connected_estimate_states",
+      "tgname": "validate_connected_rom_before_review",
+      "definition": "CREATE TRIGGER validate_connected_rom_before_review BEFORE INSERT OR UPDATE ON d5o_hosted.connected_estimate_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.validate_connected_rom_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "connected_operate_states",
+      "tgname": "d5o_check_finance_acceptance_scope",
+      "definition": "CREATE TRIGGER d5o_check_finance_acceptance_scope BEFORE INSERT OR UPDATE ON d5o_hosted.connected_operate_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.check_finance_acceptance_scope_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "connected_operate_states",
+      "tgname": "guard_job_finance_closeout",
+      "definition": "CREATE TRIGGER guard_job_finance_closeout BEFORE INSERT OR UPDATE ON d5o_hosted.connected_operate_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_job_finance_closeout_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "connected_package_states",
+      "tgname": "d5o_freeze_accepted_package_set",
+      "definition": "CREATE TRIGGER d5o_freeze_accepted_package_set BEFORE INSERT OR DELETE OR UPDATE ON d5o_hosted.connected_package_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.freeze_accepted_package_set_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "design_cost_claims",
+      "tgname": "guard_design_cost_review_delegate",
+      "definition": "CREATE TRIGGER guard_design_cost_review_delegate BEFORE UPDATE OF status ON d5o_hosted.design_cost_claims FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_design_cost_review_delegate_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "design_internal_rates",
+      "tgname": "guard_internal_design_rate_delegate",
+      "definition": "CREATE TRIGGER guard_internal_design_rate_delegate BEFORE UPDATE ON d5o_hosted.design_internal_rates FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_internal_design_rate_delegate_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "design_spend_authorities",
+      "tgname": "spending_delegate_design_window_review",
+      "definition": "CREATE TRIGGER spending_delegate_design_window_review BEFORE UPDATE OF status ON d5o_hosted.design_spend_authorities FOR EACH ROW EXECUTE FUNCTION d5o_hosted.spending_delegate_decision_guard_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "design_spend_commitments",
+      "tgname": "combined_design_cap",
+      "definition": "CREATE TRIGGER combined_design_cap AFTER UPDATE ON d5o_hosted.design_spend_commitments FOR EACH ROW WHEN (old.status IS DISTINCT FROM new.status) EXECUTE FUNCTION d5o_hosted.guard_combined_work_authority_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "design_spend_commitments",
+      "tgname": "guard_design_parent_economic_cap",
+      "definition": "CREATE TRIGGER guard_design_parent_economic_cap BEFORE UPDATE ON d5o_hosted.design_spend_commitments FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_design_parent_economic_cap_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "design_spend_commitments",
+      "tgname": "spending_delegate_design_commitment_review",
+      "definition": "CREATE TRIGGER spending_delegate_design_commitment_review BEFORE UPDATE OF status ON d5o_hosted.design_spend_commitments FOR EACH ROW EXECUTE FUNCTION d5o_hosted.spending_delegate_decision_guard_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "graybar_job_cost_links",
+      "tgname": "link_graybar_finance_reservation",
+      "definition": "CREATE TRIGGER link_graybar_finance_reservation BEFORE INSERT ON d5o_hosted.graybar_job_cost_links FOR EACH ROW EXECUTE FUNCTION d5o_hosted.link_graybar_finance_reservation_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "graybar_states",
+      "tgname": "guard_graybar_purchase_authority",
+      "definition": "CREATE TRIGGER guard_graybar_purchase_authority BEFORE UPDATE ON d5o_hosted.graybar_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_graybar_purchase_authority_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "graybar_states",
+      "tgname": "guard_purchase_order_delegate",
+      "definition": "CREATE TRIGGER guard_purchase_order_delegate BEFORE UPDATE ON d5o_hosted.graybar_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_purchase_order_delegate_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "labor_authorities",
+      "tgname": "guard_field_labor_delegate",
+      "definition": "CREATE TRIGGER guard_field_labor_delegate BEFORE UPDATE ON d5o_hosted.labor_authorities FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_field_labor_delegate_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "labor_reservations",
+      "tgname": "combined_labor_cap",
+      "definition": "CREATE TRIGGER combined_labor_cap AFTER INSERT ON d5o_hosted.labor_reservations FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_combined_work_authority_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "outlook_assessments",
+      "tgname": "guard_outlook_review_delegate",
+      "definition": "CREATE TRIGGER guard_outlook_review_delegate BEFORE UPDATE OF status ON d5o_hosted.outlook_assessments FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_outlook_review_delegate_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "prototype_state_revisions",
+      "tgname": "d5o_hosted_prototype_revision_nested_scope",
+      "definition": "CREATE TRIGGER d5o_hosted_prototype_revision_nested_scope BEFORE INSERT OR UPDATE ON d5o_hosted.prototype_state_revisions FOR EACH ROW EXECUTE FUNCTION d5o_hosted.enforce_prototype_nested_scope()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "prototype_states",
+      "tgname": "d5o_hosted_connected_identity_guard",
+      "definition": "CREATE TRIGGER d5o_hosted_connected_identity_guard BEFORE INSERT OR UPDATE OF state_json ON d5o_hosted.prototype_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_connected_identity_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "prototype_states",
+      "tgname": "d5o_hosted_new_commercial_import_guard",
+      "definition": "CREATE TRIGGER d5o_hosted_new_commercial_import_guard BEFORE UPDATE OF state_json ON d5o_hosted.prototype_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_new_commercial_import_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "prototype_states",
+      "tgname": "d5o_hosted_prototype_guard",
+      "definition": "CREATE TRIGGER d5o_hosted_prototype_guard BEFORE INSERT OR UPDATE OF state_json ON d5o_hosted.prototype_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_prototype_snapshot_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "prototype_states",
+      "tgname": "d5o_hosted_prototype_state_nested_scope",
+      "definition": "CREATE TRIGGER d5o_hosted_prototype_state_nested_scope BEFORE INSERT OR UPDATE ON d5o_hosted.prototype_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.enforce_prototype_nested_scope()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "purchase_authorities",
+      "tgname": "combined_parent_authority_cap",
+      "definition": "CREATE TRIGGER combined_parent_authority_cap AFTER UPDATE OF status ON d5o_hosted.purchase_authorities FOR EACH ROW WHEN (new.status = 'Approved'::text AND old.status IS DISTINCT FROM new.status) EXECUTE FUNCTION d5o_hosted.guard_combined_work_authority_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "purchase_authorities",
+      "tgname": "spending_delegate_work_review",
+      "definition": "CREATE TRIGGER spending_delegate_work_review BEFORE UPDATE OF status ON d5o_hosted.purchase_authorities FOR EACH ROW EXECUTE FUNCTION d5o_hosted.spending_delegate_decision_guard_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "purchase_reservations",
+      "tgname": "combined_purchase_cap",
+      "definition": "CREATE TRIGGER combined_purchase_cap AFTER INSERT ON d5o_hosted.purchase_reservations FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_combined_work_authority_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "subcontract_reservations",
+      "tgname": "combined_subcontract_cap",
+      "definition": "CREATE TRIGGER combined_subcontract_cap AFTER INSERT ON d5o_hosted.subcontract_reservations FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_combined_work_authority_v1()"
+    },
+    {
+      "schema": "d5o_hosted",
+      "relation": "subcontract_states",
+      "tgname": "guard_subcontract_delegate",
+      "definition": "CREATE TRIGGER guard_subcontract_delegate BEFORE UPDATE ON d5o_hosted.subcontract_states FOR EACH ROW EXECUTE FUNCTION d5o_hosted.guard_subcontract_delegate_v1()"
+    },
+    {
+      "schema": "public",
+      "relation": "acceptance_records",
+      "tgname": "set_updated_at_acceptance_records",
+      "definition": "CREATE TRIGGER set_updated_at_acceptance_records BEFORE UPDATE ON acceptance_records FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "archive_package_items",
+      "tgname": "set_updated_at_archive_package_items",
+      "definition": "CREATE TRIGGER set_updated_at_archive_package_items BEFORE UPDATE ON archive_package_items FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "as_built_records",
+      "tgname": "set_updated_at_as_built_records",
+      "definition": "CREATE TRIGGER set_updated_at_as_built_records BEFORE UPDATE ON as_built_records FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "attachments",
+      "tgname": "set_updated_at_attachments",
+      "definition": "CREATE TRIGGER set_updated_at_attachments BEFORE UPDATE ON attachments FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "billing_backup_items",
+      "tgname": "set_updated_at_billing_backup_items",
+      "definition": "CREATE TRIGGER set_updated_at_billing_backup_items BEFORE UPDATE ON billing_backup_items FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "budget_baseline_items",
+      "tgname": "set_updated_at_budget_baseline_items",
+      "definition": "CREATE TRIGGER set_updated_at_budget_baseline_items BEFORE UPDATE ON budget_baseline_items FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "budget_baselines",
+      "tgname": "set_updated_at_budget_baselines",
+      "definition": "CREATE TRIGGER set_updated_at_budget_baselines BEFORE UPDATE ON budget_baselines FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "change_event_backups",
+      "tgname": "set_updated_at_change_event_backups",
+      "definition": "CREATE TRIGGER set_updated_at_change_event_backups BEFORE UPDATE ON change_event_backups FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "change_events",
+      "tgname": "set_updated_at_change_events",
+      "definition": "CREATE TRIGGER set_updated_at_change_events BEFORE UPDATE ON change_events FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "change_pricing_records",
+      "tgname": "set_updated_at_change_pricing_records",
+      "definition": "CREATE TRIGGER set_updated_at_change_pricing_records BEFORE UPDATE ON change_pricing_records FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "changed_conditions",
+      "tgname": "set_updated_at_changed_conditions",
+      "definition": "CREATE TRIGGER set_updated_at_changed_conditions BEFORE UPDATE ON changed_conditions FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "closeout_packages",
+      "tgname": "set_updated_at_closeout_packages",
+      "definition": "CREATE TRIGGER set_updated_at_closeout_packages BEFORE UPDATE ON closeout_packages FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "closeout_requirements",
+      "tgname": "set_updated_at_closeout_requirements",
+      "definition": "CREATE TRIGGER set_updated_at_closeout_requirements BEFORE UPDATE ON closeout_requirements FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "comments",
+      "tgname": "set_updated_at_comments",
+      "definition": "CREATE TRIGGER set_updated_at_comments BEFORE UPDATE ON comments FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "commercial_exposure_items",
+      "tgname": "set_updated_at_commercial_exposure_items",
+      "definition": "CREATE TRIGGER set_updated_at_commercial_exposure_items BEFORE UPDATE ON commercial_exposure_items FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "companies",
+      "tgname": "set_updated_at_companies",
+      "definition": "CREATE TRIGGER set_updated_at_companies BEFORE UPDATE ON companies FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "contacts",
+      "tgname": "set_updated_at_contacts",
+      "definition": "CREATE TRIGGER set_updated_at_contacts BEFORE UPDATE ON contacts FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "contract_baselines",
+      "tgname": "set_updated_at_contract_baselines",
+      "definition": "CREATE TRIGGER set_updated_at_contract_baselines BEFORE UPDATE ON contract_baselines FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "corrective_actions",
+      "tgname": "set_updated_at_corrective_actions",
+      "definition": "CREATE TRIGGER set_updated_at_corrective_actions BEFORE UPDATE ON corrective_actions FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "cost_codes",
+      "tgname": "set_updated_at_cost_codes",
+      "definition": "CREATE TRIGGER set_updated_at_cost_codes BEFORE UPDATE ON cost_codes FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "crew_members",
+      "tgname": "set_updated_at_crew_members",
+      "definition": "CREATE TRIGGER set_updated_at_crew_members BEFORE UPDATE ON crew_members FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "crew_plans",
+      "tgname": "set_updated_at_crew_plans",
+      "definition": "CREATE TRIGGER set_updated_at_crew_plans BEFORE UPDATE ON crew_plans FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "crews",
+      "tgname": "set_updated_at_crews",
+      "definition": "CREATE TRIGGER set_updated_at_crews BEFORE UPDATE ON crews FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "d5o_gates",
+      "tgname": "set_updated_at_d5o_gates",
+      "definition": "CREATE TRIGGER set_updated_at_d5o_gates BEFORE UPDATE ON d5o_gates FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "daily_reports",
+      "tgname": "set_updated_at_daily_reports",
+      "definition": "CREATE TRIGGER set_updated_at_daily_reports BEFORE UPDATE ON daily_reports FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "employees",
+      "tgname": "set_updated_at_employees",
+      "definition": "CREATE TRIGGER set_updated_at_employees BEFORE UPDATE ON employees FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "equipment",
+      "tgname": "set_updated_at_equipment",
+      "definition": "CREATE TRIGGER set_updated_at_equipment BEFORE UPDATE ON equipment FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "equipment_readiness_items",
+      "tgname": "set_updated_at_equipment_readiness_items",
+      "definition": "CREATE TRIGGER set_updated_at_equipment_readiness_items BEFORE UPDATE ON equipment_readiness_items FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "field_blockers",
+      "tgname": "set_updated_at_field_blockers",
+      "definition": "CREATE TRIGGER set_updated_at_field_blockers BEFORE UPDATE ON field_blockers FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "flow_down_obligations",
+      "tgname": "set_updated_at_flow_down_obligations",
+      "definition": "CREATE TRIGGER set_updated_at_flow_down_obligations BEFORE UPDATE ON flow_down_obligations FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "gate_artifacts",
+      "tgname": "set_updated_at_gate_artifacts",
+      "definition": "CREATE TRIGGER set_updated_at_gate_artifacts BEFORE UPDATE ON gate_artifacts FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "gc_performance_profiles",
+      "tgname": "set_updated_at_gc_performance_profiles",
+      "definition": "CREATE TRIGGER set_updated_at_gc_performance_profiles BEFORE UPDATE ON gc_performance_profiles FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "go_no_go_scores",
+      "tgname": "set_updated_at_go_no_go_scores",
+      "definition": "CREATE TRIGGER set_updated_at_go_no_go_scores BEFORE UPDATE ON go_no_go_scores FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "improvement_actions",
+      "tgname": "set_updated_at_improvement_actions",
+      "definition": "CREATE TRIGGER set_updated_at_improvement_actions BEFORE UPDATE ON improvement_actions FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "jha_records",
+      "tgname": "set_updated_at_jha_records",
+      "definition": "CREATE TRIGGER set_updated_at_jha_records BEFORE UPDATE ON jha_records FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "lessons_learned",
+      "tgname": "set_updated_at_lessons_learned",
+      "definition": "CREATE TRIGGER set_updated_at_lessons_learned BEFORE UPDATE ON lessons_learned FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "lien_waivers",
+      "tgname": "set_updated_at_lien_waivers",
+      "definition": "CREATE TRIGGER set_updated_at_lien_waivers BEFORE UPDATE ON lien_waivers FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "material_readiness_items",
+      "tgname": "set_updated_at_material_readiness_items",
+      "definition": "CREATE TRIGGER set_updated_at_material_readiness_items BEFORE UPDATE ON material_readiness_items FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "materials",
+      "tgname": "set_updated_at_materials",
+      "definition": "CREATE TRIGGER set_updated_at_materials BEFORE UPDATE ON materials FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "mobilization_plans",
+      "tgname": "set_updated_at_mobilization_plans",
+      "definition": "CREATE TRIGGER set_updated_at_mobilization_plans BEFORE UPDATE ON mobilization_plans FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "notice_requirements",
+      "tgname": "set_updated_at_notice_requirements",
+      "definition": "CREATE TRIGGER set_updated_at_notice_requirements BEFORE UPDATE ON notice_requirements FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "opportunities",
+      "tgname": "set_updated_at_opportunities",
+      "definition": "CREATE TRIGGER set_updated_at_opportunities BEFORE UPDATE ON opportunities FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "opportunity_documents",
+      "tgname": "set_updated_at_opportunity_documents",
+      "definition": "CREATE TRIGGER set_updated_at_opportunity_documents BEFORE UPDATE ON opportunity_documents FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "opportunity_reviews",
+      "tgname": "set_updated_at_opportunity_reviews",
+      "definition": "CREATE TRIGGER set_updated_at_opportunity_reviews BEFORE UPDATE ON opportunity_reviews FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "organizations",
+      "tgname": "set_updated_at_organizations",
+      "definition": "CREATE TRIGGER set_updated_at_organizations BEFORE UPDATE ON organizations FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "pay_applications",
+      "tgname": "set_updated_at_pay_applications",
+      "definition": "CREATE TRIGGER set_updated_at_pay_applications BEFORE UPDATE ON pay_applications FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "permit_access_items",
+      "tgname": "set_updated_at_permit_access_items",
+      "definition": "CREATE TRIGGER set_updated_at_permit_access_items BEFORE UPDATE ON permit_access_items FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "production_rate_records",
+      "tgname": "set_updated_at_production_rate_records",
+      "definition": "CREATE TRIGGER set_updated_at_production_rate_records BEFORE UPDATE ON production_rate_records FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "project_decisions",
+      "tgname": "set_updated_at_project_decisions",
+      "definition": "CREATE TRIGGER set_updated_at_project_decisions BEFORE UPDATE ON project_decisions FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "project_issues",
+      "tgname": "set_updated_at_project_issues",
+      "definition": "CREATE TRIGGER set_updated_at_project_issues BEFORE UPDATE ON project_issues FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "project_performance_scorecards",
+      "tgname": "set_updated_at_project_performance_scorecards",
+      "definition": "CREATE TRIGGER set_updated_at_project_performance_scorecards BEFORE UPDATE ON project_performance_scorecards FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "project_risks",
+      "tgname": "set_updated_at_project_risks",
+      "definition": "CREATE TRIGGER set_updated_at_project_risks BEFORE UPDATE ON project_risks FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "project_setup_artifacts",
+      "tgname": "set_updated_at_project_setup_artifacts",
+      "definition": "CREATE TRIGGER set_updated_at_project_setup_artifacts BEFORE UPDATE ON project_setup_artifacts FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "projects",
+      "tgname": "set_updated_at_projects",
+      "definition": "CREATE TRIGGER set_updated_at_projects BEFORE UPDATE ON projects FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "punch_items",
+      "tgname": "set_updated_at_punch_items",
+      "definition": "CREATE TRIGGER set_updated_at_punch_items BEFORE UPDATE ON punch_items FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "quality_deficiencies",
+      "tgname": "set_updated_at_quality_deficiencies",
+      "definition": "CREATE TRIGGER set_updated_at_quality_deficiencies BEFORE UPDATE ON quality_deficiencies FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "quality_inspections",
+      "tgname": "set_updated_at_quality_inspections",
+      "definition": "CREATE TRIGGER set_updated_at_quality_inspections BEFORE UPDATE ON quality_inspections FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "rfis",
+      "tgname": "set_updated_at_rfis",
+      "definition": "CREATE TRIGGER set_updated_at_rfis BEFORE UPDATE ON rfis FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "risk_library_items",
+      "tgname": "set_updated_at_risk_library_items",
+      "definition": "CREATE TRIGGER set_updated_at_risk_library_items BEFORE UPDATE ON risk_library_items FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "roles",
+      "tgname": "set_updated_at_roles",
+      "definition": "CREATE TRIGGER set_updated_at_roles BEFORE UPDATE ON roles FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "safety_incidents",
+      "tgname": "set_updated_at_safety_incidents",
+      "definition": "CREATE TRIGGER set_updated_at_safety_incidents BEFORE UPDATE ON safety_incidents FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "safety_observations",
+      "tgname": "set_updated_at_safety_observations",
+      "definition": "CREATE TRIGGER set_updated_at_safety_observations BEFORE UPDATE ON safety_observations FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "safety_plans",
+      "tgname": "set_updated_at_safety_plans",
+      "definition": "CREATE TRIGGER set_updated_at_safety_plans BEFORE UPDATE ON safety_plans FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "schedule_baselines",
+      "tgname": "set_updated_at_schedule_baselines",
+      "definition": "CREATE TRIGGER set_updated_at_schedule_baselines BEFORE UPDATE ON schedule_baselines FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "schedule_milestones",
+      "tgname": "set_updated_at_schedule_milestones",
+      "definition": "CREATE TRIGGER set_updated_at_schedule_milestones BEFORE UPDATE ON schedule_milestones FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "schedule_of_value_lines",
+      "tgname": "set_updated_at_schedule_of_value_lines",
+      "definition": "CREATE TRIGGER set_updated_at_schedule_of_value_lines BEFORE UPDATE ON schedule_of_value_lines FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "scope_matrix_items",
+      "tgname": "set_updated_at_scope_matrix_items",
+      "definition": "CREATE TRIGGER set_updated_at_scope_matrix_items BEFORE UPDATE ON scope_matrix_items FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "submittals",
+      "tgname": "set_updated_at_submittals",
+      "definition": "CREATE TRIGGER set_updated_at_submittals BEFORE UPDATE ON submittals FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "supervisor_signoffs",
+      "tgname": "set_updated_at_supervisor_signoffs",
+      "definition": "CREATE TRIGGER set_updated_at_supervisor_signoffs BEFORE UPDATE ON supervisor_signoffs FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "test_records",
+      "tgname": "set_updated_at_test_records",
+      "definition": "CREATE TRIGGER set_updated_at_test_records BEFORE UPDATE ON test_records FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "toolbox_talks",
+      "tgname": "set_updated_at_toolbox_talks",
+      "definition": "CREATE TRIGGER set_updated_at_toolbox_talks BEFORE UPDATE ON toolbox_talks FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "user_profiles",
+      "tgname": "set_updated_at_user_profiles",
+      "definition": "CREATE TRIGGER set_updated_at_user_profiles BEFORE UPDATE ON user_profiles FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "utility_locate_records",
+      "tgname": "set_updated_at_utility_locate_records",
+      "definition": "CREATE TRIGGER set_updated_at_utility_locate_records BEFORE UPDATE ON utility_locate_records FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "vendor_performance_profiles",
+      "tgname": "set_updated_at_vendor_performance_profiles",
+      "definition": "CREATE TRIGGER set_updated_at_vendor_performance_profiles BEFORE UPDATE ON vendor_performance_profiles FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "warranty_records",
+      "tgname": "set_updated_at_warranty_records",
+      "definition": "CREATE TRIGGER set_updated_at_warranty_records BEFORE UPDATE ON warranty_records FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "work_packages",
+      "tgname": "set_updated_at_work_packages",
+      "definition": "CREATE TRIGGER set_updated_at_work_packages BEFORE UPDATE ON work_packages FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "workflow_evidence_requirements",
+      "tgname": "set_updated_at_workflow_evidence_requirements",
+      "definition": "CREATE TRIGGER set_updated_at_workflow_evidence_requirements BEFORE UPDATE ON workflow_evidence_requirements FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "workflow_instances",
+      "tgname": "set_updated_at_workflow_instances",
+      "definition": "CREATE TRIGGER set_updated_at_workflow_instances BEFORE UPDATE ON workflow_instances FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "workspace_memberships",
+      "tgname": "set_updated_at_workspace_memberships",
+      "definition": "CREATE TRIGGER set_updated_at_workspace_memberships BEFORE UPDATE ON workspace_memberships FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "public",
+      "relation": "workspaces",
+      "tgname": "set_updated_at_workspaces",
+      "definition": "CREATE TRIGGER set_updated_at_workspaces BEFORE UPDATE ON workspaces FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "schema": "storage",
+      "relation": "buckets",
+      "tgname": "enforce_bucket_name_length_trigger",
+      "definition": "CREATE TRIGGER enforce_bucket_name_length_trigger BEFORE INSERT OR UPDATE OF name ON storage.buckets FOR EACH ROW EXECUTE FUNCTION storage.enforce_bucket_name_length()"
+    },
+    {
+      "schema": "storage",
+      "relation": "buckets",
+      "tgname": "protect_bucket_control_insert",
+      "definition": "CREATE TRIGGER protect_bucket_control_insert BEFORE INSERT ON storage.buckets FOR EACH ROW EXECUTE FUNCTION storage.protect_bucket_control_columns('service_role')"
+    },
+    {
+      "schema": "storage",
+      "relation": "buckets",
+      "tgname": "protect_bucket_control_update",
+      "definition": "CREATE TRIGGER protect_bucket_control_update BEFORE UPDATE OF lifecycle_configuration, lifecycle_configuration_generation ON storage.buckets FOR EACH ROW EXECUTE FUNCTION storage.protect_bucket_control_columns()"
+    },
+    {
+      "schema": "storage",
+      "relation": "buckets",
+      "tgname": "protect_bucket_control_update_role",
+      "definition": "CREATE TRIGGER protect_bucket_control_update_role AFTER UPDATE OF lifecycle_configuration, lifecycle_configuration_generation ON storage.buckets FOR EACH ROW EXECUTE FUNCTION storage.enforce_bucket_lifecycle_service_role('service_role')"
+    },
+    {
+      "schema": "storage",
+      "relation": "buckets",
+      "tgname": "protect_buckets_delete",
+      "definition": "CREATE TRIGGER protect_buckets_delete BEFORE DELETE ON storage.buckets FOR EACH STATEMENT EXECUTE FUNCTION storage.protect_delete()"
+    },
+    {
+      "schema": "storage",
+      "relation": "objects",
+      "tgname": "protect_objects_delete",
+      "definition": "CREATE TRIGGER protect_objects_delete BEFORE DELETE ON storage.objects FOR EACH STATEMENT EXECUTE FUNCTION storage.protect_delete()"
+    },
+    {
+      "schema": "storage",
+      "relation": "objects",
+      "tgname": "update_objects_updated_at",
+      "definition": "CREATE TRIGGER update_objects_updated_at BEFORE UPDATE ON storage.objects FOR EACH ROW EXECUTE FUNCTION storage.update_updated_at_column()"
+    }
+  ]
+}

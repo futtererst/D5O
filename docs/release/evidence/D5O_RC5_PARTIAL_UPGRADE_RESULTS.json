@@ -1,0 +1,100 @@
+{
+  "baseline": "source-only 211-file fixture; not hosted reconstruction",
+  "source": "dcb72a3868e48d536449e109872403974b79fa1b",
+  "pending": [
+    "20261023111641_d5o_service_approval_policy_phase1.sql",
+    "20261023115306_d5o_phase1b_connected_service_approval.sql",
+    "20261023123751_d5o_phase2a_organization_people.sql",
+    "20261023140000_d5o_phase2b_tenant_onboarding.sql",
+    "20261023141000_d5o_phase2b_onboarding_commands.sql",
+    "20261023142000_d5o_phase2b_vendor_controls.sql",
+    "20261023143000_d5o_phase2b_template_governance.sql",
+    "20261023150000_d5o_phase2c_lifecycle_features.sql",
+    "20261023151000_d5o_phase2c_discover_policy.sql",
+    "20261023152000_d5o_phase2c_connected_work_gate.sql",
+    "20261023153646_d5o_phase2d_phase_policies.sql",
+    "20261023153752_d5o_phase2d_define_develop_guards.sql",
+    "20261023180000_d5o_phase2f_operate_review_guard.sql",
+    "20261023201553_phase2g_phase_status.sql",
+    "20261024010000_d5o_service_sla_calendar_validation.sql",
+    "20261024011000_d5o_service_job_stable_work_type_key.sql",
+    "20261024012000_d5o_service_child_identity_guard.sql",
+    "20261024105438_phase2hs_connected_design_capability_gate.sql",
+    "20261024112500_phase2hs_overnight_crew_eligibility.sql",
+    "20261024113000_phase2hs_connected_develop_capability_gate.sql",
+    "20261024150000_phase2ht_workforce_qualification_expiry.sql",
+    "20261024151000_phase2ht_current_worker_assignment.sql",
+    "20261025010000_d5o_phase2htd_connected_service_capability_boundary.sql",
+    "20261027085730_d5o_operate_acceptance_one_time_guard.sql",
+    "20261027190000_d5o_field_fact_latest_permit_order.sql"
+  ],
+  "markerPreserved": true,
+  "workPinPreserved": true,
+  "auditPreserved": true,
+  "appliedVersions": [
+    "20261023111641",
+    "20261023115306",
+    "20261023123751",
+    "20261023140000",
+    "20261023141000",
+    "20261023142000",
+    "20261023143000",
+    "20261023150000",
+    "20261023151000",
+    "20261023152000",
+    "20261023153646",
+    "20261023153752",
+    "20261023180000",
+    "20261023201553",
+    "20261024010000",
+    "20261024011000",
+    "20261024012000",
+    "20261024105438",
+    "20261024112500",
+    "20261024113000",
+    "20261024150000",
+    "20261024151000",
+    "20261025010000",
+    "20261027085730",
+    "20261027190000"
+  ],
+  "cleanup": {
+    "projectId": "d5o-p0a-a38a74a0-c4b",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "error": null,
+  "fixture": {
+    "workspaceId": "27dbe0d9-266c-464e-b301-c9eb2bfef87b",
+    "actorId": "1dbf570f-3d30-41e9-99a3-5580b45cd401",
+    "workId": "97a2b13e-e7e5-42de-ae06-095fd1ac6a5e",
+    "configurationVersionId": "dab933ec-710b-476f-b44e-f0998f54e104",
+    "before": {
+      "tenant": "rc0_upgrade_4d849bd3591c44068d789df0a58b7b33|RC0 synthetic pre-upgrade tenant|active",
+      "work": "dab933ec-710b-476f-b44e-f0998f54e104|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|RC0 historical pinned Work",
+      "history": "1|1"
+    },
+    "after": {
+      "tenant": "rc0_upgrade_4d849bd3591c44068d789df0a58b7b33|RC0 synthetic pre-upgrade tenant|active",
+      "work": "dab933ec-710b-476f-b44e-f0998f54e104|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|RC0 historical pinned Work",
+      "history": "1|1"
+    }
+  },
+  "boundary": {
+    "operateRls": true,
+    "anonExecute": false,
+    "evidenceRls": true,
+    "publicDefiner": true,
+    "serviceExecute": false,
+    "publicSearchPath": [
+      "search_path=\"\""
+    ],
+    "authenticatedExecute": true,
+    "fieldFactAuthenticatedExecute": true
+  },
+  "interruptionRejected": true,
+  "interruptionRolledBack": true
+}

@@ -1,0 +1,1115 @@
+{
+  "count": 140,
+  "items": [
+    {
+      "id": "SRC-0001",
+      "order": 1,
+      "source_file": "0001_core_foundation.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0002",
+      "order": 2,
+      "source_file": "0002_d1_d2_pipeline_projects.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0003",
+      "order": 3,
+      "source_file": "0003_workflow_transactions.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0004",
+      "order": 4,
+      "source_file": "0004_rls_security_scaffold.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0005",
+      "order": 5,
+      "source_file": "0005_identity_workspace_security.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0006",
+      "order": 6,
+      "source_file": "0006_shared_command_audit_evidence.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0007",
+      "order": 7,
+      "source_file": "0007_billing_v2_production_persistence.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0008",
+      "order": 8,
+      "source_file": "0008_field_issue_rfi_change_production_persistence.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0009",
+      "order": 9,
+      "source_file": "0009_closeout_production_persistence.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0010",
+      "order": 10,
+      "source_file": "0010_production_cutover_hardening.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0011",
+      "order": 11,
+      "source_file": "0011_p1_01a_opportunity_intake_qualification.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0012",
+      "order": 12,
+      "source_file": "0012_p1_01a_acceptance_remediation.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0013",
+      "order": 13,
+      "source_file": "0013_p1_01a_role_accountability_read_model.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0014",
+      "order": 14,
+      "source_file": "0014_p1_01a_decision_owner_actions.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0015",
+      "order": 15,
+      "source_file": "0015_p1_01b_1_pursuit_authorization.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0016",
+      "order": 16,
+      "source_file": "0016_p1_01b_2_bid_submission_outcome.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0017",
+      "order": 17,
+      "source_file": "0017_configuration_foundation_core.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0018",
+      "order": 18,
+      "source_file": "0018_configuration_template_packs_versions.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0019",
+      "order": 19,
+      "source_file": "0019_configuration_tenant_activation_versions.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0020",
+      "order": 20,
+      "source_file": "0020_configuration_phase_gate_definitions.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0021",
+      "order": 21,
+      "source_file": "0021_configuration_work_types_streams_lanes.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0022",
+      "order": 22,
+      "source_file": "0022_configuration_roles_permissions_decision_rights.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0023",
+      "order": 23,
+      "source_file": "0023_configuration_artifact_evidence_definitions.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0024",
+      "order": 24,
+      "source_file": "0024_configuration_kpi_financial_workforce_handoff_governance.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0025",
+      "order": 25,
+      "source_file": "0025_configuration_audit_effective_resolution.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0026",
+      "order": 26,
+      "source_file": "0026_configuration_template_pack_seed_data.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0027",
+      "order": 27,
+      "source_file": "0027_cfg_runtime_01_pricing_review_readiness.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0028",
+      "order": 28,
+      "source_file": "0028_cfg_runtime_02_pursuit_authorization.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0029",
+      "order": 29,
+      "source_file": "0029_cfg_runtime_03_bid_submission_approval.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0030",
+      "order": 30,
+      "source_file": "0030_cfg_runtime_03_evidence_persistence_authority.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-0031",
+      "order": 31,
+      "source_file": "0031_cfg_runtime_03_actor_profile_identity_coherence.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20260928120323",
+      "order": 32,
+      "source_file": "20260928120323_baseline_evidence_scan_reconciliation.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20260928145307",
+      "order": 33,
+      "source_file": "20260928145307_p1_cfg_evidence_custody_acceptance.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20260928214119",
+      "order": 34,
+      "source_file": "20260928214119_d5o_m1_work_record_gate.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20260929121652",
+      "order": 35,
+      "source_file": "20260929121652_d5o_m1_replay_configuration_guard.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261002000000",
+      "order": 36,
+      "source_file": "20261002000000_d5o_m2_work_record_queue.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261004230000",
+      "order": 37,
+      "source_file": "20261004230000_d5o_work_package_foundation.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261004233000",
+      "order": 38,
+      "source_file": "20261004233000_d5o_work_package_closed_guard.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261004234500",
+      "order": 39,
+      "source_file": "20261004234500_d5o_package_proof_snapshot.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261005122038",
+      "order": 40,
+      "source_file": "20261005122038_d5o_configured_lifecycle_rules.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261005200000",
+      "order": 41,
+      "source_file": "20261005200000_d5o_configuration_publication.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261005210000",
+      "order": 42,
+      "source_file": "20261005210000_d5o_configuration_activation_split.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261005220000",
+      "order": 43,
+      "source_file": "20261005220000_d5o_candidate_activation_guard.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261005230000",
+      "order": 44,
+      "source_file": "20261005230000_d5o_published_phase_contract.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261007013134",
+      "order": 45,
+      "source_file": "20261007013134_d5o_hosted_workspace_authority.sql",
+      "hosted_version": "20261007013631",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261007013707",
+      "order": 46,
+      "source_file": "20261007013707_d5o_hosted_workspace_invoker_hardening.sql",
+      "hosted_version": "20261007014024",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261007020600",
+      "order": 47,
+      "source_file": "20261007020600_d5o_hosted_work_identity.sql",
+      "hosted_version": "20261007015048",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261007022200",
+      "order": 48,
+      "source_file": "20261007022200_d5o_hosted_create_work_authority.sql",
+      "hosted_version": "20261007015356",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261007031000",
+      "order": 49,
+      "source_file": "20261007031000_d5o_hosted_configuration_manifest.sql",
+      "hosted_version": "20261007020854",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261007040000",
+      "order": 50,
+      "source_file": "20261007040000_d5o_hosted_synthetic_prototype_state.sql",
+      "hosted_version": "20261007021942",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261007050000",
+      "order": 51,
+      "source_file": "20261007050000_d5o_hosted_prototype_nested_scope.sql",
+      "hosted_version": "20261007025942",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261007225404",
+      "order": 52,
+      "source_file": "20261007225404_d5o_hosted_worker_boundary.sql",
+      "hosted_version": "20261007225404",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261008182443",
+      "order": 53,
+      "source_file": "20261008182443_d5o_hosted_command_writer.sql",
+      "hosted_version": "20261008182443",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261008185604",
+      "order": 55,
+      "source_file": "20261008185604_d5o_hosted_worker_provisioning.sql",
+      "hosted_version": "20261008185604",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261008190351",
+      "order": 56,
+      "source_file": "20261008190351_d5o_secret_key_role_compatibility.sql",
+      "hosted_version": "20261008190351",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261008200840",
+      "order": 57,
+      "source_file": "20261008200840_restrict_worker_work_access.sql",
+      "hosted_version": "20261008200840",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261009220510",
+      "order": 106,
+      "source_file": "20261009220510_d5o_connected_field_changes.sql",
+      "hosted_version": "20261009220510",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261009234405",
+      "order": 109,
+      "source_file": "20261009234405_d5o_current_release_field_start.sql",
+      "hosted_version": "20261009234405",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261010150000",
+      "order": 113,
+      "source_file": "20261010150000_connected_service_billing_terms.sql",
+      "hosted_version": "20261010150000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261014164339",
+      "order": 126,
+      "source_file": "20261014164339_carry_unchanged_crew_responses.sql",
+      "hosted_version": "20261014164339",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261014235613",
+      "order": 129,
+      "source_file": "20261014235613_reject_ambiguous_asset_contribution.sql",
+      "hosted_version": "20261014235613",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261014235900",
+      "order": 130,
+      "source_file": "20261014235900_d5o_private_evidence_index.sql",
+      "hosted_version": "20261014235900",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261015111608",
+      "order": 131,
+      "source_file": "20261015111608_restrict_supervisor_private_evidence.sql",
+      "hosted_version": "20261015111608",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261016200000",
+      "order": 141,
+      "source_file": "20261016200000_d5o_graybar_procurement.sql",
+      "hosted_version": "20261016200000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261016210000",
+      "order": 142,
+      "source_file": "20261016210000_d5o_graybar_quote_cost_and_invoice_guards.sql",
+      "hosted_version": "20261016210000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261016270000",
+      "order": 148,
+      "source_file": "20261016270000_d5o_schedule_hold_scope_guard.sql",
+      "hosted_version": "20261016270000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261016280000",
+      "order": 149,
+      "source_file": "20261016280000_d5o_schedule_hold_scope_guard_complete.sql",
+      "hosted_version": "20261016280000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017000000",
+      "order": 150,
+      "source_file": "20261017000000_hall_c_work_display_correction.sql",
+      "hosted_version": "20261017000000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017010000",
+      "order": 151,
+      "source_file": "20261017010000_service_only_work_title_correction.sql",
+      "hosted_version": "20261017010000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017020000",
+      "order": 152,
+      "source_file": "20261017020000_d5o_connected_design_spend_authority.sql",
+      "hosted_version": "20261017020000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017030000",
+      "order": 153,
+      "source_file": "20261017030000_d5o_design_spend_queue_correction.sql",
+      "hosted_version": "20261017030000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017040000",
+      "order": 154,
+      "source_file": "20261017040000_d5o_design_spend_window_balance.sql",
+      "hosted_version": "20261017040000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017050000",
+      "order": 155,
+      "source_file": "20261017050000_d5o_design_spend_expired_window.sql",
+      "hosted_version": "20261017050000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017060000",
+      "order": 156,
+      "source_file": "20261017060000_d5o_purchase_economic_authority.sql",
+      "hosted_version": "20261017060000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017090000",
+      "order": 159,
+      "source_file": "20261017090000_d5o_field_labor_economic_authority.sql",
+      "hosted_version": "20261017090000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017091000",
+      "order": 160,
+      "source_file": "20261017091000_d5o_labor_legacy_publication_and_cost_guard.sql",
+      "hosted_version": "20261017091000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017096000",
+      "order": 165,
+      "source_file": "20261017096000_d5o_booking_effort_in_typed_writer.sql",
+      "hosted_version": "20261017096000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017098000",
+      "order": 167,
+      "source_file": "20261017098000_d5o_labor_report_reservation_source.sql",
+      "hosted_version": "20261017098000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017100000",
+      "order": 168,
+      "source_file": "20261017100000_d5o_design_no_material_disposition.sql",
+      "hosted_version": "20261017100000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017172557",
+      "order": 173,
+      "source_file": "20261017172557_d5o_design_cost_variable_guard.sql",
+      "hosted_version": "20261017172557",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017173237",
+      "order": 174,
+      "source_file": "20261017173237_d5o_finance_forecast_queue.sql",
+      "hosted_version": "20261017173237",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017173653",
+      "order": 175,
+      "source_file": "20261017173653_d5o_outlook_complete_source_guards.sql",
+      "hosted_version": "20261017173653",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261017190000",
+      "order": 177,
+      "source_file": "20261017190000_d5o_cache_design_package_draft_guards.sql",
+      "hosted_version": "20261017190000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261018023000",
+      "order": 183,
+      "source_file": "20261018023000_d5o_field_labor_queue_scope.sql",
+      "hosted_version": "20261018023000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261018190000",
+      "order": 186,
+      "source_file": "20261018190000_d5o_subcontract_delegate_selection.sql",
+      "hosted_version": "20261018190000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261018210000",
+      "order": 189,
+      "source_file": "20261018210000_d5o_design_cost_review_delegate_selection.sql",
+      "hosted_version": "20261018210000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261018220000",
+      "order": 190,
+      "source_file": "20261018220000_d5o_outlook_review_delegate_selection.sql",
+      "hosted_version": "20261018220000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261019000000",
+      "order": 192,
+      "source_file": "20261019000000_d5o_field_start_lead_policy.sql",
+      "hosted_version": "20261019000000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261019010000",
+      "order": 193,
+      "source_file": "20261019010000_d5o_configured_delivery_receiver.sql",
+      "hosted_version": "20261019010000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261019030000",
+      "order": 195,
+      "source_file": "20261019030000_hosted_initial_configuration_sha256_correction.sql",
+      "hosted_version": "20261019030000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261019040000",
+      "order": 196,
+      "source_file": "20261019040000_hosted_initial_configuration_empty_queue.sql",
+      "hosted_version": "20261019040000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261019050000",
+      "order": 197,
+      "source_file": "20261019050000_hosted_initial_configuration_empty_read.sql",
+      "hosted_version": "20261019050000",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261019162237",
+      "order": 199,
+      "source_file": "20261019162237_d5o_preserve_legacy_schedule_on_typed_transition.sql",
+      "hosted_version": "20261019162237",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261019170000",
+      "order": 200,
+      "source_file": "20261019170000_d5o_field_labor_source_text_precedence.sql",
+      "hosted_version": "20261019164403",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261019183127",
+      "order": 201,
+      "source_file": "20261019183127_d5o_admin_backend.sql",
+      "hosted_version": "20261019211112",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261019213000",
+      "order": 202,
+      "source_file": "20261019213000_d5o_hosted_configuration_management.sql",
+      "hosted_version": "20261019221852",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261020085414",
+      "order": 203,
+      "source_file": "20261020085414_d5o_design_same_day_schedule_hold.sql",
+      "hosted_version": "20261020085806",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261020180000",
+      "order": 206,
+      "source_file": "20261020180000_d5o_workforce_field_readiness.sql",
+      "hosted_version": "20261020203138",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261020193000",
+      "order": 207,
+      "source_file": "20261020193000_d5o_binding_current_publication.sql",
+      "hosted_version": "20261020205337",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261020223652",
+      "order": 209,
+      "source_file": "20261020223652_d5o_cross_week_empty_publication.sql",
+      "hosted_version": "20261020235720",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261020231536",
+      "order": 210,
+      "source_file": "20261020231536_d5o_worker_empty_publication_projection.sql",
+      "hosted_version": "20261020235730",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261021114905",
+      "order": 211,
+      "source_file": "20261021114905_d5o_field_worker_invitation_proposal.sql",
+      "hosted_version": "20261021123923",
+      "reason": "stored SQL hash differs from frozen source",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023111641",
+      "order": 212,
+      "source_file": "20261023111641_d5o_service_approval_policy_phase1.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023115306",
+      "order": 213,
+      "source_file": "20261023115306_d5o_phase1b_connected_service_approval.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023123751",
+      "order": 214,
+      "source_file": "20261023123751_d5o_phase2a_organization_people.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023140000",
+      "order": 215,
+      "source_file": "20261023140000_d5o_phase2b_tenant_onboarding.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023141000",
+      "order": 216,
+      "source_file": "20261023141000_d5o_phase2b_onboarding_commands.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023142000",
+      "order": 217,
+      "source_file": "20261023142000_d5o_phase2b_vendor_controls.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023143000",
+      "order": 218,
+      "source_file": "20261023143000_d5o_phase2b_template_governance.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023150000",
+      "order": 219,
+      "source_file": "20261023150000_d5o_phase2c_lifecycle_features.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023151000",
+      "order": 220,
+      "source_file": "20261023151000_d5o_phase2c_discover_policy.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023152000",
+      "order": 221,
+      "source_file": "20261023152000_d5o_phase2c_connected_work_gate.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023153646",
+      "order": 222,
+      "source_file": "20261023153646_d5o_phase2d_phase_policies.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023153752",
+      "order": 223,
+      "source_file": "20261023153752_d5o_phase2d_define_develop_guards.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023180000",
+      "order": 224,
+      "source_file": "20261023180000_d5o_phase2f_operate_review_guard.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261023201553",
+      "order": 225,
+      "source_file": "20261023201553_phase2g_phase_status.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261024010000",
+      "order": 226,
+      "source_file": "20261024010000_d5o_service_sla_calendar_validation.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261024011000",
+      "order": 227,
+      "source_file": "20261024011000_d5o_service_job_stable_work_type_key.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261024012000",
+      "order": 228,
+      "source_file": "20261024012000_d5o_service_child_identity_guard.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261024105438",
+      "order": 229,
+      "source_file": "20261024105438_phase2hs_connected_design_capability_gate.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261024112500",
+      "order": 230,
+      "source_file": "20261024112500_phase2hs_overnight_crew_eligibility.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261024113000",
+      "order": 231,
+      "source_file": "20261024113000_phase2hs_connected_develop_capability_gate.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261024150000",
+      "order": 232,
+      "source_file": "20261024150000_phase2ht_workforce_qualification_expiry.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261024151000",
+      "order": 233,
+      "source_file": "20261024151000_phase2ht_current_worker_assignment.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261025010000",
+      "order": 234,
+      "source_file": "20261025010000_d5o_phase2htd_connected_service_capability_boundary.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261027085730",
+      "order": 235,
+      "source_file": "20261027085730_d5o_operate_acceptance_one_time_guard.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "SRC-20261027190000",
+      "order": 236,
+      "source_file": "20261027190000_d5o_field_fact_latest_permit_order.sql",
+      "hosted_version": null,
+      "reason": "source version absent from hosted ledger",
+      "required_evidence": "stored SQL diff, object-level dependency and historical-data behavior on authorized protected copy"
+    },
+    {
+      "id": "REMAP-20261020115849",
+      "order": 204,
+      "source_file": "20261020115849_d5o_admin_invitation_setup.sql",
+      "hosted_version": "20261020131219",
+      "reason": "SQL text matches but hosted ledger version differs",
+      "required_evidence": "reviewed version mapping and safe forward executor behavior without fabricated ledger history"
+    },
+    {
+      "id": "REMAP-20261020135000",
+      "order": 205,
+      "source_file": "20261020135000_d5o_admin_invitation_role_retry_guard.sql",
+      "hosted_version": "20261020131240",
+      "reason": "SQL text matches but hosted ledger version differs",
+      "required_evidence": "reviewed version mapping and safe forward executor behavior without fabricated ledger history"
+    },
+    {
+      "id": "REMAP-20261020200000",
+      "order": 208,
+      "source_file": "20261020200000_d5o_worker_binding_publication_attribution.sql",
+      "hosted_version": "20261020205350",
+      "reason": "SQL text matches but hosted ledger version differs",
+      "required_evidence": "reviewed version mapping and safe forward executor behavior without fabricated ledger history"
+    },
+    {
+      "id": "HOST-001",
+      "hosted_version": "001",
+      "hosted_name": "initial_schema",
+      "reason": "hosted legacy entry has no source file",
+      "required_evidence": "retained historical SQL and object effects on authorized protected copy"
+    },
+    {
+      "id": "HOST-002",
+      "hosted_version": "002",
+      "hosted_name": "customer_order_item_rls",
+      "reason": "hosted legacy entry has no source file",
+      "required_evidence": "retained historical SQL and object effects on authorized protected copy"
+    },
+    {
+      "id": "HOST-003",
+      "hosted_version": "003",
+      "hosted_name": "webhook_event_status",
+      "reason": "hosted legacy entry has no source file",
+      "required_evidence": "retained historical SQL and object effects on authorized protected copy"
+    },
+    {
+      "id": "HOST-004",
+      "hosted_version": "004",
+      "hosted_name": "backfill_webhook_status",
+      "reason": "hosted legacy entry has no source file",
+      "required_evidence": "retained historical SQL and object effects on authorized protected copy"
+    },
+    {
+      "id": "HOST-005",
+      "hosted_version": "005",
+      "hosted_name": "transaction_idempotency_indexes",
+      "reason": "hosted legacy entry has no source file",
+      "required_evidence": "retained historical SQL and object effects on authorized protected copy"
+    },
+    {
+      "id": "HOST-006",
+      "hosted_version": "006",
+      "hosted_name": "enterprise_integration_foundation",
+      "reason": "hosted legacy entry has no source file",
+      "required_evidence": "retained historical SQL and object effects on authorized protected copy"
+    },
+    {
+      "id": "HOST-007",
+      "hosted_version": "007",
+      "hosted_name": "enterprise_d365_cached_models",
+      "reason": "hosted legacy entry has no source file",
+      "required_evidence": "retained historical SQL and object effects on authorized protected copy"
+    },
+    {
+      "id": "HOST-008",
+      "hosted_version": "008",
+      "hosted_name": "transaction_unique_constraints",
+      "reason": "hosted legacy entry has no source file",
+      "required_evidence": "retained historical SQL and object effects on authorized protected copy"
+    },
+    {
+      "id": "HOST-009",
+      "hosted_version": "009",
+      "hosted_name": "customer_portal_rls",
+      "reason": "hosted legacy entry has no source file",
+      "required_evidence": "retained historical SQL and object effects on authorized protected copy"
+    },
+    {
+      "id": "HOST-010",
+      "hosted_version": "010",
+      "hosted_name": "seed_enterprise_integration_demo",
+      "reason": "hosted legacy entry has no source file",
+      "required_evidence": "retained historical SQL and object effects on authorized protected copy"
+    }
+  ]
+}

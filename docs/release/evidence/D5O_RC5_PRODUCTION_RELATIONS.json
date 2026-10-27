@@ -1,0 +1,2279 @@
+{
+  "project": "fcawktdjoxvahhgvkebx",
+  "capturedAtUtc": "2026-10-27",
+  "queryFamily": "relations",
+  "rows": [
+    {
+      "schema": "auth",
+      "name": "audit_log_entries",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "custom_oauth_providers",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "flow_state",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "identities",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "instances",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "mfa_amr_claims",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "mfa_challenges",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "mfa_factors",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "mfa_recovery_code_sets",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "mfa_recovery_codes",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "oauth_authorizations",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "oauth_client_states",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "oauth_clients",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "oauth_consents",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "one_time_tokens",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "refresh_tokens",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "saml_providers",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "saml_relay_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "schema_migrations",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "scim_tokens",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "scim_users",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "sessions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "sso_domains",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "sso_providers",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "users",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "webauthn_challenges",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "auth",
+      "name": "webauthn_credentials",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false,
+      "owner": "supabase_auth_admin"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "admin_binding_corrections",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "admin_identity_requests",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "admin_membership_reasons",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "admin_succession_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "configuration_admin_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "configuration_admin_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "configuration_create_rights",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "configuration_handoff_roles",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "configuration_tenants",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "configuration_versions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "configuration_work_types",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_create_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_crew_profile_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_crew_profiles",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_define_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_define_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_define_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_deploy_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_deploy_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_deploy_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_design_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_design_handoff_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_design_handoff_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_design_handoffs",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_design_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_design_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_estimate_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_estimate_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_estimate_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_field_change_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_field_change_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_field_changes",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_job_bill_history",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_job_bills",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_job_cash_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_job_costs",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_job_finance_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_job_finance_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_job_finance_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_offer_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_offer_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_offer_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_operate_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_operate_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_operate_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_package_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_package_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_pricing_active",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_pricing_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_pricing_policies",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_pricing_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_pursuit_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_pursuit_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_pursuit_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_rom_design_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_rom_design_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_rom_design_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_schedule_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_schedule_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_schedule_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_billing_terms",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_billing_terms_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_billing_terms_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_cost_entries",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_cost_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_cost_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_cost_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_finance_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_finance_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_finance_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_invoice_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_invoice_payments",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_invoice_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_invoices",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_service_work",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_solution_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_solution_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_solution_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_workforce_commands",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "connected_workforce_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "crew_binding_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "crew_bindings",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "customer_decision_evidence",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_cost_claims",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_cost_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_cost_evidence",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_cost_links",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_cost_positions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_cost_rate_basis",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_cost_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_document_evidence",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_internal_rate_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_internal_rate_positions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_internal_rate_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_internal_rates",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_spend_authorities",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_spend_commitments",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_spend_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_spend_positions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "design_spend_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "graybar_document_extractions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "graybar_documents",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "graybar_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "graybar_job_cost_links",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "graybar_job_cost_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "graybar_products",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "graybar_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "graybar_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "handoff_configuration_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "handoff_configuration_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "handoff_route_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "handoff_route_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "initial_configuration_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "initial_configuration_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "labor_actuals",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "labor_authorities",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "labor_authority_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "labor_authority_positions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "labor_authority_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "labor_booking_intents",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "labor_cost_adjustments",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "labor_reservations",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "membership_assignment_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "memberships",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "outlook_assessments",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "prototype_state_revisions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "prototype_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "purchase_authorities",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "purchase_authority_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "purchase_authority_positions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "purchase_authority_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "purchase_reservations",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "spending_delegate_categories",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "spending_delegate_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "spending_delegate_positions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "spending_delegate_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "spending_delegate_rules",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "subcontract_companies",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "subcontract_cost_links",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "subcontract_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "subcontract_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "subcontract_reservations",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "subcontract_states",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "synthetic_beta_admin_bootstrap",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "work_command_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "work_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "work_identity_links",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "work_records",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "d5o_hosted",
+      "name": "workspaces",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "acceptance_records",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "activity_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "archive_package_items",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "as_built_records",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "attachments",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "audit_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "billing_backup_items",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "budget_baseline_items",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "budget_baselines",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "change_event_backups",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "change_event_links",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "change_events",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "change_pricing_records",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "changed_conditions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "closeout_packages",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "closeout_requirements",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "comments",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "commercial_exposure_items",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "companies",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "contacts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "contract_baselines",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "corrective_actions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "cost_codes",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "crew_members",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "crew_plans",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "crews",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "d5o_gates",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "daily_report_crew_members",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "daily_reports",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "employees",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "entity_attachments",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "equipment",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "equipment_readiness_items",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "equipment_usage_entries",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "field_blockers",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "field_delays",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "field_photo_records",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "flow_down_obligations",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "gate_artifacts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "gc_performance_profiles",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "go_no_go_score_dimensions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "go_no_go_scores",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "improvement_actions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "installed_quantities",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "jha_records",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "labor_hour_entries",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "lessons_learned",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "lien_waivers",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "material_readiness_items",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "material_receipts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "materials",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "mobilization_plans",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "notice_requirements",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "opportunities",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "opportunity_documents",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "opportunity_reviews",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "organizations",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "pay_applications",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "permissions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "permit_access_items",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "production_rate_records",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "project_decisions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "project_issues",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "project_performance_scorecards",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "project_risks",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "project_setup_artifacts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "projects",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "punch_items",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "quality_deficiencies",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "quality_inspections",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "rfi_links",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "rfis",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "risk_library_items",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "role_permissions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "roles",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "safety_incidents",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "safety_observations",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "safety_plans",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "schedule_baselines",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "schedule_milestones",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "schedule_of_value_lines",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "scope_matrix_items",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "status_history",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "submittal_links",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "submittals",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "supervisor_signoffs",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "test_records",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "toolbox_talks",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "user_profiles",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "utility_locate_records",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "vendor_performance_profiles",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "warranty_records",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "work_packages",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "workflow_evidence_requirements",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "workflow_instances",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "workflow_signals",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "workflow_source_links",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "workflow_transactions",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "workspace_memberships",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "public",
+      "name": "workspaces",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "postgres"
+    },
+    {
+      "schema": "storage",
+      "name": "buckets",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_storage_admin"
+    },
+    {
+      "schema": "storage",
+      "name": "buckets_analytics",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_storage_admin"
+    },
+    {
+      "schema": "storage",
+      "name": "buckets_vectors",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_storage_admin"
+    },
+    {
+      "schema": "storage",
+      "name": "migrations",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_storage_admin"
+    },
+    {
+      "schema": "storage",
+      "name": "objects",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_storage_admin"
+    },
+    {
+      "schema": "storage",
+      "name": "s3_multipart_uploads",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_storage_admin"
+    },
+    {
+      "schema": "storage",
+      "name": "s3_multipart_uploads_parts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_storage_admin"
+    },
+    {
+      "schema": "storage",
+      "name": "vector_indexes",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "relforcerowsecurity": false,
+      "owner": "supabase_storage_admin"
+    }
+  ]
+}

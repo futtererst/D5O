@@ -1,0 +1,23 @@
+{
+  "test": "clean-236-install",
+  "sourceCommit": "dcb72a3868e48d536449e109872403974b79fa1b",
+  "startedAt": "2026-10-27T21:07:59.980Z",
+  "projectId": "d5o-p0a-58bc8a2e-082",
+  "ledgerCount": 236,
+  "lastVersion": "20261027190000",
+  "d5oTableCount": 167,
+  "d5oRlsTableCount": 167,
+  "fieldFactSecurityDefiner": "t",
+  "fieldFactAuthenticatedExecute": "t",
+  "fieldFactAnonExecute": "f",
+  "passed": true,
+  "cleanup": {
+    "projectId": "d5o-p0a-58bc8a2e-082",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "finishedAt": "2026-10-27T21:10:09.057Z"
+}
