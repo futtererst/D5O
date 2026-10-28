@@ -1,0 +1,136 @@
+{
+  "format": "d5o-local-hosted-employee-acceptance-v1",
+  "candidateCommit": "4c8050f3a643bb0e92565fcbd8e1d5df3744d9ea",
+  "applicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "runtimeMode": "production_rehearsal",
+  "auth": "genuine fictional GoTrue password session",
+  "result": {
+    "passed": 24,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  },
+  "employee": {
+    "invitationStatus": "existing_confirmed",
+    "employeeRole": "project_manager",
+    "workId": "tenant_a_test-e66bfd07177e463b8ebfd5b25a152acb",
+    "taskLink": "/work/customer/tenant_a_test?work=tenant_a_test-e66bfd07177e463b8ebfd5b25a152acb&task=discover%3Atenant_a_test-e66bfd07177e463b8ebfd5b25a152acb%3Aintake%3A0#phase-discover",
+    "authenticatedBrowserDecision": "Discover intake submitted",
+    "taskResolved": true,
+    "persistenceAfterReload": true,
+    "httpStatus": 200,
+    "commandId": "c8e703d2-8998-4bef-87a7-acc562be029c",
+    "nextIndependentReviewProjected": true,
+    "authoritativeSubmitEventAndReceipt": 1,
+    "screenshots": [
+      "employee-my-work-assigned.png",
+      "employee-my-work-submitted.png"
+    ]
+  },
+  "checks": [
+    {
+      "name": "vendor sees validated immutable template directory",
+      "status": "PASS"
+    },
+    {
+      "name": "vendor provisions A and B through one authoritative command",
+      "status": "PASS"
+    },
+    {
+      "name": "non-vendor and customer cannot provision or mutate template",
+      "status": "PASS"
+    },
+    {
+      "name": "replay, collision and duplicate tenant key preserve one result",
+      "status": "PASS"
+    },
+    {
+      "name": "concurrent identical provisioning creates one tenant",
+      "status": "PASS"
+    },
+    {
+      "name": "provider failure remains inactive and vendor recovery replaces only the offer",
+      "status": "PASS"
+    },
+    {
+      "name": "expired initial invitation recovers without a duplicate tenant",
+      "status": "PASS"
+    },
+    {
+      "name": "governed template version is validated, published, immutable and retired",
+      "status": "PASS"
+    },
+    {
+      "name": "initial offers are tenant-bound and accepted by exact recipients",
+      "status": "PASS"
+    },
+    {
+      "name": "incomplete tenants cannot create Work or activate",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_a_test publishes its own USD 10000 threshold",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_b_test publishes its own USD 25000 threshold",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_a_test confirms readiness and vendor activates",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_b_test confirms readiness and vendor activates",
+      "status": "PASS"
+    },
+    {
+      "name": "vendor grants and flags connected Work independently",
+      "status": "PASS"
+    },
+    {
+      "name": "Discover policy publication controls connected Work creation",
+      "status": "PASS"
+    },
+    {
+      "name": "direct RPC enforces entitlement and Discover policy",
+      "status": "PASS"
+    },
+    {
+      "name": "vendor suspension blocks existing sessions and direct RPC; reactivation restores only prior rights",
+      "status": "PASS"
+    },
+    {
+      "name": "same Work and approval commands apply distinct tenant policies",
+      "status": "PASS"
+    },
+    {
+      "name": "audit and cross-tenant configuration access remain isolated",
+      "status": "PASS"
+    },
+    {
+      "name": "suspended initial administrator immediately loses protected access",
+      "status": "PASS"
+    },
+    {
+      "name": "authenticated vendor and customer onboarding pages render",
+      "status": "PASS"
+    },
+    {
+      "name": "audited rollback creates a new version and preserves historical pins",
+      "status": "PASS"
+    },
+    {
+      "name": "release hosted employee invitation and My Work decision",
+      "status": "PASS"
+    }
+  ],
+  "cleanup": {
+    "clean": true,
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": []
+  },
+  "productionWritesPerformed": false
+}

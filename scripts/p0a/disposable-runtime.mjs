@@ -6,11 +6,12 @@ import { join, resolve, sep } from "node:path";
 import { createServer } from "node:net";
 import { rewriteSupabaseConfigForProject } from "../local-supabase-config-utils.mjs";
 import { createSanitizedChildEnv, parseSupabaseStatusEnv } from "../cfg-runtime-03-loopback-guard.mjs";
-import { assertLoopbackNetwork, inspectSupabaseProjectBindings, loopbackNetworkName, removeLoopbackNetwork } from "../local-supabase-loopback-network.mjs";
+import { assertLoopbackNetwork, inspectSupabaseProjectBindings, loopbackNetworkName } from "../local-supabase-loopback-network.mjs";
 
 const PREFIX = "d5o-p0a-";
-const run = (root, command, args, env = createSanitizedChildEnv()) => spawnSync(command, args, {
+const run = (root, command, args, env = createSanitizedChildEnv(), timeoutMs = 0) => spawnSync(command, args, {
   cwd: root, env, encoding: "utf8", shell: false, maxBuffer: 1024 * 1024 * 100,
+  ...(timeoutMs ? { timeout: timeoutMs } : {}),
 });
 
 export async function createP0aRuntime(root = process.cwd(), { migrationCutoff = null } = {}) {
@@ -39,14 +40,14 @@ export async function createP0aRuntime(root = process.cwd(), { migrationCutoff =
     const start = run(root, process.execPath, [join(root, "scripts", "run-supabase-loopback.mjs"),
       "start", "--workdir", projectDir, "--network-id", runtime.network,
       ...(releaseMinimal ? ["--exclude", "analytics,edge-runtime,functions,imgproxy,meta,realtime,studio,vector"] : []),
-      "--yes"]);
+      "--yes"], createSanitizedChildEnv(), releaseMinimal ? 240000 : 0);
     if (start.status !== 0) throw new Error(`isolated_start_failed:api_port=${ports.api}:${start.stderr || start.stdout}`);
     runtime.started = true;
     runtime.bindings = inspectSupabaseProjectBindings(projectId);
     let status;
     for (let attempt = 0; attempt < (releaseMinimal ? 3 : 1); attempt++) {
       status = run(root, process.execPath, [join(root, "node_modules", "supabase", "dist", "supabase.js"),
-        "status", "-o", "env", "--workdir", projectDir]);
+        "status", "-o", "env", "--workdir", projectDir], createSanitizedChildEnv(), releaseMinimal ? 20000 : 0);
       if (status.status === 0 || !/500 Internal Server Error/.test(status.stderr || "")) break;
       await new Promise((done) => setTimeout(done, 2000));
     }
@@ -72,25 +73,37 @@ export function cleanupP0aRuntime(runtime) {
   const temp = realpathSync(tmpdir());
   if (!resolved.startsWith(temp + sep) || !resolved.includes(projectId)) throw new Error("cleanup_path_outside_p0a_temp");
   const stop = run(root, process.execPath, [join(root, "node_modules", "supabase", "dist", "supabase.js"),
-    "stop", "--workdir", projectDir, "--project-id", projectId, "--no-backup", "--yes"]);
+    "stop", "--workdir", projectDir, "--project-id", projectId, "--no-backup", "--yes"],
+    createSanitizedChildEnv(), process.env.D5O_RELEASE_MINIMAL_STACK === "1" ? 30000 : 0);
   if (stop.status !== 0) {
-    const listed = run(root, "docker", ["ps", "-a", "--format", "{{.Names}}",
-      "--filter", `label=com.supabase.cli.project=${projectId}`]);
+    let listed;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      listed = run(root, "docker", ["ps", "-a", "--format", "{{.Names}}",
+        "--filter", `label=com.supabase.cli.project=${projectId}`], createSanitizedChildEnv(), 15000);
+      if (listed.status === 0) break;
+    }
     const names = listed.stdout.split(/\r?\n/).filter(Boolean);
     if (listed.status !== 0 || names.some((name) => !name.endsWith(projectId)))
       throw new Error("p0a_cleanup_container_identity_mismatch");
-    for (const name of names) run(root, "docker", ["rm", "-f", name]);
-    const volumes = run(root, "docker", ["volume", "ls", "--format", "{{.Name}}"]).stdout
+    for (const name of names) run(root, "docker", ["rm", "-f", name], createSanitizedChildEnv(), 15000);
+    const volumes = run(root, "docker", ["volume", "ls", "--format", "{{.Name}}"], createSanitizedChildEnv(), 15000).stdout
       .split(/\r?\n/).filter((name) => name.endsWith(projectId));
-    for (const name of volumes) run(root, "docker", ["volume", "rm", name]);
+    for (const name of volumes) run(root, "docker", ["volume", "rm", name], createSanitizedChildEnv(), 15000);
   }
   let networkError = null;
-  try { if (runtime.network) removeLoopbackNetwork(projectId); } catch (error) { networkError = error.message; }
+  try {
+    if (runtime.network) {
+      if (runtime.network !== loopbackNetworkName(projectId)) throw new Error("network_identity_mismatch");
+      const removed = run(root, "docker", ["network", "rm", runtime.network], createSanitizedChildEnv(), 15000);
+      if (removed.status !== 0 && !/not found|no such network/i.test(`${removed.stdout}\n${removed.stderr}`))
+        throw new Error(`network_remove_failed:${removed.stderr || removed.stdout}`);
+    }
+  } catch (error) { networkError = error.message; }
   rmSync(resolved, { recursive: true, force: true });
-  const resources = run(root, "docker", ["ps", "-a", "--format", "{{.Names}}"]);
+  const resources = run(root, "docker", ["ps", "-a", "--format", "{{.Names}}"], createSanitizedChildEnv(), 15000);
   const residualContainers = resources.stdout.split(/\r?\n/).filter((name) => name.includes(projectId));
   return { projectId, stopExit: stop.status, networkError, projectDirectoryAbsent: !existsSync(resolved),
-    residualContainers, clean: !networkError && !existsSync(resolved) && residualContainers.length === 0 };
+    residualContainers, clean: resources.status === 0 && !networkError && !existsSync(resolved) && residualContainers.length === 0 };
 }
 
 function freePort() {

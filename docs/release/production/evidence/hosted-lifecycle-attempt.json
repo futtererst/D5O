@@ -1,0 +1,17 @@
+{
+  "format": "d5o-hosted-lifecycle-attempt-v1",
+  "applicationCommit": "4c8050f3a643bb0e92565fcbd8e1d5df3744d9ea",
+  "applicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "runtime": "local production-mode rehearsal with fictional GoTrue identities",
+  "fixture": "isolated disposable Supabase stack, optional analytics disabled",
+  "passed": 33,
+  "failed": 1,
+  "lastPassed": "both fictional tenants created a connected Design package and issued its document",
+  "failedCase": "Design policy denies missing method and accepts reviewed package release",
+  "failureBoundary": "expected Complete and release Design package My Work link absent; runner stopped before the release command",
+  "rootCause": "UNRESOLVED: task projection prerequisite or runner expectation versus application defect",
+  "laterCommands": "NOT EXECUTED",
+  "cleanup": "exact disposable containers, volumes, network and temporary directory removed after bounded runner teardown failed on intermittent Docker HTTP 500",
+  "productionTouched": false,
+  "protectedDataIncluded": false
+}

@@ -710,6 +710,7 @@ try {
       },{workspace:a.workspaceKey,email:users.project_manager.email,commandId:inviteId});
       assert.equal(invitation.status,200,JSON.stringify(invitation.body));
       assert.equal(invitation.body.result?.status,"existing_confirmed");
+      evidence.employeeStage="invitation_requested";
       const employee=await browser.newPage({viewport:{width:1440,height:900}});
       await employee.goto(`${base}/auth/sign-in?next=${encodeURIComponent(`/work/invitation?workspace=${a.workspaceKey}&request=${inviteId}`)}`);
       await employee.getByLabel("Email").fill(users.project_manager.email);
@@ -718,6 +719,7 @@ try {
       await employee.getByRole("heading",{name:"Organization invitation"}).waitFor({timeout:30000});
       await employee.getByRole("button",{name:"Accept invitation"}).click();
       await employee.getByRole("status").filter({hasText:"project manager"}).waitFor({timeout:30000});
+      evidence.employeeStage="invitation_accepted";
       const created=await employee.evaluate(async({workspaceKey,configurationVersionId})=>{
         const response=await fetch(`/api/d5o-hosted/connected-work?workspace=${workspaceKey}`,{
           method:"POST",headers:{"Content-Type":"application/json"},
@@ -731,6 +733,7 @@ try {
       assert.equal(created.status,201,JSON.stringify(created.body));
       const workId=created.body.result?.presentationId;
       assert(workId,"missing canonical Work identity");
+      evidence.employeeStage="connected_work_created";
       await employee.goto(`${base}/work/customer/${a.workspaceKey}`);
       await employee.getByRole("heading",{name:"My Work"}).waitFor({timeout:30000});
       const taskList=employee.getByRole("heading",{name:"My Work"}).locator("xpath=following-sibling::*[1]");
@@ -738,9 +741,13 @@ try {
       await taskLink.waitFor({timeout:30000});
       const href=await taskLink.getAttribute("href");
       assert(href?.includes("&task="));
+      evidence.employeeStage="my_work_task_visible";
       await taskLink.click();
       await employee.getByRole("status").filter({hasText:"Assigned responsibility: Prepare Discover intake"})
         .waitFor({timeout:30000});
+      const screenshotDir=resolve(root,"docs/release/production/evidence");
+      mkdirSync(screenshotDir,{recursive:true});
+      await employee.screenshot({path:resolve(screenshotDir,"employee-my-work-assigned.png"),fullPage:true});
       await employee.reload();
       await employee.getByRole("status").filter({hasText:"Assigned responsibility: Prepare Discover intake"})
         .waitFor({timeout:30000});
@@ -757,8 +764,17 @@ try {
       await control.getByLabel("Known risk or unknown").fill("Synthetic scheduling dependency");
       await control.getByRole("button",{name:"Save intake revision"}).click();
       await control.getByText(/Intake revision 1/).waitFor({timeout:30000});
-      await control.getByRole("button",{name:"Submit intake for pursuit decision"}).click();
+      const [submitResponse]=await Promise.all([
+        employee.waitForResponse((response)=>response.url().includes("/api/d5o-hosted/prototype-pursuit-command")
+          && response.request().method()==="POST",{timeout:30000}),
+        control.getByRole("button",{name:"Submit intake for pursuit decision"}).click()
+      ]);
+      assert.equal(submitResponse.status(),200,JSON.stringify(await submitResponse.json()));
+      const submittedCommand=submitResponse.request().postDataJSON();
+      assert.equal(submittedCommand.action,"submit");
       await control.getByText(/submitted/).first().waitFor({timeout:30000});
+      evidence.employeeStage="browser_decision_submitted";
+      await employee.screenshot({path:resolve(screenshotDir,"employee-my-work-submitted.png"),fullPage:true});
       await employee.reload();
       const after=await employee.evaluate(async(workspace)=>{
         const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`);
@@ -766,10 +782,29 @@ try {
       },a.workspaceKey);
       assert.equal(after.status,200);
       assert(!after.body.tasks.some((task)=>task.workId===workId&&task.action==="intake"),"submitted task remained available");
+      const reviewer=await adminPage.evaluate(async(workspace)=>{
+        const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`);
+        return {status:response.status,body:await response.json()};
+      },a.workspaceKey);
+      assert.equal(reviewer.status,200);
+      assert(reviewer.body.tasks.some((task)=>task.workId===workId&&task.action==="intake-review"),
+        "next independent review responsibility was not projected");
+      const eventAndReceiptCount=Number(sql(`select count(*) from d5o_hosted.connected_pursuit_events e
+        join d5o_hosted.connected_pursuit_receipts r on r.workspace_id=e.workspace_id
+          and r.work_id=e.work_id and r.command_id=e.command_id
+        join d5o_hosted.work_identity_links l on l.workspace_id=e.workspace_id and l.work_id=e.work_id
+        where l.presentation_id=${q(workId)} and e.actor_user_id=${q(users.project_manager.id)}
+          and e.action='submit' and e.authority_role='project_manager'
+          and e.command_id=${q(submittedCommand.commandId)};`));
+      assert.equal(eventAndReceiptCount,1,"missing or duplicate authoritative pursuit event and receipt");
+      evidence.employeeStage="task_reconciled";
       await employee.close();await adminPage.close();
       return {invitationStatus:invitation.body.result.status,employeeRole:"project_manager",workId,
         taskLink:href,authenticatedBrowserDecision:"Discover intake submitted",taskResolved:true,
-        persistenceAfterReload:true};
+        persistenceAfterReload:true,httpStatus:submitResponse.status(),
+        commandId:submittedCommand.commandId,nextIndependentReviewProjected:true,
+        authoritativeSubmitEventAndReceipt:eventAndReceiptCount,
+        screenshots:["employee-my-work-assigned.png","employee-my-work-submitted.png"]};
     } finally {await browser.close();}
   });
   if(rc20TaskProbe) await check("RC20 hosted customer My Work task link",async()=>{
@@ -813,6 +848,10 @@ try {
 } catch(error) {evidence.setupError=String(error.message).slice(-2500);}
 finally {
   if(server) server.handle.kill();
+  if(releaseTaskProbe) {
+    mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
+    writeFileSync(output,JSON.stringify({...evidence,cleanupPending:true},null,2)+"\n");
+  }
   if(runtime) evidence.cleanup=cleanupP0aRuntime(runtime);
   evidence.finishedAt=new Date().toISOString();
   evidence.summary={passed:evidence.tests.filter((t)=>t.status==="PASS").length,

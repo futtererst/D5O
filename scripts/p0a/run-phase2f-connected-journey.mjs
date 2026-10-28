@@ -10,6 +10,7 @@ import { PDFDocument, StandardFonts } from "pdf-lib";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
+const releaseHostedLifecycle = process.env.D5O_RELEASE_HOSTED_LIFECYCLE === "1";
 const rc4a = process.env.D5O_RC4A_BROWSER === "1";
 const rc4b = process.env.D5O_RC4B_BROWSER === "1";
 const rc4b1 = process.env.D5O_RC4B1_BROWSER === "1";
@@ -32,7 +33,9 @@ const phase2hsGateA = process.env.D5O_PHASE2HS_GATE_A === "1" || phase2hsGateB;
 const phase2hr = process.env.D5O_PHASE2HR === "1" || phase2hsGateA;
 const phase2hCompletion = process.env.D5O_PHASE2H_COMPLETION === "1" || phase2hr;
 const phase2h = process.env.D5O_PHASE2H === "1" || phase2hCompletion;
-const output = resolve(root, rc4b1
+const output = resolve(root, releaseHostedLifecycle
+  ? "docs/release/production/evidence/hosted-lifecycle-qualification.json"
+  : rc4b1
   ? "docs/release/evidence/D5O_RC4B1_INTEGRITY.json"
   : rc4b
   ? "docs/release/evidence/D5O_RC4B_EXECUTION_HOLDS.json"
@@ -84,7 +87,8 @@ const evidence = { baseline: process.env.D5O_SOURCE_SHA || (rc3 ? "e3396521099a5
     : "8d536b4ce74282fe6c3a0e2dbb66b1752ca51ec2"),
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
 let rc3PrepublicationDraftId=null;
-const browserEvidenceDir = (legacyPath) => resolve(root,rc4b1
+const browserEvidenceDir = (legacyPath) => resolve(root,releaseHostedLifecycle
+  ? "docs/release/production/evidence/hosted-lifecycle-browser" : rc4b1
   ? "docs/release/evidence/rc4b1-browser" : rc4b
   ? "docs/release/evidence/rc4b-browser" : rc4a
   ? "docs/release/evidence/rc4a-browser" : rc3c
@@ -193,15 +197,16 @@ async function rc0Case(name, run) {
 const freePort = () => new Promise((done, fail) => { const socket = createServer();socket.once("error", fail);
   socket.listen(0,"127.0.0.1",()=>{const address=socket.address();socket.close(()=>done(address.port));}); });
 async function startNext(url, anon, service) {
-  const port = await freePort();
-  const env = { ...process.env, NODE_ENV: "development", NEXT_TELEMETRY_DISABLED: "1",
+  const port = releaseHostedLifecycle ? 61643 : await freePort();
+  const env = { ...process.env, NODE_ENV: releaseHostedLifecycle ? "production" : "development", NEXT_TELEMETRY_DISABLED: "1",
     NEXT_PUBLIC_SUPABASE_URL: url, NEXT_PUBLIC_SUPABASE_ANON_KEY: anon, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: anon,
     SUPABASE_SECRET_KEY: service, SUPABASE_SERVICE_ROLE_KEY: service, D5O_HOSTED_ENABLED: "1",
-    D5O_ISOLATED_PILOT: "1", D5O_ISOLATED_PILOT_URL: url,
-    D5O_ISOLATED_APP_ORIGIN: `http://127.0.0.1:${port}`, D5O_COMMAND_RUNTIME: "pilot",
-    RYBEXOS_RUNTIME_MODE: "test", RYBEXOS_AUTH_MODE: "supabase", RYBEXOS_DATA_SOURCE: "database" };
+    D5O_ISOLATED_PILOT: releaseHostedLifecycle ? undefined : "1", D5O_ISOLATED_PILOT_URL: releaseHostedLifecycle ? undefined : url,
+    D5O_REHEARSAL_TARGET_URL: releaseHostedLifecycle ? url : undefined,
+    D5O_ISOLATED_APP_ORIGIN: `http://127.0.0.1:${port}`, D5O_COMMAND_RUNTIME: releaseHostedLifecycle ? "rehearsal" : "pilot",
+    RYBEXOS_RUNTIME_MODE: releaseHostedLifecycle ? "production" : "test", RYBEXOS_AUTH_MODE: "supabase", RYBEXOS_DATA_SOURCE: "database" };
   const handle = spawn(process.execPath, [resolve(root,"node_modules/next/dist/bin/next"),
-    "dev","--webpack","-p",String(port),"-H","127.0.0.1"],{cwd:root,env,stdio:["ignore","pipe","pipe"],shell:false});
+    ...(releaseHostedLifecycle ? ["start"] : ["dev","--webpack"]),"-p",String(port),"-H","127.0.0.1"],{cwd:root,env,stdio:["ignore","pipe","pipe"],shell:false});
   let diagnostics="";
   for(const stream of [handle.stdout,handle.stderr]) stream?.on("data",(chunk)=>{
     diagnostics=(diagnostics+String(chunk)).slice(-5000);
@@ -249,11 +254,17 @@ try {
     let page=designPages.get(actor);
     if(page)return page;
     page=await designBrowser.newPage({viewport:{width:1440,height:900}});
-    await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in`);
+    const next=releaseHostedLifecycle && actor.startsWith("a_") ? `/work/customer/${a.workspaceKey}`
+      : releaseHostedLifecycle && actor.startsWith("b_") ? `/work/customer/${b.workspaceKey}` : "/work";
+    await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=${encodeURIComponent(next)}`);
     await page.getByLabel("Email").fill(users[actor].email);
     await page.getByLabel("Password").fill(users[actor].password);
     await page.getByRole("button",{name:"Continue to your work"}).click();
-    await page.waitForURL((location)=>!location.pathname.startsWith("/auth/sign-in"),{timeout:30000});
+    try {await page.waitForURL((location)=>!location.pathname.startsWith("/auth/sign-in"),{timeout:30000});}
+    catch(error) {
+      const alerts=await page.getByRole("alert").allTextContents();
+      throw Error(`hosted_sign_in_navigation:${actor}:${new URL(page.url()).pathname}:${alerts.join("|").slice(0,180)}:${error.message}`);
+    }
     designPages.set(actor,page);
     return page;
   }
@@ -7444,6 +7455,10 @@ try {
 finally {
   if(designBrowser) await designBrowser.close();
   if(server) server.handle.kill();
+  if(releaseHostedLifecycle) {
+    mkdirSync(dirname(output),{recursive:true});
+    writeFileSync(output,JSON.stringify({...evidence,cleanupPending:true},null,2)+"\n");
+  }
   if(runtime) evidence.cleanup=cleanupP0aRuntime(runtime);
   evidence.finishedAt=new Date().toISOString();
   evidence.summary={passed:evidence.tests.filter((t)=>t.status==="PASS").length,
@@ -7452,7 +7467,8 @@ finally {
   mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
   mkdirSync(dirname(output),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
-  console.log(JSON.stringify({...evidence.summary,output:rc4b1
+  console.log(JSON.stringify({...evidence.summary,output:releaseHostedLifecycle
+    ? "docs/release/production/evidence/hosted-lifecycle-qualification.json" : rc4b1
     ? "docs/release/evidence/D5O_RC4B1_INTEGRITY.json" : rc4b
     ? "docs/release/evidence/D5O_RC4B_EXECUTION_HOLDS.json" : rc4a
     ? "docs/release/evidence/D5O_RC4A_SCOPE_CHANGE_BROWSER.json" : phase2hv
