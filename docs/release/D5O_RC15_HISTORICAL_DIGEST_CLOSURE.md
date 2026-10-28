@@ -1,0 +1,20 @@
+# RC15 historical digest gate
+
+**Gate A: FAIL / NO-GO.** Two independent `--network none` restores of the same encrypted 177-entry checkpoint each executed the reviewed 25 late migrations and ended with 202 real ledger entries. A further restore of the original checkpoint and a restore of the separately retained RC8 upgraded checkpoint established the comparison boundaries. Stable primary-key comparisons emitted only counts and column names. All original keys and all original columns in the six preexisting discrepancy tables survived the fresh upgrade unchanged. The other four tables were introduced by the forward migration/bridge.
+
+| RC14 full-row exception | First supported boundary and disposition |
+| --- | --- |
+| `auth.identities` | Identical across independent fresh upgrades and original-to-upgrade comparison (25 original keys). RC14's 25 changed signatures arose after that boundary. The responsible Auth/provider or test operation and changed columns are **unresolved**; release blocker. |
+| `admin_identity_requests` | Original two keys and old columns unchanged. Migration 212 adds `expires_at` with `now()+14 days`; differing new-column values across separate upgrade times explain the two RC14 signatures. |
+| `configuration_templates` | No original table. Forward migration seeds two templates with generated UUIDs; keys differ across independent runs. No original business row was changed. |
+| `configuration_template_versions` | No original table. Forward migration seeds two versions linked to generated template UUIDs; keys differ across runs. No original business row was changed. |
+| `connected_phase_status` | No original table. Migration backfills 11 projected rows; only new `updated_at` values differ across independent runs. Original Work event rows are outside this new table. |
+| `prototype_states` | Four original rows match at the fresh-upgrade boundary. RC14 changed two after synthetic Work activity. Prior nested-entry checks found original Work entries intact, but the original tenant aggregate **row was modified**. RC15's strict original-row preservation gate does not accept that change merely because the activity was synthetic. |
+| `rc8_invitation_bridge_receipts` | No original table. The reviewed bridge creates one receipt; only its new `completed_at` timestamp differs across independent runs. |
+| `spending_delegate_positions` | One original row matches across fresh upgrades. RC14's authenticated fictional `add` command calls `d5o_spending_delegate_command_v1`, which unconditionally increments that preexisting row's `revision` and appends a rule/event/receipt. The RC14 evidence field `existingHistoricalRuleModified:false` described rule rows only; it did **not** mean the original position row was untouched. This is a demonstrated original-row modification and release blocker for the stated preservation rule. |
+| `workspaces` | Two original keys and old columns unchanged. Migration adds profile columns including `updated_at`; the new timestamp differs across independent upgrades. |
+| `storage.migrations` | All 74 rows match at the fresh-upgrade boundary. RC12/RC14 observed two provider-managed `hash` changes after local Storage API startup and a 75th provider row in the exercised copy. The exact provider action for the RC14 capture was not replayed in RC15; retain this as a provider-stage limitation, not business-history proof. |
+
+The [post-upgrade keyed diff](evidence/D5O_RC15_TEN_POST_UPGRADE.json), [original-to-upgrade keyed diff](evidence/D5O_RC15_TEN_ORIGINAL_TO_UPGRADE.json), and [RC8-checkpoint comparison](evidence/D5O_RC15_TEN_RC8_CHECKPOINT_TO_FRESH_UPGRADE.json) distinguish migration effects from later activity without disclosing identifiers or values. RC14's aggregate-only evidence does not identify the exact changed columns for `auth.identities` or `prototype_states`; those remain unproven at the required boundary. No expected digest was rewritten.
+
+**Stop condition applied:** active lifecycle, My Work browser, spending configuration, and security mutation tests were not resumed. Production was unchanged.

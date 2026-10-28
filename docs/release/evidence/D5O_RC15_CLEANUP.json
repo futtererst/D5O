@@ -1,0 +1,9 @@
+{
+  "format": "d5o-rc15-cleanup-v1",
+  "isolatedDatabaseContainersCreated": 4,
+  "isolatedDatabaseContainersRemaining": 0,
+  "plaintextDumpFilesCreated": 0,
+  "temporaryPythonCacheRemaining": false,
+  "encryptedCheckpointOutsideGitRetained": true,
+  "productionModified": false
+}

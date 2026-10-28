@@ -1,0 +1,23 @@
+{
+  "format": "d5o-rc15-ten-dispositions-v1",
+  "applicationCommit": "ef9bf423680c94fbbb41c4d9b7a5a5070ce6a10c",
+  "applicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "referenceCheckpointLedger": 177,
+  "independentUpgradeLedger": [202, 202],
+  "valuesOrIdentifiersDisclosed": false,
+  "gateA": "FAIL",
+  "dispositions": [
+    {"table":"auth.identities","originalKeys":25,"freshUpgradeChangedOriginalRows":0,"rc14MissingSignatures":25,"firstKnownBoundary":"after_fresh_upgrade","changedColumns":"UNRESOLVED","status":"UNRESOLVED_RELEASE_BLOCKER"},
+    {"table":"d5o_hosted.admin_identity_requests","originalKeys":2,"freshUpgradeChangedOriginalColumns":0,"newColumns":["accepted_at","expires_at","provisioning_workspace_id","revoked_at"],"differingBetweenUpgradeRuns":["expires_at"],"status":"MIGRATION_NEW_COLUMN_NONDETERMINISM"},
+    {"table":"d5o_hosted.configuration_templates","originalTable":false,"seededRows":2,"differingBetweenUpgradeRuns":["generated_primary_keys"],"status":"MIGRATION_SEED_NONDETERMINISM"},
+    {"table":"d5o_hosted.configuration_template_versions","originalTable":false,"seededRows":2,"differingBetweenUpgradeRuns":["generated_primary_keys","template_foreign_keys"],"status":"MIGRATION_SEED_NONDETERMINISM"},
+    {"table":"d5o_hosted.connected_phase_status","originalTable":false,"backfilledRows":11,"differingBetweenUpgradeRuns":["updated_at"],"status":"MIGRATION_BACKFILL_TIMESTAMP"},
+    {"table":"d5o_hosted.prototype_states","originalKeys":4,"freshUpgradeChangedOriginalRows":0,"rc14MissingSignatures":2,"firstKnownBoundary":"synthetic_work_activity","changedColumns":"NOT_RETAINED_IN_RC14_EVIDENCE","status":"ORIGINAL_AGGREGATE_ROW_MUTATION_BLOCKER"},
+    {"table":"d5o_hosted.rc8_invitation_bridge_receipts","originalTable":false,"bridgeRows":1,"differingBetweenUpgradeRuns":["completed_at"],"status":"BRIDGE_RECEIPT_TIMESTAMP"},
+    {"table":"d5o_hosted.spending_delegate_positions","originalKeys":1,"freshUpgradeChangedOriginalRows":0,"rc14MissingSignatures":1,"firstKnownBoundary":"fictional_spending_delegate_add","changedColumns":["revision"],"status":"ORIGINAL_TENANT_POSITION_MUTATION_BLOCKER"},
+    {"table":"d5o_hosted.workspaces","originalKeys":2,"freshUpgradeChangedOriginalColumns":0,"newColumns":["branding","default_currency","legal_name","primary_contact_email","profile_revision","time_zone","updated_at"],"differingBetweenUpgradeRuns":["updated_at"],"status":"MIGRATION_NEW_COLUMN_NONDETERMINISM"},
+    {"table":"storage.migrations","originalKeys":74,"freshUpgradeChangedOriginalRows":0,"rc14MissingSignatures":2,"firstKnownBoundary":"local_storage_api_startup_per_RC12","changedColumns":["hash"],"status":"PROVIDER_METADATA_DIFFERENCE_WITH_RC15_REPLAY_LIMIT"}
+  ],
+  "activeLifecycleResumed": false,
+  "productionModified": false
+}

@@ -1,0 +1,107 @@
+{
+  "format": "d5o-rc15-ten-table-keyed-diff-v1",
+  "boundary": "post_upgrade",
+  "reference": "independently restored and upgraded copy",
+  "exercised": "independently restored and upgraded copy",
+  "values_or_identifiers_disclosed": false,
+  "tables": [
+    {
+      "table": "auth.identities",
+      "reference_rows": 25,
+      "exercised_rows": 25,
+      "missing_original_keys": 0,
+      "added_keys": 0,
+      "changed_original_rows": 0,
+      "changed_columns": {}
+    },
+    {
+      "table": "d5o_hosted.admin_identity_requests",
+      "reference_rows": 2,
+      "exercised_rows": 2,
+      "missing_original_keys": 0,
+      "added_keys": 0,
+      "changed_original_rows": 2,
+      "changed_columns": {
+        "expires_at": 2
+      }
+    },
+    {
+      "table": "d5o_hosted.configuration_template_versions",
+      "reference_rows": 2,
+      "exercised_rows": 2,
+      "missing_original_keys": 2,
+      "added_keys": 2,
+      "changed_original_rows": 0,
+      "changed_columns": {}
+    },
+    {
+      "table": "d5o_hosted.configuration_templates",
+      "reference_rows": 2,
+      "exercised_rows": 2,
+      "missing_original_keys": 2,
+      "added_keys": 2,
+      "changed_original_rows": 0,
+      "changed_columns": {}
+    },
+    {
+      "table": "d5o_hosted.connected_phase_status",
+      "reference_rows": 11,
+      "exercised_rows": 11,
+      "missing_original_keys": 0,
+      "added_keys": 0,
+      "changed_original_rows": 11,
+      "changed_columns": {
+        "updated_at": 11
+      }
+    },
+    {
+      "table": "d5o_hosted.prototype_states",
+      "reference_rows": 4,
+      "exercised_rows": 4,
+      "missing_original_keys": 0,
+      "added_keys": 0,
+      "changed_original_rows": 0,
+      "changed_columns": {}
+    },
+    {
+      "table": "d5o_hosted.rc8_invitation_bridge_receipts",
+      "reference_rows": 1,
+      "exercised_rows": 1,
+      "missing_original_keys": 0,
+      "added_keys": 0,
+      "changed_original_rows": 1,
+      "changed_columns": {
+        "completed_at": 1
+      }
+    },
+    {
+      "table": "d5o_hosted.spending_delegate_positions",
+      "reference_rows": 1,
+      "exercised_rows": 1,
+      "missing_original_keys": 0,
+      "added_keys": 0,
+      "changed_original_rows": 0,
+      "changed_columns": {}
+    },
+    {
+      "table": "d5o_hosted.workspaces",
+      "reference_rows": 2,
+      "exercised_rows": 2,
+      "missing_original_keys": 0,
+      "added_keys": 0,
+      "changed_original_rows": 2,
+      "changed_columns": {
+        "updated_at": 2
+      }
+    },
+    {
+      "table": "storage.migrations",
+      "reference_rows": 74,
+      "exercised_rows": 74,
+      "missing_original_keys": 0,
+      "added_keys": 0,
+      "changed_original_rows": 0,
+      "changed_columns": {}
+    }
+  ]
+}

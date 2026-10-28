@@ -1,0 +1,5 @@
+# RC15 spending authority
+
+The RC14 local purchase approval initially returned `409 spending_delegate_or_sponsor_required`. A fictional administrator then used the actual `/api/d5o-hosted/spending-delegation` `add` command for the existing `rybex` tenant, after which purchase and labor approvals succeeded. The underlying `d5o_spending_delegate_command_v1` requires an active membership/role, validates amount and dates, inserts a new rule/event/receipt, and increments `d5o_hosted.spending_delegate_positions.revision` for that tenant. Thus the RC14 action was an authorized fictional test command but **did mutate an original production-derived tenant position row in the disposable copy**. Its original rule rows were not changed; the narrower RC14 flag must not be read as original-row preservation.
+
+Actual production delegate/sponsor selection and tenant spending limits remain **UNKNOWN / BLOCKED**; no production authorization is inferred from the synthetic rule. Production was not queried or modified for spending configuration in RC15. Do not use a fictional delegate rule as a cutover prerequisite or production approval.

@@ -1,0 +1,5 @@
+# RC15 security and integrity
+
+Both network-isolated database upgrades executed all 25 frozen late migrations with the unchanged atomic RC8 pre/215/post bridge. Both ended at 202 actual ledger entries. All 236 source migration file hashes matched the frozen manifest. Original columns and keys in the six preexisting Gate A tables were preserved by the fresh upgrade. RC15 did not start GoTrue, the application, or Storage API, and did not execute active security or evidence mutations after the Gate A stop. RC14's server-mediated evidence results and 23-object byte verification remain prior evidence, not freshly requalified in RC15.
+
+Original tenant aggregate and spending-position rows changed during RC14 synthetic operations; the precise Auth identity change remains unresolved. Therefore post-activity historical integrity, tenant authorization, and private-evidence access cannot be declared fully qualified from this package. The accepted server-mediated evidence contract and direct-user Storage denial remain unchanged. The encrypted checkpoint was not modified.
