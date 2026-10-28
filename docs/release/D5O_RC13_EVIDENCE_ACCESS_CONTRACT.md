@@ -1,0 +1,16 @@
+# RC13 private evidence access contract
+
+**Technical finding:** the frozen hosted application uses an authenticated, server-mediated evidence route. The client receives an application-relative download URL. The server resolves the current user and membership, checks tenant, Work, document or evidence association and role, then uses its server-only Storage client. This is supported by the hosted design-document, customer-decision and private-index routes, their service-only evidence RPCs, and genuine GoTrue-session HTTP results. **Formal contract acceptance remains DECISION REQUIRED** until the owner explicitly accepts this delivery model. RC12's failed direct-user Storage test is retained as a distinct observation.
+
+| Boundary | Evidence and result |
+| --- | --- |
+| Upload and registration | Hosted routes validate actor, Work and document state; upload bytes to private Storage with the server client, verify the uploaded bytes, then register the receipt through a privileged RPC. A failed registration removes the uploaded object. This is source inspection; RC13 did not execute a positive upload. |
+| Index and association | `private-evidence-index` filters receipt rows through current Work and role scope and returns only application-relative URLs. Live index returned 16 entries. |
+| Download | Hosted route rechecks actor and Work scope, obtains the authoritative receipt, retrieves its path with the server client, verifies byte length and SHA-256, and responds with `Cache-Control: private, no-store`. A genuine fictional project-manager session received HTTP 200 and matching bytes. |
+| Revocation and isolation | Same session after membership removal received 403; wrong Work and foreign tenant received 403; anonymous received 401. A forged `objectPath` query did not change returned bytes. Denials withheld bytes. |
+| Direct Storage | `storage.objects` has RLS enabled and zero SELECT policies. Genuine user, foreign user, anonymous and missing-object direct GETs each returned 400 without bytes. These indistinguishable responses do not prove distinct direct-user policy predicates. Direct user SELECT is not required by the demonstrated server route; approval of that contract is still pending. |
+| Client secret and caching | Indexed links contain no Storage path or token. A scan of 93 built client files found no fictional service credential. The privileged client is imported server-side. Positive download and index used `private, no-store`. |
+
+The intended client permission is a valid GoTrue session and the application route's current role/Work authority. The direct Storage API is not a supported user-facing read path under this source contract. No Storage policy was added. Object enumeration was not separately fuzz-tested; the scoped index and absence of direct SELECT constrain the tested surface. Customer-decision download and positive upload are still unexecuted against the historical copy, so private evidence access is **PARTIAL** as a complete lifecycle gate.
+
+See [HTTP operations](evidence/D5O_RC13_HTTP_RESULTS.json), [Storage controls](evidence/D5O_RC13_EVIDENCE_AUTH.json), [client boundary](evidence/D5O_RC13_CLIENT_BOUNDARY.json) and [byte integrity](evidence/D5O_RC13_PRIVATE_VOLUME_INTEGRITY.json). Production was not changed.

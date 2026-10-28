@@ -1,0 +1,25 @@
+{
+  "format": "d5o-rc13-lifecycle-matrix-v1",
+  "frozenApplication": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "runtime": "Next.js 16.4.2 production build on isolated local network",
+  "auth": "GoTrue v2.195.0 genuine fictional sessions",
+  "database": "production-derived 177-to-202 source-ledger upgrade",
+  "operations": [
+    {"group":"tenant administration and membership","status":"PARTIAL","actual":"project-manager configuration request 403; positive admin and membership decisions unexecuted"},
+    {"group":"Work creation and read","status":"PASS","actual":"fictional canonical creation 201; own read 200; foreign 403; anonymous 401"},
+    {"group":"My Work responsibilities","status":"UNEXECUTED"},
+    {"group":"Define draft","status":"PASS","actual":"save 200 persisted; stale revision 409; wrong role 403"},
+    {"group":"Define submission and independent reviews","status":"UNEXECUTED","actual":"incomplete synthetic draft rejected 409; successful transition unexecuted"},
+    {"group":"Design package and acceptance","status":"UNEXECUTED"},
+    {"group":"Develop scheduling and authority","status":"UNEXECUTED"},
+    {"group":"Field permits and execution","status":"UNEXECUTED"},
+    {"group":"Deploy inspection, completion and customer acceptance","status":"UNEXECUTED"},
+    {"group":"Commercial Scope change and execution hold","status":"UNEXECUTED"},
+    {"group":"Operate documentation, support and Finance","status":"UNEXECUTED"},
+    {"group":"Connected Work creation","status":"PASS_WITH_CORRECTION","actual":"baseline valid type 409; corrected create 201, exact replay same Work, conflict 409, disabled type 409"},
+    {"group":"Connected service child Work after Support Active","status":"UNEXECUTED"},
+    {"group":"Design-document evidence download","status":"PASS","actual":"index 200, authorized download 200 hash match; wrong Work, foreign, removed member denied"},
+    {"group":"Evidence upload and customer-decision download","status":"UNEXECUTED"},
+    {"group":"Audit, receipts and phase projection","status":"PARTIAL","actual":"Work projection read 200 and replay behavior observed; later phase chains unexecuted"}
+  ]
+}

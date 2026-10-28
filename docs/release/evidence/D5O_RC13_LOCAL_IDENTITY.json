@@ -1,0 +1,25 @@
+{
+  "format": "d5o-rc13-local-identity-v1",
+  "base_commit": "f1cb523636be83fef8b44d36dfc4052c48b52da5",
+  "frozen_application_commit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "source_migration_files": 236,
+  "source_hash_mismatches": 0,
+  "qualified_bridge_sha256": {
+    "rc8_bridge_pre_215.sql": "0f076c496f756b8f56965b104cddd8c77c558344c89ca84cbf85946dfa924af5",
+    "rc8_bridge_post_215.sql": "b15dcd56a30fc4b46e81ea792fbfd51e19213630b698bd5734334f0cccbdf5d8"
+  },
+  "local_database": "fresh 177-to-202 production-derived restore",
+  "source_ledger": 202,
+  "auth_provider_ledger": 82,
+  "auth_users_including_fictional": 33,
+  "auth_identities_including_fictional": 33,
+  "canonical_work_including_fictional": 17,
+  "storage_objects": 23,
+  "unvalidated_foreign_keys": 0,
+  "storage_objects_select_policies": 0,
+  "storage_objects_rls_enabled": true,
+  "database_docker_network": [
+    "d5o-rc13-net"
+  ],
+  "production_credentials_in_database_environment": false
+}

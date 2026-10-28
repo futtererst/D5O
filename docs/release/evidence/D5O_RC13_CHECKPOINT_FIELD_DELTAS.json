@@ -1,0 +1,79 @@
+{
+  "format": "d5o-rc13-checkpoint-field-deltas-v1",
+  "reference": "separate restored RC8 post-upgrade checkpoint",
+  "tested": "fresh RC13 177-to-202 upgrade plus fictional actors and Work",
+  "values_disclosed": false,
+  "tables": [
+    {
+      "table": "d5o_hosted.admin_identity_requests",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "missing_original_keys": 0,
+      "changed_fields_on_original_keys": {
+        "expires_at": 2
+      }
+    },
+    {
+      "table": "d5o_hosted.configuration_template_versions",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "missing_original_keys": 2,
+      "changed_fields_on_original_keys": {}
+    },
+    {
+      "table": "d5o_hosted.configuration_templates",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "missing_original_keys": 2,
+      "changed_fields_on_original_keys": {}
+    },
+    {
+      "table": "d5o_hosted.connected_phase_status",
+      "historical_rows": 11,
+      "tested_rows": 13,
+      "missing_original_keys": 0,
+      "changed_fields_on_original_keys": {
+        "updated_at": 11
+      }
+    },
+    {
+      "table": "d5o_hosted.prototype_states",
+      "historical_rows": 4,
+      "tested_rows": 4,
+      "missing_original_keys": 0,
+      "changed_fields_on_original_keys": {
+        "revision": 2,
+        "state_json": 2,
+        "updated_at": 2,
+        "updated_by": 2
+      }
+    },
+    {
+      "table": "d5o_hosted.rc8_invitation_bridge_receipts",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "missing_original_keys": 0,
+      "changed_fields_on_original_keys": {
+        "completed_at": 1
+      }
+    },
+    {
+      "table": "d5o_hosted.workspaces",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "missing_original_keys": 0,
+      "changed_fields_on_original_keys": {
+        "updated_at": 2
+      }
+    },
+    {
+      "table": "storage.migrations",
+      "historical_rows": 74,
+      "tested_rows": 75,
+      "missing_original_keys": 0,
+      "changed_fields_on_original_keys": {
+        "hash": 2
+      }
+    }
+  ]
+}

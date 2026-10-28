@@ -1,0 +1,13 @@
+{
+  "format": "d5o-rc13-define-draft-http-v1",
+  "auth": "genuine fictional GoTrue sessions",
+  "syntheticWorkOnly": true,
+  "saveDraftHttp": 200,
+  "draftPersisted": true,
+  "submitIncompleteHttp": 409,
+  "submitIncompleteError": "definition_incomplete",
+  "wrongRoleHttp": 403,
+  "wrongRoleError": "workspace_forbidden",
+  "staleDraftHttp": 409,
+  "staleDraftError": "stale_state"
+}

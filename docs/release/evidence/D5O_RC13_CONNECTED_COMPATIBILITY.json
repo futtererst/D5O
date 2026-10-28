@@ -1,0 +1,27 @@
+{
+  "format": "d5o-rc13-connected-compatibility-v1",
+  "baseline": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "correction": "only explicitly disabled published Work Types excluded",
+  "preCorrection": {
+    "getHttp": 200,
+    "available": true,
+    "selectableTypes": 0,
+    "validTypePostHttp": 409,
+    "validTypeError": "configuration_changed"
+  },
+  "postCorrection": {
+    "getHttp": 200,
+    "selectableTypes": [
+      "technical-delivery",
+      "lifecycle-service"
+    ],
+    "createHttp": 201,
+    "presentationIdPresent": true,
+    "exactReplayHttp": 201,
+    "samePresentationId": true,
+    "conflictingReplayHttp": 409,
+    "conflictingReplayError": "command_reuse_conflict",
+    "disabledTypeHttp": 409,
+    "disabledTypeError": "configuration_changed"
+  }
+}

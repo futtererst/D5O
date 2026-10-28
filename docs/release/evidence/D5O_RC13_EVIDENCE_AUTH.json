@@ -1,0 +1,23 @@
+{
+  "format": "d5o-rc13-private-evidence-auth-v1",
+  "source": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989 plus narrow connected Work correction",
+  "auth": "genuine GoTrue v2.195.0 fictional sessions",
+  "storage": "Storage API v1.84.19; 23 verified retained bytes",
+  "beforeRevocation": {
+    "appHttp": 200,
+    "appHashMatchesReceipt": true,
+    "appCacheControl": "private, no-store",
+    "appHasStorageTokenHeader": false,
+    "directUserHttp": 400,
+    "crossTenantDirectHttp": 400,
+    "anonymousDirectHttp": 400,
+    "missingDirectHttp": 400,
+    "directBytesWithheld": true
+  },
+  "afterRevocation": {
+    "appHttp": 403,
+    "appBytesWithheld": true,
+    "directUserHttp": 400,
+    "directBytesWithheld": true
+  }
+}

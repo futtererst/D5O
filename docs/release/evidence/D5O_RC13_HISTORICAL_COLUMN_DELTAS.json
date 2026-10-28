@@ -1,0 +1,90 @@
+{
+  "format": "d5o-rc12-historical-column-delta-v1",
+  "reference": "original 177-entry encrypted checkpoint",
+  "tested": "202-entry upgrade after synthetic tests",
+  "tables": [
+    {
+      "table": "d5o_hosted.admin_identity_requests",
+      "original_rows": 2,
+      "tested_rows": 2,
+      "missing_original_keys": 0,
+      "changed_fields_on_original_rows": {
+        "expires_at": 2
+      },
+      "new_schema_fields": {
+        "expires_at": 2
+      },
+      "modified_existing_fields": {}
+    },
+    {
+      "table": "d5o_hosted.configuration_versions",
+      "original_rows": 4,
+      "tested_rows": 4,
+      "missing_original_keys": 0,
+      "changed_fields_on_original_rows": {},
+      "new_schema_fields": {},
+      "modified_existing_fields": {}
+    },
+    {
+      "table": "d5o_hosted.connected_crew_profiles",
+      "original_rows": 8,
+      "tested_rows": 8,
+      "missing_original_keys": 0,
+      "changed_fields_on_original_rows": {
+        "qualification_expires_on": 8
+      },
+      "new_schema_fields": {
+        "qualification_expires_on": 8
+      },
+      "modified_existing_fields": {}
+    },
+    {
+      "table": "d5o_hosted.memberships",
+      "original_rows": 20,
+      "tested_rows": 28,
+      "missing_original_keys": 0,
+      "changed_fields_on_original_rows": {
+        "revision": 20
+      },
+      "new_schema_fields": {
+        "revision": 20
+      },
+      "modified_existing_fields": {}
+    },
+    {
+      "table": "d5o_hosted.workspaces",
+      "original_rows": 2,
+      "tested_rows": 2,
+      "missing_original_keys": 0,
+      "changed_fields_on_original_rows": {
+        "branding": 2,
+        "default_currency": 2,
+        "profile_revision": 2,
+        "time_zone": 2,
+        "updated_at": 2
+      },
+      "new_schema_fields": {
+        "branding": 2,
+        "default_currency": 2,
+        "profile_revision": 2,
+        "time_zone": 2,
+        "updated_at": 2
+      },
+      "modified_existing_fields": {}
+    },
+    {
+      "table": "storage.migrations",
+      "original_rows": 74,
+      "tested_rows": 75,
+      "missing_original_keys": 0,
+      "changed_fields_on_original_rows": {
+        "hash": 2
+      },
+      "new_schema_fields": {},
+      "modified_existing_fields": {
+        "hash": 2
+      }
+    }
+  ],
+  "values_disclosed": false
+}

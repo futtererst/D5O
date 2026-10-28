@@ -27,7 +27,9 @@ async function scope(workspace: string) {
   const workTypes = (active?.config_manifest_json?.workTypes ?? []) as
     Array<{ key: string; label: string; status: string }>;
   return { context, available, versionId: inventory.activeVersionId, versionNumber: active?.version ?? null,
-    workTypes: workTypes.filter((item) => item.status === "active") };
+    // Historical published entries omit status; the canonical pin guard treats
+    // them as active and excludes only an explicit disabled entry.
+    workTypes: workTypes.filter((item) => item.status !== "disabled") };
 }
 
 export async function GET(request: NextRequest) {

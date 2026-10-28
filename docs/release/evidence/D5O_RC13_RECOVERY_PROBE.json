@@ -1,0 +1,17 @@
+{
+  "format": "d5o-rc13-local-recovery-v1",
+  "post_upgrade_checkpoint_restore_seconds": 29.37,
+  "post_upgrade_ledger": 202,
+  "original_checkpoint_restore_seconds": 29.10,
+  "original_ledger": 177,
+  "original_auth_users": 25,
+  "private_objects_and_hashes_verified": 23,
+  "injected_sqlstate": "P0001",
+  "injected_upgrade_failed": true,
+  "probe_table_rolled_back": true,
+  "ledger_after_failure": 177,
+  "auth_users_after_failure": 25,
+  "storage_metadata_after_failure": 23,
+  "coordinated_production_checkpoint_proven": false,
+  "production_rto_rpo_proven": false
+}
