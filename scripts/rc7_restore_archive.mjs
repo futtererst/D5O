@@ -9,10 +9,10 @@ import { loadProtectedKey } from "./rc6_dpapi_key.mjs";
 import { dirname } from "node:path";
 
 const [mode, file] = process.argv.slice(2);
-if (!["list", "schema", "data"].includes(mode) || !file)
-  throw Error("usage: rc7_restore_archive.mjs <list|schema|data> <encrypted archive>");
+if (!["list", "schema", "data", "full-data"].includes(mode) || !file)
+  throw Error("usage: rc7_restore_archive.mjs <list|schema|data|full-data> <encrypted archive>");
 const container = process.env.D5O_RC7_CONTAINER || "d5o-rc7-historical-db";
-if (!["d5o-rc7-historical-db", "d5o-rc7-recovery-db"].includes(container))
+if (!["d5o-rc7-historical-db", "d5o-rc7-recovery-db", "d5o-checkpoint-restore-db"].includes(container))
   throw Error("unexpected local restore container");
 const inspect = spawnSync("docker", ["inspect", container], { encoding: "utf8", maxBuffer: 1024 * 1024 });
 if (inspect.status !== 0) throw Error("isolated restore container missing");
@@ -50,7 +50,7 @@ if (mode === "list") args.push("--list");
 else {
   args.push("--exit-on-error", "--single-transaction");
   if (mode === "schema") args.push("--schema-only", "--clean", "--if-exists");
-  if (mode === "data") args.push("--data-only", "--disable-triggers");
+  if (mode === "data" || mode === "full-data") args.push("--data-only", "--disable-triggers");
 }
 const child = spawn("docker", args, { stdio: ["pipe", "pipe", "pipe"] });
 const childClosed = new Promise((resolve) => child.once("close", resolve));

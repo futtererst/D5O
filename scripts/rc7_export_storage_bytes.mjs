@@ -33,8 +33,11 @@ function encryptBuffer(path, data) {
 }
 const metadata = decryptSmall(join(outDir, "rc7-storage-before.jsonl.aesgcm"))
   .toString("utf8").trim().split(/\r?\n/).map((line) => JSON.parse(line));
-if (metadata.length !== 23 || metadata.some((r) => r.is_delete_marker || r.is_versioned))
+if (!metadata.length || metadata.some((r) => r.is_delete_marker || r.is_versioned))
   throw Error("unexpected Storage object inventory shape");
+const inventoryKeys = metadata.map((r) => `${r.id}\0${r.bucket_id}\0${r.name}`);
+if (new Set(inventoryKeys).size !== inventoryKeys.length)
+  throw Error("duplicate Storage object inventory identity");
 const bytesDir = join(outDir, "objects");
 if (existsSync(bytesDir)) throw Error("protected object directory already exists");
 mkdirSync(bytesDir, { mode: 0o700 });
@@ -47,14 +50,26 @@ try {
     const name = String(row.name);
     const path = [bucket, ...name.split("/")].map(encodeURIComponent).join("/");
     const url = `${base}/storage/v1/object/authenticated/${path}`;
+    const expectedSize = Number(row.metadata?.size);
+    if (!Number.isSafeInteger(expectedSize) || expectedSize < 0 || expectedSize > 100 * 1024 * 1024)
+      throw Error("private object size outside bounded recovery limit");
     const headers = { apikey: apiKey, "User-Agent": "D5O-RC7-Authorized-Local-Copy" };
     if (!apiKey.startsWith("sb_secret_")) headers.Authorization = `Bearer ${apiKey}`;
     const response = await fetch(url, { method: "GET", headers, redirect: "error",
       signal: AbortSignal.timeout(30000) });
     if (!response.ok) throw Error(`storage_get_failed:status=${response.status}`);
-    const content = Buffer.from(await response.arrayBuffer());
-    const expectedSize = Number(row.metadata?.size);
-    if (Number.isFinite(expectedSize) && expectedSize !== content.length) sizeMismatches++;
+    const announcedSize = Number(response.headers.get("content-length"));
+    if (Number.isFinite(announcedSize) && announcedSize > 100 * 1024 * 1024)
+      throw Error("private object response exceeds bounded recovery limit");
+    const chunks = [];
+    let received = 0;
+    for await (const chunk of response.body) {
+      received += chunk.length;
+      if (received > 100 * 1024 * 1024) throw Error("private object stream exceeds bounded recovery limit");
+      chunks.push(Buffer.from(chunk));
+    }
+    const content = Buffer.concat(chunks, received);
+    if (expectedSize !== content.length) sizeMismatches++;
     const identity = `${bucket}\0${name}\0${row.id}`;
     const filename = createHash("sha256").update(identity).digest("hex") + ".blob.aesgcm";
     const encryptedSha256 = encryptBuffer(join(bytesDir, filename), content);

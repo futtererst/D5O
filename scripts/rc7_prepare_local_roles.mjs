@@ -1,7 +1,7 @@
 // Prepare only the offline restore container with non-login role placeholders.
 import { spawnSync } from "node:child_process";
 const container = process.env.D5O_RC7_CONTAINER || "d5o-rc7-historical-db";
-if (!["d5o-rc7-historical-db", "d5o-rc7-recovery-db"].includes(container))
+if (!["d5o-rc7-historical-db", "d5o-rc7-recovery-db", "d5o-checkpoint-restore-db"].includes(container))
   throw Error("unexpected local restore container");
 const check = spawnSync("docker", ["inspect", container], { encoding: "utf8" });
 if (check.status !== 0) throw Error("local restore container missing");

@@ -1,0 +1,45 @@
+{
+  "format": "d5o-checkpoint-tooling-v1",
+  "date": "2026-10-28",
+  "productionReadOnly": {
+    "projectRef": "fcawktdjoxvahhgvkebx",
+    "ledgerRows": 177,
+    "authUsers": 25,
+    "authIdentities": 25,
+    "currentStorageMetadataRows": 23,
+    "privateByteInventoryCapturedThisTurn": false
+  },
+  "fictionalFixture": {
+    "genuineGoTrueSignup": "PASS",
+    "genuineGoTruePasswordSignInBeforeCapture": "PASS",
+    "encryptedCapture": "PASS",
+    "authUsers": 1,
+    "authIdentities": 1,
+    "migrationLedgerRows": 1,
+    "tenantMemberships": 1,
+    "workRecords": 1,
+    "privateObjects": 1,
+    "privateBytes": 23,
+    "captureSeconds": 6.84,
+    "networkIsolatedRestore": "PASS",
+    "recoverySeconds": 4.97,
+    "genuineGoTruePasswordSignInAfterRestore": "PASS",
+    "restoredIdentityMembershipEvidenceAssociations": "1|1|1",
+    "tamperedEncryptedManifestRejected": true,
+    "missingObjectCaptureRejected": true,
+    "incompleteCaptureManifestAbsent": true,
+    "isolatedPrivateByteRestoration": "PASS_ONE_OBJECT_READBACK_SHA256",
+    "focusedByteRestoreRegressionSeconds": 7.64
+  },
+  "historicalRegression": {
+    "retainedEncryptedObjectHashes": "23/23 PASS",
+    "restoredMetadataAssociations": "PASS",
+    "localRestoreSeconds": 49.44
+  },
+  "productionCheckpoint": "NOT_EXECUTED_NO_COMPLETE_MAINTENANCE_AUTHORIZATION_OR_RESTRICTED_CREDENTIALS",
+  "limitations": [
+    "Fictional object service verified capture and byte restoration semantics, not Supabase Storage API serving authorization.",
+    "The production paginated inventory and full Auth export paths require restricted current connection files and an approved maintenance boundary.",
+    "Write-block attestation plus unchanged before/after fingerprints does not prove atomicity if an external writer bypasses the approved block."
+  ]
+}

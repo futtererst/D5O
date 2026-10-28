@@ -6,7 +6,7 @@ import { spawnSync } from "node:child_process";
 import { loadProtectedKey } from "./rc6_dpapi_key.mjs";
 const dir = realpathSync(process.argv[2]);
 const container = process.env.D5O_RC7_CONTAINER || "d5o-rc7-historical-db";
-if (!["d5o-rc7-historical-db", "d5o-rc7-recovery-db"].includes(container))
+if (!["d5o-rc7-historical-db", "d5o-rc7-recovery-db", "d5o-checkpoint-restore-db"].includes(container))
   throw Error("unexpected local restore container");
 const key = loadProtectedKey(dir);
 function decrypt(file) {
@@ -18,7 +18,7 @@ function decrypt(file) {
 }
 try {
   const index = JSON.parse(decrypt(join(dir, "rc7-storage-byte-index.json.aesgcm")).toString("utf8"));
-  if (index.project !== "fcawktdjoxvahhgvkebx" || index.objects.length !== 23)
+  if (index.project !== "fcawktdjoxvahhgvkebx" || !index.objects.length)
     throw Error("Storage index identity mismatch");
   let total = 0;
   for (const row of index.objects) {
@@ -43,7 +43,8 @@ try {
   if (db.status !== 0) throw Error("local Storage metadata query failed");
   const actual = db.stdout.trim().split(/\r?\n/).map(JSON.parse);
   const keys = new Set(actual.map((r) => `${r.id}\0${r.bucket_id}\0${r.name}`));
-  if (keys.size !== 23 || index.objects.some((r) => !keys.has(`${r.id}\0${r.bucket_id}\0${r.name}`)))
+  if (keys.size !== actual.length || keys.size !== index.objects.length ||
+      index.objects.some((r) => !keys.has(`${r.id}\0${r.bucket_id}\0${r.name}`)))
     throw Error("private bytes and restored Storage associations differ");
   console.log(JSON.stringify({ verified: true, project: index.project,
     objects: index.objects.length, totalBytes: total, contentHashesMatched: true,

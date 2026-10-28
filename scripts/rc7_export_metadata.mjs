@@ -9,8 +9,8 @@ import { pipeline } from "node:stream/promises";
 import { loadProtectedKey } from "./rc6_dpapi_key.mjs";
 
 const [kind, uriFile, protectedDir, suffix = ""] = process.argv.slice(2);
-if (!["auth", "storage"].includes(kind) || !uriFile || !protectedDir || !/^[a-z0-9-]*$/.test(suffix))
-  throw Error("usage: rc7_export_metadata.mjs <auth|storage> <URI file> <protected dir> [suffix]");
+if (!["auth", "storage", "boundary"].includes(kind) || !uriFile || !protectedDir || !/^[a-z0-9-]*$/.test(suffix))
+  throw Error("usage: rc7_export_metadata.mjs <auth|storage|boundary> <URI file> <protected dir> [suffix]");
 const uriPath = realpathSync(uriFile);
 const outDir = realpathSync(protectedDir);
 const url = new URL(readFileSync(uriPath, "utf8").trim());
@@ -44,7 +44,14 @@ const storageSql = `select jsonb_build_object('id',id,'bucket_id',bucket_id,
   'updated_at',updated_at,'metadata',metadata,'version',version,
   'is_delete_marker',is_delete_marker,'is_versioned',is_versioned)::text
   from storage.objects order by bucket_id,name,id`;
-const sql = `begin transaction read only; ${kind === "auth" ? authSql : storageSql}; commit;`;
+const boundarySql = `select jsonb_build_object(
+  'ledger',(select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'|' order by version),'') ) from supabase_migrations.schema_migrations t),
+  'auth_users',(select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'|' order by id),'') ) from auth.users t),
+  'auth_identities',(select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'|' order by id),'') ) from auth.identities t),
+  'storage_objects',(select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'|' order by id),'') ) from storage.objects t),
+  'work_events',(select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'|' order by id),'') ) from d5o_hosted.work_events t),
+  'work_receipts',(select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'|' order by workspace_id,command_id),'') ) from d5o_hosted.work_command_receipts t))::text`;
+const sql = `begin transaction read only; ${kind === "auth" ? authSql : kind === "storage" ? storageSql : boundarySql}; commit;`;
 const shell = `uri="$(cat /run/secret/postgres-url.txt)"; psql "$uri" -q -X -v ON_ERROR_STOP=1 -At -c "${sql}"`;
 const mount = `type=bind,source=${uriPath},target=/run/secret/postgres-url.txt,readonly`;
 const child = spawn("docker", ["run", "--rm", "--pull=never", "--read-only", "--tmpfs", "/tmp",
