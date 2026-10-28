@@ -31,6 +31,20 @@
     "matchedProductionCheckpoint": "NOT_EXECUTED",
     "isolatedProductionRestore": "NOT_EXECUTED"
   },
+  "writeBoundaryPreflight": {
+    "supabaseDatabaseReadOnlyDefaultIsHardFreeze": false,
+    "vercelFirewallRulesPresent": 0,
+    "userTablesInspected": 290,
+    "shareLockEligibleWithCurrentOperatorRole": 285,
+    "providerTablesNotShareLockEligible": [
+      "auth.schema_migrations",
+      "realtime.schema_migrations",
+      "storage.buckets_vectors",
+      "storage.migrations",
+      "storage.vector_indexes"
+    ],
+    "completeWriteBlockTested": false
+  },
   "vercel": {
     "projectId": "prj_HF8KhxUFvONQlpMr53FdhEgmIpFG",
     "currentDeploymentId": "dpl_DYXNRK2PyF4UUUKqpPqNHVYhVKXm",
