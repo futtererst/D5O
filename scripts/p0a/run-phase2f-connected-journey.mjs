@@ -314,7 +314,29 @@ try {
     await page.getByRole("heading",{name:"Work lifecycle"}).waitFor({timeout:30000});
     const task=page.locator('.d5o-customer-work-list a[href*="?work="]')
       .filter({hasText:title}).first();
-    await task.waitFor({state:"visible",timeout:30000});
+    try { await task.waitFor({state:"visible",timeout:30000}); }
+    catch (error) {
+      if (!releaseHostedLifecycle) throw error;
+      const diagnostic=await page.evaluate(async({workspace,workId})=>{
+        const [listResponse,detailResponse]=await Promise.all([
+          fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`),
+          fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}&workId=${workId}`)
+        ]);
+        const list=await listResponse.json();
+        const detail=await detailResponse.json();
+        const record=detail.record;
+        return {listStatus:listResponse.status,detailStatus:detailResponse.status,role:list.role,
+          taskTitles:(list.tasks??[]).filter((item)=>item.workId===workId)
+            .map((item)=>({phase:item.phase,title:item.title,action:item.action})),
+          handoffStatus:record?.discovery?.designHandoff?.status,
+          documentStatuses:(record?.design?.documents??[]).map((item)=>item.status),
+          releaseStatuses:(record?.design?.releases??[]).map((item)=>item.status),
+          changeStatuses:(record?.design?.changes??[]).map((item)=>item.status),
+          packageCount:record?.design?.packages?.length??0};
+      },{workspace:tenant.workspaceKey,workId});
+      evidence.missingTaskDiagnostic={expectedTitle:title,...diagnostic};
+      throw Error(`hosted_task_not_projected:${title}`);
+    }
     const href=await task.getAttribute("href");
     assert(href?.includes(workId),`${actor}:wrong_task_work:${href}`);
     const taskId=new URL(href,"http://127.0.0.1").searchParams.get("task");

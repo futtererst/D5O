@@ -1,17 +1,190 @@
 {
-  "format": "d5o-hosted-lifecycle-attempt-v1",
+  "format": "d5o-hosted-lifecycle-attempt-v2",
   "applicationCommit": "4c8050f3a643bb0e92565fcbd8e1d5df3744d9ea",
   "applicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
   "runtime": "local production-mode rehearsal with fictional GoTrue identities",
   "fixture": "isolated disposable Supabase stack, optional analytics disabled",
-  "passed": 33,
+  "passed": 42,
   "failed": 1,
-  "lastPassed": "both fictional tenants created a connected Design package and issued its document",
-  "failedCase": "Design policy denies missing method and accepts reviewed package release",
-  "failureBoundary": "expected Complete and release Design package My Work link absent; runner stopped before the release command",
-  "rootCause": "UNRESOLVED: task projection prerequisite or runner expectation versus application defect",
+  "cases": [
+    {
+      "name": "vendor sees validated immutable template directory",
+      "status": "PASS"
+    },
+    {
+      "name": "vendor publishes an executable crew-demand template version",
+      "status": "PASS"
+    },
+    {
+      "name": "vendor provisions A and B through one authoritative command",
+      "status": "PASS"
+    },
+    {
+      "name": "non-vendor and customer cannot provision or mutate template",
+      "status": "PASS"
+    },
+    {
+      "name": "replay, collision and duplicate tenant key preserve one result",
+      "status": "PASS"
+    },
+    {
+      "name": "concurrent identical provisioning creates one tenant",
+      "status": "PASS"
+    },
+    {
+      "name": "provider failure remains inactive and vendor recovery replaces only the offer",
+      "status": "PASS"
+    },
+    {
+      "name": "expired initial invitation recovers without a duplicate tenant",
+      "status": "PASS"
+    },
+    {
+      "name": "governed template version is validated, published, immutable and retired",
+      "status": "PASS"
+    },
+    {
+      "name": "initial offers are tenant-bound and accepted by exact recipients",
+      "status": "PASS"
+    },
+    {
+      "name": "incomplete tenants cannot create Work or activate",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_a_test publishes its own USD 10000 threshold",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_b_test publishes its own USD 25000 threshold",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_a_test confirms readiness and vendor activates",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_b_test confirms readiness and vendor activates",
+      "status": "PASS"
+    },
+    {
+      "name": "vendor grants and flags connected Work independently",
+      "status": "PASS"
+    },
+    {
+      "name": "Discover policy publication controls connected Work creation",
+      "status": "PASS"
+    },
+    {
+      "name": "direct RPC enforces entitlement and Discover policy",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants onboard independent commercial and operations authorities",
+      "status": "PASS"
+    },
+    {
+      "name": "two tenant administrators publish distinct six-phase requirement sets",
+      "status": "PASS"
+    },
+    {
+      "name": "pinned Define command rejects missing risk only for strict tenant",
+      "status": "PASS"
+    },
+    {
+      "name": "connected source contract is available for authorized fixture progression",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants complete Discover intake and independent Define handoff",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants submit an authorized and complete Define draft",
+      "status": "PASS"
+    },
+    {
+      "name": "independent Define reviews approve and hand off each pinned baseline",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant administrators publish a bounded pricing prerequisite for solution decisions",
+      "status": "PASS"
+    },
+    {
+      "name": "Develop policy rejects missing option evidence and accepts a documented selected solution",
+      "status": "PASS"
+    },
+    {
+      "name": "early solution approval is persisted as Develop preparation only",
+      "status": "PASS"
+    },
+    {
+      "name": "Design handoff rejects an absent offer revision before award",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants approve a detailed estimate from the selected solution",
+      "status": "PASS"
+    },
+    {
+      "name": "two fictional customer awards establish exact Design handoff basis",
+      "status": "PASS"
+    },
+    {
+      "name": "Design receives exact awarded scope through independent handoff",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants create a connected Design package and issue its document",
+      "status": "PASS"
+    },
+    {
+      "name": "Design policy denies missing method and accepts reviewed package release",
+      "status": "PASS"
+    },
+    {
+      "name": "forged and completed Design task links grant no authority",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant-neutral Design API rejects foreign, wrong-role, forged and stale actions",
+      "status": "PASS"
+    },
+    {
+      "name": "both connected Works receive independent purchase and labor authority",
+      "status": "PASS"
+    },
+    {
+      "name": "both accepted Design packages receive qualified, published and acknowledged crew",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants authorize current published Work through field-start command",
+      "status": "PASS"
+    },
+    {
+      "name": "connected service is denied before parent support activation",
+      "status": "PASS"
+    },
+    {
+      "name": "unknown, foreign and draft configuration cannot replace the Work pin",
+      "status": "PASS"
+    },
+    {
+      "name": "Develop API and direct RPC reject forged, cross-tenant, stale and disabled-feature mutations",
+      "status": "PASS"
+    },
+    {
+      "name": "Deploy completion enforces reviewed evidence only for the pinned strict tenant",
+      "status": "FAIL"
+    }
+  ],
+  "designOutcome": "PASS: Design release, independent receipt and task-link security checks",
+  "failedBoundary": "Deploy field-condition assessment: browser runner timed out waiting for Disposition field for second fictional tenant",
+  "rootCause": "UNRESOLVED: component render/fixture timing versus application behavior; no product defect proven",
   "laterCommands": "NOT EXECUTED",
-  "cleanup": "exact disposable containers, volumes, network and temporary directory removed after bounded runner teardown failed on intermittent Docker HTTP 500",
+  "cleanup": "PENDING: Docker API unresponsive after bounded teardown",
   "productionTouched": false,
   "protectedDataIncluded": false
 }
