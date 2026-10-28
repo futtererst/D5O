@@ -1,0 +1,22 @@
+{
+  "format": "d5o-rc14-procurement-review-v1",
+  "source": "ef9bf423680c94fbbb41c4d9b7a5a5070ce6a10c",
+  "auth": "genuine fictional GoTrue sessions",
+  "syntheticWorkOnly": true,
+  "operations": [
+    {
+      "actor": "rybex_pm",
+      "action": "request-review",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "actor": "rybex_ops",
+      "action": "decide-review",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# RC14 candidate identity
+
+The selected executable application is commit `ef9bf423680c94fbbb41c4d9b7a5a5070ce6a10c`, application tree `84f2081b3b6266abf7d89906b04f816622838f2c`. It is the RC13-A descendant. The original frozen application commit `8b6b0d9e4aa484d0f0db1d075a969b79e01b0989` has a different application tree (`723f6d15739a4e43cc20e6ee631457e3de019779`); the only application-file difference is `app/api/d5o-hosted/connected-work/route.ts`. The approved server-mediated evidence route is in the selected tree. RC14 adds no application source change. The evidence commit made after this selection does not change the selected app tree.
+
+The RC5 manifest has **236** executable source migrations; every file hash matched. The 237th SQL file in `supabase/migrations` is a separate forward correction, outside the frozen executable manifest. The original 236 files and RC8 pre/post bridge remain unchanged. The historical rehearsal used source orders 212–214, atomic RC8 pre/215/post, then 216–236. It produced 202 actual ledger entries from 177.
+
+Build: a tracked-source-only Git archive, dependency installation in a disposable Docker volume, and `next build` in the local production-mode container. Next.js 16.4.2 build and TypeScript passed. No protected checkpoint, local token, or secret file was mounted for dependency installation. The container application used local GoTrue, PostgREST, and Storage on an internal-only Docker network; it did not target production.
+
+The hosted contract requires production mode, Supabase URL and public key, server-only privileged Storage credential, Auth/JWT configuration, and the intended project identity. Names and effective hosted values still require read-only deployment preflight; local environment files are untracked and excluded from Git. This local build does not prove actual Vercel binding.

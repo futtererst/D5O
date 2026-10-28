@@ -1,0 +1,22 @@
+{
+  "format": "d5o-rc14-design-prepare-v1",
+  "source": "ef9bf423680c94fbbb41c4d9b7a5a5070ce6a10c",
+  "auth": "genuine fictional GoTrue session",
+  "syntheticWorkOnly": true,
+  "operations": [
+    {
+      "action": "create-package",
+      "actor": "rybex_pm",
+      "http": 201,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "action": "save-document",
+      "actor": "rybex_pm",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    }
+  ]
+}

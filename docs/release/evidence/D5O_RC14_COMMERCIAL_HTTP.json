@@ -1,0 +1,30 @@
+{
+  "format": "d5o-rc14-commercial-http-v1",
+  "source": "ef9bf423680c94fbbb41c4d9b7a5a5070ce6a10c",
+  "auth": "genuine fictional GoTrue session",
+  "syntheticWorkOnly": true,
+  "operations": [
+    {
+      "actor": "rybex_pm",
+      "action": "save-detailed-estimate",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "actor": "rybex_pm",
+      "action": "submit-pricing",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "actor": "rybex_ops",
+      "action": "approve-pricing",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    }
+  ],
+  "finalEstimateStatus": "Approved"
+}

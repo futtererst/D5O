@@ -1,0 +1,103 @@
+{
+  "format": "d5o-rc14-design-basis-v1",
+  "source": "ef9bf423680c94fbbb41c4d9b7a5a5070ce6a10c",
+  "auth": "genuine fictional GoTrue sessions",
+  "syntheticWorkOnly": true,
+  "operations": [
+    {
+      "actor": "rybex_pm",
+      "action": "save-package",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "actor": "rybex_pm",
+      "action": "save-demand",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "actor": "rybex_pm",
+      "action": "request-review",
+      "http": 200,
+      "error": null,
+      "authoritative": true,
+      "discipline": "Engineering"
+    },
+    {
+      "actor": "rybex_ops",
+      "action": "decide-review",
+      "http": 200,
+      "error": null,
+      "authoritative": true,
+      "discipline": "Engineering"
+    },
+    {
+      "actor": "rybex_pm",
+      "action": "request-review",
+      "http": 200,
+      "error": null,
+      "authoritative": true,
+      "discipline": "Delivery"
+    },
+    {
+      "actor": "rybex_ops",
+      "action": "decide-review",
+      "http": 200,
+      "error": null,
+      "authoritative": true,
+      "discipline": "Delivery"
+    },
+    {
+      "actor": "rybex_pm",
+      "action": "request-review",
+      "http": 200,
+      "error": null,
+      "authoritative": true,
+      "discipline": "Safety"
+    },
+    {
+      "actor": "rybex_ops",
+      "action": "decide-review",
+      "http": 200,
+      "error": null,
+      "authoritative": true,
+      "discipline": "Safety"
+    },
+    {
+      "actor": "rybex_pm",
+      "action": "request-review",
+      "http": 200,
+      "error": null,
+      "authoritative": true,
+      "discipline": "Quality"
+    },
+    {
+      "actor": "rybex_ops",
+      "action": "decide-review",
+      "http": 200,
+      "error": null,
+      "authoritative": true,
+      "discipline": "Quality"
+    },
+    {
+      "actor": "rybex_pm",
+      "action": "request-review",
+      "http": 200,
+      "error": null,
+      "authoritative": true,
+      "discipline": "Procurement"
+    },
+    {
+      "actor": "rybex_ops",
+      "action": "decide-review",
+      "http": 200,
+      "error": null,
+      "authoritative": true,
+      "discipline": "Procurement"
+    }
+  ],
+  "finalPackageStatus": "In review"
+}

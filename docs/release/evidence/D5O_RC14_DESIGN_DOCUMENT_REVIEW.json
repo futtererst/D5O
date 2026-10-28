@@ -1,0 +1,30 @@
+{
+  "format": "d5o-rc14-design-document-review-v1",
+  "source": "ef9bf423680c94fbbb41c4d9b7a5a5070ce6a10c",
+  "auth": "genuine fictional GoTrue sessions",
+  "syntheticWorkOnly": true,
+  "operations": [
+    {
+      "actor": "rybex_pm",
+      "action": "submit-document",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "actor": "rybex_ops",
+      "action": "approve-document",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "actor": "rybex_pm",
+      "action": "issue-document",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    }
+  ],
+  "finalDocumentStatus": "Issued for use"
+}

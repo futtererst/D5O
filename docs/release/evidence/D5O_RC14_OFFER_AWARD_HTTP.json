@@ -1,0 +1,54 @@
+{
+  "format": "d5o-rc14-offer-award-v1",
+  "source": "ef9bf423680c94fbbb41c4d9b7a5a5070ce6a10c",
+  "auth": "genuine fictional GoTrue sessions",
+  "syntheticWorkOnly": true,
+  "initialOfferFixtureHttp": 200,
+  "initialOfferFixtureError": null,
+  "operations": [
+    {
+      "actor": "rybex_pm",
+      "action": "submit-proposal",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "actor": "rybex_ops",
+      "action": "approve-proposal",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "actor": "rybex_pm",
+      "action": "record-customer-submission",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "actor": "rybex_ops",
+      "action": "record-customer-response",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "actor": "rybex_pm",
+      "action": "submit-design-handoff",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "actor": "rybex_ops",
+      "action": "accept-design-handoff",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    }
+  ],
+  "finalOutcome": "Won",
+  "designHandoff": "accepted"
+}

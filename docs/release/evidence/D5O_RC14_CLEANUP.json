@@ -1,0 +1,10 @@
+{
+  "format": "d5o-rc14-cleanup-v1",
+  "disposableContainersRemaining": 0,
+  "internalNetworkRemaining": 0,
+  "disposableVolumesRemaining": 0,
+  "temporaryCredentialFilesRemaining": 0,
+  "temporaryBuildDirectoryRemaining": false,
+  "protectedEncryptedCheckpointOutsideGitRetained": true,
+  "productionModified": false
+}

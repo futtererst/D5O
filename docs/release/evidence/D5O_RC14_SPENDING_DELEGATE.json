@@ -1,0 +1,10 @@
+{
+  "format": "d5o-rc14-spending-delegate-v1",
+  "source": "ef9bf423680c94fbbb41c4d9b7a5a5070ce6a10c",
+  "isolatedHistoricalCopyOnly": true,
+  "fictionalAdmin": true,
+  "existingHistoricalRuleModified": false,
+  "readHttp": 200,
+  "addHttp": 200,
+  "error": null
+}

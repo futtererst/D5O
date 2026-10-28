@@ -1,0 +1,9 @@
+{
+  "format": "d5o-rc12-storage-byte-restore-v1",
+  "objects": 23,
+  "bytes": 2252301,
+  "encrypted_and_plain_sha256_match": true,
+  "metadata_id_path_version_match": true,
+  "target": "disposable local Storage volume",
+  "production_modified": false
+}

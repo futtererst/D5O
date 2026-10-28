@@ -1,0 +1,20 @@
+{
+  "format": "d5o-rc14-develop-authority-v1",
+  "source": "ef9bf423680c94fbbb41c4d9b7a5a5070ce6a10c",
+  "auth": "genuine fictional GoTrue sessions",
+  "syntheticWorkOnly": true,
+  "operations": [
+    {
+      "action": "prepare-purchase",
+      "actor": "rybex_pm",
+      "http": 200,
+      "error": null
+    },
+    {
+      "action": "approve-purchase",
+      "actor": "rybex_admin",
+      "http": 409,
+      "error": "spending_delegate_or_sponsor_required"
+    }
+  ]
+}
