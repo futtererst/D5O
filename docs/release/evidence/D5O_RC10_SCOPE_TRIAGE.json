@@ -1,0 +1,2019 @@
+{
+  "format": "d5o-rc10-hosted-scope-triage-v1",
+  "source_commit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "database_network_mode": "none",
+  "conditional_runtime": "D5O_HOSTED_ENABLED=1 and RYBEXOS_RUNTIME_MODE=production",
+  "scope_warning": "Inapplicable to the frozen hosted D5O surface is not proof of historical migration equivalence or of unrelated legacy RPC security.",
+  "missing_public_relations": [
+    {
+      "relation": "public.billing_backup_packages",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.billing_backup_requirements",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.billing_blocker_clearances",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.billing_commercial_reviews",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.billing_review_decisions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.closeout_blocker_clearances",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.closeout_evidence_references",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.closeout_readiness_validations",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.closeout_release_cases",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.closeout_review_decisions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.closeout_reviews",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.command_idempotency",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_artifact_type_definitions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_configuration_audit_events",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_configuration_versions",
+      "application_source_references": [
+        "app/work/configuration-actions.ts",
+        "lib/d5o/configuration/server.ts"
+      ],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Public configuration client is behind the exact local proof-environment guard; hosted Work uses d5o_hosted_configuration_inventory_v1."
+    },
+    {
+      "relation": "public.config_decision_right_definitions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_evidence_type_definitions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_exception_approval_role_links",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_exception_rules",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_financial_model_definitions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_gate_decision_outcomes",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_gate_definitions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_gate_evidence_requirements",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_gate_questions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_governance_forum_definitions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_governance_forum_kpi_links",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_governance_forum_participant_role_links",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_handoff_definitions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_handoff_required_evidence_links",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_kpi_definitions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_operating_entities",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_organizations",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_permission_definitions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_phase_definitions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_role_definitions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_service_lanes",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_template_pack_versions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_template_packs",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_tenant_configurations",
+      "application_source_references": [
+        "lib/d5o/configuration/server.ts"
+      ],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Public configuration client is behind the exact local proof-environment guard; hosted Work uses d5o_hosted_configuration_inventory_v1."
+    },
+    {
+      "relation": "public.config_tenant_template_activations",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_tenants",
+      "application_source_references": [
+        "lib/d5o/configuration/server.ts"
+      ],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Public configuration client is behind the exact local proof-environment guard; hosted Work uses d5o_hosted_configuration_inventory_v1."
+    },
+    {
+      "relation": "public.config_work_class_definitions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_work_item_type_definitions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_workforce_gate_dependency_links",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_workforce_qualification_rules",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.config_workstreams",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.d5o_lifecycle_actions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.d5o_proof_items",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.d5o_proof_packages",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.d5o_work_commitments",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.d5o_work_decisions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.d5o_work_facts",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.d5o_work_outcomes",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.d5o_work_packages",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.d5o_work_participants",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.d5o_work_records",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.d5o_work_relations",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.d5o_work_sources",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.domain_events",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.evidence_links",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.evidence_objects",
+      "application_source_references": [
+        "lib/d5o/closeout-final-billing/database-store.ts",
+        "lib/d5o/evidence/scan-receipt-service.ts",
+        "lib/d5o/field-issue-escalation/database-store.ts"
+      ],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Legacy evidence/closeout/field routes return 503 from the hosted production proxy; hosted evidence uses d5o_hosted RPCs."
+    },
+    {
+      "relation": "public.field_issue_assessments",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.field_issue_evidence_references",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.field_issue_resolutions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.field_issues",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.final_billing_retainage_projections",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.opportunity_assignments",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.opportunity_bid_evidence_satisfactions",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.opportunity_bid_submission_events",
+      "application_source_references": [
+        "lib/d5o/opportunities/supabase-repository.ts"
+      ],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Pipeline routes return 503 from the hosted production proxy; repository database access also rejects production runtime."
+    },
+    {
+      "relation": "public.opportunity_pursuit_authorization_events",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.opportunity_qualifications",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    },
+    {
+      "relation": "public.project_memberships",
+      "application_source_references": [],
+      "hosted_function_name_references": [],
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions."
+    }
+  ],
+  "missing_public_policies": [
+    {
+      "policy": "public.audit_events.audit_events_select_authorized",
+      "relation": "public.audit_events",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.billing_backup_packages.billing_backup_packages_no_direct_mutation",
+      "relation": "public.billing_backup_packages",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.billing_backup_packages.billing_backup_packages_select_authorized",
+      "relation": "public.billing_backup_packages",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.billing_backup_requirements.billing_backup_requirements_no_direct_mutation",
+      "relation": "public.billing_backup_requirements",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.billing_backup_requirements.billing_backup_requirements_select_authorized",
+      "relation": "public.billing_backup_requirements",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.billing_blocker_clearances.billing_blocker_clearances_no_direct_mutation",
+      "relation": "public.billing_blocker_clearances",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.billing_blocker_clearances.billing_blocker_clearances_select_authorized",
+      "relation": "public.billing_blocker_clearances",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.billing_commercial_reviews.billing_commercial_reviews_no_direct_mutation",
+      "relation": "public.billing_commercial_reviews",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.billing_commercial_reviews.billing_commercial_reviews_select_authorized",
+      "relation": "public.billing_commercial_reviews",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.billing_review_decisions.billing_review_decisions_no_direct_mutation",
+      "relation": "public.billing_review_decisions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.billing_review_decisions.billing_review_decisions_select_authorized",
+      "relation": "public.billing_review_decisions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.change_events.change_events_no_direct_mutation",
+      "relation": "public.change_events",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.change_events.change_events_select_authorized",
+      "relation": "public.change_events",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.closeout_blocker_clearances.closeout_clearances_no_direct_mutation",
+      "relation": "public.closeout_blocker_clearances",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.closeout_blocker_clearances.closeout_clearances_select_authorized",
+      "relation": "public.closeout_blocker_clearances",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.closeout_evidence_references.closeout_evidence_no_direct_mutation",
+      "relation": "public.closeout_evidence_references",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.closeout_evidence_references.closeout_evidence_select_authorized",
+      "relation": "public.closeout_evidence_references",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.closeout_readiness_validations.closeout_readiness_no_direct_mutation",
+      "relation": "public.closeout_readiness_validations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.closeout_readiness_validations.closeout_readiness_select_authorized",
+      "relation": "public.closeout_readiness_validations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.closeout_release_cases.closeout_release_cases_no_direct_mutation",
+      "relation": "public.closeout_release_cases",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.closeout_release_cases.closeout_release_cases_select_authorized",
+      "relation": "public.closeout_release_cases",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.closeout_requirements.closeout_requirements_no_direct_mutation",
+      "relation": "public.closeout_requirements",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.closeout_requirements.closeout_requirements_select_authorized",
+      "relation": "public.closeout_requirements",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.closeout_review_decisions.closeout_decisions_no_direct_mutation",
+      "relation": "public.closeout_review_decisions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.closeout_review_decisions.closeout_decisions_select_authorized",
+      "relation": "public.closeout_review_decisions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.closeout_reviews.closeout_reviews_no_direct_mutation",
+      "relation": "public.closeout_reviews",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.closeout_reviews.closeout_reviews_select_authorized",
+      "relation": "public.closeout_reviews",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.command_idempotency.command_idempotency_no_direct_access",
+      "relation": "public.command_idempotency",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_artifact_type_definitions.config_artifact_type_definitions_insert",
+      "relation": "public.config_artifact_type_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_artifact_type_definitions.config_artifact_type_definitions_no_delete",
+      "relation": "public.config_artifact_type_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_artifact_type_definitions.config_artifact_type_definitions_select",
+      "relation": "public.config_artifact_type_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_artifact_type_definitions.config_artifact_type_definitions_update",
+      "relation": "public.config_artifact_type_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_configuration_audit_events.config_configuration_audit_events_insert",
+      "relation": "public.config_configuration_audit_events",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_configuration_audit_events.config_configuration_audit_events_no_delete",
+      "relation": "public.config_configuration_audit_events",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_configuration_audit_events.config_configuration_audit_events_no_update",
+      "relation": "public.config_configuration_audit_events",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_configuration_audit_events.config_configuration_audit_events_select",
+      "relation": "public.config_configuration_audit_events",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_configuration_versions.config_configuration_versions_insert",
+      "relation": "public.config_configuration_versions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_configuration_versions.config_configuration_versions_no_delete",
+      "relation": "public.config_configuration_versions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_configuration_versions.config_configuration_versions_select",
+      "relation": "public.config_configuration_versions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_configuration_versions.config_configuration_versions_update",
+      "relation": "public.config_configuration_versions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_decision_right_definitions.config_decision_right_definitions_insert",
+      "relation": "public.config_decision_right_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_decision_right_definitions.config_decision_right_definitions_no_delete",
+      "relation": "public.config_decision_right_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_decision_right_definitions.config_decision_right_definitions_select",
+      "relation": "public.config_decision_right_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_decision_right_definitions.config_decision_right_definitions_update",
+      "relation": "public.config_decision_right_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_evidence_type_definitions.config_evidence_type_definitions_insert",
+      "relation": "public.config_evidence_type_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_evidence_type_definitions.config_evidence_type_definitions_no_delete",
+      "relation": "public.config_evidence_type_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_evidence_type_definitions.config_evidence_type_definitions_select",
+      "relation": "public.config_evidence_type_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_evidence_type_definitions.config_evidence_type_definitions_update",
+      "relation": "public.config_evidence_type_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_exception_approval_role_links.config_exception_approval_role_links_insert",
+      "relation": "public.config_exception_approval_role_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_exception_approval_role_links.config_exception_approval_role_links_no_delete",
+      "relation": "public.config_exception_approval_role_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_exception_approval_role_links.config_exception_approval_role_links_select",
+      "relation": "public.config_exception_approval_role_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_exception_approval_role_links.config_exception_approval_role_links_update",
+      "relation": "public.config_exception_approval_role_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_exception_rules.config_exception_rules_insert",
+      "relation": "public.config_exception_rules",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_exception_rules.config_exception_rules_no_delete",
+      "relation": "public.config_exception_rules",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_exception_rules.config_exception_rules_select",
+      "relation": "public.config_exception_rules",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_exception_rules.config_exception_rules_update",
+      "relation": "public.config_exception_rules",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_financial_model_definitions.config_financial_model_definitions_insert",
+      "relation": "public.config_financial_model_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_financial_model_definitions.config_financial_model_definitions_no_delete",
+      "relation": "public.config_financial_model_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_financial_model_definitions.config_financial_model_definitions_select",
+      "relation": "public.config_financial_model_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_financial_model_definitions.config_financial_model_definitions_update",
+      "relation": "public.config_financial_model_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_decision_outcomes.config_gate_decision_outcomes_insert",
+      "relation": "public.config_gate_decision_outcomes",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_decision_outcomes.config_gate_decision_outcomes_no_delete",
+      "relation": "public.config_gate_decision_outcomes",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_decision_outcomes.config_gate_decision_outcomes_select",
+      "relation": "public.config_gate_decision_outcomes",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_decision_outcomes.config_gate_decision_outcomes_update",
+      "relation": "public.config_gate_decision_outcomes",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_definitions.config_gate_definitions_insert",
+      "relation": "public.config_gate_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_definitions.config_gate_definitions_no_delete",
+      "relation": "public.config_gate_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_definitions.config_gate_definitions_select",
+      "relation": "public.config_gate_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_definitions.config_gate_definitions_update",
+      "relation": "public.config_gate_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_evidence_requirements.config_gate_evidence_requirements_insert",
+      "relation": "public.config_gate_evidence_requirements",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_evidence_requirements.config_gate_evidence_requirements_no_delete",
+      "relation": "public.config_gate_evidence_requirements",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_evidence_requirements.config_gate_evidence_requirements_select",
+      "relation": "public.config_gate_evidence_requirements",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_evidence_requirements.config_gate_evidence_requirements_update",
+      "relation": "public.config_gate_evidence_requirements",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_questions.config_gate_questions_insert",
+      "relation": "public.config_gate_questions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_questions.config_gate_questions_no_delete",
+      "relation": "public.config_gate_questions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_questions.config_gate_questions_select",
+      "relation": "public.config_gate_questions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_gate_questions.config_gate_questions_update",
+      "relation": "public.config_gate_questions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_governance_forum_definitions.config_governance_forum_definitions_insert",
+      "relation": "public.config_governance_forum_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_governance_forum_definitions.config_governance_forum_definitions_no_delete",
+      "relation": "public.config_governance_forum_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_governance_forum_definitions.config_governance_forum_definitions_select",
+      "relation": "public.config_governance_forum_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_governance_forum_definitions.config_governance_forum_definitions_update",
+      "relation": "public.config_governance_forum_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_governance_forum_kpi_links.config_governance_forum_kpi_links_insert",
+      "relation": "public.config_governance_forum_kpi_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_governance_forum_kpi_links.config_governance_forum_kpi_links_no_delete",
+      "relation": "public.config_governance_forum_kpi_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_governance_forum_kpi_links.config_governance_forum_kpi_links_select",
+      "relation": "public.config_governance_forum_kpi_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_governance_forum_kpi_links.config_governance_forum_kpi_links_update",
+      "relation": "public.config_governance_forum_kpi_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_governance_forum_participant_role_links.config_governance_forum_participant_role_links_insert",
+      "relation": "public.config_governance_forum_participant_role_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_governance_forum_participant_role_links.config_governance_forum_participant_role_links_no_delete",
+      "relation": "public.config_governance_forum_participant_role_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_governance_forum_participant_role_links.config_governance_forum_participant_role_links_select",
+      "relation": "public.config_governance_forum_participant_role_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_governance_forum_participant_role_links.config_governance_forum_participant_role_links_update",
+      "relation": "public.config_governance_forum_participant_role_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_handoff_definitions.config_handoff_definitions_insert",
+      "relation": "public.config_handoff_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_handoff_definitions.config_handoff_definitions_no_delete",
+      "relation": "public.config_handoff_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_handoff_definitions.config_handoff_definitions_select",
+      "relation": "public.config_handoff_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_handoff_definitions.config_handoff_definitions_update",
+      "relation": "public.config_handoff_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_handoff_required_evidence_links.config_handoff_required_evidence_links_insert",
+      "relation": "public.config_handoff_required_evidence_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_handoff_required_evidence_links.config_handoff_required_evidence_links_no_delete",
+      "relation": "public.config_handoff_required_evidence_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_handoff_required_evidence_links.config_handoff_required_evidence_links_select",
+      "relation": "public.config_handoff_required_evidence_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_handoff_required_evidence_links.config_handoff_required_evidence_links_update",
+      "relation": "public.config_handoff_required_evidence_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_kpi_definitions.config_kpi_definitions_insert",
+      "relation": "public.config_kpi_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_kpi_definitions.config_kpi_definitions_no_delete",
+      "relation": "public.config_kpi_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_kpi_definitions.config_kpi_definitions_select",
+      "relation": "public.config_kpi_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_kpi_definitions.config_kpi_definitions_update",
+      "relation": "public.config_kpi_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_operating_entities.config_operating_entities_insert",
+      "relation": "public.config_operating_entities",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_operating_entities.config_operating_entities_no_delete",
+      "relation": "public.config_operating_entities",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_operating_entities.config_operating_entities_select",
+      "relation": "public.config_operating_entities",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_operating_entities.config_operating_entities_update",
+      "relation": "public.config_operating_entities",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_organizations.config_organizations_insert",
+      "relation": "public.config_organizations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_organizations.config_organizations_no_delete",
+      "relation": "public.config_organizations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_organizations.config_organizations_select",
+      "relation": "public.config_organizations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_organizations.config_organizations_update",
+      "relation": "public.config_organizations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_permission_definitions.config_permission_definitions_insert",
+      "relation": "public.config_permission_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_permission_definitions.config_permission_definitions_no_delete",
+      "relation": "public.config_permission_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_permission_definitions.config_permission_definitions_select",
+      "relation": "public.config_permission_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_permission_definitions.config_permission_definitions_update",
+      "relation": "public.config_permission_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_phase_definitions.config_phase_definitions_insert",
+      "relation": "public.config_phase_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_phase_definitions.config_phase_definitions_no_delete",
+      "relation": "public.config_phase_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_phase_definitions.config_phase_definitions_select",
+      "relation": "public.config_phase_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_phase_definitions.config_phase_definitions_update",
+      "relation": "public.config_phase_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_role_definitions.config_role_definitions_insert",
+      "relation": "public.config_role_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_role_definitions.config_role_definitions_no_delete",
+      "relation": "public.config_role_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_role_definitions.config_role_definitions_select",
+      "relation": "public.config_role_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_role_definitions.config_role_definitions_update",
+      "relation": "public.config_role_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_service_lanes.config_service_lanes_insert",
+      "relation": "public.config_service_lanes",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_service_lanes.config_service_lanes_no_delete",
+      "relation": "public.config_service_lanes",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_service_lanes.config_service_lanes_select",
+      "relation": "public.config_service_lanes",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_service_lanes.config_service_lanes_update",
+      "relation": "public.config_service_lanes",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_template_pack_versions.config_template_pack_versions_insert",
+      "relation": "public.config_template_pack_versions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_template_pack_versions.config_template_pack_versions_no_delete",
+      "relation": "public.config_template_pack_versions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_template_pack_versions.config_template_pack_versions_select",
+      "relation": "public.config_template_pack_versions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_template_pack_versions.config_template_pack_versions_update",
+      "relation": "public.config_template_pack_versions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_template_packs.config_template_packs_insert",
+      "relation": "public.config_template_packs",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_template_packs.config_template_packs_no_delete",
+      "relation": "public.config_template_packs",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_template_packs.config_template_packs_select",
+      "relation": "public.config_template_packs",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_template_packs.config_template_packs_update",
+      "relation": "public.config_template_packs",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_tenant_configurations.config_tenant_configurations_insert",
+      "relation": "public.config_tenant_configurations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_tenant_configurations.config_tenant_configurations_no_delete",
+      "relation": "public.config_tenant_configurations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_tenant_configurations.config_tenant_configurations_select",
+      "relation": "public.config_tenant_configurations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_tenant_configurations.config_tenant_configurations_update",
+      "relation": "public.config_tenant_configurations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_tenant_template_activations.config_tenant_template_activations_insert",
+      "relation": "public.config_tenant_template_activations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_tenant_template_activations.config_tenant_template_activations_no_delete",
+      "relation": "public.config_tenant_template_activations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_tenant_template_activations.config_tenant_template_activations_select",
+      "relation": "public.config_tenant_template_activations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_tenant_template_activations.config_tenant_template_activations_update",
+      "relation": "public.config_tenant_template_activations",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_tenants.config_tenants_insert",
+      "relation": "public.config_tenants",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_tenants.config_tenants_no_delete",
+      "relation": "public.config_tenants",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_tenants.config_tenants_select",
+      "relation": "public.config_tenants",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_tenants.config_tenants_update",
+      "relation": "public.config_tenants",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_work_class_definitions.config_work_class_definitions_insert",
+      "relation": "public.config_work_class_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_work_class_definitions.config_work_class_definitions_no_delete",
+      "relation": "public.config_work_class_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_work_class_definitions.config_work_class_definitions_select",
+      "relation": "public.config_work_class_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_work_class_definitions.config_work_class_definitions_update",
+      "relation": "public.config_work_class_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_work_item_type_definitions.config_work_item_type_definitions_insert",
+      "relation": "public.config_work_item_type_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_work_item_type_definitions.config_work_item_type_definitions_no_delete",
+      "relation": "public.config_work_item_type_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_work_item_type_definitions.config_work_item_type_definitions_select",
+      "relation": "public.config_work_item_type_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_work_item_type_definitions.config_work_item_type_definitions_update",
+      "relation": "public.config_work_item_type_definitions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_workforce_gate_dependency_links.config_workforce_gate_dependency_links_insert",
+      "relation": "public.config_workforce_gate_dependency_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_workforce_gate_dependency_links.config_workforce_gate_dependency_links_no_delete",
+      "relation": "public.config_workforce_gate_dependency_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_workforce_gate_dependency_links.config_workforce_gate_dependency_links_select",
+      "relation": "public.config_workforce_gate_dependency_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_workforce_gate_dependency_links.config_workforce_gate_dependency_links_update",
+      "relation": "public.config_workforce_gate_dependency_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_workforce_qualification_rules.config_workforce_qualification_rules_insert",
+      "relation": "public.config_workforce_qualification_rules",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_workforce_qualification_rules.config_workforce_qualification_rules_no_delete",
+      "relation": "public.config_workforce_qualification_rules",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_workforce_qualification_rules.config_workforce_qualification_rules_select",
+      "relation": "public.config_workforce_qualification_rules",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_workforce_qualification_rules.config_workforce_qualification_rules_update",
+      "relation": "public.config_workforce_qualification_rules",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_workstreams.config_workstreams_insert",
+      "relation": "public.config_workstreams",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_workstreams.config_workstreams_no_delete",
+      "relation": "public.config_workstreams",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_workstreams.config_workstreams_select",
+      "relation": "public.config_workstreams",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.config_workstreams.config_workstreams_update",
+      "relation": "public.config_workstreams",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.domain_events.domain_events_select_authorized",
+      "relation": "public.domain_events",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.evidence_links.evidence_links_select_authorized",
+      "relation": "public.evidence_links",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.evidence_objects.evidence_objects_select_authorized",
+      "relation": "public.evidence_objects",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.field_issue_assessments.field_issue_assessments_no_direct_mutation",
+      "relation": "public.field_issue_assessments",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.field_issue_assessments.field_issue_assessments_select_authorized",
+      "relation": "public.field_issue_assessments",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.field_issue_evidence_references.field_issue_evidence_no_direct_mutation",
+      "relation": "public.field_issue_evidence_references",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.field_issue_evidence_references.field_issue_evidence_select_authorized",
+      "relation": "public.field_issue_evidence_references",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.field_issue_resolutions.field_issue_resolutions_no_direct_mutation",
+      "relation": "public.field_issue_resolutions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.field_issue_resolutions.field_issue_resolutions_select_authorized",
+      "relation": "public.field_issue_resolutions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.field_issues.field_issues_no_direct_mutation",
+      "relation": "public.field_issues",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.field_issues.field_issues_select_authorized",
+      "relation": "public.field_issues",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.final_billing_retainage_projections.final_billing_projection_no_direct_mutation",
+      "relation": "public.final_billing_retainage_projections",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.final_billing_retainage_projections.final_billing_projection_select_authorized",
+      "relation": "public.final_billing_retainage_projections",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunities.opportunities_p1_no_direct_delete",
+      "relation": "public.opportunities",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.opportunities.opportunities_p1_no_direct_insert",
+      "relation": "public.opportunities",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.opportunities.opportunities_p1_no_direct_update",
+      "relation": "public.opportunities",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.opportunities.opportunities_p1_select_authorized",
+      "relation": "public.opportunities",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.opportunity_assignments.opportunity_assignments_p1_no_direct_delete",
+      "relation": "public.opportunity_assignments",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_assignments.opportunity_assignments_p1_no_direct_insert",
+      "relation": "public.opportunity_assignments",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_assignments.opportunity_assignments_p1_no_direct_update",
+      "relation": "public.opportunity_assignments",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_assignments.opportunity_assignments_p1_select_authorized",
+      "relation": "public.opportunity_assignments",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_bid_evidence_satisfactions.opportunity_bid_evidence_satisfactions_no_direct_delete",
+      "relation": "public.opportunity_bid_evidence_satisfactions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_bid_evidence_satisfactions.opportunity_bid_evidence_satisfactions_no_direct_insert",
+      "relation": "public.opportunity_bid_evidence_satisfactions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_bid_evidence_satisfactions.opportunity_bid_evidence_satisfactions_no_direct_select",
+      "relation": "public.opportunity_bid_evidence_satisfactions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_bid_evidence_satisfactions.opportunity_bid_evidence_satisfactions_no_direct_update",
+      "relation": "public.opportunity_bid_evidence_satisfactions",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_bid_submission_events.opportunity_bid_submission_events_no_direct_delete",
+      "relation": "public.opportunity_bid_submission_events",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_bid_submission_events.opportunity_bid_submission_events_no_direct_insert",
+      "relation": "public.opportunity_bid_submission_events",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_bid_submission_events.opportunity_bid_submission_events_no_direct_update",
+      "relation": "public.opportunity_bid_submission_events",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_bid_submission_events.opportunity_bid_submission_events_select",
+      "relation": "public.opportunity_bid_submission_events",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_pursuit_authorization_events.opportunity_pursuit_authorization_events_no_direct_delete",
+      "relation": "public.opportunity_pursuit_authorization_events",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_pursuit_authorization_events.opportunity_pursuit_authorization_events_no_direct_insert",
+      "relation": "public.opportunity_pursuit_authorization_events",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_pursuit_authorization_events.opportunity_pursuit_authorization_events_no_direct_update",
+      "relation": "public.opportunity_pursuit_authorization_events",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_pursuit_authorization_events.opportunity_pursuit_authorization_events_select",
+      "relation": "public.opportunity_pursuit_authorization_events",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_qualifications.opportunity_qualifications_p1_no_direct_delete",
+      "relation": "public.opportunity_qualifications",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_qualifications.opportunity_qualifications_p1_no_direct_insert",
+      "relation": "public.opportunity_qualifications",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_qualifications.opportunity_qualifications_p1_no_direct_update",
+      "relation": "public.opportunity_qualifications",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.opportunity_qualifications.opportunity_qualifications_p1_select_authorized",
+      "relation": "public.opportunity_qualifications",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.project_memberships.project_memberships_admin_manage",
+      "relation": "public.project_memberships",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.project_memberships.project_memberships_select_self_or_admin",
+      "relation": "public.project_memberships",
+      "relation_absent_from_historical_upgrade": true,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Policy target table absent in hosted historical upgrade"
+    },
+    {
+      "policy": "public.projects.projects_select_workspace_or_project_member",
+      "relation": "public.projects",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.rfis.rfis_no_direct_mutation",
+      "relation": "public.rfis",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.rfis.rfis_select_authorized",
+      "relation": "public.rfis",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.user_profiles.user_profiles_select_self_or_admin",
+      "relation": "public.user_profiles",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.user_profiles.user_profiles_update_self_limited",
+      "relation": "public.user_profiles",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.workspace_memberships.workspace_memberships_admin_manage",
+      "relation": "public.workspace_memberships",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.workspace_memberships.workspace_memberships_select_self_or_admin",
+      "relation": "public.workspace_memberships",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.workspaces.workspaces_select_active_member",
+      "relation": "public.workspaces",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    },
+    {
+      "policy": "public.workspaces.workspaces_update_admin",
+      "relation": "public.workspaces",
+      "relation_absent_from_historical_upgrade": false,
+      "classification": "OPTIONAL / INAPPLICABLE",
+      "basis": "Target legacy public table has RLS enabled with no policy and denies browser-role rows; hosted routes do not require this clean-install policy. Callable legacy functions require separate review."
+    }
+  ],
+  "counts": {
+    "relations": 72,
+    "policies": 212,
+    "relations_with_app_source_reference": 5,
+    "relations_with_hosted_function_reference": 0,
+    "policies_on_absent_tables": 194
+  }
+}

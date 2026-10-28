@@ -4,7 +4,7 @@ The bridge pre/source/post trio at order 215 is one transaction. Ledger rows
 are inserted only after the corresponding SQL has executed, in that same
 transaction, with the exact executed SQL retained in statements[].
 """
-import hashlib, json, re, subprocess, sys
+import hashlib, json, os, re, subprocess, sys
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -14,7 +14,9 @@ selected=manifest[211:]
 assert len(selected)==25 and selected[0]['order']==212 and selected[-1]['order']==236
 target=json.loads(subprocess.run(['docker','inspect','d5o-rc7-historical-db'],capture_output=True,text=True,check=True).stdout)[0]
 assert target['HostConfig']['NetworkMode']=='none' and not target['HostConfig'].get('PortBindings')
-psql=['docker','exec','-i','d5o-rc7-historical-db','psql','-U','supabase_admin','-d','postgres','-q','-X','-v','ON_ERROR_STOP=1','-At']
+local_role=os.environ.get('D5O_RC10_LOCAL_DB_ROLE','supabase_admin')
+if local_role not in ('supabase_admin','postgres'): raise RuntimeError('unexpected isolated database role')
+psql=['docker','exec','-i','d5o-rc7-historical-db','psql','-U',local_role,'-d','postgres','-q','-X','-v','ON_ERROR_STOP=1','-At']
 def query(sql):
     r=subprocess.run(psql+['-c',sql],capture_output=True,text=True,encoding='utf-8',check=True)
     return r.stdout.strip()

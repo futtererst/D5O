@@ -1,0 +1,195 @@
+{
+  "format": "d5o-rc10-exact-sequence-v1",
+  "starting_ledger_rows": 177,
+  "ending_ledger_rows": 202,
+  "local_restore_acl_reconciliation": "before migration only; not production SQL",
+  "forward_compatibility_sql": [],
+  "bridge_files": [
+    {
+      "file": "scripts/rc8_bridge_pre_215.sql",
+      "sha256": "0f076c496f756b8f56965b104cddd8c77c558344c89ca84cbf85946dfa924af5"
+    },
+    {
+      "file": "scripts/rc8_bridge_post_215.sql",
+      "sha256": "b15dcd56a30fc4b46e81ea792fbfd51e19213630b698bd5734334f0cccbdf5d8"
+    }
+  ],
+  "ordered_source_migrations": [
+    {
+      "order": 212,
+      "source_file": "20261023111641_d5o_service_approval_policy_phase1.sql",
+      "source_sha256": "e66b8fbfdba38c88276c829f351b3f89cd8d40f4f79ad50f7e8efc0556bb84df",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 213,
+      "source_file": "20261023115306_d5o_phase1b_connected_service_approval.sql",
+      "source_sha256": "9169ad7bdaece5767f242c268c29d9828f29c00c0d78ccb71c4acdd8ac27412c",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 214,
+      "source_file": "20261023123751_d5o_phase2a_organization_people.sql",
+      "source_sha256": "35b806bdf59146b088feee8af0375dfbe8ecae8a4befdf039bc769d23aa466de",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 215,
+      "source_file": "20261023140000_d5o_phase2b_tenant_onboarding.sql",
+      "source_sha256": "d037c3e95a4ce0dda6325a8264117a838eab91d2a942735fa96350dc5ceb0adc",
+      "ledger_statement_count": 3,
+      "bridge_transaction": true
+    },
+    {
+      "order": 216,
+      "source_file": "20261023141000_d5o_phase2b_onboarding_commands.sql",
+      "source_sha256": "f9de353e8005dbec8715e8a48eff3486f1e3312b809af9d2eb8c8d5f68135540",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 217,
+      "source_file": "20261023142000_d5o_phase2b_vendor_controls.sql",
+      "source_sha256": "6f97052b2f97687766a8f6ddf1b3747e307a69ed237e8a257ec9aee97cdedd4b",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 218,
+      "source_file": "20261023143000_d5o_phase2b_template_governance.sql",
+      "source_sha256": "0587d11930b29a18c5551033505412c734452bbcce11e7bdb7ed1f0d11885756",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 219,
+      "source_file": "20261023150000_d5o_phase2c_lifecycle_features.sql",
+      "source_sha256": "c52410967753b1a5dd33128d26bdfb54f44f04e3e3cd0212ae2e27fcbcb1f981",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 220,
+      "source_file": "20261023151000_d5o_phase2c_discover_policy.sql",
+      "source_sha256": "18fb136d785dcd6119230559858dc12af86a8daaf40c996d84100bfc41a5c991",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 221,
+      "source_file": "20261023152000_d5o_phase2c_connected_work_gate.sql",
+      "source_sha256": "19e88b407c5cc95c28e9cd6076b2fac09c38720c1ca9d39184fe5a2a456cf289",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 222,
+      "source_file": "20261023153646_d5o_phase2d_phase_policies.sql",
+      "source_sha256": "446acc031a27047b7bd7f9b25d00009f5b60418c6028b6f67bb89d408ae2629c",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 223,
+      "source_file": "20261023153752_d5o_phase2d_define_develop_guards.sql",
+      "source_sha256": "cc80923fb755bfa224ed700ae834ea836c7134da64d5991aa3611bf0bb72bbe0",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 224,
+      "source_file": "20261023180000_d5o_phase2f_operate_review_guard.sql",
+      "source_sha256": "e06828ccad9b8cc52cefb49de2226c5dc36b1495e702e69b1a0672cf7048f060",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 225,
+      "source_file": "20261023201553_phase2g_phase_status.sql",
+      "source_sha256": "166cb56667af6dbffc380ae0503bf6faa55e08797b2a1b264779e5ebd543d30e",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 226,
+      "source_file": "20261024010000_d5o_service_sla_calendar_validation.sql",
+      "source_sha256": "3f444078725133e9b6408e62241a2f12e7a25a4fec41fb2800fe69211b898658",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 227,
+      "source_file": "20261024011000_d5o_service_job_stable_work_type_key.sql",
+      "source_sha256": "e130af53589d9d96d3f34f9a574c7674c599320c7d1ea9505cd2a942ee3d8674",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 228,
+      "source_file": "20261024012000_d5o_service_child_identity_guard.sql",
+      "source_sha256": "1b2255b7e22f09c81ee9f4624f8d2ee76b6fd19bb8136947f097adbd5e85a1ab",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 229,
+      "source_file": "20261024105438_phase2hs_connected_design_capability_gate.sql",
+      "source_sha256": "320a88ffbc24bf7af6a80023f26f35aeadd42d8e7e08cb86c149b37edb9fafec",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 230,
+      "source_file": "20261024112500_phase2hs_overnight_crew_eligibility.sql",
+      "source_sha256": "eee419503ada7f35194407aa22dbb2a251bfa0d092d7b24c0ceb9fd0c76ac2fb",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 231,
+      "source_file": "20261024113000_phase2hs_connected_develop_capability_gate.sql",
+      "source_sha256": "7b5e9cf4c4002433ac46455b9b08fe19a9335b62df187bb47ffc4e7bf4ef45fb",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 232,
+      "source_file": "20261024150000_phase2ht_workforce_qualification_expiry.sql",
+      "source_sha256": "ae8ebb0cd83c5c6ecc804445fcecb3cec8a8ef72d1b52a8a31f57bfddf4e6c81",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 233,
+      "source_file": "20261024151000_phase2ht_current_worker_assignment.sql",
+      "source_sha256": "8c73747eb163b207095f416b1c67724a0728a2b10479d81d04af95b4d5be68f9",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 234,
+      "source_file": "20261025010000_d5o_phase2htd_connected_service_capability_boundary.sql",
+      "source_sha256": "22727a482e87067c25352e450e652e87725166cbc3091ae036292570f15721fc",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 235,
+      "source_file": "20261027085730_d5o_operate_acceptance_one_time_guard.sql",
+      "source_sha256": "d0ec41ca79f9adbc5a95d3ce814fbf1ce7a8c615ec1ec3d021e686f8edf35bd1",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    },
+    {
+      "order": 236,
+      "source_file": "20261027190000_d5o_field_fact_latest_permit_order.sql",
+      "source_sha256": "6fe726239c15941201f3026ab1a0bb5f42ab89d04fc95b294d54164c5ab4cea8",
+      "ledger_statement_count": 1,
+      "bridge_transaction": false
+    }
+  ],
+  "ledger_contract": "Actual SQL recorded by RC8 runner; no fabricated historical rows."
+}

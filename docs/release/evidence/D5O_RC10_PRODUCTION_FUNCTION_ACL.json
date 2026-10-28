@@ -1,0 +1,1327 @@
+{
+  "format": "d5o-rc10-readonly-production-function-acl-v1",
+  "project": "fcawktdjoxvahhgvkebx",
+  "scope": "public D5O-prefixed functions only",
+  "rows": [
+    {
+      "signature": "public.d5o_design_cost_my_review_v1(p_workspace_key text, p_presentation_id text, p_claim_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_design_internal_rate_command_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_design_internal_rate_read_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_field_labor_my_review_v1(p_workspace_key text, p_presentation_id text, p_authority_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_graybar_actions_pre_purchase_delegation_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_graybar_actions_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_graybar_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_graybar_document_v1(p_workspace_key text, p_presentation_id text, p_document_id uuid, p_actor uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_graybar_job_cost_actions_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_graybar_job_cost_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_graybar_revision integer, p_finance_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_graybar_job_cost_read_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_graybar_read_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_graybar_register_document_v1(p_workspace_key text, p_presentation_id text, p_kind text, p_filename text, p_media_type text, p_storage_path text, p_sha256 text, p_byte_count bigint, p_actor uuid, p_extraction jsonb)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_accept_supported_asset_v1(p_workspace_key text, p_parent_presentation_id text, p_asset_id text, p_documentation_source text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_operate_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_acceptance_command_v1(p_workspace_key text, p_presentation_id text, p_package_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_design_revision integer, p_expected_deploy_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_actor_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": false
+    },
+    {
+      "signature": "public.d5o_hosted_admin_audit_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_actor text, p_action text, p_subject text, p_from date, p_to date, p_offset integer, p_limit integer)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_admin_directory_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_search text, p_offset integer, p_limit integer, p_user_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_admin_identity_finish_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_command_id text, p_status text, p_provider_user_id uuid, p_provider_message text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_admin_identity_intent_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_action text, p_target_email text, p_reason text, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_admin_identity_intent_v2(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_action text, p_target_email text, p_requested_role text, p_reason text, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_admin_identity_queue_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_admin_membership_change_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_member_email text, p_action text, p_role text, p_expected_role text, p_expected_status text, p_reason text, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_admin_receipt_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_admin_succession_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_target_email text, p_reason text, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_assign_member_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_member_email text, p_role text, p_expected_role text, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_assign_support_document_supplier_v1(p_workspace_key text, p_presentation_id text, p_turnover_id text, p_action text, p_supervisor_email text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_deploy_revision integer, p_expected_operate_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_availability_command_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_bind_worker_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_worker_email text, p_person text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_bootstrap_synthetic_admin_v1(p_workspace_key text, p_target_email text, p_operator_label text, p_reason text, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_command_save_v1(p_workspace_key text, p_state_key text, p_expected_revision bigint, p_state jsonb, p_actor_user_id uuid, p_membership_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_admin_command_v1(p_workspace_key text, p_action text, p_version uuid, p_expected_active uuid, p_expected_revision integer, p_input jsonb, p_reason text, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_admin_read_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_admin_receipt_v1(p_workspace_key text, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_inventory_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_configure_handoff_route_v1(p_workspace_key text, p_version uuid, p_route text, p_role text, p_expected_revision integer, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_correct_work_title_v1(p_workspace_key text, p_presentation_id text, p_command_id text, p_expected_record_version integer, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_expected_title text, p_new_title text, p_reason text, p_actor_user_id uuid, p_membership_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_correct_worker_binding_v1(p_workspace_key text, p_person_id uuid, p_new_email text, p_reason text, p_expected_revision integer, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_create_connected_package_v2(p_workspace_key text, p_presentation_id text, p_name text, p_owner text, p_command_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_expected_handoff_revision integer, p_expected_package_count integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_create_connected_work_v1(p_workspace_key text, p_command_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_configuration_version_id uuid, p_work_type_key text, p_title text, p_customer text, p_site text, p_owner text, p_actor_user_id uuid, p_membership_id uuid, p_initial_discovery jsonb)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_create_related_work_v1(p_workspace_key text, p_command_id text, p_action text, p_parent_presentation_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_parent_after jsonb, p_child jsonb, p_actor_user_id uuid, p_membership_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_create_service_package_v1(p_workspace_key text, p_presentation_id text, p_name text, p_owner text, p_command_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_expected_basis_revision integer, p_expected_package_count integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_create_work_core_v1(p_workspace_key text, p_command_id text, p_configuration_version_id uuid, p_work_type_key text, p_title text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_create_work_v1(p_workspace_key text, p_command_id text, p_configuration_version_id uuid, p_work_type_key text, p_title text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_crew_command_internal_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_crew_command_pre_binding_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_crew_command_pre_labor_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_crew_command_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_crew_profile_command_v1(p_workspace_key text, p_person text, p_qualifications text[], p_weekly_capacity_hours numeric, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_customer_decision_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_offer_revision integer, p_recipient text, p_method text, p_due_date text, p_response_status text, p_received_at text, p_details text, p_source_reference text, p_next_action text, p_follow_up_due text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_customer_decision_evidence_read_v1(p_workspace_key text, p_presentation_id text, p_evidence_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_define_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_review_role text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_cost_actions_pre_delegate_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_cost_actions_pre_outlook_delegate_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_cost_actions_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_cost_command_pre_forecast_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_cost_command_pre_rate_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_cost_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_cost_evidence_read_v1(p_workspace_key text, p_presentation_id text, p_claim_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_cost_evidence_read_v2(p_workspace_key text, p_presentation_id text, p_claim_id uuid, p_actor_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_cost_read_pre_rate_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_cost_read_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_demand_command_v1(p_workspace_key text, p_presentation_id text, p_demand jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_document_evidence_read_v1(p_workspace_key text, p_presentation_id text, p_document_id text, p_document_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_draft_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_field_change_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_handoff_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_due_date text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_offer_revision integer, p_handoff_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_release_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_review_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_spend_actions_pre_delegation_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_spend_actions_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_spend_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_design_spend_read_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_estimate_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_due_date text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_estimate_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_field_change_command_v1(p_workspace_key text, p_presentation_id text, p_package_id text, p_change_id uuid, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_design_revision integer, p_expected_deploy_revision integer, p_expected_change_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_field_change_read_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_field_evidence_command_v1(p_workspace_key text, p_presentation_id text, p_package_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_design_revision integer, p_expected_schedule_revision integer, p_expected_deploy_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_field_fact_command_v1(p_workspace_key text, p_presentation_id text, p_package_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_design_revision integer, p_expected_schedule_revision integer, p_expected_deploy_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_field_start_command_v1(p_workspace_key text, p_presentation_id text, p_package_id text, p_action text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_design_revision integer, p_expected_schedule_revision integer, p_expected_deploy_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_handoff_configuration_command_v1(p_workspace_key text, p_action text, p_version uuid, p_route text, p_role text, p_expected_revision integer, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_handoff_configuration_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_handoff_routes_v1(p_workspace_key text, p_version uuid)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_identity_setup_completed_v1(p_workspace_key text, p_command_id text, p_user_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_job_finance_command_pre_labor_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_job_finance_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_job_finance_read_pre_design_cost_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_job_finance_read_pre_labor_correction_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_job_finance_read_pre_labor_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_job_finance_read_pre_labor_visibility_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_job_finance_read_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_link_existing_asset_v1(p_workspace_key text, p_target_presentation_id text, p_owner_presentation_id text, p_asset_id text, p_note text, p_command_id text, p_expected_source_revision bigint, p_expected_target_deploy_revision integer, p_expected_target_operate_revision integer, p_expected_owner_operate_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_list_work_v1(p_workspace_key text, p_limit integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": false
+    },
+    {
+      "signature": "public.d5o_hosted_load_work_v1(p_workspace_key text, p_work_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": false
+    },
+    {
+      "signature": "public.d5o_hosted_membership_access_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_offer_review_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_due_date text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_offer_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_offer_revision_command_v1(p_workspace_key text, p_presentation_id text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_offer_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_operate_command_internal_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_deploy_revision integer, p_expected_operate_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_operate_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_deploy_revision integer, p_expected_operate_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_pricing_policy_command_v1(p_workspace_key text, p_action text, p_policy jsonb, p_policy_id text, p_policy_version integer, p_command_id text, p_expected_work_revision bigint)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_private_evidence_index_v1(p_workspace_key text, p_offset integer, p_limit integer)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_prototype_read_internal_v1(p_workspace_key text, p_state_key text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_prototype_read_v1(p_workspace_key text, p_state_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_prototype_save_internal_v1(p_workspace_key text, p_state_key text, p_expected_revision bigint, p_state jsonb)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_prototype_save_v1(p_workspace_key text, p_state_key text, p_expected_revision bigint, p_state jsonb)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_publish_initial_configuration_v1(p_workspace_key text, p_command_id text, p_manifest jsonb, p_work_types jsonb, p_create_roles jsonb, p_routes jsonb, p_reason text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_pursuit_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_intent jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_register_customer_decision_evidence_v1(p_workspace_key text, p_presentation_id text, p_evidence_id uuid, p_purpose text, p_scope_id text, p_scope_revision integer, p_basis jsonb, p_checksum_sha256 text, p_filename text, p_uploader_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_register_design_cost_evidence_v1(p_workspace_key text, p_presentation_id text, p_claim_id uuid, p_evidence_id uuid, p_checksum_sha256 text, p_filename text, p_uploader_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_register_design_document_evidence_v1(p_workspace_key text, p_presentation_id text, p_document_id text, p_document_revision integer, p_evidence_id uuid, p_checksum_sha256 text, p_filename text, p_uploader_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_register_support_document_internal_v1(p_workspace_key text, p_presentation_id text, p_evidence_id uuid, p_turnover_id text, p_kind text, p_basis jsonb, p_checksum_sha256 text, p_filename text, p_uploader_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_register_support_document_v1(p_workspace_key text, p_presentation_id text, p_evidence_id uuid, p_turnover_id text, p_kind text, p_basis jsonb, p_checksum_sha256 text, p_filename text, p_uploader_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_role_actions_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_rom_design_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_basis jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_estimate_revision integer, p_offer_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_rom_design_read_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_server_connected_read_v1(p_workspace_key text, p_state_key text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_server_read_v1(p_workspace_key text, p_state_key text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_server_worker_save_v1(p_workspace_key text, p_state_key text, p_expected_revision bigint, p_state jsonb, p_actor_user_id uuid, p_membership_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_actions_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_basis_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_decision_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_billing_terms_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_design_revision integer, p_expected_deploy_revision integer, p_expected_terms_revision integer, p_expected_source_digest text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_billing_terms_evidence_list_v1(p_workspace_key text, p_presentation_id text, p_request_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_cost_actions_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_cost_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_cycle text, p_expected_child_work_id text, p_expected_source_digest text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_cost_read_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_finance_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_action text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_design_revision integer, p_expected_deploy_revision integer, p_expected_finance_revision integer, p_expected_basis_digest text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_finance_read_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_invoice_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_action text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_design_revision integer, p_expected_deploy_revision integer, p_expected_finance_revision integer, p_expected_basis_digest text, p_expected_invoice_revision integer, p_expected_ledger_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_invoice_read_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_job_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_due_date date, p_owner text, p_command_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_expected_operate_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_pricing_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_action text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_return_command_v1(p_workspace_key text, p_parent_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_child_deploy_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_solution_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_due_date text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_solution_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_support_document_command_internal_v1(p_workspace_key text, p_presentation_id text, p_action text, p_turnover_id text, p_kind text, p_evidence_id uuid, p_decision text, p_note text, p_command_id text, p_expected_source_revision bigint, p_expected_deploy_revision integer, p_expected_operate_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_support_document_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_turnover_id text, p_kind text, p_evidence_id uuid, p_decision text, p_note text, p_command_id text, p_expected_source_revision bigint, p_expected_deploy_revision integer, p_expected_operate_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_suspend_member_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_member_email text, p_expected_role text, p_command_id text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_work_queue_identity_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_worker_access_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_worker_binding_v1(p_workspace_key text, p_actor_user_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_worker_schedule_read_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_workforce_command_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_workforce_impact_command_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_schedule_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_workforce_read_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_hosted_workspaces_v1()",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "owner": "postgres",
+      "security_definer": false
+    },
+    {
+      "signature": "public.d5o_internal_design_rate_my_review_v1(p_workspace_key text, p_rate_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_labor_authority_actions_pre_delegation_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_labor_authority_actions_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_labor_authority_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_labor_authority_read_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_outlook_assessment_my_review_v1(p_workspace_key text, p_presentation_id text, p_assessment_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_purchase_authority_actions_pre_delegation_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_purchase_authority_actions_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_purchase_authority_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_purchase_authority_read_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_purchase_cancel_unsent_v1(p_workspace_key text, p_presentation_id text, p_order_id text, p_reason text, p_command_id text, p_expected_graybar_revision integer, p_expected_authority_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_purchase_order_my_review_v1(p_workspace_key text, p_presentation_id text, p_order_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_schedule_labor_hours_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_spending_delegate_command_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_spending_delegate_my_review_v1(p_workspace_key text, p_presentation_id text, p_category text, p_subject_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_spending_delegate_read_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_subcontract_actions_pre_delegation_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_subcontract_actions_v1(p_workspace_key text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_subcontract_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_subcontract_cost_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_subject_id uuid, p_command_id text, p_expected_subcontract_revision integer, p_expected_finance_revision integer)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_subcontract_my_review_v1(p_workspace_key text, p_presentation_id text, p_focus text, p_subject_id uuid)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    },
+    {
+      "signature": "public.d5o_subcontract_read_v1(p_workspace_key text, p_presentation_id text)",
+      "anon_execute": false,
+      "authenticated_execute": true,
+      "service_execute": false,
+      "owner": "postgres",
+      "security_definer": true
+    }
+  ]
+}

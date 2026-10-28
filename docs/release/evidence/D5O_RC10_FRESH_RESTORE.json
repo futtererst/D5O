@@ -1,0 +1,17 @@
+{
+  "format": "d5o-rc7-local-recovery-rehearsal-v1",
+  "isolatedContainer": "d5o-rc7-recovery-db",
+  "networkMode": "none",
+  "elapsedSeconds": 34.46,
+  "restoredCounts": {
+    "ledger": 177,
+    "authUsers": 25,
+    "authIdentities": 25,
+    "workRecords": 15,
+    "storageMetadataObjects": 23
+  },
+  "encryptedPrivateObjectsVerified": 23,
+  "encryptedPrivateBytesVerified": 2252301,
+  "storageMetadataAssociationsMatched": true,
+  "limitation": "No Storage API byte-serving restore or atomic production DB/Storage checkpoint was established."
+}

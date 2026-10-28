@@ -1,0 +1,8 @@
+{
+  "format": "d5o-rc8-tenant-isolation-v1",
+  "synthetic_actor_own_workspace": "PASS",
+  "cross_tenant_rpc_denied_sqlstate": "42501",
+  "suspended_membership_rpc_denied_sqlstate": "42501",
+  "transaction_rolled_back": true,
+  "auth_credentials_used": false
+}

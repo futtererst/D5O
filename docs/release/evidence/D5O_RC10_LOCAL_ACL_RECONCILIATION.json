@@ -1,0 +1,13 @@
+{
+  "format": "d5o-rc10-local-restore-acl-reconciliation-v1",
+  "network_mode": "none",
+  "target_ledger_rows": 177,
+  "functions_reconciled": 165,
+  "anon_execute_count": 0,
+  "authenticated_execute_count": 100,
+  "service_execute_count": 48,
+  "owner_and_security_definer_match": true,
+  "ledger_unchanged": true,
+  "production_modified": false,
+  "scope": "isolated restore fidelity only"
+}

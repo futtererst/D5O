@@ -1,0 +1,13 @@
+{
+  "temporary_node_modules_junction_removed": true,
+  "encrypted_checkpoints_preserved_outside_git": true,
+  "format": "d5o-rc10-cleanup-v1",
+  "removed_disposable_containers": [
+    "d5o-rc7-historical-db",
+    "d5o-rc10-admin-runner-upgrade-db",
+    "d5o-rc10-unfaithful-upgrade-db"
+  ],
+  "production_modified": false,
+  "remaining_disposable_containers": [],
+  "temporary_python_cache_removed": true
+}

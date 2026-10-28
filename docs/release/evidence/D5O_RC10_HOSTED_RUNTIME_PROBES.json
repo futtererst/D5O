@@ -1,0 +1,12 @@
+{
+  "format": "d5o-rc10-hosted-runtime-probes-v1",
+  "network_mode": "none",
+  "synthetic_actor_own_workspace": "PASS",
+  "published_configuration": "ready",
+  "cross_tenant_configuration_denied_sqlstate": "42501",
+  "private_index_authenticated_denied_sqlstate": "42501",
+  "suspended_member_configuration_denied_sqlstate": "42501",
+  "legacy_public_table_rls_denied": true,
+  "synthetic_transaction_rolled_back": true,
+  "real_user_credentials_used": false
+}

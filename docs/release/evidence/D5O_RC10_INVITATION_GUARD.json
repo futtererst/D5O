@@ -1,0 +1,10 @@
+{
+  "format": "d5o-rc8-invitation-guard-tests-v1",
+  "pilot_noop_update": "PASS",
+  "synthetic_provisioned_tenant_field_worker_rejected_sqlstate": "42501",
+  "synthetic_data_rolled_back": true,
+  "bridge_receipt_read_grants_anon_authenticated_service_role": false,
+  "guard_function_public_execute": false,
+  "receipt_rls_enabled": true,
+  "role_constraint_validated": true
+}

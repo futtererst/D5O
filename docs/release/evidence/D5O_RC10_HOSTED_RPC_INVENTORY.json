@@ -1,0 +1,821 @@
+{
+  "format": "d5o-rc10-hosted-rpc-inventory-v1",
+  "isolated": true,
+  "literal_rpc_call_count": 112,
+  "missing_literal_rpc_names": [],
+  "calls": [
+    {
+      "name": "d5o_design_cost_my_review_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_design_internal_rate_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/design-internal-rate/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_design_internal_rate_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/design-internal-rate/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_field_labor_my_review_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_graybar_actions_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_graybar_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/graybar/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_graybar_document_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/graybar-document/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_graybar_job_cost_actions_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_graybar_job_cost_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/graybar-job-cost/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_graybar_job_cost_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/graybar-job-cost/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_graybar_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/graybar-document/route.ts",
+        "app/api/d5o-hosted/graybar-po/route.ts",
+        "app/api/d5o-hosted/graybar/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_graybar_register_document_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/graybar-document/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_accept_supported_asset_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_actor_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/crew-access/route.ts",
+        "app/api/d5o-hosted/prototype-state/route.ts",
+        "app/api/d5o-hosted/work/route.ts",
+        "lib/d5o/hosted/prototype-context.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_admin_identity_finish_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/admin-identity/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_admin_identity_intent_v2",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/admin-identity/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_assign_support_document_supplier_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_bind_worker_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/crew-access/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_capability_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-develop-action/route.ts",
+        "app/api/d5o-hosted/field-changes/route.ts",
+        "app/api/d5o-hosted/worker-deploy/route.ts",
+        "app/work/customer/[workspace]/field/page.tsx",
+        "lib/d5o/hosted/customer-work-scope.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_configuration_admin_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/admin-configuration/route.ts",
+        "app/api/d5o-hosted/workforce-impact/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_configuration_history_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/admin-configuration/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_configuration_inventory_v1",
+      "present": true,
+      "sources": [
+        "lib/d5o/hosted/configuration-inventory.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_connected_service_approval_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_correct_work_title_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/work-title-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_create_connected_work_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/connected-work/route.ts",
+        "app/api/d5o-hosted/prototype-catalog/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_create_related_work_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_create_work_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/work/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_crew_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-develop-action/route.ts",
+        "app/api/d5o-hosted/worker-schedule/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_customer_decision_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-commercial-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_customer_decision_evidence_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-decision-evidence/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_define_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-define-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_cost_actions_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_cost_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/design-cost/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_cost_evidence_read_v2",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/design-cost-evidence/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_cost_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/design-cost-evidence/route.ts",
+        "app/api/d5o-hosted/design-cost/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_document_evidence_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/design-document-evidence/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_handoff_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-commercial-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_spend_actions_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_spend_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/design-spend/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_spend_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/design-spend/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_estimate_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-commercial-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_field_change_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/field-changes/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_field_change_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts",
+        "app/api/d5o-hosted/field-changes/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_field_evidence_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/worker-deploy/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_field_fact_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/worker-deploy/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_field_start_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-develop-action/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_job_finance_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/job-finance/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_job_finance_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/job-finance/route.ts",
+        "app/api/d5o-hosted/prototype-search/route.ts",
+        "app/api/d5o-hosted/subcontract/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_link_existing_asset_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_list_work_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/work/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_load_work_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/work/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_offer_review_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-commercial-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_offer_revision_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-commercial-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_operate_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_org_admin_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/org-admin/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_org_invitation_request_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/org-admin/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_org_invitation_revoke_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/org-admin/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_phase_status_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_pricing_policy_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-state/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_private_evidence_index_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/private-evidence-index/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_prototype_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-state/route.ts",
+        "lib/d5o/hosted/prototype-context.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_prototype_save_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts",
+        "app/api/d5o-hosted/prototype-state/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_publish_initial_configuration_v1",
+      "present": true,
+      "sources": [
+        "app/work/initial-configuration-action.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_pursuit_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-pursuit-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_register_design_cost_evidence_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/design-cost-evidence/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_register_design_document_evidence_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/design-document-evidence/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_role_actions_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts",
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_rom_design_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/rom-design/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_rom_design_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/rom-design/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_server_worker_save_v1",
+      "present": true,
+      "sources": [
+        "lib/d5o/hosted/worker-context.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_actions_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_basis_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-design-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_billing_terms_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/service-finance/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_billing_terms_evidence_list_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-decision-evidence/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_cost_actions_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_cost_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/service-cost/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_cost_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/service-cost/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_finance_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/service-finance/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_finance_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/service-finance/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_invoice_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/service-invoice/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_invoice_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/service-invoice/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_job_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_pricing_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_return_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_solution_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-commercial-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_support_document_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_work_queue_identity_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts",
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_worker_access_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/crew-access/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_worker_binding_v1",
+      "present": true,
+      "sources": [
+        "lib/d5o/hosted/worker-context.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_worker_schedule_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/worker-schedule/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_workforce_impact_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/workforce/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_workforce_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-develop-action/route.ts",
+        "app/api/d5o-hosted/workforce-impact/route.ts",
+        "app/api/d5o-hosted/workforce/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_hosted_workspaces_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/workspaces/route.ts",
+        "app/work/labor/page.tsx",
+        "app/work/page.tsx",
+        "app/work/procurement/page.tsx",
+        "app/work/subcontracts/page.tsx"
+      ]
+    },
+    {
+      "name": "d5o_internal_design_rate_my_review_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_labor_authority_actions_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts",
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_labor_authority_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/labor-authority/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_labor_authority_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/labor-authority/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_outlook_assessment_my_review_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_purchase_authority_actions_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts",
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_purchase_authority_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/purchase-authority/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_purchase_authority_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/purchase-authority/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_purchase_cancel_unsent_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/purchase-authority/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_purchase_order_my_review_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_schedule_labor_hours_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-schedule/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_spending_delegate_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/spending-delegation/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_spending_delegate_my_review_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_spending_delegate_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/spending-delegation/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_subcontract_actions_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_subcontract_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/subcontract/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_subcontract_cost_command_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/subcontract/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_subcontract_my_review_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ]
+    },
+    {
+      "name": "d5o_subcontract_read_v1",
+      "present": true,
+      "sources": [
+        "app/api/d5o-hosted/subcontract/route.ts"
+      ]
+    }
+  ],
+  "limitation": "Literal calls only; dynamic RPC names and function behavior require separate qualification."
+}

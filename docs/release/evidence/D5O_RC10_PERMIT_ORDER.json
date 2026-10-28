@@ -1,0 +1,9 @@
+{
+  "format": "d5o-rc10-permit-order-v1",
+  "network_mode": "none",
+  "synthetic_tied_timestamps": true,
+  "selected": "newest-appended",
+  "source_uses_append_ordinality": true,
+  "historical_permit_rows_modified": false,
+  "limit": "Selector expression verified; full authenticated field-fact command was not executed."
+}

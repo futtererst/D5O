@@ -1,0 +1,126 @@
+{
+  "format": "d5o-rc10-object-dependency-matrix-v1",
+  "conditional_runtime": "D5O_HOSTED_ENABLED=1 and RYBEXOS_RUNTIME_MODE=production",
+  "rows": [
+    {
+      "relation": "public.config_tenants",
+      "source_migration": "0017_configuration_foundation_core.sql",
+      "source_sha256": "acd2aa06590b8d1113741e4296a9842cc0c0ff54af05926956c9e917c9dabccb",
+      "declared_dependencies": [
+        "organizations",
+        "workspaces",
+        "auth.users"
+      ],
+      "frozen_app_literal_references": [
+        "lib/d5o/configuration/server.ts"
+      ],
+      "hosted_d5o_function_references": [],
+      "hosted_runtime_disposition": "OPTIONAL / INAPPLICABLE",
+      "basis": "Public configuration client is behind the exact local proof-environment guard; hosted Work uses d5o_hosted_configuration_inventory_v1.",
+      "historical_execution_proven": false,
+      "full_legacy_dependency_closure_qualified": false
+    },
+    {
+      "relation": "public.config_tenant_configurations",
+      "source_migration": "0019_configuration_tenant_activation_versions.sql",
+      "source_sha256": "6fdfc1d5acdd209c4b168168467892df952de7e507a4f7f40661691951771d37",
+      "declared_dependencies": [
+        "config_tenants",
+        "config_tenant_template_activations",
+        "auth.users"
+      ],
+      "frozen_app_literal_references": [
+        "lib/d5o/configuration/server.ts"
+      ],
+      "hosted_d5o_function_references": [],
+      "hosted_runtime_disposition": "OPTIONAL / INAPPLICABLE",
+      "basis": "Public configuration client is behind the exact local proof-environment guard; hosted Work uses d5o_hosted_configuration_inventory_v1.",
+      "historical_execution_proven": false,
+      "full_legacy_dependency_closure_qualified": false
+    },
+    {
+      "relation": "public.config_configuration_versions",
+      "source_migration": "0019_configuration_tenant_activation_versions.sql",
+      "source_sha256": "6fdfc1d5acdd209c4b168168467892df952de7e507a4f7f40661691951771d37",
+      "declared_dependencies": [
+        "config_tenant_configurations",
+        "config_template_pack_versions",
+        "auth.users"
+      ],
+      "frozen_app_literal_references": [
+        "app/work/configuration-actions.ts",
+        "lib/d5o/configuration/server.ts"
+      ],
+      "hosted_d5o_function_references": [],
+      "hosted_runtime_disposition": "OPTIONAL / INAPPLICABLE",
+      "basis": "Public configuration client is behind the exact local proof-environment guard; hosted Work uses d5o_hosted_configuration_inventory_v1.",
+      "historical_execution_proven": false,
+      "full_legacy_dependency_closure_qualified": false
+    },
+    {
+      "relation": "public.evidence_objects",
+      "source_migration": "0006_shared_command_audit_evidence.sql",
+      "source_sha256": "84fb66d66074447914e07ea7664d891b50dba6c5b46108181780d54ef9c4199b",
+      "declared_dependencies": [
+        "workspaces",
+        "projects",
+        "auth.users",
+        "public.set_updated_at",
+        "storage.objects"
+      ],
+      "frozen_app_literal_references": [
+        "lib/d5o/closeout-final-billing/database-store.ts",
+        "lib/d5o/evidence/scan-receipt-service.ts",
+        "lib/d5o/field-issue-escalation/database-store.ts"
+      ],
+      "hosted_d5o_function_references": [],
+      "hosted_runtime_disposition": "OPTIONAL / INAPPLICABLE",
+      "basis": "Legacy evidence/closeout/field routes return 503 from the hosted production proxy; hosted evidence uses d5o_hosted RPCs.",
+      "historical_execution_proven": false,
+      "full_legacy_dependency_closure_qualified": false
+    },
+    {
+      "relation": "public.opportunity_bid_submission_events",
+      "source_migration": "0016_p1_01b_2_bid_submission_outcome.sql",
+      "source_sha256": "3731aff4ba8c2e31b98e4219fa84498c4e2309da7aa02d0daa97fdcd33177588",
+      "declared_dependencies": [
+        "workspaces",
+        "opportunities",
+        "auth.users"
+      ],
+      "frozen_app_literal_references": [
+        "lib/d5o/opportunities/supabase-repository.ts"
+      ],
+      "hosted_d5o_function_references": [],
+      "hosted_runtime_disposition": "OPTIONAL / INAPPLICABLE",
+      "basis": "Pipeline routes return 503 from the hosted production proxy; repository database access also rejects production runtime.",
+      "historical_execution_proven": false,
+      "full_legacy_dependency_closure_qualified": false
+    },
+    {
+      "relation": "public.opportunity_bid_evidence_satisfactions",
+      "source_migration": "0030_cfg_runtime_03_evidence_persistence_authority.sql",
+      "source_sha256": "af0091579d9258c9bc9ddfb79e156a4fbe7ef19159ab74eb0567e4b6ebf87f7a",
+      "declared_dependencies": [
+        "workspaces",
+        "opportunities",
+        "evidence_links",
+        "evidence_objects",
+        "config_configuration_versions",
+        "config_template_pack_versions",
+        "config_gate_evidence_requirements",
+        "config_evidence_type_definitions",
+        "auth.users",
+        "user_profiles",
+        "audit_events"
+      ],
+      "frozen_app_literal_references": [],
+      "hosted_d5o_function_references": [],
+      "hosted_runtime_disposition": "OPTIONAL / INAPPLICABLE",
+      "basis": "No literal relation reference in frozen app or hosted D5O function definitions.",
+      "historical_execution_proven": false,
+      "full_legacy_dependency_closure_qualified": false
+    }
+  ],
+  "limit": "Declared direct dependencies and literal references; no legacy-path migration is proposed."
+}
