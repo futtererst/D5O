@@ -1,0 +1,31 @@
+{
+  "format": "d5o-rc13a-develop-solution-v1",
+  "auth": "genuine fictional GoTrue sessions",
+  "fictionalWorkOnly": true,
+  "fixtureSetupHttp": 200,
+  "fixtureSetupError": null,
+  "actions": [
+    {
+      "action": "submit-solution",
+      "actor": "rybex_pm",
+      "status": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "action": "wrong-role-approve-solution",
+      "actor": "rybex_worker",
+      "status": 400,
+      "error": "invalid_command",
+      "authoritative": false
+    },
+    {
+      "action": "approve-solution",
+      "actor": "rybex_ops",
+      "status": 400,
+      "error": "invalid_command",
+      "authoritative": false
+    }
+  ],
+  "finalReview": "Submitted"
+}

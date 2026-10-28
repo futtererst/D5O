@@ -1,0 +1,21 @@
+{
+  "format": "d5o-rc13a-local-identity-v1",
+  "source_commit": "d2a06ed796789dc8395386f067ef85545acf586a",
+  "frozen_application_ancestor": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "migration_files": 236,
+  "source_hash_mismatches": 0,
+  "bridge_sha256": {
+    "rc8_bridge_pre_215.sql": "0f076c496f756b8f56965b104cddd8c77c558344c89ca84cbf85946dfa924af5",
+    "rc8_bridge_post_215.sql": "b15dcd56a30fc4b46e81ea792fbfd51e19213630b698bd5734334f0cccbdf5d8"
+  },
+  "original_ledger": 177,
+  "forward_migrations_applied": 25,
+  "upgraded_ledger": 202,
+  "auth_provider_ledger": 82,
+  "auth_users_including_fictional": 33,
+  "private_storage_objects_after_synthetic_cleanup": 23,
+  "unvalidated_foreign_keys": 0,
+  "storage_select_policies": 0,
+  "storage_rls": true,
+  "production_modified": false
+}

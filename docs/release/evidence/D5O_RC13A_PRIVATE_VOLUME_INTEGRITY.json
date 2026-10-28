@@ -1,0 +1,8 @@
+{
+  "format": "d5o-rc13-private-volume-integrity-v1",
+  "originalEncryptedIndexVerified": true,
+  "objects": 23,
+  "bytes": 2252301,
+  "allVolumeByteHashesMatch": true,
+  "plaintextValuesDisclosed": false
+}

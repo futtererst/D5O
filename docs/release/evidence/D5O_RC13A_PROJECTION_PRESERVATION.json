@@ -1,0 +1,91 @@
+{
+  "format": "d5o-rc12-projection-preservation-v1",
+  "states": [
+    {
+      "state_key": "catalog",
+      "original_revision": 15,
+      "tested_revision": 16,
+      "arrays": [
+        {
+          "field": "records",
+          "historical_entries": 15,
+          "tested_entries": 16,
+          "missing_historical_entries": 0,
+          "modified_historical_entries": 0
+        },
+        {
+          "field": "packages",
+          "historical_entries": 0,
+          "tested_entries": 0,
+          "missing_historical_entries": 0,
+          "modified_historical_entries": 0
+        }
+      ]
+    },
+    {
+      "state_key": "schedule",
+      "original_revision": 3,
+      "tested_revision": 3,
+      "arrays": [
+        {
+          "field": "records",
+          "historical_entries": 0,
+          "tested_entries": 0,
+          "missing_historical_entries": 0,
+          "modified_historical_entries": 0
+        },
+        {
+          "field": "packages",
+          "historical_entries": 0,
+          "tested_entries": 0,
+          "missing_historical_entries": 0,
+          "modified_historical_entries": 0
+        }
+      ]
+    },
+    {
+      "state_key": "work",
+      "original_revision": 231,
+      "tested_revision": 234,
+      "arrays": [
+        {
+          "field": "records",
+          "historical_entries": 18,
+          "tested_entries": 19,
+          "missing_historical_entries": 0,
+          "modified_historical_entries": 0
+        },
+        {
+          "field": "packages",
+          "historical_entries": 0,
+          "tested_entries": 0,
+          "missing_historical_entries": 0,
+          "modified_historical_entries": 0
+        }
+      ]
+    },
+    {
+      "state_key": "work",
+      "original_revision": 1,
+      "tested_revision": 1,
+      "arrays": [
+        {
+          "field": "records",
+          "historical_entries": 3,
+          "tested_entries": 3,
+          "missing_historical_entries": 0,
+          "modified_historical_entries": 0
+        },
+        {
+          "field": "packages",
+          "historical_entries": 0,
+          "tested_entries": 0,
+          "missing_historical_entries": 0,
+          "modified_historical_entries": 0
+        }
+      ]
+    }
+  ],
+  "all_historical_entries_preserved": true,
+  "values_disclosed": false
+}

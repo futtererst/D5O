@@ -1,0 +1,10 @@
+{
+  "format": "d5o-rc13a-cleanup-v1",
+  "removedContainers": ["d5o-rc13-app", "d5o-rc13-rest", "d5o-rc13-auth", "d5o-rc12-storage", "d5o-rc7-historical-db", "d5o-rc7-recovery-db"],
+  "removedVolumes": ["d5o-rc13a-node", "d5o-rc13a-storage"],
+  "removedNetwork": "d5o-rc13a-net",
+  "removedLocalSyntheticCredentialFixtures": true,
+  "removedGeneratedBuildAndDependencies": true,
+  "encryptedHistoricalCheckpointPreservedOutsideGit": true,
+  "productionModified": false
+}

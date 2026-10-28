@@ -1,0 +1,18 @@
+{
+  "format": "d5o-rc13a-surface-and-security-v1",
+  "auth": "genuine fictional GoTrue sessions",
+  "queueHttp": 403,
+  "queueHasTasks": false,
+  "foreignQueueHttp": 403,
+  "adminConfigurationHttp": 200,
+  "wrongRoleAdminHttp": 403,
+  "organizationOverviewHttp": 200,
+  "phaseReadHttp": 200,
+  "fictionalWorkPinPresent": true,
+  "publishedTypesHttp": 200,
+  "selectableTypeCount": 2,
+  "invalidConfigurationCreateHttp": 409,
+  "invalidConfigurationError": "configuration_changed",
+  "directPrivilegedRpcHttp": 403,
+  "productionModified": false
+}

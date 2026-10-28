@@ -1,5 +1,7 @@
 # RC13 release decision
 
+**RC13-A follow-up:** [current lifecycle and evidence qualification](D5O_RC13A_RELEASE_DECISION.md) supersedes the unexecuted upload and customer-decision-download observations below. The accepted evidence contract remains unchanged.
+
 **Overall NO-GO for production promotion.** The historical migration upgrade, genuine local Auth, scoped design-document download and protected historical integrity passed their tested boundaries. The owner has accepted server-mediated private-evidence access as the intended contract. The frozen application has a demonstrated connected-work selector defect; a narrow local correction passed HTTP regression but changes the application SHA. The complete historical lifecycle, hosted bindings and coordinated production recovery are outstanding. Production migration and deployment remain unauthorized.
 
 | Gate | RC13 result |

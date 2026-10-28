@@ -1,0 +1,9 @@
+{
+  "format": "d5o-rc13a-define-progress-v1",
+  "fixtureSetupHttp": 200,
+  "fixtureSetupError": null,
+  "syntheticWorkOnly": true,
+  "submitHttp": 200,
+  "submitError": null,
+  "submitAuthoritative": true
+}

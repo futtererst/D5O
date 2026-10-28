@@ -1,0 +1,44 @@
+{
+  "format": "d5o-rc13a-discover-http-v1",
+  "auth": "genuine fictional GoTrue sessions",
+  "fictionalWorkOnly": true,
+  "operations": [
+    {
+      "action": "save-intake",
+      "actor": "rybex_pm",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "action": "submit",
+      "actor": "rybex_pm",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "action": "decide",
+      "actor": "rybex_commercial",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "action": "submit-handoff",
+      "actor": "rybex_pm",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "action": "respond-handoff",
+      "actor": "rybex_ops",
+      "http": 200,
+      "error": null,
+      "authoritative": true
+    }
+  ],
+  "finalPursuitStatus": "qualified",
+  "finalHandoffStatus": "accepted"
+}

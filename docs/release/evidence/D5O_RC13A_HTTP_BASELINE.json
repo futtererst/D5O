@@ -1,0 +1,183 @@
+{
+  "format": "d5o-rc13-isolated-http-v1",
+  "source": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "runtime": "Next.js 16.4.2 production build, local rehearsal binding",
+  "auth": "GoTrue v2.195.0 genuine fictional sessions",
+  "sourceLedger": 202,
+  "operations": [
+    {
+      "name": "own Work read",
+      "actor": "rybex_pm",
+      "http": 200,
+      "expected": 200,
+      "pass": true,
+      "error": null
+    },
+    {
+      "name": "foreign Work read",
+      "actor": "rybex_pm",
+      "http": 403,
+      "expected": 403,
+      "pass": true,
+      "error": "workspace_forbidden"
+    },
+    {
+      "name": "anonymous Work read",
+      "actor": "anonymous",
+      "http": 401,
+      "expected": 401,
+      "pass": true,
+      "error": "unauthenticated"
+    },
+    {
+      "name": "wrong-role admin configuration",
+      "actor": "rybex_pm",
+      "http": 403,
+      "expected": 403,
+      "pass": true,
+      "error": "admin_membership_required"
+    },
+    {
+      "name": "private evidence index",
+      "actor": "rybex_pm",
+      "http": 200,
+      "expected": 200,
+      "pass": true,
+      "error": null,
+      "visibleCount": 16,
+      "cacheControl": "private, no-store"
+    },
+    {
+      "name": "foreign evidence index",
+      "actor": "rotork_pm",
+      "http": 403,
+      "expected": 403,
+      "pass": true,
+      "error": "workspace_forbidden"
+    },
+    {
+      "name": "anonymous evidence index",
+      "actor": "anonymous",
+      "http": 401,
+      "expected": 401,
+      "pass": true,
+      "error": "unauthenticated"
+    },
+    {
+      "name": "authorized private evidence download",
+      "actor": "rybex_pm",
+      "http": 404,
+      "expected": 200,
+      "pass": false,
+      "error": "design_document_missing",
+      "hashMatchesReceipt": false,
+      "cacheControl": "no-store",
+      "contentDisposition": null
+    },
+    {
+      "name": "forged object path ignored",
+      "actor": "rybex_pm",
+      "http": 404,
+      "expected": 200,
+      "pass": false,
+      "error": "design_document_missing",
+      "sameReceiptBytes": false
+    },
+    {
+      "name": "wrong Work evidence denied",
+      "actor": "rybex_pm",
+      "http": 403,
+      "expected": 403,
+      "pass": true,
+      "error": "design_document_scope_denied",
+      "denied": true,
+      "bytesWithheld": true
+    },
+    {
+      "name": "anonymous download denied",
+      "actor": "anonymous",
+      "http": 401,
+      "expected": 401,
+      "pass": true,
+      "error": "unauthenticated"
+    },
+    {
+      "name": "cross-tenant download denied",
+      "actor": "rotork_pm",
+      "http": 403,
+      "expected": 403,
+      "pass": true,
+      "error": "design_document_scope_denied",
+      "denied": true
+    },
+    {
+      "name": "connected capability read",
+      "actor": "rybex_pm",
+      "http": 200,
+      "expected": 200,
+      "pass": true,
+      "error": null,
+      "available": true,
+      "workTypes": 2
+    },
+    {
+      "name": "catalog read",
+      "actor": "rybex_pm",
+      "http": 200,
+      "expected": 200,
+      "pass": true,
+      "error": null
+    },
+    {
+      "name": "create canonical fictional lifecycle Work",
+      "actor": "rybex_pm",
+      "http": 201,
+      "expected": 201,
+      "pass": true,
+      "error": null,
+      "canonicalLinked": true
+    },
+    {
+      "name": "exact creation replay",
+      "actor": "rybex_pm",
+      "http": 201,
+      "expected": 201,
+      "pass": true,
+      "error": null,
+      "sameWork": true
+    },
+    {
+      "name": "conflicting creation replay",
+      "actor": "rybex_pm",
+      "http": 409,
+      "expected": 409,
+      "pass": true,
+      "error": "command_reuse_conflict"
+    },
+    {
+      "name": "wrong-role creation denied",
+      "actor": "rybex_worker",
+      "http": 403,
+      "expected": 403,
+      "pass": true,
+      "error": "workspace_forbidden"
+    },
+    {
+      "name": "phase Work read",
+      "actor": "rybex_pm",
+      "http": 200,
+      "expected": 200,
+      "pass": true,
+      "error": null
+    },
+    {
+      "name": "Define submission precondition",
+      "actor": "rybex_pm",
+      "http": 400,
+      "expected": 400,
+      "pass": true,
+      "error": "definition_unavailable",
+      "outcome": "business-precondition-or-error"
+    }
+  ]
+}

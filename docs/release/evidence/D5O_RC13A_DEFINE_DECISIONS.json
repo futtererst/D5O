@@ -1,0 +1,60 @@
+{
+  "format": "d5o-rc13a-define-decisions-v1",
+  "fictionalWorkOnly": true,
+  "auth": "genuine fictional GoTrue sessions",
+  "operations": [
+    {
+      "action": "wrong-role-commercial-review",
+      "actor": "rybex_worker",
+      "status": 403,
+      "error": "workspace_forbidden",
+      "authoritative": false
+    },
+    {
+      "action": "approve-commercial-review",
+      "actor": "rybex_commercial",
+      "status": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "action": "exact-commercial-replay",
+      "actor": "rybex_commercial",
+      "status": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "action": "conflicting-commercial-replay",
+      "actor": "rybex_commercial",
+      "status": 409,
+      "error": "command_reuse_conflict",
+      "authoritative": false
+    },
+    {
+      "action": "approve-delivery-review",
+      "actor": "rybex_ops",
+      "status": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "action": "submit-Define-handoff",
+      "actor": "rybex_pm",
+      "status": 200,
+      "error": null,
+      "authoritative": true
+    },
+    {
+      "action": "accept-Define-handoff",
+      "actor": "rybex_ops",
+      "status": 200,
+      "error": null,
+      "authoritative": true
+    }
+  ],
+  "finalDefinitionStatus": "Approved",
+  "commercialReview": "Approved",
+  "deliveryReview": "Approved",
+  "developHandoffStatus": "accepted"
+}

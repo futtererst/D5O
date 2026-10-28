@@ -1,0 +1,21 @@
+{
+  "format": "d5o-rc13a-develop-review-v1",
+  "auth": "genuine fictional GoTrue sessions",
+  "fictionalWorkOnly": true,
+  "actions": [
+    {
+      "action": "approve-solution",
+      "actor": "rybex_worker",
+      "status": 403,
+      "error": "workspace_forbidden",
+      "authoritative": false
+    },
+    {
+      "action": "approve-solution",
+      "actor": "rybex_ops",
+      "status": 200,
+      "error": null,
+      "authoritative": true
+    }
+  ]
+}

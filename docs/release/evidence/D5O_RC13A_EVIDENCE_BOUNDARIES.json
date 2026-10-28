@@ -1,0 +1,40 @@
+{
+  "format": "d5o-rc13a-evidence-boundaries-v1",
+  "results": [
+    {
+      "stage": "active",
+      "opsHttp": 200,
+      "opsBytesMatchReceipt": true,
+      "opsBytesWithheldOnDenial": null,
+      "pmHttp": 200,
+      "pmBytesMatchReceipt": true
+    },
+    {
+      "stage": "missing-object",
+      "opsHttp": 403,
+      "opsBytesMatchReceipt": null,
+      "opsBytesWithheldOnDenial": true,
+      "pmHttp": 200,
+      "pmBytesMatchReceipt": true,
+      "syntheticDeleteSucceeded": true,
+      "syntheticMissingObjectHttp": 404,
+      "syntheticMissingObjectBytesWithheld": true
+    },
+    {
+      "stage": "removed",
+      "opsHttp": 403,
+      "opsBytesMatchReceipt": null,
+      "opsBytesWithheldOnDenial": true,
+      "pmHttp": 200,
+      "pmBytesMatchReceipt": true
+    },
+    {
+      "stage": "suspended",
+      "opsHttp": 403,
+      "opsBytesMatchReceipt": null,
+      "opsBytesWithheldOnDenial": true,
+      "pmHttp": 200,
+      "pmBytesMatchReceipt": true
+    }
+  ]
+}
