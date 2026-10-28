@@ -1,0 +1,14 @@
+{
+  "format": "d5o-rc11-storage-api-check-v1",
+  "api": "cached Supabase Storage API v1.84.19",
+  "service_role_served_objects": 23,
+  "served_bytes": 2252301,
+  "all_served_sha256_match": true,
+  "anonymous_http": 400,
+  "anonymous_code": "not_found",
+  "cross_tenant_direct_http": 400,
+  "cross_tenant_direct_code": "not_found",
+  "missing_object_http": 400,
+  "missing_object_code": "not_found",
+  "caveat": "Direct end-user download is denied by the restored storage.objects policy set; app-scoped server route remains separately testable."
+}

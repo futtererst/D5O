@@ -1,0 +1,9 @@
+{
+  "format": "d5o-rc11-private-byte-volume-restore-v1",
+  "objects": 23,
+  "bytes": 2252301,
+  "metadata_id_path_version_match": true,
+  "encrypted_and_plain_sha256_match": true,
+  "target": "dedicated disposable internal Storage volume",
+  "production_modified": false
+}

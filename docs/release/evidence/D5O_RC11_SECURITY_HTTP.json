@@ -1,0 +1,15 @@
+{
+  "format": "d5o-rc11-security-http-v1",
+  "application_commit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "runtime": "production build; local rehearsal binding",
+  "auth": "synthetic adapter",
+  "cross_tenant_historical_work_fixture_present": false,
+  "cross_tenant_historical_work_http": null,
+  "forged_work_identifier_http": 404,
+  "auditor_create_work_http": 403,
+  "privileged_rpc_http": 403,
+  "privileged_rpc_code": "42501",
+  "suspended_existing_session_http": 403,
+  "disabled_synthetic_tenant_http": 403,
+  "denied_work_title_count": 0
+}

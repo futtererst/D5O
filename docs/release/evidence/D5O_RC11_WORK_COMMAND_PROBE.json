@@ -1,0 +1,29 @@
+{
+  "format": "d5o-rc11-work-command-http-v1",
+  "application_commit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "runtime": "production build; local rehearsal binding",
+  "auth": "synthetic adapter",
+  "database": "isolated 202-ledger historical upgrade",
+  "configuration_http": 200,
+  "published_version_present": true,
+  "first_create_http": 201,
+  "first_error": null,
+  "first_result_keys": [
+    "workId",
+    "workspaceId",
+    "recordVersion",
+    "configurationDigest",
+    "configurationVersionId"
+  ],
+  "synthetic_work_count_before": 1,
+  "synthetic_work_count_after_first": 2,
+  "replay_http": 201,
+  "synthetic_work_count_after_replay": 2,
+  "conflict_http": 409,
+  "synthetic_work_count_after_conflict": 2,
+  "incorrect_configuration_http": 422,
+  "synthetic_work_count_after_incorrect_configuration": 2,
+  "own_work_list_http": 200,
+  "revoked_membership_existing_session_http": 403,
+  "synthetic_work_count_after_revocation": 2
+}

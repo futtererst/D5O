@@ -1,0 +1,13 @@
+{
+  "format": "d5o-rc11-local-auth-service-diagnostic-v1",
+  "service": "cached Supabase GoTrue images v2.192.0 and v2.195.0",
+  "target": "isolated restored database only",
+  "result": "BLOCKED",
+  "first_failure_sqlstate": "42501",
+  "first_failure": "postgres runner was not the restored auth schema owner",
+  "second_failure_sqlstate": "42703",
+  "second_failure": "provider migration expects auth.oauth_clients.client_id, absent from the restored schema",
+  "further_provider_schema_changes_attempted": false,
+  "response": "discard local database and restore fresh protected checkpoint before application tests",
+  "production_modified": false
+}

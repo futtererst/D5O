@@ -1,0 +1,33 @@
+{
+  "format": "d5o-rc11-browser-surface-v1",
+  "application_commit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "runtime": "production build; local rehearsal binding",
+  "auth": "synthetic adapter",
+  "routes": [
+    {
+      "route": "/work?workspace=rybex",
+      "http": 200,
+      "redirectedToSignIn": false
+    },
+    {
+      "route": "/work/procurement?workspace=rybex",
+      "http": 200,
+      "redirectedToSignIn": false
+    },
+    {
+      "route": "/work/labor?workspace=rybex",
+      "http": 200,
+      "redirectedToSignIn": false
+    },
+    {
+      "route": "/work/my-schedule?workspace=rybex",
+      "http": 200,
+      "redirectedToSignIn": false
+    },
+    {
+      "route": "/work/admin?workspace=rybex",
+      "http": 404,
+      "redirectedToSignIn": false
+    }
+  ]
+}

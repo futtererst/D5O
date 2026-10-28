@@ -1,0 +1,15 @@
+{
+  "format": "d5o-rc11-app-evidence-http-v1",
+  "auth": "synthetic adapter",
+  "application_commit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "database": "isolated upgraded historical copy",
+  "own_index_http": 200,
+  "own_index_error": null,
+  "own_index_entries": 16,
+  "authorized_download_http": 200,
+  "authorized_download_sha256_match": true,
+  "wrong_work_association_http": 403,
+  "cross_tenant_index_http": 403,
+  "anonymous_index_http": 401,
+  "revoked_existing_session_index_http": 403
+}

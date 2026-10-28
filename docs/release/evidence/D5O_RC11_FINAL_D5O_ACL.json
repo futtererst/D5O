@@ -1,0 +1,55 @@
+{
+  "format": "d5o-rc10-final-d5o-acl-v1",
+  "network_mode": "none",
+  "starting_functions": 165,
+  "final_functions": 199,
+  "new_functions": 34,
+  "missing_prior_functions": [],
+  "changed_prior_functions": [
+    {
+      "signature": "public.d5o_hosted_create_related_work_v1(p_workspace_key text, p_command_id text, p_action text, p_parent_presentation_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_parent_after jsonb, p_child jsonb, p_actor_user_id uuid, p_membership_id uuid)",
+      "fields": [
+        "service"
+      ]
+    }
+  ],
+  "anonymous_executable_final": [],
+  "new_function_signatures": [
+    "public.d5o_hosted_capability_read_v1(p_workspace_key text)",
+    "public.d5o_hosted_configuration_history_v1(p_workspace_key text)",
+    "public.d5o_hosted_connected_service_approval_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_action text, p_command_id text)",
+    "public.d5o_hosted_connected_service_approval_read_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text)",
+    "public.d5o_hosted_create_connected_work_core_v1(p_workspace_key text, p_command_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_configuration_version_id uuid, p_work_type_key text, p_title text, p_customer text, p_site text, p_owner text, p_actor_user_id uuid, p_membership_id uuid, p_initial_discovery jsonb)",
+    "public.d5o_hosted_create_related_work_pre_approval_v1(p_workspace_key text, p_command_id text, p_action text, p_parent_presentation_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_parent_after jsonb, p_child jsonb, p_actor_user_id uuid, p_membership_id uuid)",
+    "public.d5o_hosted_crew_command_pre_expiry_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+    "public.d5o_hosted_define_command_pre_phase2d_v1(p_workspace_key text, p_presentation_id text, p_action text, p_review_role text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer)",
+    "public.d5o_hosted_onboarding_read_v1(p_workspace_key text)",
+    "public.d5o_hosted_onboarding_ready_v1(p_workspace_key text, p_expected_revision integer, p_command_id text, p_reason text)",
+    "public.d5o_hosted_org_admin_command_v1(p_workspace_key text, p_action text, p_subject_id uuid, p_input jsonb, p_expected_revision integer, p_reason text, p_command_id text)",
+    "public.d5o_hosted_org_admin_read_v1(p_workspace_key text, p_kind text, p_search text, p_offset integer, p_limit integer)",
+    "public.d5o_hosted_org_invitation_accept_v1(p_workspace_key text, p_command_id text)",
+    "public.d5o_hosted_org_invitation_finish_v1(p_workspace_key text, p_command_id text, p_admin_user_id uuid, p_admin_membership_id uuid, p_status text, p_provider_user_id uuid)",
+    "public.d5o_hosted_org_invitation_request_v1(p_workspace_key text, p_email text, p_role text, p_reason text, p_command_id text, p_expires_at timestamp with time zone)",
+    "public.d5o_hosted_org_invitation_revoke_v1(p_workspace_key text, p_command_id text, p_reason text)",
+    "public.d5o_hosted_phase_status_read_v1(p_workspace_key text, p_presentation_id text)",
+    "public.d5o_hosted_service_approval_command_v1(p_workspace_key text, p_work_id uuid, p_action text, p_amount_minor bigint, p_currency text, p_command_id text)",
+    "public.d5o_hosted_service_job_command_pre_approval_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_due_date date, p_owner text, p_command_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_expected_operate_revision integer)",
+    "public.d5o_hosted_service_pricing_command_pre_approval_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_action text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer)",
+    "public.d5o_hosted_solution_command_pre_phase2d_v1(p_workspace_key text, p_presentation_id text, p_action text, p_due_date text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_solution_revision integer)",
+    "public.d5o_hosted_worker_schedule_read_pre_current_v1(p_workspace_key text)",
+    "public.d5o_hosted_workforce_expiry_command_v1(p_workspace_key text, p_profile_id uuid, p_qualification text, p_expires_on date, p_command_id text, p_expected_revision integer)",
+    "public.d5o_platform_activate_v1(p_workspace_key text, p_expected_revision integer, p_command_id text, p_reason text)",
+    "public.d5o_platform_capability_command_v1(p_workspace_key text, p_kind text, p_enabled boolean, p_expected_revision integer, p_command_id text, p_reason text)",
+    "public.d5o_platform_initial_admin_accept_v1(p_workspace_key text, p_invitation_id text)",
+    "public.d5o_platform_invitation_finish_v1(p_workspace_key text, p_invitation_id text, p_vendor_user_id uuid, p_status text, p_provider_user_id uuid)",
+    "public.d5o_platform_invitation_recover_v1(p_workspace_key text, p_command_id text, p_reason text)",
+    "public.d5o_platform_lifecycle_command_v1(p_workspace_key text, p_action text, p_expected_revision integer, p_command_id text, p_reason text)",
+    "public.d5o_platform_provision_v1(p_request_id text, p_workspace_key text, p_legal_name text, p_display_name text, p_admin_email text, p_country text, p_time_zone text, p_currency text, p_template_version_id uuid, p_reason text)",
+    "public.d5o_platform_provisioning_directory_v1()",
+    "public.d5o_platform_template_command_v1(p_template_key text, p_action text, p_version_id uuid, p_payload jsonb, p_command_id text, p_reason text)",
+    "public.d5o_platform_templates_v1()",
+    "public.d5o_platform_tenant_directory_v1()"
+  ],
+  "final_authenticated_execute_count": 124,
+  "final_service_execute_count": 54
+}

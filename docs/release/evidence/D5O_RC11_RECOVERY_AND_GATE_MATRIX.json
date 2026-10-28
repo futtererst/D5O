@@ -1,0 +1,31 @@
+{
+  "format": "d5o-rc11-gate-matrix-v1",
+  "application_commit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "repository_base": "d7d4dd87c0bbb32689fa7c3668a832bd6674c133",
+  "source_manifest": {"files": 236, "sha256_mismatches": 0, "latest_permit_order_sha256": "6fe726239c15941201f3026ab1a0bb5f42ab89d04fc95b294d54164c5ab4cea8"},
+  "bridge_sha256": {"pre_215": "0f076c496f756b8f56965b104cddd8c77c558344c89ca84cbf85946dfa924af5", "post_215": "b15dcd56a30fc4b46e81ea792fbfd51e19213630b698bd5734334f0cccbdf5d8"},
+  "runtime": "Next.js production build with local rehearsal binding, synthetic Auth adapter and isolated historical database",
+  "production_modified": false,
+  "database": {"starting_ledger": 177, "final_ledger": 202, "frozen_pending_migrations_applied": 25, "order_215_statements_in_single_transaction": 3},
+  "operations": [
+    {"actor": "synthetic rybex project_manager", "tenant": "rybex", "path": "browser sign-in and /work", "result": "HTTP 200", "status": "PASS_WITH_SYNTHETIC_AUTH"},
+    {"actor": "synthetic rotork auditor", "tenant": "rotork", "path": "browser sign-in and /work", "result": "HTTP 200", "status": "PASS_WITH_SYNTHETIC_AUTH"},
+    {"actor": "synthetic project_manager", "tenant": "rybex", "path": "hosted configuration inventory RPC", "result": "HTTP 200, published version present", "status": "PASS"},
+    {"actor": "synthetic project_manager", "tenant": "rybex", "path": "hosted Work create", "result": "HTTP 201, synthetic Work count +1", "status": "PASS"},
+    {"actor": "synthetic project_manager", "tenant": "rybex", "path": "duplicate/conflicting create", "result": "HTTP 201 replay without new row; HTTP 409 conflict without new row", "status": "PASS"},
+    {"actor": "synthetic project_manager", "tenant": "rybex", "path": "incorrect configuration version", "result": "HTTP 422 without new row", "status": "PASS"},
+    {"actor": "synthetic rybex and rotork actors", "tenant": "both", "path": "cross-tenant Work list", "result": "HTTP 403", "status": "PASS"},
+    {"actor": "synthetic rybex actor", "tenant": "rybex", "path": "private evidence index and download", "result": "HTTP 200, downloaded SHA-256 match", "status": "PASS"},
+    {"actor": "synthetic rybex actor", "tenant": "rybex", "path": "evidence wrong Work and cross-tenant index", "result": "HTTP 403 for both", "status": "PASS"},
+    {"actor": "synthetic revoked member", "tenant": "rybex", "path": "Work and evidence existing-session access", "result": "HTTP 403", "status": "PASS"},
+    {"actor": "synthetic suspended member/tenant", "tenant": "rybex and isolated synthetic tenant", "path": "Work access", "result": "HTTP 403", "status": "PASS"},
+    {"actor": "synthetic auditor", "tenant": "rotork", "path": "Work create", "result": "HTTP 403", "status": "PASS"},
+    {"actor": "synthetic auditor", "tenant": "rotork", "path": "privileged direct command RPC", "result": "HTTP 403, SQLSTATE 42501", "status": "PASS"},
+    {"actor": "anonymous", "tenant": "none", "path": "workspace and evidence index", "result": "HTTP 401", "status": "PASS"},
+    {"actor": "local Storage service role", "tenant": "internal", "path": "23 private object GET requests", "result": "23 HTTP 200; 2,252,301 bytes; SHA-256 match", "status": "PASS"},
+    {"actor": "synthetic end user and anonymous", "tenant": "two tenants", "path": "direct Storage API GET", "result": "HTTP 400 not_found; bytes withheld", "status": "PARTIAL_AUTHORIZATION_PROOF"}
+  ],
+  "legacy_paths": {"/pipeline": 503, "/pipeline/new": 503, "/api/work/catalog": 503, "/api/evidence/finalize": 503, "/closeout": 503, "/field-execution": 503},
+  "recovery": {"first_attempt": "failed at transient PostgreSQL startup race, disposable container discarded", "second_attempt_seconds": 26.45, "restored_ledger": 177, "restored_auth_users": 25, "restored_auth_identities": 25, "restored_work": 15, "restored_storage_metadata": 23, "encrypted_private_objects_verified": 23, "injected_sqlstate": "P0001", "injected_ddl_rolled_back": true},
+  "limitations": ["real GoTrue could not start against restored historical Auth schema", "actual hosted deployment bindings unavailable", "later lifecycle commands not exercised through HTTP", "full fresh before/after digest of every historical business-history class not produced", "database and object captures were not atomic", "Storage API direct end-user positive access was not demonstrated"]
+}

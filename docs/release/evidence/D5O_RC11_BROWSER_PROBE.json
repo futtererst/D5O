@@ -1,0 +1,59 @@
+{
+  "format": "d5o-rc11-frozen-app-browser-v1",
+  "application_commit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "runtime": "production build; local rehearsal binding",
+  "database": "isolated production-derived 202-ledger restore",
+  "actors": [
+    {
+      "actor": "rybex",
+      "sign_in_http": 200,
+      "landed_work": true,
+      "workspace_http": 200,
+      "workspace_count": 1,
+      "own_work_http": 200,
+      "cross_tenant_work_http": 403,
+      "auth_provider": "synthetic local adapter; not GoTrue"
+    },
+    {
+      "actor": "rotork",
+      "sign_in_http": 200,
+      "landed_work": true,
+      "workspace_http": 200,
+      "workspace_count": 1,
+      "own_work_http": 200,
+      "cross_tenant_work_http": 403,
+      "auth_provider": "synthetic local adapter; not GoTrue"
+    }
+  ],
+  "anonymous_workspace_http": 401,
+  "legacy_routes": [
+    {
+      "path": "/pipeline",
+      "status": 503
+    },
+    {
+      "path": "/api/work/catalog",
+      "status": 503
+    },
+    {
+      "path": "/api/evidence/finalize",
+      "status": 503
+    },
+    {
+      "path": "/closeout",
+      "status": 503
+    },
+    {
+      "path": "/field-execution",
+      "status": 503
+    },
+    {
+      "path": "/pipeline/new",
+      "status": 503
+    }
+  ],
+  "limitations": [
+    "Synthetic Auth adapter substitutes for incompatible local GoTrue",
+    "Local rehearsal or pilot binding is not a production deployment"
+  ]
+}
