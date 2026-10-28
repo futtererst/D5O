@@ -1,0 +1,21 @@
+{
+  "format": "d5o-rc17-coverage-v1",
+  "candidateCommit": "ef9bf423680c94fbbb41c4d9b7a5a5070ce6a10c",
+  "candidateAppTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "rc17BranchBase": "90b2436b511cdd39737175e5583f27dc3bd44a97",
+  "manifest": {"executable": 236, "sha256Mismatches": 0, "lastMigrationSha256": "6fe726239c15941201f3026ab1a0bb5f42ab89d04fc95b294d54164c5ab4cea8"},
+  "historical": {"source": "reused RC16 two fresh restores", "startingLedger": 177, "forwardApplied": 25, "endingLedger": 202, "originalAuthIdentitiesPreserved": 25, "newBusinessCommandsRC17": 0, "rc14AuthArtifactCause": "unknown_not_reproduced"},
+  "synthetic": {"source": "RC17 local Phase 2C enterprise-admin runner", "runtime": "test_pilot", "passed": 23, "failed": 0, "twoTenants": true, "fullLifecycle": false, "myWorkSpecialistLinks": false, "privateEvidence": false},
+  "capabilities": [
+    {"name": "historical_upgrade", "historicalReadOnly": true, "syntheticBrowser": false, "contractEquivalence": "partial", "status": "PASS_REUSED"},
+    {"name": "vendor_provisioning_and_activation", "historicalReadOnly": false, "syntheticBrowser": "page_render_only; provisioning_via_authenticated_RPC", "contractEquivalence": "hosted_proxy_blocks", "status": "LOCAL_PASS_HOSTED_BLOCKED"},
+    {"name": "tenant_policy_and_work_creation", "historicalReadOnly": true, "syntheticBrowser": "configuration_publication_only; Work_via_RPC", "contractEquivalence": "rpc_names_only", "status": "PARTIAL"},
+    {"name": "discover_define_design", "historicalReadOnly": true, "syntheticBrowser": "ancestor_only", "contractEquivalence": "unproved", "status": "PARTIAL"},
+    {"name": "develop_deploy_scope_operate_connected_finance", "historicalReadOnly": true, "syntheticBrowser": "ancestor_only", "contractEquivalence": "unproved", "status": "PARTIAL"},
+    {"name": "my_work", "historicalReadOnly": false, "syntheticBrowser": "ancestor_only", "contractEquivalence": "unproved", "status": "PARTIAL"},
+    {"name": "private_evidence", "historicalReadOnly": "metadata_and_prior_hashes", "syntheticBrowser": false, "contractEquivalence": "unproved", "status": "PARTIAL"},
+    {"name": "coordinated_recovery", "historicalReadOnly": false, "syntheticBrowser": false, "contractEquivalence": "not_applicable", "status": "BLOCKED"}
+  ],
+  "historicalCatalogTriage": {"hostedKeysMissingInPriorComparator": 0, "hostedSharedKeysDifferingInPriorComparator": 401, "comparatorPredatesAclFaithfulRestore": true, "finalSemanticEquivalence": "unproved"},
+  "productionModified": false
+}

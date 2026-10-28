@@ -1,0 +1,9 @@
+# RC17 qualification boundary
+
+The two environments answer different questions. **Historical preservation:** upgrade the actual production-derived 177-entry database to 202 entries, then read and compare original records without fictional business mutations. **Synthetic acceptance:** install the frozen 236 source files in a separate disposable database and run fictional tenants, Auth and business commands. Both must use the same selected application source tree. A synthetic success is never evidence that a command ran on historical Work.
+
+RC16 provides the historical upgrade/preservation result for this exact tree. RC17 adds a 23/23 two-tenant local onboarding run for this exact checkout. The earlier full browser suites use ancestor code and a local test/pilot runtime. The RC17 local run is not a production-mode test; in the production-mode RC16 build, the hosted proxy blocked vendor provisioning and pilot specialist routes rejected fictional workspace IDs.
+
+The split boundary can qualify preservation and independent fictional functionality within their stated scopes. It cannot prove historical business-command behavior, that provider Auth/Storage states match a clean install, that actual hosted bindings are correct, or that database and Storage can be restored to one production point. A material function, grant, RLS, Work-pin or evidence-association mismatch stops promotion. No speculative schema copy or route broadening is proposed.
+
+The conditional RC10 exclusion of 72 clean-only relations and 212 policies holds only if the actual hosted deployment exposes the exact reviewed D5O route surface. RC10 found all 112 literal hosted RPC names on the upgraded historical database; this proves names, not their final implementation or dynamic dependencies. [Cross-environment matrix](D5O_RC17_CROSS_ENVIRONMENT_COMPATIBILITY.md).

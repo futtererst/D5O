@@ -1,0 +1,13 @@
+# RC17 cross-environment compatibility
+
+| Contract | Historical 202-entry upgrade | Synthetic clean source | Disposition |
+| --- | --- | --- | --- |
+| Application identity | RC16 built `app/` tree `84f2081b3b6266abf7d89906b04f816622838f2c`. | RC17 runner used this checkout; its embedded older baseline label is not the executable identity. | Source matches; runtime modes differ. |
+| Migration identity | RC16 ran 25 reviewed forward files from the real 177-entry ledger with the atomic RC8 migration-215 bridge. | RC17 rehashed all 236 executable files; zero mismatch. The local Supabase runner copied those files and completed its named checks. | Source/order pass. RC17 runner did not retain a separate clean ledger dump. |
+| Hosted Work/configuration RPC names | RC10 found all 112 literal allowed hosted RPC names. | Names are in the clean source chain. | Name presence only; dynamic calls/effects open. |
+| Effective hosted catalog | RC9's earlier comparator found no missing `d5o_hosted` object keys, but 401 different shared hosted keys: 149 constraints, 81 functions, four policies and 167 relations. | Clean 236 was the reference. | **UNRESOLVED:** the comparator preceded RC10's ACL-faithful local restore correction. Final definitions, grants, RLS and behavior need a fresh scoped comparison. Hash differences alone do not prove semantic drift. |
+| Auth and business rows | RC16 preserved 25 original identity rows and protected original business rows at its tested boundary. | RC17 used only fictional clean-install tenants. | Historical preservation scope passes; original RC14 identity artifact cause remains unknown. |
+| Private evidence | RC14 verified 23 retained bytes and server-mediated route scope; RC16 did not rehash bytes. | RC17 onboarding runner did not exercise Storage evidence. | Cross-environment serving/authorization not proven. |
+| Active lifecycle | Historical copy had authenticated reads and invalid-target probes, no fictional Work. | RC17 covered onboarding/approval only; earlier ancestor browser suites covered later phases. | Full exact-candidate historical command journey **NOT VERIFIED**. |
+
+The 72 clean-only relations and 212 policies were triaged by RC10 as conditional legacy/proof scope, contingent on the hosted guard and deployment binding. RC17 demonstrated a contradiction for *new-customer* hosted routing: `/platform-admin` exposes a form that calls a blocked API, and `/work` links to a blocked customer page. This does not justify copying all missing objects or weakening pilot guards. [RC9 catalog](evidence/D5O_RC9_EFFECTIVE_CATALOG_COMPARISON.json) · [RC10 scope](D5O_RC10_SCHEMA_DIFFERENCE_CLASSIFICATION.md).
