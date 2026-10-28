@@ -17,6 +17,7 @@
     "taskLinkFollowed": false,
     "employeeDecisionExecuted": false,
     "status": "BLOCKED_BY_MISSING_BUSINESS_PREREQUISITE",
+    "supportedPrerequisite": "customer-admin org invitation, authenticated project-manager acceptance, Work ownership, task-generating business command; not executed in RC20",
     "firstProbeIssue": "broad selector clicked a Work-record link, not an assigned task",
     "authoritativeDecisionResponse": "not attempted; no assigned responsibility",
     "receiptOrAudit": "not applicable; no decision executed"
