@@ -17,6 +17,10 @@
 - [RC20](../D5O_RC20_RELEASE_DECISION.md): exact-candidate onboarding rerun, 177→202 isolated historical upgrade, protected business hashes and 23 private-object hashes. My Work and later lifecycle remain partial.
 - [RC13 evidence contract](../D5O_RC13_EVIDENCE_ACCESS_CONTRACT.md): product owner accepted server-mediated private evidence. Do not add direct Storage SELECT.
 
+## Current local employee acceptance
+
+Docker Engine, WSL2, disk and memory are available. A minimal disposable PostgreSQL container and compatible GoTrue container reached readiness. The full Supabase fixture was less reliable: analytics became unhealthy in one start, and Docker Desktop later returned HTTP 500 during container inspection. Disabling analytics only in the disposable config allowed two full hosted-mode probes to execute (23 prior checks passed in each). The fictional administrator requested a project-manager invitation and the employee browser reached the accepted project-manager state. The probe then exposed three fixture prerequisites in sequence: use the current published configuration version, publish the project-manager Work creation right through the supported administrator command, and use connected Work creation to produce the presentation that My Work projects. The last run with all three fixture corrections stalled during teardown before a result was recorded. Its exact disposable containers, volumes, network and temp directory were removed. **No My Work browser decision or later lifecycle command is newly qualified.** See [matrix](D5O_RELEASE_ACCEPTANCE_MATRIX.json).
+
 ## Release blockers and accountable completion tests
 
 | Blocker | Root cause / impact | Owner and completion test | External approval or cost |

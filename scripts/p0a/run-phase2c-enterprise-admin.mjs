@@ -43,7 +43,7 @@ async function startNext(url, anon, service) {
     RYBEXOS_RUNTIME_MODE: hostedRehearsal ? "production" : "test",
     RYBEXOS_AUTH_MODE: "supabase", RYBEXOS_DATA_SOURCE: "database",
     CIRCLE_NODE_TOTAL: hostedRehearsal ? "2" : process.env.CIRCLE_NODE_TOTAL };
-  if (hostedRehearsal) {
+  if (hostedRehearsal && process.env.D5O_RELEASE_SKIP_BUILD !== "1") {
     const build = spawnSync(process.execPath, [resolve(root,"node_modules/next/dist/bin/next"),
       "build","--webpack"], {cwd:root,env,encoding:"utf8",shell:false,maxBuffer:10*1024*1024});
     if (build.status !== 0) throw Error(`hosted_build_failed:${(build.stderr || build.stdout).slice(-1000)}`);
@@ -669,17 +669,25 @@ try {
     const draft=await config("a_admin",a.workspaceKey,"create-draft",current,current,
       Number(revisionText),{sourceVersionId:versions.a_admin},"restore-draft");
     assert(!draft.error,draft.error?.message);
+    if(releaseTaskProbe) {
+      const right=await config("a_admin",a.workspaceKey,"set-create-role",draft.data.versionId,
+        current,1,{key:"lifecycle-service",role:"project_manager",enabled:true},"employee-create-right");
+      assert(!right.error,right.error?.message);
+    }
+    const publishRevision=releaseTaskProbe?2:1;
     const candidate=await config("a_admin",a.workspaceKey,"validate-publish",draft.data.versionId,
-      current,1,{},"restore-publish");assert(!candidate.error,candidate.error?.message);
+      current,publishRevision,{},"restore-publish");assert(!candidate.error,candidate.error?.message);
     const activated=await config("a_admin",a.workspaceKey,"activate",draft.data.versionId,
-      current,2,{},"restore-activate");assert(!activated.error,activated.error?.message);
+      current,publishRevision+1,{},"restore-activate");assert(!activated.error,activated.error?.message);
     const preserved=Number(sql(`select count(*) from d5o_hosted.work_records
       where workspace_id=${q(a.workspaceId)} and configuration_version_id=${q(versions.a_admin)};`));
     assert(preserved>=1);
     const restored=sql(`select manifest_json#>>'{discoverIntake,requireInitialDiscovery}'
       from d5o_hosted.configuration_versions where id=${q(draft.data.versionId)};`);
     assert.equal(restored,"true");
-    return {sourceVersion:versions.a_admin,newVersion:draft.data.versionId,
+    const previousVersion=versions.a_admin;
+    versions.a_admin=draft.data.versionId;
+    return {sourceVersion:previousVersion,newVersion:draft.data.versionId,
       preservedWorkCount:preserved,restoredDiscoverRequirement:true};
   });
   if(releaseTaskProbe) await check("release hosted employee invitation and My Work decision",async()=>{
@@ -711,13 +719,17 @@ try {
       await employee.getByRole("button",{name:"Accept invitation"}).click();
       await employee.getByRole("status").filter({hasText:"project manager"}).waitFor({timeout:30000});
       const created=await employee.evaluate(async({workspaceKey,configurationVersionId})=>{
-        const response=await fetch("/api/d5o-hosted/work",{method:"POST",headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({workspaceKey,commandId:crypto.randomUUID(),configurationVersionId,
-            workTypeKey:"lifecycle-service",title:"Fictional employee acceptance Work"})});
+        const response=await fetch(`/api/d5o-hosted/connected-work?workspace=${workspaceKey}`,{
+          method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({commandId:crypto.randomUUID(),configurationVersionId,
+            workTypeKey:"lifecycle-service",title:"Fictional employee acceptance Work",
+            customer:"Fictional release customer",site:"Fictional test site",
+            owner:"Fictional project manager",initialDiscovery:{source:"Fictional request",
+              need:"Qualify a synthetic service delivery request",procurement:"Direct",closeDate:""}})});
         return {status:response.status,body:await response.json()};
       },{workspaceKey:a.workspaceKey,configurationVersionId:versions.a_admin});
       assert.equal(created.status,201,JSON.stringify(created.body));
-      const workId=created.body.result?.workId;
+      const workId=created.body.result?.presentationId;
       assert(workId,"missing canonical Work identity");
       await employee.goto(`${base}/work/customer/${a.workspaceKey}`);
       await employee.getByRole("heading",{name:"My Work"}).waitFor({timeout:30000});

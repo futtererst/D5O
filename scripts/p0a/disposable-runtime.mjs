@@ -30,16 +30,26 @@ export async function createP0aRuntime(root = process.cwd(), { migrationCutoff =
         && !(migrationCutoff && /[\\/]migrations[\\/]([0-9]+)_[^\\/]+\.sql$/i.test(path)
           && path.match(/[\\/]migrations[\\/]([0-9]+)_[^\\/]+\.sql$/i)[1] >= migrationCutoff),
     });
-    writeFileSync(join(projectDir, "supabase", "config.toml"), rewriteSupabaseConfigForProject(
-      readFileSync(join(root, "supabase", "config.toml"), "utf8"), projectId, ports));
+    const releaseMinimal = process.env.D5O_RELEASE_MINIMAL_STACK === "1";
+    let config = rewriteSupabaseConfigForProject(
+      readFileSync(join(root, "supabase", "config.toml"), "utf8"), projectId, ports);
+    if (releaseMinimal) config = config.replace(/(\[analytics\]\s*enabled\s*=\s*)true/, "$1false");
+    writeFileSync(join(projectDir, "supabase", "config.toml"), config);
     runtime.network = createP0aNetwork(root, projectId);
     const start = run(root, process.execPath, [join(root, "scripts", "run-supabase-loopback.mjs"),
-      "start", "--workdir", projectDir, "--network-id", runtime.network, "--yes"]);
+      "start", "--workdir", projectDir, "--network-id", runtime.network,
+      ...(releaseMinimal ? ["--exclude", "analytics,edge-runtime,functions,imgproxy,meta,realtime,studio,vector"] : []),
+      "--yes"]);
     if (start.status !== 0) throw new Error(`isolated_start_failed:api_port=${ports.api}:${start.stderr || start.stdout}`);
     runtime.started = true;
     runtime.bindings = inspectSupabaseProjectBindings(projectId);
-    const status = run(root, process.execPath, [join(root, "node_modules", "supabase", "dist", "supabase.js"),
-      "status", "-o", "env", "--workdir", projectDir]);
+    let status;
+    for (let attempt = 0; attempt < (releaseMinimal ? 3 : 1); attempt++) {
+      status = run(root, process.execPath, [join(root, "node_modules", "supabase", "dist", "supabase.js"),
+        "status", "-o", "env", "--workdir", projectDir]);
+      if (status.status === 0 || !/500 Internal Server Error/.test(status.stderr || "")) break;
+      await new Promise((done) => setTimeout(done, 2000));
+    }
     if (status.status !== 0) throw new Error(`isolated_status_failed:${status.stderr || status.stdout}`);
     runtime.status = parseSupabaseStatusEnv(status.stdout);
     runtime.dbContainer = `supabase_db_${projectId}`;
