@@ -7,6 +7,7 @@ import { getEvidenceStoreMode } from "../evidence/evidence-store";
 import { getFieldIssuePersistenceMode } from "../field-issue-escalation/persistence-mode";
 import { getAuthMode } from "../auth/auth-mode";
 import { getRuntimeMode } from "./runtime-mode";
+import { resolveD5OCommandRuntime } from "../auth/runtime-identity";
 
 export type ProductionReadinessIssue = {
   code: string;
@@ -16,6 +17,7 @@ export type ProductionReadinessIssue = {
 
 export type ProductionReadinessResult = {
   ok: boolean;
+  scope: "d5o_hosted" | "legacy_production";
   runtimeMode: string;
   authMode: string;
   dataSource: string;
@@ -36,14 +38,26 @@ export function getProductionReadiness(): ProductionReadinessResult {
   const closeoutPersistence = safeValue(() => getCloseoutFinalBillingPersistenceMode(), "unresolved");
   const evidenceMode = getEvidenceStoreMode();
   const scannerMode = getScannerMode();
+  const hostedD5O = process.env.D5O_HOSTED_ENABLED === "1";
   const issues: ProductionReadinessIssue[] = [];
 
   requireEqual(issues, "runtime_mode", runtimeMode, "production", "Production runtime requires RYBEXOS_RUNTIME_MODE=production.");
   requireEqual(issues, "auth_mode", authMode, "supabase", "Production runtime requires RYBEXOS_AUTH_MODE=supabase.");
   requireEqual(issues, "data_source", dataSource, "database", "Production runtime requires RYBEXOS_DATA_SOURCE=database.");
-  requireEqual(issues, "billing_persistence", billingPersistence, "database", "Production Billing V2 requires database persistence.");
-  requireEqual(issues, "field_issue_persistence", fieldIssuePersistence, "database", "Production Field Issue requires database persistence.");
-  requireEqual(issues, "closeout_persistence", closeoutPersistence, "database", "Production Closeout requires database persistence.");
+  if (hostedD5O) {
+    if (!resolveD5OCommandRuntime(process.env)) {
+      issues.push(blocker("hosted_binding", "D5O hosted command target is not an approved production, staging or rehearsal binding."));
+    }
+    // These early-migration modules are blocked by the hosted proxy. Never
+    // report their persistence as active merely because the D5O scope is ready.
+    if (billingPersistence !== "database") issues.push(warning("legacy_billing_unavailable", "Legacy Billing V2 is unavailable in hosted D5O mode."));
+    if (fieldIssuePersistence !== "database") issues.push(warning("legacy_field_issue_unavailable", "Legacy Field Issue is unavailable in hosted D5O mode."));
+    if (closeoutPersistence !== "database") issues.push(warning("legacy_closeout_unavailable", "Legacy Closeout is unavailable in hosted D5O mode."));
+  } else {
+    requireEqual(issues, "billing_persistence", billingPersistence, "database", "Production Billing V2 requires database persistence.");
+    requireEqual(issues, "field_issue_persistence", fieldIssuePersistence, "database", "Production Field Issue requires database persistence.");
+    requireEqual(issues, "closeout_persistence", closeoutPersistence, "database", "Production Closeout requires database persistence.");
+  }
   requireEqual(issues, "evidence_mode", evidenceMode, "database", "Production evidence requires database evidence custody.");
 
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
@@ -58,18 +72,27 @@ export function getProductionReadiness(): ProductionReadinessResult {
     issues.push(blocker("supabase_server_key", "A server-side Supabase key is required for controlled server operations."));
   }
 
-  // scanner.ts currently instantiates a scanner only for local_service.
-  // Other declared modes return scanner_unavailable and cannot qualify evidence.
-  if (scannerMode !== "local_service") {
-    issues.push(blocker("scanner_mode", "Production evidence scanning requires an implemented scanner adapter."));
-  }
-
-  if (scannerMode === "local_service" && !process.env.RYBEXOS_SCANNER_URL) {
-    issues.push(blocker("scanner_url", "RYBEXOS_SCANNER_URL is required for local_service scanner mode."));
+  if (hostedD5O) {
+    // The accepted D5O hosted release does not scan private evidence. Its
+    // server-mediated upload/download and membership checks remain mandatory.
+    if (scannerMode !== "disabled") {
+      issues.push(blocker("scanner_contract", "Hosted D5O requires explicit RYBEXOS_SCANNER_MODE=disabled; its evidence routes do not invoke the legacy scanner."));
+    } else {
+      issues.push(warning("scanner_disabled", "Hosted D5O private evidence is not malware scanned under the approved release scope."));
+    }
+  } else {
+    // Legacy evidence custody still requires an implemented scanner.
+    if (scannerMode !== "local_service") {
+      issues.push(blocker("scanner_mode", "Production evidence scanning requires an implemented scanner adapter."));
+    }
+    if (scannerMode === "local_service" && !process.env.RYBEXOS_SCANNER_URL) {
+      issues.push(blocker("scanner_url", "RYBEXOS_SCANNER_URL is required for local_service scanner mode."));
+    }
   }
 
   return {
     ok: issues.filter((issue) => issue.severity === "blocker").length === 0,
+    scope: hostedD5O ? "d5o_hosted" : "legacy_production",
     runtimeMode,
     authMode,
     dataSource,
@@ -108,6 +131,10 @@ function requireEqual(issues: ProductionReadinessIssue[], code: string, actual: 
 
 function blocker(code: string, message: string): ProductionReadinessIssue {
   return { code, severity: "blocker", message };
+}
+
+function warning(code: string, message: string): ProductionReadinessIssue {
+  return { code, severity: "warning", message };
 }
 
 function safeValue(fn: () => string, fallback: string) {

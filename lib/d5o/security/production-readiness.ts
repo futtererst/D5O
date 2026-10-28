@@ -19,6 +19,7 @@ export function summarizeProductionReadiness() {
 
   return {
     ok: readiness.ok,
+    scope: readiness.scope,
     runtimeMode: readiness.runtimeMode,
     authMode: readiness.authMode,
     dataSource: readiness.dataSource,
