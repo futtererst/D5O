@@ -2887,9 +2887,43 @@ try {
         const change=state.data.changes.find((item)=>item.status==="Open"&&item.packageId===basis.packageId);
         assert(change,`${prefix}:scope_change_missing`);
         const ops=await rc3SignedInPage(`${prefix}_ops`);
+        const dispositionConsole=[];
+        if(releaseHostedLifecycle) {
+          ops.on("console",(message)=>{ if(message.type()==="error") dispositionConsole.push(message.text().slice(0,180)); });
+          ops.on("pageerror",(error)=>dispositionConsole.push(error.message.slice(0,180)));
+        }
         await ops.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}/deploy?workId=${encodeURIComponent(basis.work.id)}`);
         await ops.getByRole("button",{name:"Inspections & issues"}).click();
         const assess=ops.locator("form").filter({has:ops.getByRole("button",{name:"Assess condition"})});
+        if(releaseHostedLifecycle) {
+          try { await assess.getByLabel("Disposition").waitFor({state:"visible",timeout:8000}); }
+          catch {
+            const diagnostic=await ops.evaluate(async({workspace,workId,packageId})=>{
+              const [response,listResponse]=await Promise.all([
+                fetch(`/api/d5o-hosted/field-changes?workspace=${workspace}&workId=${workId}`,{cache:"no-store"}),
+                fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`,{cache:"no-store"})]);
+              const body=await response.json(),list=await listResponse.json();
+              return {apiStatus:response.status,role:list.role,
+                changes:(body.changes??[]).map((item)=>({status:item.status,kind:item.kind??null,
+                  revision:item.revision,packageMatch:item.packageId===packageId})),
+                taskActions:(list.tasks??[]).filter((item)=>item.workId===workId)
+                  .map((item)=>({phase:item.phase,action:item.action})),
+                visibleButtons:Array.from(document.querySelectorAll("main button"))
+                  .map((item)=>item.textContent?.trim()).filter(Boolean).slice(0,40),
+                alerts:Array.from(document.querySelectorAll('[role="alert"]'))
+                  .map((item)=>item.textContent?.trim()).filter(Boolean).slice(0,5)};
+            },{workspace:tenant.workspaceKey,workId:basis.work.id,packageId:basis.packageId});
+            (evidence.deployDispositionDiagnostics??=[]).push({tenant:tenant.workspaceKey,actor:`${prefix}_ops`,
+              rpcStatus:change.status,rpcRevision:change.revision,consoleErrors:dispositionConsole,
+              ...diagnostic});
+            const expected=diagnostic.apiStatus===200 && diagnostic.changes.some((item)=>
+              item.packageMatch && item.status==="Open" && !item.kind);
+            if(!expected) throw Error(`deploy_disposition_prerequisite_unmet:${prefix}`);
+            await ops.reload();
+            await ops.getByRole("button",{name:"Inspections & issues"}).click();
+            await assess.getByLabel("Disposition").waitFor({state:"visible",timeout:12000});
+          }
+        }
         await assess.getByLabel("Disposition").selectOption("Scope change");
         await assess.getByLabel("Independent assessment").fill("Additional delivery scope requires customer and commercial authorization");
         await rc3Decision(ops,tenant,`${prefix}_ops`,"Deploy","assess Scope change",assess.getByRole("button",{name:"Assess condition"}),"field-changes");

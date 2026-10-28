@@ -1,0 +1,2173 @@
+{
+  "format": "d5o-hosted-lifecycle-sanitized-v1",
+  "applicationCommit": "4c8050f3a643bb0e92565fcbd8e1d5df3744d9ea",
+  "applicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "runtime": "local production-mode rehearsal",
+  "auth": "genuine fictional GoTrue sessions",
+  "database": "isolated disposable clean 236-migration fixture",
+  "result": {
+    "passed": 63,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  },
+  "cases": [
+    {
+      "name": "vendor sees validated immutable template directory",
+      "status": "PASS"
+    },
+    {
+      "name": "vendor publishes an executable crew-demand template version",
+      "status": "PASS"
+    },
+    {
+      "name": "vendor provisions A and B through one authoritative command",
+      "status": "PASS"
+    },
+    {
+      "name": "non-vendor and customer cannot provision or mutate template",
+      "status": "PASS"
+    },
+    {
+      "name": "replay, collision and duplicate tenant key preserve one result",
+      "status": "PASS"
+    },
+    {
+      "name": "concurrent identical provisioning creates one tenant",
+      "status": "PASS"
+    },
+    {
+      "name": "provider failure remains inactive and vendor recovery replaces only the offer",
+      "status": "PASS"
+    },
+    {
+      "name": "expired initial invitation recovers without a duplicate tenant",
+      "status": "PASS"
+    },
+    {
+      "name": "governed template version is validated, published, immutable and retired",
+      "status": "PASS"
+    },
+    {
+      "name": "initial offers are tenant-bound and accepted by exact recipients",
+      "status": "PASS"
+    },
+    {
+      "name": "incomplete tenants cannot create Work or activate",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_a_test publishes its own USD 10000 threshold",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_b_test publishes its own USD 25000 threshold",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_a_test confirms readiness and vendor activates",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_b_test confirms readiness and vendor activates",
+      "status": "PASS"
+    },
+    {
+      "name": "vendor grants and flags connected Work independently",
+      "status": "PASS"
+    },
+    {
+      "name": "Discover policy publication controls connected Work creation",
+      "status": "PASS"
+    },
+    {
+      "name": "direct RPC enforces entitlement and Discover policy",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants onboard independent commercial and operations authorities",
+      "status": "PASS"
+    },
+    {
+      "name": "two tenant administrators publish distinct six-phase requirement sets",
+      "status": "PASS"
+    },
+    {
+      "name": "pinned Define command rejects missing risk only for strict tenant",
+      "status": "PASS"
+    },
+    {
+      "name": "connected source contract is available for authorized fixture progression",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants complete Discover intake and independent Define handoff",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants submit an authorized and complete Define draft",
+      "status": "PASS"
+    },
+    {
+      "name": "independent Define reviews approve and hand off each pinned baseline",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant administrators publish a bounded pricing prerequisite for solution decisions",
+      "status": "PASS"
+    },
+    {
+      "name": "Develop policy rejects missing option evidence and accepts a documented selected solution",
+      "status": "PASS"
+    },
+    {
+      "name": "early solution approval is persisted as Develop preparation only",
+      "status": "PASS"
+    },
+    {
+      "name": "Design handoff rejects an absent offer revision before award",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants approve a detailed estimate from the selected solution",
+      "status": "PASS"
+    },
+    {
+      "name": "two fictional customer awards establish exact Design handoff basis",
+      "status": "PASS"
+    },
+    {
+      "name": "Design receives exact awarded scope through independent handoff",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants create a connected Design package and issue its document",
+      "status": "PASS"
+    },
+    {
+      "name": "Design policy denies missing method and accepts reviewed package release",
+      "status": "PASS"
+    },
+    {
+      "name": "forged and completed Design task links grant no authority",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant-neutral Design API rejects foreign, wrong-role, forged and stale actions",
+      "status": "PASS"
+    },
+    {
+      "name": "both connected Works receive independent purchase and labor authority",
+      "status": "PASS"
+    },
+    {
+      "name": "both accepted Design packages receive qualified, published and acknowledged crew",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants authorize current published Work through field-start command",
+      "status": "PASS"
+    },
+    {
+      "name": "connected service is denied before parent support activation",
+      "status": "PASS"
+    },
+    {
+      "name": "unknown, foreign and draft configuration cannot replace the Work pin",
+      "status": "PASS"
+    },
+    {
+      "name": "Develop API and direct RPC reject forged, cross-tenant, stale and disabled-feature mutations",
+      "status": "PASS"
+    },
+    {
+      "name": "Deploy completion enforces reviewed evidence only for the pinned strict tenant",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants capture independent customer and Operations acceptance",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant-neutral Deploy adapters reject foreign and wrong-role actors without state change",
+      "status": "PASS"
+    },
+    {
+      "name": "Operate support acceptance follows exact Deploy receipt and pinned documentation policy",
+      "status": "PASS"
+    },
+    {
+      "name": "Operate API and RPC reject foreign, wrong-role, forged, stale and evidence-conflicting commands",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants open and triage connected service through authenticated browser controls",
+      "status": "PASS"
+    },
+    {
+      "name": "both tenants authorize priced service and create one executable job through authenticated browser controls",
+      "status": "PASS"
+    },
+    {
+      "name": "connected service adapters and job RPC deny cross-tenant actors",
+      "status": "PASS"
+    },
+    {
+      "name": "service adapters reject forgery and replay without additional jobs",
+      "status": "PASS"
+    },
+    {
+      "name": "cross-tenant Deploy and Operate RPCs reject the foreign actor",
+      "status": "PASS"
+    },
+    {
+      "name": "connected Deploy and Operate events retain exact Work, actor and tenant",
+      "status": "PASS"
+    },
+    {
+      "name": "new published tenant policy does not repin completed connected Work",
+      "status": "PASS"
+    },
+    {
+      "name": "connected decisions retain tenant, actor, Work and audit events",
+      "status": "PASS"
+    },
+    {
+      "name": "cross-tenant Design mutation is denied by the authoritative command",
+      "status": "PASS"
+    },
+    {
+      "name": "transactional phase projection matches replay and pinned final outcomes",
+      "status": "PASS"
+    },
+    {
+      "name": "authenticated tenant-neutral Work UI and API isolation",
+      "status": "PASS"
+    },
+    {
+      "name": "authenticated tenant administration and connected Work entry render",
+      "status": "PASS"
+    },
+    {
+      "name": "field evidence access rechecks membership, rollout and tenant lifecycle",
+      "status": "PASS"
+    },
+    {
+      "name": "Finance receives separate My Work follow-up after support activation",
+      "status": "PASS"
+    },
+    {
+      "name": "Design adapter denies suspended and removed membership, disabled flag and tenant",
+      "status": "PASS"
+    },
+    {
+      "name": "removed field worker loses stale-session API and direct RPC authority",
+      "status": "PASS"
+    }
+  ],
+  "browserDecisions": [
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Discover",
+      "label": "Create connected Work",
+      "origin": "authenticated_browser_control",
+      "status": 201,
+      "commandId": "b3e4b6d5-3230-4be8-abdf-e82b49c4c706",
+      "workId": null
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Discover",
+      "label": "Create connected Work",
+      "origin": "authenticated_browser_control",
+      "status": 201,
+      "commandId": "48b1aa74-442b-4e61-b53f-ebcc1f85665f",
+      "workId": null
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Discover",
+      "label": "Save intake revision",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "47a0582d-4b8f-4ba7-9e1d-d791071f08e8",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Discover",
+      "label": "Submit intake for pursuit decision",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "049717a9-bb50-4652-b5f9-95d6c5692223",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_finance",
+      "phase": "Discover",
+      "label": "Qualify pursuit",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "2c31af9a-43a8-42bd-b4c4-40c67210ab77",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Discover",
+      "label": "Submit Define handoff",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "476b7a48-df8c-4f9b-bcb4-e38efbfd403a",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "phase": "Discover",
+      "label": "Accept Define handoff",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "3b567a81-d5aa-48d1-be63-2af42de6420f",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Discover",
+      "label": "Save intake revision",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "c9b0226e-2978-46c6-9a24-9da8938c49ff",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Discover",
+      "label": "Submit intake for pursuit decision",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "c260c760-ac6e-40dd-b376-7d395de5b6cd",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_finance",
+      "phase": "Discover",
+      "label": "Qualify pursuit",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "b27b0a9b-7d62-41ff-89e5-9ee5ba6f4626",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Discover",
+      "label": "Submit Define handoff",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "199b8529-7ddd-42d2-b9eb-64d4fcd22bd1",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "phase": "Discover",
+      "label": "Accept Define handoff",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "cca61ebe-de48-4d59-908e-776d1abcdad1",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Develop",
+      "label": "Save option revision",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": null,
+      "workId": null
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Develop",
+      "label": "Select with rationale",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": null,
+      "workId": null
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Develop",
+      "label": "Save strategy revision",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": null,
+      "workId": null
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Develop",
+      "label": "Submit solution",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "1f4fef68-ab35-403b-ab32-7e20dc3cf089",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "phase": "Develop",
+      "label": "Approve solution",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "c37e92c8-ceed-4ba2-be57-d89baa75f083",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Develop",
+      "label": "Save option revision",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": null,
+      "workId": null
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Develop",
+      "label": "Select with rationale",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": null,
+      "workId": null
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Develop",
+      "label": "Save strategy revision",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": null,
+      "workId": null
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Develop",
+      "label": "Submit solution",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "d2d61b27-fce5-4683-88e7-1661f83a603a",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "phase": "Develop",
+      "label": "Approve solution",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "fad17372-388b-4835-91de-763976d09944",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Develop",
+      "label": "Save detailed estimate revision",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "e8f576a2-deaa-4055-aaf8-17a3b9129eb9",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Develop",
+      "label": "Submit revision for pricing review",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "4585d43b-bd1a-4679-8379-6f7379f67550",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "phase": "Develop",
+      "label": "Approve detailed pricing",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "469b9df0-f323-41ac-aba8-4fa9ef93f078",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Develop",
+      "label": "Save detailed estimate revision",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "6d32b705-f4c1-4abe-8c16-b3c6e9c75b97",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Develop",
+      "label": "Submit revision for pricing review",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "ffc8b0b0-7cea-479d-b4ab-3c81060e50a5",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "phase": "Develop",
+      "label": "Approve detailed pricing",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "89e324a9-4705-40a3-99b1-f678fa249f23",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Develop",
+      "label": "Save customer offer draft",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": null,
+      "workId": null
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Develop",
+      "label": "Request independent offer approval",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "8787d029-deb7-4602-81ec-60f5b54642d5",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "phase": "Develop",
+      "label": "Approve customer offer",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "864526ba-731e-485b-9272-35f57a0434e4",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Develop",
+      "label": "Record exact customer submission",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "4a3e3f64-2045-4aad-a4b0-96d60977791f",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "phase": "Develop",
+      "label": "Record sourced customer award",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "1305e443-87b5-40d2-a357-a193ac9c753f",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Develop",
+      "label": "Save customer offer draft",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": null,
+      "workId": null
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Develop",
+      "label": "Request independent offer approval",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "3485866b-ea18-4cad-bad7-50b776b7334b",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "phase": "Develop",
+      "label": "Approve customer offer",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "b997953e-2690-4b95-a733-88305ee9bb80",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Develop",
+      "label": "Record exact customer submission",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "27d12cc5-14e9-421e-ae06-4c44a25a3997",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "phase": "Develop",
+      "label": "Record sourced customer award",
+      "origin": "authenticated_browser_control",
+      "status": 200,
+      "commandId": "5ff16bb4-dd25-4aca-aafb-4af8677d5b8c",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3"
+    }
+  ],
+  "designActions": [
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Send awarded Design handoff",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:handoff-submit",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Accept awarded Design handoff",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:handoff-receipt",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Send awarded Design handoff",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:handoff-submit",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Accept awarded Design handoff",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:handoff-receipt",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Create package",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:prepare:0",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Save document draft",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:document:0",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Save package basis",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:document:doc-5ac55678-62b4-4aff-8b48-51954305bca3:1",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Retain private PDF",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": null,
+      "openedFromMyWork": null
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Submit document for independent review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:document:doc-5ac55678-62b4-4aff-8b48-51954305bca3:2",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Approve document",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:document:doc-5ac55678-62b4-4aff-8b48-51954305bca3:3",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Issue approved document for use",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:document:doc-5ac55678-62b4-4aff-8b48-51954305bca3:4",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Create package",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:prepare:0",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Save document draft",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:document:0",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Save package basis",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:document:doc-35fa93aa-2769-4cb9-9e09-e8ebf2509669:1",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Retain private PDF",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": null,
+      "openedFromMyWork": null
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Submit document for independent review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:document:doc-35fa93aa-2769-4cb9-9e09-e8ebf2509669:2",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Approve document",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:document:doc-35fa93aa-2769-4cb9-9e09-e8ebf2509669:3",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Issue approved document for use",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:document:doc-35fa93aa-2769-4cb9-9e09-e8ebf2509669:4",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Save dated crew demand",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:5",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Save dated crew demand",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:7",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Request Engineering review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:8",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Approve Engineering review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:e6875a37-4244-4755-80a7-0c3f0fcd6841:9",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Request Delivery review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:10",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Approve Delivery review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:c8169a66-d6e3-487e-b7db-78389dab0e07:11",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Request Safety review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:12",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Approve Safety review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:ea6a59fc-bfa4-4eb3-a4e6-e81cb219e925:13",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Request Quality review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:14",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Approve Quality review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:6f92863a-1051-4eb2-b687-db6d59320a8b:15",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Release for independent receipt",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 422,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:16",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Save package basis",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:16",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Save dated crew demand",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:17",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Request Engineering review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:18",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Approve Engineering review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:2f96520a-074f-4c3d-b0d5-fe6e85af3795:19",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Request Delivery review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:20",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Approve Delivery review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:6b8fc27a-b0cd-4bc1-8528-fb1822473927:21",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Request Safety review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:22",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Approve Safety review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:3fb3317a-71d7-431d-8679-61d0ef5b6ea4:23",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Request Quality review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:24",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Approve Quality review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:6912862d-cd10-419c-8860-22711a2bf8ae:25",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Release for independent receipt",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:26",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Accept released package",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": null,
+      "openedFromMyWork": null
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Save dated crew demand",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:release:5",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Request Engineering review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:release:7",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Approve Engineering review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:review:ca7c4fd9-397a-4d8e-a4d1-3a203e71b385:8",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Request Delivery review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:release:9",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Approve Delivery review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:review:ce75f956-0db7-460d-b13f-d69afd07932b:10",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Request Safety review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:release:11",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Approve Safety review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:review:44c09dd6-fc76-4b30-a969-7066ab585ad9:12",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Request Quality review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:release:13",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Approve Quality review",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:review:92b12289-6a48-4489-ab94-c8863fd07787:14",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Release for independent receipt",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:release:15",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Accept released package",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "assignedTaskId": null,
+      "openedFromMyWork": null
+    }
+  ],
+  "developActions": [
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Submit economic authority",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:Prepare Work economic authority:0",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Approve economic authority",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:Review Work economic authority:1",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Submit labor authority",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:Prepare field labor authority:0",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Approve labor authority",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:Review field labor authority:1",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Submit economic authority",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:Prepare Work economic authority:0",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Approve economic authority",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:Review Work economic authority:1",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Submit labor authority",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:Prepare field labor authority:0",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Approve labor authority",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:Review field labor authority:1",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Save crew booking",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:wp-0c2158b927ce4cfbb9cc26303af24979:save-booking",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Publish crew week",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:wp-0c2158b927ce4cfbb9cc26303af24979:publish-week",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_worker",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Acknowledge assignment",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": null,
+      "openedFromMyWork": null
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Save crew booking",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:wp-2f30277014634ebab3858f94782f4380:save-booking",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Publish crew week",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:wp-2f30277014634ebab3858f94782f4380:publish-week",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_replacement",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Acknowledge assignment",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": null,
+      "openedFromMyWork": null
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "button": "Authorize field start",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:wp-0c2158b927ce4cfbb9cc26303af24979:authorize-start",
+      "openedFromMyWork": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "button": "Authorize field start",
+      "origin": "authenticated_browser_control",
+      "httpStatus": 200,
+      "taskId": "develop:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:wp-2f30277014634ebab3858f94782f4380:authorize-start",
+      "openedFromMyWork": true
+    }
+  ],
+  "browserTasks": [
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Prepare Discover intake",
+      "taskId": "discover:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:intake:0",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_finance",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Review Discover intake",
+      "taskId": "discover:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:intake-review:2",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Prepare Define handoff",
+      "taskId": "discover:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:handoff-prep:3",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Receive Define handoff",
+      "taskId": "discover:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:handoff-receive:4",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Prepare Discover intake",
+      "taskId": "discover:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:intake:0",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_finance",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Review Discover intake",
+      "taskId": "discover:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:intake-review:2",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Prepare Define handoff",
+      "taskId": "discover:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:handoff-prep:3",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Receive Define handoff",
+      "taskId": "discover:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:handoff-receive:4",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Prepare selected solution",
+      "taskId": "commercial:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:solution-prep:0",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Prepare selected solution",
+      "taskId": "commercial:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:solution-prep:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Prepare selected solution",
+      "taskId": "commercial:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:solution-prep:2",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Prepare selected solution",
+      "taskId": "commercial:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:solution-prep:3",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Review selected solution",
+      "taskId": "commercial:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:solution-review:3",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Prepare selected solution",
+      "taskId": "commercial:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:solution-prep:0",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Prepare selected solution",
+      "taskId": "commercial:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:solution-prep:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Prepare selected solution",
+      "taskId": "commercial:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:solution-prep:2",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Prepare selected solution",
+      "taskId": "commercial:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:solution-prep:3",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Review selected solution",
+      "taskId": "commercial:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:solution-review:3",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Prepare detailed estimate",
+      "taskId": "commercial:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:estimate-prep:0",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Prepare detailed estimate",
+      "taskId": "commercial:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:estimate-prep:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Review detailed pricing",
+      "taskId": "commercial:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:pricing-review:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Prepare detailed estimate",
+      "taskId": "commercial:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:estimate-prep:0",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Prepare detailed estimate",
+      "taskId": "commercial:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:estimate-prep:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Review detailed pricing",
+      "taskId": "commercial:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:pricing-review:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Prepare customer offer",
+      "taskId": "commercial:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:offer-prep:0",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Prepare customer offer",
+      "taskId": "commercial:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:offer-prep:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Review customer offer",
+      "taskId": "commercial:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:offer-review:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Record customer submission",
+      "taskId": "commercial:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:customer-submission:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Record customer award",
+      "taskId": "commercial:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:customer-award:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Prepare customer offer",
+      "taskId": "commercial:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:offer-prep:0",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Prepare customer offer",
+      "taskId": "commercial:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:offer-prep:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Review customer offer",
+      "taskId": "commercial:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:offer-review:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Record customer submission",
+      "taskId": "commercial:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:customer-submission:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Record customer award",
+      "taskId": "commercial:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:customer-award:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Send awarded Design handoff",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:handoff-submit",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Receive awarded Design handoff",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:handoff-receipt",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Send awarded Design handoff",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:handoff-submit",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Receive awarded Design handoff",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:handoff-receipt",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Prepare Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:prepare:0",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Prepare Design document",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:document:0",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Retain and submit Design PDF",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:document:doc-5ac55678-62b4-4aff-8b48-51954305bca3:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Retain and submit Design PDF",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:document:doc-5ac55678-62b4-4aff-8b48-51954305bca3:2",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Retain and submit Design PDF",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:document:doc-5ac55678-62b4-4aff-8b48-51954305bca3:2",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Independently review Design document",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:document:doc-5ac55678-62b4-4aff-8b48-51954305bca3:3",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Issue approved Design document",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:document:doc-5ac55678-62b4-4aff-8b48-51954305bca3:4",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Prepare Design package",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:prepare:0",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Prepare Design document",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:document:0",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Retain and submit Design PDF",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:document:doc-35fa93aa-2769-4cb9-9e09-e8ebf2509669:1",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Retain and submit Design PDF",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:document:doc-35fa93aa-2769-4cb9-9e09-e8ebf2509669:2",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Retain and submit Design PDF",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:document:doc-35fa93aa-2769-4cb9-9e09-e8ebf2509669:2",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Independently review Design document",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:document:doc-35fa93aa-2769-4cb9-9e09-e8ebf2509669:3",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Issue approved Design document",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:document:doc-35fa93aa-2769-4cb9-9e09-e8ebf2509669:4",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:5",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:7",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:8",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Review Engineering package basis",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:e6875a37-4244-4755-80a7-0c3f0fcd6841:9",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:10",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Review Delivery package basis",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:c8169a66-d6e3-487e-b7db-78389dab0e07:11",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:12",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Review Safety package basis",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:ea6a59fc-bfa4-4eb3-a4e6-e81cb219e925:13",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:14",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Review Quality package basis",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:6f92863a-1051-4eb2-b687-db6d59320a8b:15",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:16",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:16",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:17",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:18",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Review Engineering package basis",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:2f96520a-074f-4c3d-b0d5-fe6e85af3795:19",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:20",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Review Delivery package basis",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:6b8fc27a-b0cd-4bc1-8528-fb1822473927:21",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:22",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Review Safety package basis",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:3fb3317a-71d7-431d-8679-61d0ef5b6ea4:23",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:24",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Review Quality package basis",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:review:6912862d-cd10-419c-8860-22711a2bf8ae:25",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:release:26",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "title": "Receive released Design package",
+      "taskId": "design:tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39:d5978075-5cde-4883-905b-fae62797a52a:27",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:release:5",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:release:7",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Review Engineering package basis",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:review:ca7c4fd9-397a-4d8e-a4d1-3a203e71b385:8",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:release:9",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Review Delivery package basis",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:review:ce75f956-0db7-460d-b13f-d69afd07932b:10",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:release:11",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Review Safety package basis",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:review:44c09dd6-fc76-4b30-a969-7066ab585ad9:12",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:release:13",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Review Quality package basis",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:review:92b12289-6a48-4489-ab94-c8863fd07787:14",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_admin",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Complete and release Design package",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:release:15",
+      "origin": "authenticated_my_work_link"
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "title": "Receive released Design package",
+      "taskId": "design:tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3:21882fba-d1a5-4d3a-b140-d45d2a63e568:16",
+      "origin": "authenticated_my_work_link"
+    }
+  ],
+  "serviceTaskNavigation": [
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "action": "open-request",
+      "title": "Open connected service request",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "action": "approve-agreement",
+      "title": "Review Fictional A service coverage",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "action": "triage-request",
+      "title": "Triage service request: Fictional monitoring service fault",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "action": "prepare-estimate",
+      "title": "Prepare service estimate",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "action": "approve-pricing",
+      "title": "Review priced service",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "action": "open-request",
+      "title": "Open connected service request",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "action": "approve-agreement",
+      "title": "Review Fictional B service coverage",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "action": "triage-request",
+      "title": "Triage service request: Fictional monitoring service fault",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "action": "prepare-estimate",
+      "title": "Prepare service estimate",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "action": "approve-pricing",
+      "title": "Review priced service",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "action": "request-approval",
+      "title": "Request service threshold approval",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_admin",
+      "action": "decide-approval",
+      "title": "Decide service threshold approval",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_ops",
+      "action": "authorize-service",
+      "title": "Record customer service authorization",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_a_test",
+      "actor": "a_pm",
+      "action": "create-job",
+      "title": "Create executable service job",
+      "workId": "tenant_a_test-0dd6b41cc16a42b6a1fac72111e6ca39",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_ops",
+      "action": "authorize-service",
+      "title": "Record customer service authorization",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "origin": "my_work_link",
+      "resolved": true
+    },
+    {
+      "tenant": "tenant_b_test",
+      "actor": "b_pm",
+      "action": "create-job",
+      "title": "Create executable service job",
+      "workId": "tenant_b_test-eb6d2fe40c7f4a649ba91e5646dd5ad3",
+      "origin": "my_work_link",
+      "resolved": true
+    }
+  ],
+  "scopeChangeRc4b1Executed": false,
+  "productionTouched": false,
+  "protectedDataIncluded": false
+}
