@@ -36,7 +36,7 @@ try {
     assert.equal(result.status, 401, path);
     checked.push({ path, expected: "passes_hosted_guard_then_requires_auth", status: result.status });
   }
-  for (const path of ["/work/initial-invitation", "/work/onboarding", "/work/connected-work",
+  for (const path of ["/work/initial-invitation", "/work/invitation", "/work/onboarding", "/work/connected-work",
     "/work/customer/fictional", "/work/customer/fictional/assignments",
     "/work/customer/fictional/field", "/work/customer/fictional/deploy"]) {
     const result = await proxy(request(path));

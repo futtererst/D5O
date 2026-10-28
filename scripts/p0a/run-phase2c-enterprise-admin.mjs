@@ -11,6 +11,7 @@ import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 const root = resolve(process.cwd());
 const hostedRehearsal = process.env.D5O_RC18_HOSTED_REHEARSAL === "1";
 const rc20TaskProbe = process.env.D5O_RC20_TASK_PROBE === "1";
+const releaseTaskProbe = process.env.D5O_RELEASE_TASK_PROBE === "1";
 const output = resolve(root, "docs/architecture/evidence/phase2c-two-tenant-results.json");
 const evidence = { baseline: "b4a4e5c43c3e3a78dc07191019dd0ba638bf4a63",
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
@@ -65,7 +66,7 @@ try {
   evidence.runtimeMode = hostedRehearsal ? "production_rehearsal" : "test_pilot";
   const admin = createClient(url, service, { auth: { persistSession: false } });
   const users = {};
-  for (const key of ["vendor","a_admin","b_admin","outsider"]) {
+  for (const key of ["vendor","a_admin","b_admin","outsider",...(releaseTaskProbe ? ["project_manager"] : [])]) {
     const email = `phase2c-${key}-${randomUUID().slice(0,8)}@example.test`;
     const password = randomBytes(24).toString("base64url") + "!";
     const created = await admin.auth.admin.createUser({email,password,email_confirm:true});
@@ -680,6 +681,84 @@ try {
     assert.equal(restored,"true");
     return {sourceVersion:versions.a_admin,newVersion:draft.data.versionId,
       preservedWorkCount:preserved,restoredDiscoverRequirement:true};
+  });
+  if(releaseTaskProbe) await check("release hosted employee invitation and My Work decision",async()=>{
+    if(!hostedRehearsal || !server) throw Error("production-mode rehearsal required");
+    const base=`http://127.0.0.1:${server.port}`;
+    const browser=await chromium.launch();
+    try {
+      const adminPage=await browser.newPage({viewport:{width:1440,height:900}});
+      await adminPage.goto(`${base}/auth/sign-in?next=${encodeURIComponent(`/work/admin/invitations?workspace=${a.workspaceKey}`)}`);
+      await adminPage.getByLabel("Email").fill(users.a_admin.email);
+      await adminPage.getByLabel("Password").fill(users.a_admin.password);
+      await adminPage.getByRole("button",{name:"Continue to your work"}).click();
+      await adminPage.getByRole("heading",{name:"Invitations"}).first().waitFor({timeout:30000});
+      const inviteId=randomUUID();
+      const invitation=await adminPage.evaluate(async({workspace,email,commandId})=>{
+        const response=await fetch("/api/d5o-hosted/org-admin",{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({workspace,action:"invitation.request",email,role:"project_manager",
+            expiresAt:new Date(Date.now()+7*86400000).toISOString(),reason:"Assign fictional project manager for release acceptance",commandId})});
+        return {status:response.status,body:await response.json()};
+      },{workspace:a.workspaceKey,email:users.project_manager.email,commandId:inviteId});
+      assert.equal(invitation.status,200,JSON.stringify(invitation.body));
+      assert.equal(invitation.body.result?.status,"existing_confirmed");
+      const employee=await browser.newPage({viewport:{width:1440,height:900}});
+      await employee.goto(`${base}/auth/sign-in?next=${encodeURIComponent(`/work/invitation?workspace=${a.workspaceKey}&request=${inviteId}`)}`);
+      await employee.getByLabel("Email").fill(users.project_manager.email);
+      await employee.getByLabel("Password").fill(users.project_manager.password);
+      await employee.getByRole("button",{name:"Continue to your work"}).click();
+      await employee.getByRole("heading",{name:"Organization invitation"}).waitFor({timeout:30000});
+      await employee.getByRole("button",{name:"Accept invitation"}).click();
+      await employee.getByRole("status").filter({hasText:"project manager"}).waitFor({timeout:30000});
+      const created=await employee.evaluate(async({workspaceKey,configurationVersionId})=>{
+        const response=await fetch("/api/d5o-hosted/work",{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({workspaceKey,commandId:crypto.randomUUID(),configurationVersionId,
+            workTypeKey:"lifecycle-service",title:"Fictional employee acceptance Work"})});
+        return {status:response.status,body:await response.json()};
+      },{workspaceKey:a.workspaceKey,configurationVersionId:versions.a_admin});
+      assert.equal(created.status,201,JSON.stringify(created.body));
+      const workId=created.body.result?.workId;
+      assert(workId,"missing canonical Work identity");
+      await employee.goto(`${base}/work/customer/${a.workspaceKey}`);
+      await employee.getByRole("heading",{name:"My Work"}).waitFor({timeout:30000});
+      const taskList=employee.getByRole("heading",{name:"My Work"}).locator("xpath=following-sibling::*[1]");
+      const taskLink=taskList.locator(`a[href*="work=${workId}"][href*="task=discover%3A"]`).first();
+      await taskLink.waitFor({timeout:30000});
+      const href=await taskLink.getAttribute("href");
+      assert(href?.includes("&task="));
+      await taskLink.click();
+      await employee.getByRole("status").filter({hasText:"Assigned responsibility: Prepare Discover intake"})
+        .waitFor({timeout:30000});
+      await employee.reload();
+      await employee.getByRole("status").filter({hasText:"Assigned responsibility: Prepare Discover intake"})
+        .waitFor({timeout:30000});
+      const control=employee.getByRole("article",{name:"Pursuit and Define handoff control"});
+      await control.getByLabel("Customer / account").fill("Fictional release customer");
+      await control.getByLabel("Site / location").fill("Fictional test site");
+      await control.getByLabel("Accountable owner").fill("Fictional project manager");
+      await control.getByLabel("Customer need").fill("Qualify a synthetic service delivery request");
+      await control.getByLabel("Requester").fill("Fictional requester");
+      await control.getByLabel("Intended customer outcome").fill("Accepted supported service");
+      await control.getByLabel("Rough value").fill("15000");
+      await control.getByLabel("Currency").fill("USD");
+      await control.getByLabel("Required date").fill("2026-12-15");
+      await control.getByLabel("Known risk or unknown").fill("Synthetic scheduling dependency");
+      await control.getByRole("button",{name:"Save intake revision"}).click();
+      await control.getByText(/Intake revision 1/).waitFor({timeout:30000});
+      await control.getByRole("button",{name:"Submit intake for pursuit decision"}).click();
+      await control.getByText(/submitted/).first().waitFor({timeout:30000});
+      await employee.reload();
+      const after=await employee.evaluate(async(workspace)=>{
+        const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`);
+        return {status:response.status,body:await response.json()};
+      },a.workspaceKey);
+      assert.equal(after.status,200);
+      assert(!after.body.tasks.some((task)=>task.workId===workId&&task.action==="intake"),"submitted task remained available");
+      await employee.close();await adminPage.close();
+      return {invitationStatus:invitation.body.result.status,employeeRole:"project_manager",workId,
+        taskLink:href,authenticatedBrowserDecision:"Discover intake submitted",taskResolved:true,
+        persistenceAfterReload:true};
+    } finally {await browser.close();}
   });
   if(rc20TaskProbe) await check("RC20 hosted customer My Work task link",async()=>{
     if(!hostedRehearsal || !server) throw Error("production-mode rehearsal required");

@@ -33,7 +33,7 @@ export async function proxy(request: NextRequest) {
   if (hostedD5O && pathname !== "/work" && pathname !== "/work/procurement" && pathname !== "/work/labor" && pathname !== "/work/my-schedule"
     && (pathname !== "/work/admin" && !pathname.startsWith("/work/admin/"))
     && (pathname !== "/platform-admin" && !pathname.startsWith("/platform-admin/"))
-    && pathname !== "/work/initial-invitation" && pathname !== "/work/onboarding"
+    && pathname !== "/work/initial-invitation" && pathname !== "/work/invitation" && pathname !== "/work/onboarding"
     && pathname !== "/work/connected-work" && !pathname.startsWith("/work/customer/")
     && !pathname.startsWith("/work/my-schedule/") && !pathname.startsWith("/api/d5o-hosted/")
     && pathname !== "/api/d5o-platform/provisioning"
