@@ -184,7 +184,7 @@
   "failedBoundary": "Deploy field-condition assessment: browser runner timed out waiting for Disposition field for second fictional tenant",
   "rootCause": "UNRESOLVED: component render/fixture timing versus application behavior; no product defect proven",
   "laterCommands": "NOT EXECUTED",
-  "cleanup": "PENDING: Docker API unresponsive after bounded teardown",
+  "cleanup": "PASS after Docker API recovery: exact project d5o-p0a-507ed8f3-e2c had 7 containers, 2 volumes, 1 network and its temp directory removed; final exact-project inventories all zero",
   "productionTouched": false,
   "protectedDataIncluded": false
 }
