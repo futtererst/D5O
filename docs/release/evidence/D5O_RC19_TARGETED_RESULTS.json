@@ -1,0 +1,32 @@
+{
+  "format": "d5o-rc19-targeted-local-results-v1",
+  "sourceCommit": "6f0bbc8d9ba916c75bf2149a8eaef6e667896072",
+  "historicalDatabase": {
+    "networkMode": "none",
+    "startingLedger": 177,
+    "pendingMigrationsApplied": 25,
+    "endingLedger": 202,
+    "finalVersion": "20261027190000",
+    "originalProtectedHashClassesMatched": 10,
+    "authUsersRestored": 25,
+    "authIdentitiesRestored": 25,
+    "customerCredentialsRestored": false,
+    "privateObjectsVerified": 23,
+    "privateByteHashesMatched": true,
+    "storageAssociationsMatched": true
+  },
+  "readOnlyHistoricalRlsProbes": [
+    {"case": "existing_active_actor_workspace_read", "result": "2 visible active workspaces", "status": "PASS", "method": "transaction-local authenticated role and JWT subject; no customer credential"},
+    {"case": "cross_tenant_workspace_read", "result": "0 unauthorized workspaces", "status": "PASS", "method": "read-only SQL role probe"},
+    {"case": "active_field_worker_canonical_work_read", "result": "0 rows", "status": "PASS", "method": "read-only SQL role probe"},
+    {"case": "suspended_member_workspace_read", "result": "0 target workspaces", "status": "PASS", "method": "read-only SQL role probe"},
+    {"case": "anonymous_workspace_read", "result": "permission denied for schema d5o_hosted", "status": "PASS", "method": "read-only SQL role probe"}
+  ],
+  "reusedCleanHostedEvidence": "RC18 production-mode local onboarding 23/23 with fictional GoTrue sessions; not rerun in RC19",
+  "historicalBusinessCommandsExecuted": false,
+  "fullDevelopToFinanceExecuted": false,
+  "productionModified": false,
+  "cleanDisposableStacksRemoved": true,
+  "historicalDisposableContainerRemoved": true,
+  "temporaryDependencyJunctionRemoved": true
+}

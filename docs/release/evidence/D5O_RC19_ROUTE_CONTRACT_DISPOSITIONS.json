@@ -1,0 +1,3428 @@
+{
+  "format": "d5o-rc19-route-catalog-dispositions-v1",
+  "sourceCommit": "6f0bbc8d9ba916c75bf2149a8eaef6e667896072",
+  "cleanLedger": 236,
+  "historicalLedger": 202,
+  "scope": "literal hosted RPC inventory plus exact platform routes and catalog metadata; not a full historical command execution suite",
+  "rpc": [
+    {
+      "name": "d5o_design_cost_my_review_v1",
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_design_cost_my_review_v1(p_workspace_key text, p_presentation_id text, p_claim_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_design_internal_rate_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/design-internal-rate/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_design_internal_rate_command_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_design_internal_rate_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/design-internal-rate/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_design_internal_rate_read_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_field_labor_my_review_v1",
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_field_labor_my_review_v1(p_workspace_key text, p_presentation_id text, p_authority_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_graybar_actions_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_graybar_actions_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_graybar_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/graybar/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_graybar_document_v1",
+      "sources": [
+        "app/api/d5o-hosted/graybar-document/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_graybar_job_cost_actions_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_graybar_job_cost_actions_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_graybar_job_cost_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/graybar-job-cost/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_graybar_job_cost_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_graybar_revision integer, p_finance_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_graybar_job_cost_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/graybar-job-cost/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_graybar_job_cost_read_v1(p_workspace_key text, p_presentation_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_graybar_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/graybar-document/route.ts",
+        "app/api/d5o-hosted/graybar-po/route.ts",
+        "app/api/d5o-hosted/graybar/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_graybar_register_document_v1",
+      "sources": [
+        "app/api/d5o-hosted/graybar-document/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_accept_supported_asset_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_accept_supported_asset_v1(p_workspace_key text, p_parent_presentation_id text, p_asset_id text, p_documentation_source text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_operate_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_actor_v1",
+      "sources": [
+        "app/api/d5o-hosted/crew-access/route.ts",
+        "app/api/d5o-hosted/prototype-state/route.ts",
+        "app/api/d5o-hosted/work/route.ts",
+        "lib/d5o/hosted/prototype-context.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_actor_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": true,
+          "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_admin_identity_finish_v1",
+      "sources": [
+        "app/api/d5o-hosted/admin-identity/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_admin_identity_finish_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_command_id text, p_status text, p_provider_user_id uuid, p_provider_message text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_admin_identity_intent_v2",
+      "sources": [
+        "app/api/d5o-hosted/admin-identity/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_admin_identity_intent_v2(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_action text, p_target_email text, p_requested_role text, p_reason text, p_command_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_assign_support_document_supplier_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_assign_support_document_supplier_v1(p_workspace_key text, p_presentation_id text, p_turnover_id text, p_action text, p_supervisor_email text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_deploy_revision integer, p_expected_operate_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_bind_worker_v1",
+      "sources": [
+        "app/api/d5o-hosted/crew-access/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_bind_worker_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_worker_email text, p_person text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_capability_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-develop-action/route.ts",
+        "app/api/d5o-hosted/field-changes/route.ts",
+        "app/api/d5o-hosted/worker-deploy/route.ts",
+        "app/work/customer/[workspace]/field/page.tsx",
+        "lib/d5o/hosted/customer-work-scope.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_capability_read_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_configuration_admin_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/admin-configuration/route.ts",
+        "app/api/d5o-hosted/workforce-impact/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_configuration_admin_read_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "service_execute"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": true,
+          "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_configuration_history_v1",
+      "sources": [
+        "app/api/d5o-hosted/admin-configuration/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_configuration_history_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": true,
+          "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_configuration_inventory_v1",
+      "sources": [
+        "lib/d5o/hosted/configuration-inventory.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_configuration_inventory_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "service_execute"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": true,
+          "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_connected_service_approval_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_connected_service_approval_read_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_correct_work_title_v1",
+      "sources": [
+        "app/api/d5o-hosted/work-title-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_correct_work_title_v1(p_workspace_key text, p_presentation_id text, p_command_id text, p_expected_record_version integer, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_expected_title text, p_new_title text, p_reason text, p_actor_user_id uuid, p_membership_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_create_connected_work_v1",
+      "sources": [
+        "app/api/d5o-hosted/connected-work/route.ts",
+        "app/api/d5o-hosted/prototype-catalog/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_create_connected_work_v1(p_workspace_key text, p_command_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_configuration_version_id uuid, p_work_type_key text, p_title text, p_customer text, p_site text, p_owner text, p_actor_user_id uuid, p_membership_id uuid, p_initial_discovery jsonb)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_create_related_work_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_create_related_work_v1(p_workspace_key text, p_command_id text, p_action text, p_parent_presentation_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_parent_after jsonb, p_child jsonb, p_actor_user_id uuid, p_membership_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_create_work_v1",
+      "sources": [
+        "app/api/d5o-hosted/work/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_create_work_v1(p_workspace_key text, p_command_id text, p_configuration_version_id uuid, p_work_type_key text, p_title text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": true,
+          "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_crew_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-develop-action/route.ts",
+        "app/api/d5o-hosted/worker-schedule/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_crew_command_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_customer_decision_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-commercial-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_customer_decision_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_offer_revision integer, p_recipient text, p_method text, p_due_date text, p_response_status text, p_received_at text, p_details text, p_source_reference text, p_next_action text, p_follow_up_due text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_customer_decision_evidence_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-decision-evidence/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_customer_decision_evidence_read_v1(p_workspace_key text, p_presentation_id text, p_evidence_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_define_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-define-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_define_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_review_role text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_cost_actions_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_design_cost_actions_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_cost_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/design-cost/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_design_cost_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_cost_evidence_read_v2",
+      "sources": [
+        "app/api/d5o-hosted/design-cost-evidence/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_design_cost_evidence_read_v2(p_workspace_key text, p_presentation_id text, p_claim_id uuid, p_actor_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_cost_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/design-cost-evidence/route.ts",
+        "app/api/d5o-hosted/design-cost/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_design_cost_read_v1(p_workspace_key text, p_presentation_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_document_evidence_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/design-document-evidence/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_design_handoff_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-commercial-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_design_spend_actions_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_design_spend_actions_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_spend_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/design-spend/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_design_spend_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_design_spend_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/design-spend/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_design_spend_read_v1(p_workspace_key text, p_presentation_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_estimate_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-commercial-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_estimate_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_due_date text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_estimate_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_field_change_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/field-changes/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_field_change_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts",
+        "app/api/d5o-hosted/field-changes/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_field_evidence_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/worker-deploy/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_field_evidence_command_v1(p_workspace_key text, p_presentation_id text, p_package_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_design_revision integer, p_expected_schedule_revision integer, p_expected_deploy_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_field_fact_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/worker-deploy/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_field_fact_command_v1(p_workspace_key text, p_presentation_id text, p_package_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_design_revision integer, p_expected_schedule_revision integer, p_expected_deploy_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_field_start_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-develop-action/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_field_start_command_v1(p_workspace_key text, p_presentation_id text, p_package_id text, p_action text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_design_revision integer, p_expected_schedule_revision integer, p_expected_deploy_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_job_finance_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/job-finance/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_job_finance_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_job_finance_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/job-finance/route.ts",
+        "app/api/d5o-hosted/prototype-search/route.ts",
+        "app/api/d5o-hosted/subcontract/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_job_finance_read_v1(p_workspace_key text, p_presentation_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_link_existing_asset_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_link_existing_asset_v1(p_workspace_key text, p_target_presentation_id text, p_owner_presentation_id text, p_asset_id text, p_note text, p_command_id text, p_expected_source_revision bigint, p_expected_target_deploy_revision integer, p_expected_target_operate_revision integer, p_expected_owner_operate_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_list_work_v1",
+      "sources": [
+        "app/api/d5o-hosted/work/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_list_work_v1(p_workspace_key text, p_limit integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": true,
+          "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_load_work_v1",
+      "sources": [
+        "app/api/d5o-hosted/work/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_load_work_v1(p_workspace_key text, p_work_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": true,
+          "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_offer_review_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-commercial-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_offer_review_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_due_date text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_offer_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_offer_revision_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-commercial-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_offer_revision_command_v1(p_workspace_key text, p_presentation_id text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_offer_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_operate_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_operate_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_deploy_revision integer, p_expected_operate_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_org_admin_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/org-admin/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_org_admin_command_v1(p_workspace_key text, p_action text, p_subject_id uuid, p_input jsonb, p_expected_revision integer, p_reason text, p_command_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_org_invitation_request_v1",
+      "sources": [
+        "app/api/d5o-hosted/org-admin/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_org_invitation_request_v1(p_workspace_key text, p_email text, p_role text, p_reason text, p_command_id text, p_expires_at timestamp with time zone)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_org_invitation_revoke_v1",
+      "sources": [
+        "app/api/d5o-hosted/org-admin/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_org_invitation_revoke_v1(p_workspace_key text, p_command_id text, p_reason text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_phase_status_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_phase_status_read_v1(p_workspace_key text, p_presentation_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_pricing_policy_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-state/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_pricing_policy_command_v1(p_workspace_key text, p_action text, p_policy jsonb, p_policy_id text, p_policy_version integer, p_command_id text, p_expected_work_revision bigint)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_private_evidence_index_v1",
+      "sources": [
+        "app/api/d5o-hosted/private-evidence-index/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_private_evidence_index_v1(p_workspace_key text, p_offset integer, p_limit integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_prototype_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-state/route.ts",
+        "lib/d5o/hosted/prototype-context.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_prototype_read_v1(p_workspace_key text, p_state_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_prototype_save_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts",
+        "app/api/d5o-hosted/prototype-state/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_prototype_save_v1(p_workspace_key text, p_state_key text, p_expected_revision bigint, p_state jsonb)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_publish_initial_configuration_v1",
+      "sources": [
+        "app/work/initial-configuration-action.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_publish_initial_configuration_v1(p_workspace_key text, p_command_id text, p_manifest jsonb, p_work_types jsonb, p_create_roles jsonb, p_routes jsonb, p_reason text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": true,
+          "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_pursuit_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-pursuit-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_register_design_cost_evidence_v1",
+      "sources": [
+        "app/api/d5o-hosted/design-cost-evidence/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_register_design_cost_evidence_v1(p_workspace_key text, p_presentation_id text, p_claim_id uuid, p_evidence_id uuid, p_checksum_sha256 text, p_filename text, p_uploader_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_register_design_document_evidence_v1",
+      "sources": [
+        "app/api/d5o-hosted/design-document-evidence/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_role_actions_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts",
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_rom_design_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/rom-design/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_rom_design_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/rom-design/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_rom_design_read_v1(p_workspace_key text, p_presentation_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_server_worker_save_v1",
+      "sources": [
+        "lib/d5o/hosted/worker-context.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_server_worker_save_v1(p_workspace_key text, p_state_key text, p_expected_revision bigint, p_state jsonb, p_actor_user_id uuid, p_membership_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_actions_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_service_basis_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-design-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_service_billing_terms_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/service-finance/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_service_billing_terms_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_design_revision integer, p_expected_deploy_revision integer, p_expected_terms_revision integer, p_expected_source_digest text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_billing_terms_evidence_list_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-decision-evidence/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_service_billing_terms_evidence_list_v1(p_workspace_key text, p_presentation_id text, p_request_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_cost_actions_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_service_cost_actions_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_cost_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/service-cost/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_service_cost_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_cycle text, p_expected_child_work_id text, p_expected_source_digest text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_cost_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/service-cost/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_service_cost_read_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_finance_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/service-finance/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_service_finance_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/service-finance/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_service_invoice_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/service-invoice/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_service_invoice_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_action text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_design_revision integer, p_expected_deploy_revision integer, p_expected_finance_revision integer, p_expected_basis_digest text, p_expected_invoice_revision integer, p_expected_ledger_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_invoice_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/service-invoice/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_service_job_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_service_job_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_due_date date, p_owner text, p_command_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_expected_operate_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_pricing_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_service_pricing_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_action text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_service_return_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_service_return_command_v1(p_workspace_key text, p_parent_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_child_deploy_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_solution_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-commercial-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_solution_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_due_date text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_solution_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_support_document_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-operate-command/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_support_document_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_turnover_id text, p_kind text, p_evidence_id uuid, p_decision text, p_note text, p_command_id text, p_expected_source_revision bigint, p_expected_deploy_revision integer, p_expected_operate_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_work_queue_identity_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts",
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_worker_access_v1",
+      "sources": [
+        "app/api/d5o-hosted/crew-access/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_worker_access_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_worker_binding_v1",
+      "sources": [
+        "lib/d5o/hosted/worker-context.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_worker_binding_v1(p_workspace_key text, p_actor_user_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_worker_schedule_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/worker-schedule/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_worker_schedule_read_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_workforce_impact_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/workforce/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_hosted_workforce_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-develop-action/route.ts",
+        "app/api/d5o-hosted/workforce-impact/route.ts",
+        "app/api/d5o-hosted/workforce/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_workforce_read_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_hosted_workspaces_v1",
+      "sources": [
+        "app/api/d5o-hosted/workspaces/route.ts",
+        "app/work/labor/page.tsx",
+        "app/work/page.tsx",
+        "app/work/procurement/page.tsx",
+        "app/work/subcontracts/page.tsx"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE",
+      "signatures": [
+        {
+          "signature": "public.d5o_hosted_workspaces_v1()",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": true,
+          "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+        }
+      ]
+    },
+    {
+      "name": "d5o_internal_design_rate_my_review_v1",
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_internal_design_rate_my_review_v1(p_workspace_key text, p_rate_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_labor_authority_actions_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts",
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_labor_authority_actions_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_labor_authority_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/labor-authority/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_labor_authority_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_labor_authority_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/labor-authority/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_labor_authority_read_v1(p_workspace_key text, p_presentation_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_outlook_assessment_my_review_v1",
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_outlook_assessment_my_review_v1(p_workspace_key text, p_presentation_id text, p_assessment_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_purchase_authority_actions_v1",
+      "sources": [
+        "app/api/d5o-hosted/customer-work/route.ts",
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_purchase_authority_actions_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_purchase_authority_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/purchase-authority/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_purchase_authority_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_purchase_authority_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/purchase-authority/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_purchase_authority_read_v1(p_workspace_key text, p_presentation_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_purchase_cancel_unsent_v1",
+      "sources": [
+        "app/api/d5o-hosted/purchase-authority/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_purchase_order_my_review_v1",
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_purchase_order_my_review_v1(p_workspace_key text, p_presentation_id text, p_order_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_schedule_labor_hours_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-schedule/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_schedule_labor_hours_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_spending_delegate_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/spending-delegation/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_spending_delegate_command_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_spending_delegate_my_review_v1",
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_spending_delegate_my_review_v1(p_workspace_key text, p_presentation_id text, p_category text, p_subject_id uuid)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_spending_delegate_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/spending-delegation/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_spending_delegate_read_v1(p_workspace_key text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_subcontract_actions_v1",
+      "sources": [
+        "app/api/d5o-hosted/prototype-search/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_subcontract_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/subcontract/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_subcontract_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_subcontract_cost_command_v1",
+      "sources": [
+        "app/api/d5o-hosted/subcontract/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_subcontract_cost_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_subject_id uuid, p_command_id text, p_expected_subcontract_revision integer, p_expected_finance_revision integer)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_subcontract_my_review_v1",
+      "sources": [
+        "app/api/d5o-hosted/spending-review-route/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": false,
+      "disposition": "EQUIVALENT",
+      "signatures": []
+    },
+    {
+      "name": "d5o_subcontract_read_v1",
+      "sources": [
+        "app/api/d5o-hosted/subcontract/route.ts"
+      ],
+      "productionMode": "admitted by /api/d5o-hosted or protected /work route; transitive helper where listed",
+      "rc18HadDifference": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_subcontract_read_v1(p_workspace_key text, p_presentation_id text)",
+          "rc18Fields": [
+            "body_md5",
+            "definition_md5"
+          ],
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_platform_activate_v1",
+      "sources": [
+        "app/api/d5o-platform/provisioning/route.ts"
+      ],
+      "productionMode": "exact admitted platform API route",
+      "rc18HadDifference": false,
+      "additionalRC19PlatformCall": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_platform_activate_v1(p_workspace_key text, p_expected_revision integer, p_command_id text, p_reason text)",
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_platform_capability_command_v1",
+      "sources": [
+        "app/api/d5o-platform/provisioning/route.ts"
+      ],
+      "productionMode": "exact admitted platform API route",
+      "rc18HadDifference": false,
+      "additionalRC19PlatformCall": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_platform_capability_command_v1(p_workspace_key text, p_kind text, p_enabled boolean, p_expected_revision integer, p_command_id text, p_reason text)",
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_platform_invitation_finish_v1",
+      "sources": [
+        "app/api/d5o-platform/provisioning/route.ts"
+      ],
+      "productionMode": "exact admitted platform API route",
+      "rc18HadDifference": false,
+      "additionalRC19PlatformCall": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_platform_invitation_finish_v1(p_workspace_key text, p_invitation_id text, p_vendor_user_id uuid, p_status text, p_provider_user_id uuid)",
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_platform_invitation_recover_v1",
+      "sources": [
+        "app/api/d5o-platform/provisioning/route.ts"
+      ],
+      "productionMode": "exact admitted platform API route",
+      "rc18HadDifference": false,
+      "additionalRC19PlatformCall": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_platform_invitation_recover_v1(p_workspace_key text, p_command_id text, p_reason text)",
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_platform_lifecycle_command_v1",
+      "sources": [
+        "app/api/d5o-platform/provisioning/route.ts"
+      ],
+      "productionMode": "exact admitted platform API route",
+      "rc18HadDifference": false,
+      "additionalRC19PlatformCall": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_platform_lifecycle_command_v1(p_workspace_key text, p_action text, p_expected_revision integer, p_command_id text, p_reason text)",
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_platform_provision_v1",
+      "sources": [
+        "app/api/d5o-platform/provisioning/route.ts"
+      ],
+      "productionMode": "exact admitted platform API route",
+      "rc18HadDifference": false,
+      "additionalRC19PlatformCall": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_platform_provision_v1(p_request_id text, p_workspace_key text, p_legal_name text, p_display_name text, p_admin_email text, p_country text, p_time_zone text, p_currency text, p_template_version_id uuid, p_reason text)",
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_platform_provisioning_directory_v1",
+      "sources": [
+        "app/api/d5o-platform/provisioning/route.ts"
+      ],
+      "productionMode": "exact admitted platform API route",
+      "rc18HadDifference": false,
+      "additionalRC19PlatformCall": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_platform_provisioning_directory_v1()",
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_platform_template_command_v1",
+      "sources": [
+        "app/api/d5o-platform/provisioning/route.ts"
+      ],
+      "productionMode": "exact admitted platform API route",
+      "rc18HadDifference": false,
+      "additionalRC19PlatformCall": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_platform_template_command_v1(p_template_key text, p_action text, p_version_id uuid, p_payload jsonb, p_command_id text, p_reason text)",
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_platform_templates_v1",
+      "sources": [
+        "app/api/d5o-platform/provisioning/route.ts"
+      ],
+      "productionMode": "exact admitted platform API route",
+      "rc18HadDifference": false,
+      "additionalRC19PlatformCall": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_platform_templates_v1()",
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "name": "d5o_platform_initial_admin_accept_v1",
+      "sources": [
+        "app/api/d5o-platform/initial-admin-accept/route.ts"
+      ],
+      "productionMode": "exact admitted platform API route",
+      "rc18HadDifference": false,
+      "additionalRC19PlatformCall": true,
+      "disposition": "EQUIVALENT",
+      "signatures": [
+        {
+          "signature": "public.d5o_platform_initial_admin_accept_v1(p_workspace_key text, p_invitation_id text)",
+          "normalizedBodyEqualWithQuotedValuesPreserved": true,
+          "returnAndExecutionAttributesEqual": true,
+          "serviceRoleGrantDifferent": false,
+          "disposition": "EQUIVALENT"
+        }
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "policy": "d5o_hosted.memberships.d5o_hosted_membership_self_read",
+      "predicateDifference": "displayed auth.uid() qualification only",
+      "historicalDependency": "auth.uid verified through pg_depend",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "policy": "d5o_hosted.work_events.d5o_hosted_work_event_member_read",
+      "predicateDifference": "displayed auth.uid() qualification only",
+      "historicalDependency": "auth.uid verified through pg_depend",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "policy": "d5o_hosted.work_records.d5o_hosted_work_member_read",
+      "predicateDifference": "displayed auth.uid() qualification only",
+      "historicalDependency": "auth.uid verified through pg_depend",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "policy": "d5o_hosted.workspaces.d5o_hosted_workspace_member_read",
+      "predicateDifference": "displayed auth.uid() qualification only",
+      "historicalDependency": "auth.uid verified through pg_depend",
+      "disposition": "EQUIVALENT"
+    }
+  ],
+  "grants": [
+    {
+      "signature": "public.d5o_platform_tenant_directory_v1()",
+      "sources": [],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_service_approval_command_v1(p_workspace_key text, p_work_id uuid, p_action text, p_amount_minor bigint, p_currency text, p_command_id text)",
+      "sources": [],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_publish_initial_configuration_v1(p_workspace_key text, p_command_id text, p_manifest jsonb, p_work_types jsonb, p_create_roles jsonb, p_routes jsonb, p_reason text)",
+      "sources": [
+        "app/work/initial-configuration-action.ts"
+      ],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_configure_handoff_route_v1(p_workspace_key text, p_version uuid, p_route text, p_role text, p_expected_revision integer, p_command_id text)",
+      "sources": [],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_inventory_v1(p_workspace_key text)",
+      "sources": [
+        "lib/d5o/hosted/configuration-inventory.ts"
+      ],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_actor_v1(p_workspace_key text)",
+      "sources": [
+        "app/api/d5o-hosted/crew-access/route.ts",
+        "app/api/d5o-hosted/prototype-state/route.ts",
+        "app/api/d5o-hosted/work/route.ts",
+        "lib/d5o/hosted/prototype-context.ts"
+      ],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_create_work_core_v1(p_workspace_key text, p_command_id text, p_configuration_version_id uuid, p_work_type_key text, p_title text)",
+      "sources": [],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_admin_read_v1(p_workspace_key text)",
+      "sources": [
+        "app/api/d5o-hosted/admin-configuration/route.ts",
+        "app/api/d5o-hosted/workforce-impact/route.ts"
+      ],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_history_v1(p_workspace_key text)",
+      "sources": [
+        "app/api/d5o-hosted/admin-configuration/route.ts"
+      ],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_list_work_v1(p_workspace_key text, p_limit integer)",
+      "sources": [
+        "app/api/d5o-hosted/work/route.ts"
+      ],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_handoff_configuration_v1(p_workspace_key text)",
+      "sources": [],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_admin_receipt_v1(p_workspace_key text, p_command_id text)",
+      "sources": [],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_load_work_v1(p_workspace_key text, p_work_id uuid)",
+      "sources": [
+        "app/api/d5o-hosted/work/route.ts"
+      ],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_handoff_configuration_command_v1(p_workspace_key text, p_action text, p_version uuid, p_route text, p_role text, p_expected_revision integer, p_command_id text)",
+      "sources": [],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_handoff_routes_v1(p_workspace_key text, p_version uuid)",
+      "sources": [],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_workspaces_v1()",
+      "sources": [
+        "app/api/d5o-hosted/workspaces/route.ts",
+        "app/work/labor/page.tsx",
+        "app/work/page.tsx",
+        "app/work/procurement/page.tsx",
+        "app/work/subcontracts/page.tsx"
+      ],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_admin_command_v1(p_workspace_key text, p_action text, p_version uuid, p_expected_active uuid, p_expected_revision integer, p_input jsonb, p_reason text, p_command_id text)",
+      "sources": [],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "signature": "public.d5o_hosted_create_work_v1(p_workspace_key text, p_command_id text, p_configuration_version_id uuid, p_work_type_key text, p_title text)",
+      "sources": [
+        "app/api/d5o-hosted/work/route.ts"
+      ],
+      "field": "service_execute",
+      "clean": false,
+      "historical": true,
+      "noAnonOrAuthenticatedExpansion": true,
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    }
+  ],
+  "constraints": [
+    {
+      "constraint": "d5o_hosted.admin_binding_corrections.admin_binding_corrections_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.admin_binding_corrections.admin_binding_corrections_new_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.admin_binding_corrections.admin_binding_corrections_old_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.admin_identity_requests.admin_identity_requests_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.admin_identity_requests.admin_identity_requests_role_check",
+      "difference": "reviewed RC8 historical field-worker invitation compatibility",
+      "disposition": "INTENTIONAL COMPATIBLE DIFFERENCE"
+    },
+    {
+      "constraint": "d5o_hosted.admin_membership_reasons.admin_membership_reasons_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.admin_succession_events.admin_succession_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.admin_succession_events.admin_succession_events_target_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.capability_entitlements.capability_entitlements_changed_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.capability_flags.capability_flags_changed_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.configuration_admin_events.configuration_admin_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.configuration_admin_receipts.configuration_admin_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.configuration_handoff_roles.configuration_handoff_roles_configured_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.configuration_template_versions.configuration_template_versions_published_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_create_receipts.connected_create_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_crew_profile_events.connected_crew_profile_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_crew_profiles.connected_crew_profiles_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_define_events.connected_define_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_define_receipts.connected_define_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_define_states.connected_define_states_commercial_reviewer_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_define_states.connected_define_states_delivery_reviewer_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_define_states.connected_define_states_handoff_receiver_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_define_states.connected_define_states_handoff_sender_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_define_states.connected_define_states_submitted_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_deploy_events.connected_deploy_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_deploy_receipts.connected_deploy_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_design_events.connected_design_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_design_handoff_events.connected_design_handoff_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_design_handoff_receipts.connected_design_handoff_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_design_handoffs.connected_design_handoffs_received_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_design_handoffs.connected_design_handoffs_submitted_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_design_receipts.connected_design_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_estimate_events.connected_estimate_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_estimate_receipts.connected_estimate_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_estimate_states.connected_estimate_states_reviewer_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_estimate_states.connected_estimate_states_submitter_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_field_change_events.connected_field_change_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_field_change_receipts.connected_field_change_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_field_changes.connected_field_changes_created_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_job_bill_history.connected_job_bill_history_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_job_bills.connected_job_bills_prepared_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_job_bills.connected_job_bills_reviewed_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_job_cash_events.connected_job_cash_events_recorded_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_job_costs.connected_job_costs_recorded_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_job_finance_events.connected_job_finance_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_job_finance_receipts.connected_job_finance_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_offer_events.connected_offer_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_offer_receipts.connected_offer_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_offer_states.connected_offer_states_reviewer_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_offer_states.connected_offer_states_submitter_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_package_receipts.connected_package_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_package_states.connected_package_states_created_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_phase_status.connected_phase_status_last_transition_actor_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_pricing_events.connected_pricing_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_pricing_receipts.connected_pricing_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_pursuit_events.connected_pursuit_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_pursuit_receipts.connected_pursuit_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_pursuit_states.connected_pursuit_states_decider_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_pursuit_states.connected_pursuit_states_handoff_receiver_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_pursuit_states.connected_pursuit_states_handoff_sender_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_pursuit_states.connected_pursuit_states_submitter_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_rom_design_events.connected_rom_design_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_rom_design_receipts.connected_rom_design_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_rom_design_states.connected_rom_design_states_authorized_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_rom_design_states.connected_rom_design_states_prepared_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_schedule_events.connected_schedule_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_schedule_receipts.connected_schedule_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_service_billing_terms.connected_service_billing_terms_recorded_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_solution_events.connected_solution_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_solution_receipts.connected_solution_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_solution_states.connected_solution_states_reviewer_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_solution_states.connected_solution_states_submitter_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.connected_workforce_commands.connected_workforce_commands_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.crew_binding_events.crew_binding_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.crew_binding_events.crew_binding_events_worker_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.crew_bindings.crew_bindings_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_cost_claims.design_cost_claims_prepared_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_cost_claims.design_cost_claims_reviewed_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_cost_events.design_cost_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_cost_evidence.design_cost_evidence_uploaded_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_cost_links.design_cost_links_linked_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_cost_receipts.design_cost_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_document_evidence.design_document_evidence_uploaded_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_internal_rate_events.design_internal_rate_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_internal_rate_receipts.design_internal_rate_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_internal_rates.design_internal_rates_prepared_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_internal_rates.design_internal_rates_reviewed_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_spend_authorities.design_spend_authorities_prepared_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_spend_authorities.design_spend_authorities_reviewed_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_spend_commitments.design_spend_commitments_prepared_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_spend_commitments.design_spend_commitments_reviewed_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_spend_events.design_spend_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.design_spend_receipts.design_spend_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.graybar_document_extractions.graybar_document_extractions_accepted_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.graybar_documents.graybar_documents_uploaded_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.graybar_events.graybar_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.graybar_job_cost_links.graybar_job_cost_links_recorded_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.graybar_job_cost_receipts.graybar_job_cost_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.graybar_receipts.graybar_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.handoff_configuration_events.handoff_configuration_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.handoff_configuration_receipts.handoff_configuration_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.handoff_route_events.handoff_route_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.handoff_route_receipts.handoff_route_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.initial_configuration_events.initial_configuration_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.initial_configuration_receipts.initial_configuration_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.labor_actuals.labor_actuals_reviewed_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.labor_authorities.labor_authorities_prepared_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.labor_authorities.labor_authorities_reviewed_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.labor_authority_events.labor_authority_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.labor_authority_receipts.labor_authority_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.labor_booking_intents.labor_booking_intents_prepared_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.labor_cost_adjustments.labor_cost_adjustments_reviewed_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.labor_reservations.labor_reservations_approved_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.labor_reservations.labor_reservations_person_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.membership_assignment_events.membership_assignment_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.membership_assignment_events.membership_assignment_events_target_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.memberships.memberships_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.org_admin_events.org_admin_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.org_admin_receipts.org_admin_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.outlook_assessments.outlook_assessments_prepared_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.outlook_assessments.outlook_assessments_reviewed_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.platform_administrators.platform_administrators_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.platform_command_receipts.platform_command_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.platform_events.platform_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.prototype_state_revisions.prototype_state_revisions_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.prototype_states.prototype_states_updated_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.purchase_authorities.purchase_authorities_prepared_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.purchase_authorities.purchase_authorities_reviewed_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.purchase_authority_events.purchase_authority_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.purchase_authority_receipts.purchase_authority_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.purchase_reservations.purchase_reservations_approved_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.purchase_reservations.purchase_reservations_released_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.service_approval_events.service_approval_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.service_approval_receipts.service_approval_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.service_approval_requests.service_approval_requests_decided_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.service_approval_requests.service_approval_requests_requested_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.spending_delegate_events.spending_delegate_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.spending_delegate_receipts.spending_delegate_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.spending_delegate_rules.spending_delegate_rules_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.spending_delegate_rules.spending_delegate_rules_configured_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.subcontract_companies.subcontract_companies_created_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.subcontract_cost_links.subcontract_cost_links_recorded_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.subcontract_events.subcontract_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.subcontract_receipts.subcontract_receipts_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.subcontract_reservations.subcontract_reservations_approved_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.synthetic_beta_admin_bootstrap.synthetic_beta_admin_bootstrap_target_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.tenant_provisioning.tenant_provisioning_created_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.work_events.work_events_actor_user_id_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    },
+    {
+      "constraint": "d5o_hosted.work_records.work_records_created_by_fkey",
+      "difference": "Auth users schema qualification",
+      "disposition": "EQUIVALENT"
+    }
+  ],
+  "cleanOnlyLegacyFunctions": [
+    "public.d5o_configuration_activate_v1(p_workspace uuid, p_candidate uuid, p_expected_active uuid)",
+    "public.d5o_configuration_create_draft_v1(p_workspace uuid, p_expected_active uuid)",
+    "public.d5o_configuration_publish_v1(p_workspace uuid, p_draft uuid, p_expected_active uuid)",
+    "public.d5o_configuration_save_draft_v1(p_workspace uuid, p_draft uuid, p_manifest jsonb)",
+    "public.d5o_create_work_record_v1(p_workspace_id uuid, p_command_id text, p_payload jsonb)",
+    "public.d5o_execute_work_command_v1(p_workspace_id uuid, p_work_id uuid, p_expected_version integer, p_proof_revision integer, p_command_id text, p_kind text, p_payload jsonb)",
+    "public.d5o_execute_work_extension_v1(p_workspace_id uuid, p_work_id uuid, p_expected_version integer, p_command_id text, p_kind text, p_payload jsonb)",
+    "public.d5o_list_work_records_v1(p_workspace_id uuid, p_limit integer)",
+    "public.d5o_load_work_extensions_v1(p_workspace_id uuid, p_work_id uuid)",
+    "public.d5o_load_work_record_v1(p_workspace_id uuid, p_work_id uuid)"
+  ],
+  "historicalOnlyRc8ReceiptConstraints": [
+    "d5o_hosted.rc8_invitation_bridge_receipts.rc8_invitation_bridge_receipt_workspace_id_invitation_comm_fkey",
+    "d5o_hosted.rc8_invitation_bridge_receipts.rc8_invitation_bridge_receipts_bridge_key_check",
+    "d5o_hosted.rc8_invitation_bridge_receipts.rc8_invitation_bridge_receipts_original_role_check",
+    "d5o_hosted.rc8_invitation_bridge_receipts.rc8_invitation_bridge_receipts_original_status_check",
+    "d5o_hosted.rc8_invitation_bridge_receipts.rc8_invitation_bridge_receipts_pkey",
+    "d5o_hosted.rc8_invitation_bridge_receipts.rc8_invitation_bridge_receipts_source_version_check"
+  ],
+  "summary": {
+    "rpcNames": 122,
+    "differingRpcNames": 90,
+    "additionalPlatformRpcNames": 10,
+    "rpcBlockers": 0,
+    "policies": 4,
+    "policyBlockers": 0,
+    "grants": 18,
+    "grantBlockers": 0,
+    "constraintDifferences": 149,
+    "constraintBlockers": 0,
+    "cleanOnlyLegacyFunctions": 10
+  }
+}

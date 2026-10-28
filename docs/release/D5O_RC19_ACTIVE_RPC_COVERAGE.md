@@ -1,0 +1,7 @@
+# RC19 release-reachable RPC coverage
+
+The selected source is `6f0bbc8d9ba916c75bf2149a8eaef6e667896072` (`app/` tree `84f2081b3b6266abf7d89906b04f816622838f2c`). RC10's literal hosted inventory connects 112 RPC names to application source paths. RC19 added ten direct RPC names from the newly admitted vendor provisioning and initial-administrator acceptance routes. The [machine-readable route matrix](evidence/D5O_RC19_ROUTE_CONTRACT_DISPOSITIONS.json) lists each name, source caller, signature and disposition. These are 122 *literal* names; dynamic calls and transitive SQL dependencies require separate behavior evidence.
+
+All 122 names have matching historical signatures. The original RC18 set contained 90 reported differences: 81 normalize to equivalent function bodies and execution attributes, and nine have only the historical service-role grant difference. The ten additional platform RPCs also match. Ten clean-only older configuration/Work functions do not occur in the literal hosted or newly admitted platform route inventory. They are not recreated in the historical database.
+
+The admitted API paths use the production-mode proxy's Supabase user authentication. RC18's clean-install rehearsal exercised vendor provisioning, onboarding and tenant-specific configuration through genuine fictional sessions. RC19 did not execute the full Develop-to-Finance command journey against the historical copy. The route matrix establishes catalog contract coverage, not a claim that every employee decision was executed.
