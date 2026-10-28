@@ -1,5 +1,7 @@
 # Migration and matched recovery boundary
 
+**Stage 1 status, 2026-10-28:** A final fresh isolated restore and the committed runner at `8ca44e778adc3913d9eca686da8c8473e4c85167` passed 25/25 orders, 177→202 ledger, ten protected historical class hashes and the bridge constraint/receipt RLS. The named rehearsal container and volume were removed. The production URI file previously used for read-only RC7 access and a standalone `psql` binary are not present in this release worktree, so production transport cannot yet be preflighted. No production connection or write was attempted. The restored historic DB and object captures remain non-atomic; the future write-quiescent matched capture/restore is the mandatory next recovery proof.
+
 ## Executable preparation update — 2026-10-28
 
 The separate [production-capable runner](../../../scripts/production/d5o_upgrade.py) now exists; the earlier statements below that it must be prepared are historical. Its default mode is read-only `plan`. It verifies the complete 236-file manifest, exact RC8 bridge hashes, approved 177-row ledger and historical fingerprint. It applies orders 212–236 in order, with each SQL and its real ledger insertion in one transaction; order 215 pre/source/post is one atomic unit. It stops on first error, uses bounded lock/statement timeouts and checks protected historical digests plus bridge security at completion. The same engine passed a fresh offline 177→202 rehearsal, order-212 rollback injection and wrong-target denial. See [machine result](evidence/production-runner-rehearsal.json).

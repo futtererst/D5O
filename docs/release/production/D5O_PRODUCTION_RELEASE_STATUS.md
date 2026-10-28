@@ -1,5 +1,9 @@
 # D5O integrated production release status
 
+**Current Stage 1 target verification (2026-10-28):** Supabase `fcawktdjoxvahhgvkebx` is active; read-only ledger count remains 177. Vercel `prj_HF8KhxUFvONQlpMr53FdhEgmIpFG` still serves deployment `dpl_DYXNRK2PyF4UUUKqpPqNHVYhVKXm` from older SHA `64487f8ec34da78325b0d87958ba5e29c46dd5fc`. Production variable **names** include Auth, hosted mode and Supabase keys, but values are encrypted to this read-only inspection. `RYBEXOS_SCANNER_MODE` is absent. Effective bindings, SMTP delivery, spending delegates and on-call ownership are not qualified.
+
+The committed release-engineering source is `8ca44e778adc3913d9eca686da8c8473e4c85167`; `app/` tree `84f2081b3b6266abf7d89906b04f816622838f2c` is unchanged. A source archive with SHA-256 `c9ebbcdc12194355388114eacb9f9b0ecb92fc89e219a3a5e8034cac4309e557` is stored outside Git in the restricted local `D5O-Release-Artifacts/8ca44e778adc3913d9eca686da8c8473e4c85167` folder. ACL inheritance is disabled and only the current user and SYSTEM have explicit access. This is a Vercel-deployable **source** archive, not a tested Vercel prebuilt artifact. It was not deployed.
+
 ## 2026-10-28 execution update (supersedes older readiness assessment below)
 
 **RELEASE PREPARATION PARTIAL.** The exact hosted D5O route now has a scoped readiness contract. The 16 missing Billing V2, field-issue and closeout tables are used by legacy/local routes denied by the hosted proxy; they are not active hosted persistence dependencies. No speculative forward SQL was added. The legacy production readiness contract remains strict. The product owner explicitly accepted launch without malware scanning. Hosted readiness requires `RYBEXOS_SCANNER_MODE=disabled` and reports `scanner_disabled`; it never represents scanning as active. Production variable values have not been changed or verified.

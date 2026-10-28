@@ -4,6 +4,17 @@
   "selectedApplicationCommit": "4c8050f3a643bb0e92565fcbd8e1d5df3744d9ea",
   "applicationAncestor": "6f0bbc8d9ba916c75bf2149a8eaef6e667896072",
   "selectedApplicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "releaseEngineeringCommit": "8ca44e778adc3913d9eca686da8c8473e4c85167",
+  "releaseEngineeringScope": "hosted readiness contract, guarded migration runner, checkpoint verifier and deployment archive; app/ tree unchanged",
+  "currentStage1Gates": {
+    "productionReadOnlyIdentity": "PASS_2026_10_28_SUPABASE_177_VERCEL_OLDER_SHA",
+    "productionReadinessVariableNames": "BLOCKED_RYBEXOS_SCANNER_MODE_ABSENT_EFFECTIVE_VALUES_NOT_DECRYPTED",
+    "scannerProductDecision": "ACCEPTED_LAUNCH_UNSCANNED_REQUIRES_EXPLICIT_DISABLED_MODE",
+    "migrationRunnerRehearsal": "PASS_177_TO_202_PROTECTED_HASHES_PRESERVED",
+    "matchedProductionCheckpoint": "NOT_EXECUTED_REQUIRES_AUTHORIZED_WRITE_QUIESCENCE",
+    "hostedExactCandidate": "NOT_EXECUTED_REQUIRES_DEPLOYMENT_AUTHORIZATION",
+    "productionRelease": "NOT_AUTHORIZED"
+  },
   "candidateCorrection": "exact hosted /work/invitation route; proxy guard 18/18, TypeScript, targeted ESLint and production build passed; positive fictional employee/My Work browser acceptance passed",
   "production": {"supabaseProject": "fcawktdjoxvahhgvkebx", "database": "postgres", "postgresVersion": "17.6", "ledgerCount": 177, "vercelProject": "prj_HF8KhxUFvONQlpMr53FdhEgmIpFG", "deployedSource": "64487f8ec34da78325b0d87958ba5e29c46dd5fc", "readOnly": true},
   "capabilities": [
