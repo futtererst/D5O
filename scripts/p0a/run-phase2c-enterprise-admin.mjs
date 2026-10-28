@@ -10,6 +10,7 @@ import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
 const hostedRehearsal = process.env.D5O_RC18_HOSTED_REHEARSAL === "1";
+const rc20TaskProbe = process.env.D5O_RC20_TASK_PROBE === "1";
 const output = resolve(root, "docs/architecture/evidence/phase2c-two-tenant-results.json");
 const evidence = { baseline: "b4a4e5c43c3e3a78dc07191019dd0ba638bf4a63",
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
@@ -679,6 +680,44 @@ try {
     assert.equal(restored,"true");
     return {sourceVersion:versions.a_admin,newVersion:draft.data.versionId,
       preservedWorkCount:preserved,restoredDiscoverRequirement:true};
+  });
+  if(rc20TaskProbe) await check("RC20 hosted customer My Work task link",async()=>{
+    if(!hostedRehearsal || !server) throw Error("production-mode rehearsal required");
+    const browser=await chromium.launch();
+    try {
+      const page=await browser.newPage({viewport:{width:1440,height:900}});
+      const path=`/work/customer/${a.workspaceKey}`;
+      await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=${encodeURIComponent(path)}`);
+      await page.getByLabel("Email").fill(users.a_admin.email);
+      await page.getByLabel("Password").fill(users.a_admin.password);
+      await page.getByRole("button",{name:"Continue to your work"}).click();
+      await page.getByRole("heading",{name:"Work lifecycle"}).waitFor({timeout:30000});
+      await page.getByRole("heading",{name:"My Work"}).waitFor({timeout:30000});
+      const taskList=page.getByRole("heading",{name:"My Work"})
+        .locator("xpath=following-sibling::*[1]");
+      if(await taskList.evaluate((node)=>node.tagName)!=="UL")
+        throw Error("no_assigned_task_after_synthetic_onboarding");
+      const links=taskList.locator("a");
+      const taskCount=await links.count();
+      if(!taskCount) throw Error("no_assigned_task_after_synthetic_onboarding");
+      const href=await links.first().getAttribute("href");
+      if(!href?.startsWith(`/work/customer/${a.workspaceKey}?work=`)||!href.includes("&task="))
+        throw Error("unexpected_task_link");
+      await links.first().click();
+      try {await page.getByRole("status").filter({hasText:"Assigned responsibility:"})
+        .waitFor({timeout:8000});}
+      catch {
+        const alert=await page.getByRole("alert").allTextContents();
+        const status=await page.getByRole("status").allTextContents();
+        throw Error(`task_link_not_resolved:href=${href}:url=${new URL(page.url()).pathname}:alerts=${alert.join('|').slice(0,180)}:status=${status.join('|').slice(0,180)}`);
+      }
+      await page.reload();
+      await page.getByRole("status").filter({hasText:"Assigned responsibility:"})
+        .waitFor({timeout:30000});
+      await page.close();
+      return {taskCount,taskLinkResolved:true,reloadPreserved:true,
+        decisionExecuted:false};
+    } finally {await browser.close();}
   });
 } catch(error) {evidence.setupError=String(error.message).slice(-2500);}
 finally {

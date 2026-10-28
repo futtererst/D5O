@@ -1,0 +1,15 @@
+{
+  "format": "d5o-rc20-my-work-diagnostic-v1",
+  "sourceApplication": "6f0bbc8d9ba916c75bf2149a8eaef6e667896072",
+  "runtimeMode": "production_rehearsal",
+  "cleanMigrations": 236,
+  "existingOnboardingChecksPassed": 23,
+  "myWorkPageRendered": true,
+  "assignedTaskCountAfterOnboarding": 0,
+  "taskLinkAndDecision": "BLOCKED: no supported business prerequisite created an assigned task in this setup",
+  "firstRunDiagnostic": "initial selector inadvertently targeted the Work-record list; not a product task-link failure",
+  "businessSecurityDenialClaimed": false,
+  "setupError": false,
+  "cleanupVerified": true,
+  "productionModified": false
+}

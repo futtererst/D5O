@@ -1,0 +1,40 @@
+{
+  "format": "d5o-rc20-finite-acceptance-v1",
+  "applicationSource": "6f0bbc8d9ba916c75bf2149a8eaef6e667896072",
+  "applicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "runtimeMode": "production_rehearsal",
+  "cleanLedger": 236,
+  "auth": "genuine fictional GoTrue sessions",
+  "onboardingSetup": {"passed": 23, "failed": 0, "browserVendorProvisioning": true, "cleanupVerified": true,
+    "actors": ["fictional vendor administrator", "fictional customer administrators in two independent tenants"],
+    "sourceEvidence": "D5O_RC18_HOSTED_ONBOARDING.json; rerun summary 23 PASS/0 FAIL"},
+  "myWork": {
+    "actor": "fictional tenant_a_test administrator with genuine local GoTrue session",
+    "route": "/work/customer/tenant_a_test",
+    "method": "authenticated browser",
+    "pageRendered": true,
+    "assignedTaskCountAfterOnboarding": 0,
+    "taskLinkFollowed": false,
+    "employeeDecisionExecuted": false,
+    "status": "BLOCKED_BY_MISSING_BUSINESS_PREREQUISITE",
+    "firstProbeIssue": "broad selector clicked a Work-record link, not an assigned task",
+    "authoritativeDecisionResponse": "not attempted; no assigned responsibility",
+    "receiptOrAudit": "not applicable; no decision executed"
+  },
+  "remainingCommands": [
+    {"capability": "Design independent acceptance", "status": "NOT_EXECUTED_RC20"},
+    {"capability": "Develop workforce schedule authority permit acknowledgment", "status": "NOT_EXECUTED_RC20"},
+    {"capability": "Deploy evidence inspection completion turnover customer acceptance", "status": "NOT_EXECUTED_RC20"},
+    {"capability": "commercial Scope change and execution hold", "status": "NOT_EXECUTED_RC20"},
+    {"capability": "Operate support activation", "status": "NOT_EXECUTED_RC20"},
+    {"capability": "connected-service child Work", "status": "NOT_EXECUTED_RC20"},
+    {"capability": "separate Finance review", "status": "NOT_EXECUTED_RC20"}
+  ],
+  "historical": {"startingLedger": 177, "pendingMigrationsApplied": 25,
+    "endingLedger": 202, "manifestFiles": 236, "manifestMismatches": 0,
+    "protectedHistoricalHashFailures": 0, "authUsers": 25, "authIdentities": 25,
+    "customerCredentialsRestored": false, "privateObjectsVerified": 23,
+    "privateByteHashesAndAssociationsMatch": true,
+    "originalBusinessCommandsExecuted": false},
+  "productionModified": false
+}

@@ -1,0 +1,7 @@
+# RC20 historical compatibility
+
+A fresh authorized encrypted historical checkpoint was restored to a PostgreSQL container with no network and no published port. The original ledger contained 177 entries. Local ACL fidelity reconciliation, the reviewed atomic RC8 pre-215/source-215/post-215 bridge and all 25 pending frozen migrations completed; the ledger ended at 202 entries, last version `20261027190000`. All 236 migration file hashes matched the frozen manifest. The upgrade's protected historical hash classes had zero mismatches. The restored Auth relationship set contains 25 users and 25 identities; customer credentials were intentionally excluded. All 23 encrypted private-object byte hashes and their restored Storage metadata associations matched.
+
+No fictional business command was run against original historical tenants or Work. The selected application tree and migration chain are unchanged from RC19, so its 90 RPC, four policy, 18 grant and 149 constraint dispositions remain applicable. The active command journey executed on the clean synthetic database cannot be represented as a journey on the historical copy. Historical application-command compatibility remains a bounded residual risk despite matching SQL contracts and preserved original rows.
+
+The database and private-object captures were not atomic. This local restore does not establish a coordinated production checkpoint, production RTO/RPO or authorization to cut over.

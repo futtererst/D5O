@@ -1,0 +1,7 @@
+# RC20 My Work browser
+
+The supported new-customer task surface is the My Work list embedded in `/work/customer/{workspace}`. It links a task to `?work={id}&task={id}#phase-{phase}`; worker assignments use `/work/customer/{workspace}/assignments`. The old `/work/my-work` page redirects into `/work` and is not the new-customer task contract.
+
+An authenticated fictional administrator opened the production-mode customer workspace and saw the My Work heading. The onboarding-only fixture had **zero assigned responsibilities**. The first RC20 browser probe selected the Work-record list under the same sidebar because its selector was too broad; it clicked a Work record and timed out waiting for an assigned-task status. The bounded retry established the empty task prerequisite. The test runner now targets only the task list and requires a `task=` link. No task-linked employee decision, task resolution, next responsibility or reload persistence was proved. **My Work browser acceptance: PARTIAL.**
+
+This does not justify enabling a pilot route or building a second task engine. A supported Design/Develop decision must first generate an assigned fictional task, then its exact link and authoritative completion must be exercised.

@@ -1,0 +1,9 @@
+# RC20 hosted lifecycle
+
+The source remains application commit `6f0bbc8d9ba916c75bf2149a8eaef6e667896072`, `app/` tree `84f2081b3b6266abf7d89906b04f816622838f2c`. Only an opt-in test-runner task probe was added in RC20; no application code, SQL migration or security policy changed.
+
+The clean 236-migration disposable stack ran the existing onboarding setup in production routing mode with real fictional GoTrue sessions. All 23 existing checks passed again, with zero setup errors and verified service cleanup. They include vendor-controlled provisioning, administrator acceptance, configuration publication, Work creation gates, tenant-specific approval thresholds, suspension/reactivation and cross-tenant configuration denial. The runner used authenticated browser actions for the vendor and customer setup pages and authenticated HTTP/RPC for other named checks; its fixture setup is not employee decision evidence.
+
+The finite continuation stopped before Design-to-Finance execution: onboarding-only fictional Work produced no assigned My Work task for the administrator. A broad first-run selector selected a Work-record link and failed to find a task status. The diagnostic retry found no task list. The selector was narrowed to the immediate task-list sibling and now requires a `task=` link before claiming navigation. This is a **missing business prerequisite**, not a proven hosted task-link defect. No Design, workforce, field permit, Deploy completion, Scope change, Operate, connected child Work or Finance command was executed in RC20. RC14's accepted Design and conditional purchase/labor HTTP evidence and RC3/RC4 ancestor browser evidence remain scoped prior evidence, not exact-candidate hosted completion.
+
+See [finite coverage](D5O_RC20_ACCEPTANCE_COVERAGE.md), [first probe](evidence/D5O_RC20_MY_WORK_FIRST_RUN.json), [diagnostic retry](evidence/D5O_RC20_MY_WORK_DIAGNOSTIC.json) and [machine outcomes](evidence/D5O_RC20_ACCEPTANCE_RESULTS.json).

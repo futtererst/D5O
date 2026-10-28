@@ -1,0 +1,13 @@
+{
+  "format": "d5o-rc20-my-work-first-run-v1",
+  "sourceApplication": "6f0bbc8d9ba916c75bf2149a8eaef6e667896072",
+  "runtimeMode": "production_rehearsal",
+  "cleanMigrations": 236,
+  "existingOnboardingChecksPassed": 23,
+  "newTaskLinkCheck": "FAIL",
+  "observedBoundary": "the first sidebar link was clicked; expected assigned-responsibility status did not appear within 30 seconds",
+  "cause": "selector matched a Work-record link because no assigned-task list existed",
+  "setupError": false,
+  "cleanupVerified": true,
+  "productionModified": false
+}
