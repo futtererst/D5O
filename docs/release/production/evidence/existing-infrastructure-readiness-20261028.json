@@ -1,0 +1,38 @@
+{
+  "format": "d5o-existing-infrastructure-readiness-v1",
+  "observedAtDate": "2026-10-28",
+  "productionReadOnly": true,
+  "supabase": {
+    "project": "fcawktdjoxvahhgvkebx",
+    "status": "ACTIVE_HEALTHY",
+    "databaseVersion": "17.6.1.127",
+    "ledgerCount": 177,
+    "ledgerLastVersion": "20261021123923",
+    "hostedTables": 149,
+    "hostedTablesWithRls": 149,
+    "requiredPersistenceTablesInspected": 16,
+    "requiredPersistenceTablesPresent": 0,
+    "activeSpendingRuleCategories": ["design_authority", "design_commitment", "design_cost_review", "internal_design_rate", "outlook_assessment", "work_authority"],
+    "purchaseOrderAndFieldLaborRulesVisible": false
+  },
+  "vercel": {
+    "project": "prj_HF8KhxUFvONQlpMr53FdhEgmIpFG",
+    "currentProductionDeployment": "dpl_DYXNRK2PyF4UUUKqpPqNHVYhVKXm",
+    "currentProductionSource": "64487f8ec34da78325b0d87958ba5e29c46dd5fc",
+    "configuredNonsecretSourceSha": "0936d5682f238dcee28f1781e021fd77f08803f6",
+    "selectedCandidate": "4c8050f3a643bb0e92565fcbd8e1d5df3744d9ea",
+    "requiredPersistenceAndScannerVariableNamesPresent": false,
+    "effectiveSecretBindingsVerified": false
+  },
+  "localRecovery": {
+    "evidence": "local-recovery-20261028.json",
+    "networkMode": "none",
+    "recoveredLedger": 202,
+    "verifiedPrivateObjects": 23,
+    "metadataAssociationsMatched": true,
+    "containerRemoved": true,
+    "atomicProductionCheckpointProven": false
+  },
+  "productionMutations": 0,
+  "hostedMutations": 0
+}

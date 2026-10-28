@@ -1,0 +1,17 @@
+{
+  "format": "d5o-rc8-post-upgrade-recovery-v1",
+  "isolatedContainer": "d5o-rc7-recovery-db",
+  "networkMode": "none",
+  "elapsedSeconds": 51.3,
+  "recoveredLedgerRows": 202,
+  "recoveredAuthUsers": 25,
+  "recoveredIdentities": 25,
+  "recoveredWorkRecords": 15,
+  "recoveredBridgeReceipts": 1,
+  "privateObjectsVerified": 23,
+  "privateBytesVerified": 2252301,
+  "metadataAssociationsMatched": true,
+  "roleCheckValidated": true,
+  "bridgeReceiptRls": true,
+  "limitation": "No local Storage API serving or coordinated production DB/Storage checkpoint was established."
+}

@@ -38,6 +38,19 @@
     "freeStagingEligibility": "NOT_VERIFIED",
     "coordinatedCheckpointRestore": "NOT_EXECUTED"
   },
+  "existingInfrastructureDecision20261028": {
+    "classification": "NO_GO_IMMEDIATE_RELEASE",
+    "evidence": "evidence/existing-infrastructure-readiness-20261028.json; evidence/local-recovery-20261028.json",
+    "productionLedger": 177,
+    "requiredPersistenceTablesAbsent": 16,
+    "scannerQualified": false,
+    "productionSpendingPurchaseAndLaborRulesVisible": false,
+    "localPostUpgradeRestore": "PASS_NON_ATOMIC_SOURCE_51_3_SECONDS",
+    "atomicProductionCheckpoint": "OPEN",
+    "exactCandidateHostedExecution": "NOT_EXECUTED",
+    "isolatedStaging": "OPTIONAL_RISK_REDUCTION_REQUIRES_AUTHORIZATION",
+    "existingInfrastructureFirstRunRiskAcceptance": "NOT_RECORDED"
+  },
   "productionWritesPerformed": false,
   "cutoverAuthorized": false
 }
