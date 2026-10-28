@@ -1,0 +1,30 @@
+{
+  "kind": "d5o-hosted-readonly-inventory",
+  "date": "2026-10-28",
+  "sourceCommit": "4c8050f3a643bb0e92565fcbd8e1d5df3744d9ea",
+  "applicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "supabase": {
+    "productionProject": "fcawktdjoxvahhgvkebx",
+    "status": "ACTIVE_HEALTHY",
+    "organization": "kizwlcyhydylfmwbxmpq",
+    "organizationPlan": "pro",
+    "visibleOrganizations": 1,
+    "visibleFreeOrganizations": 0,
+    "productionLedgerCount": 177,
+    "productionLedgerLastVersion": "20261021123923",
+    "stagingTarget": null,
+    "freeOrganizationCreationEligibility": "NOT VERIFIED"
+  },
+  "vercel": {
+    "project": "prj_HF8KhxUFvONQlpMr53FdhEgmIpFG",
+    "team": "team_YSItyDw0cqxobdy4YBp9osYV",
+    "latestProductionDeployment": "dpl_DYXNRK2PyF4UUUKqpPqNHVYhVKXm",
+    "latestProductionSource": "64487f8ec34da78325b0d87958ba5e29c46dd5fc",
+    "ssoProtection": "enabled: all_except_custom_domains",
+    "previewVariableNamesPresent": ["SUPABASE_SECRET_KEY", "NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "RYBEXOS_DATA_SOURCE", "RYBEXOS_AUTH_MODE", "RYBEXOS_RUNTIME_MODE", "D5O_HOSTED_ENABLED"],
+    "previewValuesOrIsolationVerified": false,
+    "teamPlanVerified": false
+  },
+  "hostedMutations": 0,
+  "productionMutations": 0
+}

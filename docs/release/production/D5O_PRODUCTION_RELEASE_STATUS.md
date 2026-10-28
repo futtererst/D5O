@@ -2,6 +2,8 @@
 
 **Release preparation: PARTIAL. Production cutover is not authorized.** This is the single current register for the approved commercial scope: existing Rybex/Rotork pilot plus vendor-controlled customer onboarding, tenant configuration, Work/My Work, the supported six-phase lifecycle, Scope changes, post-Support-Active connected service, private evidence and separate Finance. Public tenant self-provisioning is excluded. Private evidence is served through authenticated application routes; direct end-user Storage reads remain denied.
 
+**2026-10-28 hosted preflight:** read-only account checks reconfirm the Vercel production deployment is on a different SHA, the Supabase production ledger is 177, the sole visible Supabase organization is Pro, and Preview variable names exist but their effective values/isolation are unverified. No Free organization or D5O staging target is visible. A separate Free organization/project may avoid a subscription charge under published limits, but account eligibility and total Vercel usage cost are not established. See [hosted inventory](evidence/hosted-readonly-20261028.json) and [qualification plan](D5O_HOSTED_QUALIFICATION.md). No hosted staging authorization was given; no hosted test or resource creation occurred.
+
 ## Immutable candidate and current targets
 
 - Application candidate commit `4c8050f3a643bb0e92565fcbd8e1d5df3744d9ea` (ancestor `6f0bbc8d9ba916c75bf2149a8eaef6e667896072`), `app/` tree `84f2081b3b6266abf7d89906b04f816622838f2c`. The sole product correction admits the existing authenticated `/work/invitation` page through the hosted proxy. No database or business-command source changed.
@@ -32,5 +34,22 @@ The minimal local fixture completed **24/24** hosted-mode checks with genuine fi
 | Production readiness | Current Vercel key-name inventory omits Billing V2, field-issue, closeout persistence modes and scanner mode/URL. Source readiness guard treats them as blockers; RC1 found their database contracts absent. | Operations and engineering: determine approved in-scope readiness contract, qualify schema/services and `/api/readiness` on exact hosted candidate. Do not set keys merely to force 200. | Potential scanner/service dependency; no expenditure approved. |
 | Invitation and spending authority | Local fictional acceptance does not prove live SMTP delivery or actual tenant delegate configuration. | Operations/product owner: approved test recipient end-to-end delivery; read-only tenant authority inventory and bounded authorized test. | Live invitations/configuration require separate authorization. |
 | Connected-service contract | Delivery Scope change versus post-handover service wording has no recorded formal owner acceptance. | Product owner: explicitly accept or reject the two-domain wording in [RC4 contract](../D5O_RC4_BUSINESS_CONTRACT_DECISION.md). | Owner decision. |
+
+The immediate authorized work is complete through read-only hosted preflight and recovery planning. The next release action requires one explicit **isolated staging authorization** covering owner/plan/cost ceiling, Preview binding and variable edits, exact candidate deployment, restricted testers and synthetic Auth/test email. Production cutover approval is a later, separate decision.
+
+## Operational readiness classification for the approved scope
+
+| Requirement | Current decision | Completion evidence required |
+| --- | --- | --- |
+| Billing V2, field-issue and closeout persistence | **MANDATORY / OPEN** under the current global production readiness guard; source requires database mode, and RC1 found missing hosted schema contracts. | Reviewed compatible schema/service behavior, tenant denial and exact hosted `/api/readiness`; setting variable names alone is insufficient. |
+| Scanner mode and URL | **MANDATORY / OPEN** for private evidence custody under the current guard. | Approved reachable scanner with clean, infected, error and timeout behavior in isolated hosted staging. No unapproved paid service. |
+| SMTP and administrator invitation | **MANDATORY / OPEN** for vendor-controlled onboarding. | Approved test recipient, real delivery/acceptance and no customer invitation during qualification. |
+| Production spending authority and tenant configuration | **MANDATORY / OPEN** for authorized commercial commands. | Read-only production role/configuration inventory, named owner and bounded authorized approval test; local fictional delegates do not prove readiness. |
+| Private evidence, Work/My Work, field issue and closeout application behavior | **LOCAL PASS where covered; HOSTED OPEN**. | Representative exact-candidate hosted routes and persistent state with independent staging Auth/Storage. |
+| Monitoring, logs, on-call and customer support | **MANDATORY / OPEN**. | Named operator, alert route, incident/rollback authority and tested response procedure. |
+| Backup, matched restore and retention | **MANDATORY / OPEN**. | Approved write-quiescent checkpoint, database/Auth/ledger plus private bytes, isolated matched restore, retention/disposal owner. |
+| Public self-service signup | **OUT OF SCOPE**. | Keep disabled. |
+
+Formal owner acceptance of the delivery Scope-change versus post-handover connected-service wording remains **DECISION REQUIRED**. These readiness items cannot be waived by a local application pass.
 
 Stop on historical-row drift, missing object bytes, tenant/role bypass, unexpected ledger or target, failed restore, unapproved production mutation, or unavoidable unapproved cost. A production migration/deployment authorization request is premature while these gates remain open.

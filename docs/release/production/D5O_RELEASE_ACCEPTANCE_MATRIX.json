@@ -26,6 +26,18 @@
   ],
   "localQualification": {"firstExtendedRun": {"passed": 21, "failed": 3, "cleanupVerified": true, "employeeFailure": "authenticated invitation page blocked by hosted proxy before acceptance", "twoOnboardingFailures": "browser timeouts; no passing evidence"}, "afterCorrection": {"proxyChecks": 18, "proxyFailures": 0, "typecheck": "PASS with incremental output disabled", "targetedEslint": "PASS", "productionBuild": "PASS", "employeeEndToEnd": "PASS: genuine fictional invitation acceptance and one authoritative My Work browser decision; invitation negative cases remain open", "disposableCleanup": "PASS for completed attempts; final stalled teardown cleaned by exact disposable project identity"}, "dockerHealth": {"wsl2": "AVAILABLE", "dockerEngine": "AVAILABLE_WITH_INTERMITTENT_500", "diskAndMemory": "SUFFICIENT", "minimalPostgres": "PASS", "minimalGoTrue": "PASS after scratch auth schema creation", "fullFixture": "INTERMITTENT: analytics unhealthy in first attempt; reduced stack completed two application probes; Docker API 500 recurred during status; final teardown stalled", "resourceScope": "Only exact D5O disposable project resources removed; unrelated projects untouched"}, "employeeProbe": {"run1": "23 PASS, 1 FAIL: stale configuration version in fixture", "run2": "23 PASS, 1 FAIL: project-manager create right absent from fictional published configuration", "run3": "23 PASS, 1 FAIL: canonical-only Work command produced no connected presentation task", "run4": "NOT RECORDED: connected Work probe run interrupted during teardown", "invitation": "Sequential browser assertions reached accepted project-manager status before Work failures", "myWork": "PASS: browser task decision, linked event/receipt and next review", "lifecycleAfterMyWork": "NOT EXECUTED"}},
   "currentLocalAcceptance": {"candidateCommit": "4c8050f3a643bb0e92565fcbd8e1d5df3744d9ea", "runtime": "local production-mode rehearsal", "classification": "LOCAL_APPLICATION_ACCEPTANCE_QUALIFIED", "employeeProbe": "24 PASS / 0 FAIL; genuine Auth; invitation accepted; connected Work browser Discover decision, event/receipt and task reconciliation", "lifecycle": "63 PASS / 0 FAIL; Deploy-to-Finance including positive/negative security and server-mediated field evidence; cleanup verified", "scopeChange": "47 PASS / 0 FAIL; revised Scope, holds, 23 protected-state denials, distinct revised permits and acceptance; cleanup verified", "dispositionTimeout": "prior second-tenant browser timeout did not recur in two successful hosted runs; instrumented 8-second wait and guarded refresh were not triggered in the 63-pass run; exact original timing cause unproven, no product defect demonstrated", "remainingLocalMandatory": [], "separateGates": ["actual hosted binding", "coordinated database/Storage checkpoint and recovery", "production operational readiness", "cutover authorization"], "evidence": "evidence/employee-acceptance.json; evidence/hosted-lifecycle-complete.json; evidence/hosted-scope-change-complete.json"},
+  "hostedPreflight20261028": {
+    "status": "READ_ONLY_COMPLETE_HOSTED_ACCEPTANCE_NOT_EXECUTED",
+    "evidence": "evidence/hosted-readonly-20261028.json",
+    "stagingAuthorization": "ABSENT",
+    "stagingTarget": "UNSELECTED",
+    "previewBinding": "UNVERIFIED",
+    "actualCandidateDeployment": "NOT_EXECUTED",
+    "representativeHostedAcceptance": "NOT_EXECUTED",
+    "supabaseOrganizationPlan": "pro",
+    "freeStagingEligibility": "NOT_VERIFIED",
+    "coordinatedCheckpointRestore": "NOT_EXECUTED"
+  },
   "productionWritesPerformed": false,
   "cutoverAuthorized": false
 }

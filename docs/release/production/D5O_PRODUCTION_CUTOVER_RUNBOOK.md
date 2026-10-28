@@ -2,6 +2,8 @@
 
 **Do not execute in production from this document alone.** The release owner must first clear the [status register](D5O_PRODUCTION_RELEASE_STATUS.md), approve exact target/resources, downtime and recovery exposure, then approve the final command bundle. Current production source is older than the candidate; the ledger remains 177 entries.
 
+**Authorization sequence:** isolated hosted staging approval comes first and is limited to a named nonproduction Supabase project and protected Vercel Preview with a stated spend ceiling. It is separate from production cutover approval. Before any future cutover, the release owner must identify the DBA, Storage, application and security operators; approve write quiescence, affected users, expected downtime, checkpoint retention, exact production runner and rollback authority. No such cutover approval exists as of 2026-10-28.
+
 | Stage | Operator action and required evidence | Abort condition |
 | --- | --- | --- |
 | 1. Release identity | Record signed approval, source SHA and `app/` tree, 236-file manifest and RC8 pre/post hashes, Vercel project `prj_HF8KhxUFvONQlpMr53FdhEgmIpFG`, Supabase project `fcawktdjoxvahhgvkebx`, responsible DBA/app/security operators. Independently confirm effective production env and current deployment. | Target, source, secret scope, runner privilege or approvals differ. |
@@ -19,3 +21,5 @@
 Keep writes restricted. An application-only regression with an intact upgraded database may use the approved prior app deployment only after compatibility review. A database or evidence-integrity failure requires matched database/Auth/ledger/Storage metadata **and bytes** from the checkpoint; restore in isolation first, verify identity, RLS/grants, associations and hashes, then make an operator-approved recovery decision. No one should restore only one side of the database/object pair. Transactions or uploads after the checkpoint may be lost or orphaned; record and reconcile the interval before reopening. The local 48.4-second RC7 restore is not a production RTO/RPO.
 
 No maintenance window, production checkpoint, migration, deployment, traffic switch, customer invitation or restore was performed. Exact hosted command execution and production-target runner review are later authorization gates.
+
+The checkpoint operator must record two matching no-write observations, the database snapshot identity, object manifest hash, capture start/end times and the isolated restore verdict against one checkpoint ID. A missing observation or a failed evidence retrieval prevents Stage 5. On abort after Stage 5, do not independently roll back database or Storage; keep writes blocked, restore the matched pair to isolation, verify all protected invariants, and obtain release-owner approval for the actual recovery action. Production RTO/RPO and post-checkpoint write exposure remain unknown until the authorized rehearsal is measured.
