@@ -1,0 +1,12 @@
+{
+  "format": "d5o-rc16-auth-identity-boundary-v1",
+  "boundary": "original_restore",
+  "originalIdentityCount": 25,
+  "currentIdentityCount": 25,
+  "missingOriginalKeys": 0,
+  "newKeys": 0,
+  "changedOriginalRows": 0,
+  "changedColumns": {},
+  "ownershipProviderRelationshipChanges": 0,
+  "valuesOrIdentifiersDisclosed": false
+}

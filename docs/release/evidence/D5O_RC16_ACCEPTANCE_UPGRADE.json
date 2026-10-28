@@ -1,0 +1,174 @@
+{
+  "format": "d5o-rc8-ordered-upgrade-v1",
+  "mode": "actual_isolated_apply",
+  "starting_ledger": "177|20261021123923",
+  "results": [
+    {
+      "order": 212,
+      "filename": "20261023111641_d5o_service_approval_policy_phase1.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 213,
+      "filename": "20261023115306_d5o_phase1b_connected_service_approval.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 214,
+      "filename": "20261023123751_d5o_phase2a_organization_people.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 215,
+      "filename": "20261023140000_d5o_phase2b_tenant_onboarding.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 3
+    },
+    {
+      "order": 216,
+      "filename": "20261023141000_d5o_phase2b_onboarding_commands.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 217,
+      "filename": "20261023142000_d5o_phase2b_vendor_controls.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 218,
+      "filename": "20261023143000_d5o_phase2b_template_governance.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 219,
+      "filename": "20261023150000_d5o_phase2c_lifecycle_features.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 220,
+      "filename": "20261023151000_d5o_phase2c_discover_policy.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 221,
+      "filename": "20261023152000_d5o_phase2c_connected_work_gate.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 222,
+      "filename": "20261023153646_d5o_phase2d_phase_policies.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 223,
+      "filename": "20261023153752_d5o_phase2d_define_develop_guards.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 224,
+      "filename": "20261023180000_d5o_phase2f_operate_review_guard.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 225,
+      "filename": "20261023201553_phase2g_phase_status.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 226,
+      "filename": "20261024010000_d5o_service_sla_calendar_validation.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 227,
+      "filename": "20261024011000_d5o_service_job_stable_work_type_key.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 228,
+      "filename": "20261024012000_d5o_service_child_identity_guard.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 229,
+      "filename": "20261024105438_phase2hs_connected_design_capability_gate.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 230,
+      "filename": "20261024112500_phase2hs_overnight_crew_eligibility.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 231,
+      "filename": "20261024113000_phase2hs_connected_develop_capability_gate.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 232,
+      "filename": "20261024150000_phase2ht_workforce_qualification_expiry.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 233,
+      "filename": "20261024151000_phase2ht_current_worker_assignment.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 234,
+      "filename": "20261025010000_d5o_phase2htd_connected_service_capability_boundary.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 235,
+      "filename": "20261027085730_d5o_operate_acceptance_one_time_guard.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    },
+    {
+      "order": 236,
+      "filename": "20261027190000_d5o_field_fact_latest_permit_order.sql",
+      "result": "APPLIED_AND_RECORDED",
+      "ledger_statement_count": 1
+    }
+  ],
+  "all_25_succeeded": true,
+  "ending_ledger": "202|20261027190000",
+  "historical_table_count_changes": {},
+  "stable_historical_hash_matches": {
+    "auth_users": true,
+    "auth_identities": true,
+    "memberships": true,
+    "invitation_history": true,
+    "work_records": true,
+    "work_events": true,
+    "configuration_versions": true,
+    "customer_evidence": true,
+    "public_audit": true,
+    "storage_metadata": true
+  },
+  "starting_table_count": 259,
+  "ending_table_count": 278
+}

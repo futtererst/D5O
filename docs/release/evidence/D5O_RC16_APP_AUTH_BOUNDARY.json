@@ -1,0 +1,52 @@
+{
+  "format": "d5o-rc16-authenticated-app-boundary-v1",
+  "candidate": "ef9bf423680c94fbbb41c4d9b7a5a5070ce6a10c",
+  "runtime": "isolated production build",
+  "auth": "genuine fictional GoTrue session",
+  "results": [
+    {
+      "name": "workspace-directory",
+      "http": 200,
+      "contentType": "application/json",
+      "error": null,
+      "bodyKeys": [
+        "workspaces"
+      ]
+    },
+    {
+      "name": "platform-provisioning-boundary",
+      "http": 503,
+      "contentType": "text/plain; charset=utf-8",
+      "error": null,
+      "bodyKeys": []
+    },
+    {
+      "name": "fictional-design-target",
+      "http": 400,
+      "contentType": "application/json",
+      "error": "invalid_target",
+      "bodyKeys": [
+        "error"
+      ]
+    },
+    {
+      "name": "fictional-commercial-target",
+      "http": 400,
+      "contentType": "application/json",
+      "error": "invalid_command",
+      "bodyKeys": [
+        "error"
+      ]
+    },
+    {
+      "name": "fictional-purchase-target",
+      "http": 400,
+      "contentType": "application/json",
+      "error": "invalid_target",
+      "bodyKeys": [
+        "error"
+      ]
+    }
+  ],
+  "valuesOrTokensDisclosed": false
+}

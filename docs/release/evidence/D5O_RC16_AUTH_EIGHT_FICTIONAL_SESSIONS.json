@@ -1,0 +1,12 @@
+{
+  "format": "d5o-rc16-auth-identity-boundary-v1",
+  "boundary": "eight_fictional_sessions",
+  "originalIdentityCount": 25,
+  "currentIdentityCount": 33,
+  "missingOriginalKeys": 0,
+  "newKeys": 8,
+  "changedOriginalRows": 0,
+  "changedColumns": {},
+  "ownershipProviderRelationshipChanges": 0,
+  "valuesOrIdentifiersDisclosed": false
+}
