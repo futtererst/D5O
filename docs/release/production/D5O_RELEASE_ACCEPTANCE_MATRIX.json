@@ -1,0 +1,30 @@
+{
+  "format": "d5o-production-release-acceptance-v1",
+  "scope": "vendor-controlled additional customers; no public tenant provisioning; server-mediated private evidence",
+  "selectedApplicationCommit": "4c8050f3a643bb0e92565fcbd8e1d5df3744d9ea",
+  "applicationAncestor": "6f0bbc8d9ba916c75bf2149a8eaef6e667896072",
+  "selectedApplicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "candidateCorrection": "exact hosted /work/invitation route; proxy guard 18/18, TypeScript, targeted ESLint and production build passed; disposable employee acceptance not completed",
+  "production": {"supabaseProject": "fcawktdjoxvahhgvkebx", "database": "postgres", "postgresVersion": "17.6", "ledgerCount": 177, "vercelProject": "prj_HF8KhxUFvONQlpMr53FdhEgmIpFG", "deployedSource": "64487f8ec34da78325b0d87958ba5e29c46dd5fc", "readOnly": true},
+  "capabilities": [
+    {"id": "vendor_onboarding", "status": "LOCAL_PASS", "evidence": "../D5O_RC18_RELEASE_DECISION.md; ../D5O_RC20_RELEASE_DECISION.md", "hostedRoute": "/api/d5o-platform/provisioning"},
+    {"id": "customer_admin_configuration_work", "status": "LOCAL_PASS", "evidence": "../D5O_RC18_RELEASE_DECISION.md; ../evidence/D5O_RC18_HOSTED_ONBOARDING.json", "hostedRoute": "/work/onboarding; /api/d5o-hosted/work"},
+    {"id": "employee_invitation", "status": "CORRECTION_BUILT_END_TO_END_OPEN", "evidence": "../D5O_RC20_MY_WORK_BROWSER.md; ../../../scripts/rc18_verify_hosted_proxy.mjs", "hostedRoute": "/api/d5o-hosted/org-admin; /work/invitation; /api/d5o-hosted/org-invitation-accept"},
+    {"id": "my_work_browser_decision", "status": "NOT_YET_PASS", "evidence": "../D5O_RC20_MY_WORK_BROWSER.md", "hostedRoute": "/work/customer/{workspace}?work={id}&task={id}"},
+    {"id": "design_and_develop_authority", "status": "NOT_EXACT_CANDIDATE_QUALIFIED", "evidence": "../D5O_RC14_RELEASE_DECISION.md; ../D5O_RC20_ACCEPTANCE_COVERAGE.md"},
+    {"id": "field_schedule_permit_execution", "status": "NOT_EXACT_CANDIDATE_QUALIFIED", "evidence": "../D5O_RC20_ACCEPTANCE_COVERAGE.md"},
+    {"id": "deploy_evidence_completion_customer_acceptance", "status": "NOT_EXACT_CANDIDATE_QUALIFIED", "evidence": "../D5O_RC20_ACCEPTANCE_COVERAGE.md"},
+    {"id": "scope_change_hold_and_reauthorization", "status": "ANCESTOR_PASS_EXACT_CANDIDATE_OPEN", "evidence": "../D5O_RC4B1_RELEASE_DECISION.md"},
+    {"id": "operate_support_active", "status": "NOT_EXACT_CANDIDATE_QUALIFIED", "evidence": "../D5O_RC20_ACCEPTANCE_COVERAGE.md"},
+    {"id": "connected_service_child_work", "status": "ANCESTOR_PASS_EXACT_CANDIDATE_OPEN", "evidence": "../D5O_RC3C_FINAL_QUALIFICATION.md"},
+    {"id": "finance_follow_up", "status": "NOT_EXACT_CANDIDATE_QUALIFIED", "evidence": "../D5O_RC20_ACCEPTANCE_COVERAGE.md"},
+    {"id": "tenant_role_replay_security", "status": "PARTIAL_LOCAL", "evidence": "../D5O_RC19_RELEASE_DECISION.md; ../D5O_RC20_RELEASE_DECISION.md"},
+    {"id": "server_mediated_private_evidence", "status": "PARTIAL_LOCAL", "evidence": "../D5O_RC13_EVIDENCE_ACCESS_CONTRACT.md"},
+    {"id": "historical_177_to_202_preservation", "status": "LOCAL_PASS", "evidence": "../D5O_RC20_HISTORICAL_COMPATIBILITY.md; ../evidence/D5O_RC8_ORDERED_UPGRADE.json"},
+    {"id": "coordinated_database_storage_recovery", "status": "OPEN", "evidence": "../D5O_RC9_CUTOVER_RECOVERY_PLAN.md"},
+    {"id": "actual_hosted_candidate_and_readiness", "status": "OPEN", "evidence": "D5O_HOSTED_QUALIFICATION.md"}
+  ],
+  "localQualification": {"firstExtendedRun": {"passed": 21, "failed": 3, "cleanupVerified": true, "employeeFailure": "authenticated invitation page blocked by hosted proxy before acceptance", "twoOnboardingFailures": "browser timeouts; no passing evidence"}, "afterCorrection": {"proxyChecks": 18, "proxyFailures": 0, "typecheck": "PASS with incremental output disabled", "targetedEslint": "PASS", "productionBuild": "PASS", "employeeEndToEnd": "NOT_VERIFIED: local Docker stalled during bounded rerun", "disposableCleanup": "PASS: both interrupted project labels, 16 containers, three volumes, two networks and two verified temporary directories removed; no residual project containers"}},
+  "productionWritesPerformed": false,
+  "cutoverAuthorized": false
+}

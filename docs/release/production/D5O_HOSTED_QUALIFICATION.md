@@ -1,0 +1,16 @@
+# Hosted release qualification
+
+**Actual hosted candidate: NOT QUALIFIED.** Read-only Vercel metadata on 2026-10-28 identifies project `prj_HF8KhxUFvONQlpMr53FdhEgmIpFG` (`d5o-system-of-work`) and latest READY production deployment `dpl_DYXNRK2PyF4UUUKqpPqNHVYhVKXm` at `64487f8ec34da78325b0d87958ba5e29c46dd5fc`. This differs from the selected release application. A local production-mode Next build and loopback GoTrue/Supabase rehearsal are **local evidence**, not a Vercel deployment test.
+
+Read-only production environment **name and scope** inventory includes `D5O_COMMAND_RUNTIME`, `D5O_HOSTED_ENABLED`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `RYBEXOS_RUNTIME_MODE`, `RYBEXOS_AUTH_MODE`, `RYBEXOS_DATA_SOURCE`, `D5O_SOURCE_SHA`, and approved-test-email names. It also shows a Preview-scoped Supabase URL/key, Auth and runtime names; **their values and isolation have not been established**. A Preview URL must never be presumed independent of production. No secret values were read or copied into this report.
+
+The same inventory lacks `RYBEXOS_BILLING_V2_PERSISTENCE`, `RYBEXOS_FIELD_ISSUE_PERSISTENCE`, `RYBEXOS_CLOSEOUT_FINAL_BILLING_PERSISTENCE`, `RYBEXOS_SCANNER_MODE` and `RYBEXOS_SCANNER_URL`. The current [production readiness code](../../../lib/d5o/security/production-config.ts) treats the three persistence modes and an implemented scanner as blockers. [RC1 diagnosis](../D5O_RC1_PRODUCTION_READINESS.md) found corresponding production schema and service gaps. No environment values were changed. Do not set these names without proving their database and scanner contracts, and do not weaken readiness solely for HTTP 200.
+
+## Minimal hosted acceptance required before release authorization
+
+1. Obtain explicit authorization for an isolated hosted qualification target and verify its database/Auth/Storage project is nonproduction before any write. Reuse the Vercel project when isolation and credential scopes can be proved; do not purchase infrastructure without approval.
+2. Deploy the exact candidate to that isolated target. Record Vercel deployment ID, source SHA, build, all effective runtime-mode identities, Supabase project reference, Auth redirect/email configuration and private Storage binding without disclosing secrets.
+3. Execute vendor-only provisioning, administrator invitation acceptance, employee invitation/My Work link, representative Design-to-Operate command, private evidence upload/download, cross-tenant and removed-member denial. Verify no service key reaches the browser.
+4. Qualify production readiness and operational ownership: health, billing/field-issue/closeout persistence where the global guard requires it, scanner clean/infected/error/timeout behavior, SMTP delivery, actual spending-delegate prerequisite, logs/alerts/on-call and rollback decision authority.
+
+**Stop** if the hosted target resolves to production data during destructive tests; the deployed SHA or Supabase project differs; an environment variable is accepted but its effective runtime mode is unknown; Auth redirect or email delivery is unproven; a private object is exposed; or a security denial changes protected state. No hosted deployment, share link, configuration edit or purchase was made in this package.
