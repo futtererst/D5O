@@ -1,0 +1,1666 @@
+{
+  "format": "d5o-rc18-active-catalog-comparison-v1",
+  "sources": [
+    "D5O_RC18_CLEAN_CATALOG.json",
+    "D5O_RC18_HISTORICAL_CATALOG.json"
+  ],
+  "counts": {
+    "function": {
+      "clean": 316,
+      "historical": 307,
+      "missingInHistorical": 10,
+      "historicalOnly": 1,
+      "sharedDiffering": 242
+    },
+    "relation": {
+      "clean": 167,
+      "historical": 168,
+      "missingInHistorical": 0,
+      "historicalOnly": 1,
+      "sharedDiffering": 0
+    },
+    "policy": {
+      "clean": 4,
+      "historical": 4,
+      "missingInHistorical": 0,
+      "historicalOnly": 0,
+      "sharedDiffering": 4
+    },
+    "constraint": {
+      "clean": 883,
+      "historical": 889,
+      "missingInHistorical": 0,
+      "historicalOnly": 6,
+      "sharedDiffering": 149
+    }
+  },
+  "activeRpc": {
+    "d5o_design_cost_my_review_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_design_cost_my_review_v1(p_workspace_key text, p_presentation_id text, p_claim_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_design_internal_rate_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_design_internal_rate_command_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_design_internal_rate_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_design_internal_rate_read_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_field_labor_my_review_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_field_labor_my_review_v1(p_workspace_key text, p_presentation_id text, p_authority_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_graybar_actions_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_graybar_actions_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_graybar_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_graybar_document_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_graybar_job_cost_actions_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_graybar_job_cost_actions_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_graybar_job_cost_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_graybar_job_cost_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_graybar_revision integer, p_finance_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_graybar_job_cost_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_graybar_job_cost_read_v1(p_workspace_key text, p_presentation_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_graybar_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_graybar_register_document_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_accept_supported_asset_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_accept_supported_asset_v1(p_workspace_key text, p_parent_presentation_id text, p_asset_id text, p_documentation_source text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_operate_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_actor_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_actor_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_admin_identity_finish_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_admin_identity_finish_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_command_id text, p_status text, p_provider_user_id uuid, p_provider_message text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_admin_identity_intent_v2": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_admin_identity_intent_v2(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_action text, p_target_email text, p_requested_role text, p_reason text, p_command_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_assign_support_document_supplier_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_assign_support_document_supplier_v1(p_workspace_key text, p_presentation_id text, p_turnover_id text, p_action text, p_supervisor_email text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_deploy_revision integer, p_expected_operate_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_bind_worker_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_bind_worker_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid, p_worker_email text, p_person text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_capability_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_capability_read_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_configuration_admin_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_configuration_admin_read_v1(p_workspace_key text)",
+          "fields": [
+            "service_execute"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_configuration_history_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_configuration_history_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_configuration_inventory_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_configuration_inventory_v1(p_workspace_key text)",
+          "fields": [
+            "service_execute"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_connected_service_approval_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_connected_service_approval_read_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_correct_work_title_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_correct_work_title_v1(p_workspace_key text, p_presentation_id text, p_command_id text, p_expected_record_version integer, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_expected_title text, p_new_title text, p_reason text, p_actor_user_id uuid, p_membership_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_create_connected_work_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_create_connected_work_v1(p_workspace_key text, p_command_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_configuration_version_id uuid, p_work_type_key text, p_title text, p_customer text, p_site text, p_owner text, p_actor_user_id uuid, p_membership_id uuid, p_initial_discovery jsonb)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_create_related_work_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_create_related_work_v1(p_workspace_key text, p_command_id text, p_action text, p_parent_presentation_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_parent_after jsonb, p_child jsonb, p_actor_user_id uuid, p_membership_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_create_work_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_create_work_v1(p_workspace_key text, p_command_id text, p_configuration_version_id uuid, p_work_type_key text, p_title text)",
+          "fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_crew_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_crew_command_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_customer_decision_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_customer_decision_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_offer_revision integer, p_recipient text, p_method text, p_due_date text, p_response_status text, p_received_at text, p_details text, p_source_reference text, p_next_action text, p_follow_up_due text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_customer_decision_evidence_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_customer_decision_evidence_read_v1(p_workspace_key text, p_presentation_id text, p_evidence_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_define_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_define_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_review_role text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_design_cost_actions_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_design_cost_actions_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_design_cost_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_design_cost_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_design_cost_evidence_read_v2": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_design_cost_evidence_read_v2(p_workspace_key text, p_presentation_id text, p_claim_id uuid, p_actor_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_design_cost_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_design_cost_read_v1(p_workspace_key text, p_presentation_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_design_document_evidence_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_design_handoff_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_design_spend_actions_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_design_spend_actions_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_design_spend_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_design_spend_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_design_spend_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_design_spend_read_v1(p_workspace_key text, p_presentation_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_estimate_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_estimate_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_due_date text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_estimate_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_field_change_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_field_change_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_field_evidence_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_field_evidence_command_v1(p_workspace_key text, p_presentation_id text, p_package_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_design_revision integer, p_expected_schedule_revision integer, p_expected_deploy_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_field_fact_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_field_fact_command_v1(p_workspace_key text, p_presentation_id text, p_package_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_design_revision integer, p_expected_schedule_revision integer, p_expected_deploy_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_field_start_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_field_start_command_v1(p_workspace_key text, p_presentation_id text, p_package_id text, p_action text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_design_revision integer, p_expected_schedule_revision integer, p_expected_deploy_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_job_finance_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_job_finance_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_job_finance_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_job_finance_read_v1(p_workspace_key text, p_presentation_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_link_existing_asset_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_link_existing_asset_v1(p_workspace_key text, p_target_presentation_id text, p_owner_presentation_id text, p_asset_id text, p_note text, p_command_id text, p_expected_source_revision bigint, p_expected_target_deploy_revision integer, p_expected_target_operate_revision integer, p_expected_owner_operate_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_list_work_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_list_work_v1(p_workspace_key text, p_limit integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_load_work_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_load_work_v1(p_workspace_key text, p_work_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_offer_review_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_offer_review_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_due_date text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_offer_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_offer_revision_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_offer_revision_command_v1(p_workspace_key text, p_presentation_id text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_offer_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_operate_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_operate_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_source_revision bigint, p_expected_deploy_revision integer, p_expected_operate_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_org_admin_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_org_admin_command_v1(p_workspace_key text, p_action text, p_subject_id uuid, p_input jsonb, p_expected_revision integer, p_reason text, p_command_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_org_invitation_request_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_org_invitation_request_v1(p_workspace_key text, p_email text, p_role text, p_reason text, p_command_id text, p_expires_at timestamp with time zone)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_org_invitation_revoke_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_org_invitation_revoke_v1(p_workspace_key text, p_command_id text, p_reason text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_phase_status_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_phase_status_read_v1(p_workspace_key text, p_presentation_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_pricing_policy_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_pricing_policy_command_v1(p_workspace_key text, p_action text, p_policy jsonb, p_policy_id text, p_policy_version integer, p_command_id text, p_expected_work_revision bigint)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_private_evidence_index_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_private_evidence_index_v1(p_workspace_key text, p_offset integer, p_limit integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_prototype_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_prototype_read_v1(p_workspace_key text, p_state_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_prototype_save_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_prototype_save_v1(p_workspace_key text, p_state_key text, p_expected_revision bigint, p_state jsonb)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_publish_initial_configuration_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_publish_initial_configuration_v1(p_workspace_key text, p_command_id text, p_manifest jsonb, p_work_types jsonb, p_create_roles jsonb, p_routes jsonb, p_reason text)",
+          "fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_pursuit_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_register_design_cost_evidence_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_register_design_cost_evidence_v1(p_workspace_key text, p_presentation_id text, p_claim_id uuid, p_evidence_id uuid, p_checksum_sha256 text, p_filename text, p_uploader_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_register_design_document_evidence_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_role_actions_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_rom_design_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_rom_design_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_rom_design_read_v1(p_workspace_key text, p_presentation_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_server_worker_save_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_server_worker_save_v1(p_workspace_key text, p_state_key text, p_expected_revision bigint, p_state jsonb, p_actor_user_id uuid, p_membership_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_service_actions_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_service_basis_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_service_billing_terms_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_service_billing_terms_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_design_revision integer, p_expected_deploy_revision integer, p_expected_terms_revision integer, p_expected_source_digest text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_service_billing_terms_evidence_list_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_service_billing_terms_evidence_list_v1(p_workspace_key text, p_presentation_id text, p_request_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_service_cost_actions_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_service_cost_actions_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_service_cost_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_service_cost_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_cycle text, p_expected_child_work_id text, p_expected_source_digest text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_service_cost_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_service_cost_read_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_service_finance_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_service_finance_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_service_invoice_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_service_invoice_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_action text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_design_revision integer, p_expected_deploy_revision integer, p_expected_finance_revision integer, p_expected_basis_digest text, p_expected_invoice_revision integer, p_expected_ledger_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_service_invoice_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_service_job_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_service_job_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_due_date date, p_owner text, p_command_id text, p_expected_work_revision bigint, p_expected_catalog_revision bigint, p_expected_operate_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_service_pricing_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_service_pricing_command_v1(p_workspace_key text, p_parent_presentation_id text, p_request_id text, p_action text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_service_return_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_service_return_command_v1(p_workspace_key text, p_parent_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_work_revision bigint, p_expected_operate_revision integer, p_expected_child_deploy_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_solution_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_solution_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_due_date text, p_reason text, p_command_id text, p_expected_source_revision bigint, p_expected_decision_revision integer, p_solution_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_support_document_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_support_document_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_turnover_id text, p_kind text, p_evidence_id uuid, p_decision text, p_note text, p_command_id text, p_expected_source_revision bigint, p_expected_deploy_revision integer, p_expected_operate_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_work_queue_identity_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_worker_access_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_worker_access_v1(p_workspace_key text, p_admin_user_id uuid, p_admin_membership_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_worker_binding_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_worker_binding_v1(p_workspace_key text, p_actor_user_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_worker_schedule_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_worker_schedule_read_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_workforce_impact_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_hosted_workforce_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_workforce_read_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_hosted_workspaces_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_hosted_workspaces_v1()",
+          "fields": [
+            "body_md5",
+            "definition_md5",
+            "service_execute"
+          ]
+        }
+      ]
+    },
+    "d5o_internal_design_rate_my_review_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_internal_design_rate_my_review_v1(p_workspace_key text, p_rate_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_labor_authority_actions_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_labor_authority_actions_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_labor_authority_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_labor_authority_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_labor_authority_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_labor_authority_read_v1(p_workspace_key text, p_presentation_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_outlook_assessment_my_review_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_outlook_assessment_my_review_v1(p_workspace_key text, p_presentation_id text, p_assessment_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_purchase_authority_actions_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_purchase_authority_actions_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_purchase_authority_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_purchase_authority_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_purchase_authority_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_purchase_authority_read_v1(p_workspace_key text, p_presentation_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_purchase_cancel_unsent_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_purchase_order_my_review_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_purchase_order_my_review_v1(p_workspace_key text, p_presentation_id text, p_order_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_schedule_labor_hours_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_schedule_labor_hours_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_spending_delegate_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_spending_delegate_command_v1(p_workspace_key text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_spending_delegate_my_review_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_spending_delegate_my_review_v1(p_workspace_key text, p_presentation_id text, p_category text, p_subject_id uuid)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_spending_delegate_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_spending_delegate_read_v1(p_workspace_key text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_subcontract_actions_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_subcontract_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_subcontract_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_input jsonb, p_command_id text, p_expected_revision integer, p_expected_source_digest text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_subcontract_cost_command_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_subcontract_cost_command_v1(p_workspace_key text, p_presentation_id text, p_action text, p_subject_id uuid, p_command_id text, p_expected_subcontract_revision integer, p_expected_finance_revision integer)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    },
+    "d5o_subcontract_my_review_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": []
+    },
+    "d5o_subcontract_read_v1": {
+      "cleanSignatures": 1,
+      "historicalSignatures": 1,
+      "missingSignatures": [],
+      "historicalOnlySignatures": [],
+      "sharedDifferences": [
+        {
+          "signature": "public.d5o_subcontract_read_v1(p_workspace_key text, p_presentation_id text)",
+          "fields": [
+            "body_md5",
+            "definition_md5"
+          ]
+        }
+      ]
+    }
+  },
+  "securityExceptions": [
+    {
+      "signature": "public.d5o_platform_tenant_directory_v1()",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_service_approval_command_v1(p_workspace_key text, p_work_id uuid, p_action text, p_amount_minor bigint, p_currency text, p_command_id text)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_publish_initial_configuration_v1(p_workspace_key text, p_command_id text, p_manifest jsonb, p_work_types jsonb, p_create_roles jsonb, p_routes jsonb, p_reason text)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_configure_handoff_route_v1(p_workspace_key text, p_version uuid, p_route text, p_role text, p_expected_revision integer, p_command_id text)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_inventory_v1(p_workspace_key text)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_actor_v1(p_workspace_key text)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_create_work_core_v1(p_workspace_key text, p_command_id text, p_configuration_version_id uuid, p_work_type_key text, p_title text)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_admin_read_v1(p_workspace_key text)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_history_v1(p_workspace_key text)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_list_work_v1(p_workspace_key text, p_limit integer)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_handoff_configuration_v1(p_workspace_key text)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_admin_receipt_v1(p_workspace_key text, p_command_id text)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_load_work_v1(p_workspace_key text, p_work_id uuid)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_handoff_configuration_command_v1(p_workspace_key text, p_action text, p_version uuid, p_route text, p_role text, p_expected_revision integer, p_command_id text)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_handoff_routes_v1(p_workspace_key text, p_version uuid)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_workspaces_v1()",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_configuration_admin_command_v1(p_workspace_key text, p_action text, p_version uuid, p_expected_active uuid, p_expected_revision integer, p_input jsonb, p_reason text, p_command_id text)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    },
+    {
+      "signature": "public.d5o_hosted_create_work_v1(p_workspace_key text, p_command_id text, p_configuration_version_id uuid, p_work_type_key text, p_title text)",
+      "field": "service_execute",
+      "clean": false,
+      "historical": true
+    }
+  ],
+  "rlsExceptions": [],
+  "summary": {
+    "activeRpcNames": 112,
+    "activeRpcNamesMissingInHistorical": 0,
+    "activeRpcNamesWithSignatureOrFieldDifferences": 90,
+    "securityExceptions": 18,
+    "relationRlsOrGrantExceptions": 0
+  }
+}

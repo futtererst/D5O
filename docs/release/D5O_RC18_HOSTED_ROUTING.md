@@ -1,0 +1,9 @@
+# RC18 hosted routing
+
+The production-mode proxy returned HTTP 503 before the existing vendor provisioning handler could authenticate or call its vendor-only RPC. It also blocked the existing initial invitation, onboarding, customer workspace and connected Work pages. The `/platform-admin` form and `/work` links therefore led to blocked routes. RC17 identified the historical-pilot allowlist as the cause, not a database provisioning defect.
+
+`proxy.ts` now admits only the existing exact provisioning and initial-admin-accept API paths and the required named customer pages/subtree. Every admitted route still passes the proxy's Supabase `getUser` check. The handlers and pages retain vendor authority, membership, tenant, entitlement and workspace checks. No database command, public tenant signup, privileged runtime selection or legacy shared-Auth route was added. Direct user Storage SELECT policy remains absent under the accepted server-mediated evidence contract.
+
+The opt-in `D5O_RC18_HOSTED_REHEARSAL=1` runner builds and starts the application with `RYBEXOS_RUNTIME_MODE=production`, `D5O_COMMAND_RUNTIME=rehearsal`, real local GoTrue and an approved loopback origin. Its default prior pilot mode is unchanged. The first run reached the vendor page but the random app port failed the existing rehearsal-origin guard; the runner was corrected to the allowed `127.0.0.1:61643` origin. That first run is retained as a failed result, not counted as authorization evidence.
+
+The route-boundary test passed 17/17 cases, including unauthenticated 401/redirect on newly admitted routes and continued 503 for legacy/unlisted routes. Targeted ESLint, TypeScript and the production Webpack build passed. The complete local hosted onboarding rehearsal passed 23/23 checks. See `evidence/D5O_RC18_HOSTED_FIRST_RUN.json` and `evidence/D5O_RC18_HOSTED_ONBOARDING.json`.

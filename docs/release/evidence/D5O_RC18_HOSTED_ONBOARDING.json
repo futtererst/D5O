@@ -1,0 +1,111 @@
+{
+  "format": "d5o-rc18-hosted-onboarding-v1",
+  "runtimeMode": "production_rehearsal",
+  "candidateSource": "6f0bbc8d9ba916c75bf2149a8eaef6e667896072",
+  "migrationLedger": "clean 236 verified by read-only query",
+  "passed": 23,
+  "failed": 0,
+  "setupError": false,
+  "cleanupVerified": true,
+  "tests": [
+    {
+      "name": "vendor sees validated immutable template directory",
+      "status": "PASS"
+    },
+    {
+      "name": "vendor provisions A and B through one authoritative command",
+      "status": "PASS"
+    },
+    {
+      "name": "non-vendor and customer cannot provision or mutate template",
+      "status": "PASS"
+    },
+    {
+      "name": "replay, collision and duplicate tenant key preserve one result",
+      "status": "PASS"
+    },
+    {
+      "name": "concurrent identical provisioning creates one tenant",
+      "status": "PASS"
+    },
+    {
+      "name": "provider failure remains inactive and vendor recovery replaces only the offer",
+      "status": "PASS"
+    },
+    {
+      "name": "expired initial invitation recovers without a duplicate tenant",
+      "status": "PASS"
+    },
+    {
+      "name": "governed template version is validated, published, immutable and retired",
+      "status": "PASS"
+    },
+    {
+      "name": "initial offers are tenant-bound and accepted by exact recipients",
+      "status": "PASS"
+    },
+    {
+      "name": "incomplete tenants cannot create Work or activate",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_a_test publishes its own USD 10000 threshold",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_b_test publishes its own USD 25000 threshold",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_a_test confirms readiness and vendor activates",
+      "status": "PASS"
+    },
+    {
+      "name": "tenant_b_test confirms readiness and vendor activates",
+      "status": "PASS"
+    },
+    {
+      "name": "vendor grants and flags connected Work independently",
+      "status": "PASS"
+    },
+    {
+      "name": "Discover policy publication controls connected Work creation",
+      "status": "PASS"
+    },
+    {
+      "name": "direct RPC enforces entitlement and Discover policy",
+      "status": "PASS"
+    },
+    {
+      "name": "vendor suspension blocks existing sessions and direct RPC; reactivation restores only prior rights",
+      "status": "PASS"
+    },
+    {
+      "name": "same Work and approval commands apply distinct tenant policies",
+      "status": "PASS"
+    },
+    {
+      "name": "audit and cross-tenant configuration access remain isolated",
+      "status": "PASS"
+    },
+    {
+      "name": "suspended initial administrator immediately loses protected access",
+      "status": "PASS"
+    },
+    {
+      "name": "authenticated vendor and customer onboarding pages render",
+      "status": "PASS"
+    },
+    {
+      "name": "audited rollback creates a new version and preserves historical pins",
+      "status": "PASS"
+    }
+  ],
+  "browserVendorProvisioning": "executed",
+  "customerAdminVendorApiDenial": "executed",
+  "customerConfigurationPublication": "executed",
+  "connectedWorkCreation": "executed",
+  "delivery": "local approved-test handling only",
+  "historicalDatabaseUsed": false,
+  "productionModified": false
+}

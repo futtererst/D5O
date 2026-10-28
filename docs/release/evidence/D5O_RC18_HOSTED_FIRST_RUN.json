@@ -1,0 +1,15 @@
+{
+  "format": "d5o-rc18-hosted-first-run-v1",
+  "runtime": "production_rehearsal",
+  "passed": 21,
+  "failed": 2,
+  "setupError": false,
+  "cleanupVerified": true,
+  "failedCases": [
+    "authenticated vendor and customer onboarding pages render",
+    "audited rollback creates a new version and preserves historical pins"
+  ],
+  "classification": "test_harness_origin_mismatch; second failure depends on unfinished browser publication",
+  "correction": "use existing rehearsal origin 127.0.0.1:61643",
+  "productionModified": false
+}

@@ -1,0 +1,7 @@
+# RC18 security results
+
+The newly admitted hosted routes retain proxy authentication. The vendor provisioning handler calls the existing platform-admin RPC, which rejects non-vendor actors. The initial-admin acceptance handler requires the exact invitation recipient and tenant. Customer workspace pages use existing membership/entitlement checks and continue rejecting pilot keys where specified. No client-controlled runtime mode or direct Storage policy was added.
+
+The 17-case proxy test verified anonymous denial and continued legacy-route blocking. The 23-case local onboarding suite verified customer-admin vendor denial, two-tenant configuration isolation, suspension/revocation effects, entitlement and policy enforcement, and replay/collision behavior. These are local synthetic results, not production security claims. The catalog comparison found no relation-level RLS or anon/authenticated SELECT difference in its scoped `d5o_hosted` inventory; it did find four differing policy-definition hashes and 18 service-role EXECUTE differences. These must be dispositioned before promotion. The historical restored object bytes and Storage associations passed offline integrity checks; RC18 did not repeat server-mediated HTTP evidence delivery.
+
+Stop on an unexplained active function or policy difference affecting authority, any tenant leakage, privileged route exposure, historical-row mutation, private-object mismatch or loss of accepted server-mediated evidence behavior.
