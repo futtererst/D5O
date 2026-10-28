@@ -1,0 +1,10 @@
+{
+  "format": "d5o-rc13-evidence-contract-decision-v1",
+  "decision": "ACCEPTED",
+  "source": "explicit human reply to RC13 contract question",
+  "accepted_model": "authenticated application route with tenant, Work, role and current-membership checks before server-only private Storage retrieval",
+  "direct_user_storage_select_required": false,
+  "direct_user_storage_observation": "HTTP 400 without bytes under RLS with zero SELECT policies",
+  "production_modified": false,
+  "other_product_contract_decision": "delivery-change versus post-handover connected-service acceptance remains DECISION REQUIRED"
+}
