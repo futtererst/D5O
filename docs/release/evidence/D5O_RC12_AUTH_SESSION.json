@@ -1,0 +1,33 @@
+{
+  "format": "d5o-rc12-gotrue-session-v1",
+  "auth_image": "public.ecr.aws/supabase/gotrue:v2.195.0",
+  "auth_provider_ledger": 82,
+  "auth_provider_ledger_digest": "759eb14d85b5159366a5a1f1ffb47c18",
+  "isolated_database": "177-to-202 production-derived historical restore",
+  "actors": [
+    {
+      "actor": "rybex",
+      "role": "project_manager",
+      "signup_http": 200,
+      "login_http": 200,
+      "user_http": 200,
+      "jwt_signature_valid": true,
+      "jwt_subject_matches_user": true,
+      "jwt_role": "authenticated",
+      "membership_count": 1
+    },
+    {
+      "actor": "rotork",
+      "role": "read_only_auditor",
+      "signup_http": 200,
+      "login_http": 200,
+      "user_http": 200,
+      "jwt_signature_valid": true,
+      "jwt_subject_matches_user": true,
+      "jwt_role": "authenticated",
+      "membership_count": 1
+    }
+  ],
+  "historical_customer_credentials_used": false,
+  "production_modified": false
+}

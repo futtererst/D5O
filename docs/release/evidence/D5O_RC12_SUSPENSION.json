@@ -1,0 +1,11 @@
+{
+  "format": "d5o-rc12-suspension-real-auth-v1",
+  "auth": "actual GoTrue browser session",
+  "rybex_active_http": 200,
+  "membership_suspended_existing_session_http": 403,
+  "synthetic_tenant_active_http": 200,
+  "synthetic_tenant_disabled_http": 403,
+  "positive_control_present": true,
+  "denials_pass": true,
+  "historical_workspace_mutated": false
+}

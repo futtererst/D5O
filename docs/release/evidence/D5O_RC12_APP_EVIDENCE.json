@@ -1,0 +1,14 @@
+{
+  "format": "d5o-rc12-app-evidence-real-auth-v1",
+  "application_commit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "auth": "actual GoTrue browser session",
+  "index_http": 200,
+  "visible_entries": 16,
+  "download_http": 200,
+  "download_sha256_matches_receipt": true,
+  "wrong_work_http": 403,
+  "anonymous_http": 401,
+  "removed_membership_existing_session_http": 403,
+  "service_role_only_on_server": true,
+  "private_bytes_written": false
+}

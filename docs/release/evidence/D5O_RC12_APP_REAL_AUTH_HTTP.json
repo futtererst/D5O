@@ -1,0 +1,147 @@
+{
+  "format": "d5o-rc12-production-build-real-auth-http-v1",
+  "application_commit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "runtime": "production Next.js build, isolated rehearsal binding",
+  "database": "production-derived historical upgrade, ledger 202",
+  "auth": "actual local GoTrue v2.195.0, fictional users",
+  "operations": [
+    {
+      "actor": "rybex",
+      "route": "browser sign-in via actual GoTrue",
+      "http": 200,
+      "expected": 200,
+      "state": "landed /work",
+      "passed": true
+    },
+    {
+      "actor": "rybex",
+      "route": "own Work list",
+      "http": 200,
+      "expected": 200,
+      "state": "historical Work unchanged",
+      "passed": true
+    },
+    {
+      "actor": "rybex",
+      "route": "cross-tenant Work list",
+      "http": 403,
+      "expected": 403,
+      "state": "historical Work unchanged",
+      "passed": true
+    },
+    {
+      "actor": "rotork",
+      "route": "browser sign-in via actual GoTrue",
+      "http": 200,
+      "expected": 200,
+      "state": "landed /work",
+      "passed": true
+    },
+    {
+      "actor": "rotork",
+      "route": "own Work list",
+      "http": 200,
+      "expected": 200,
+      "state": "historical Work unchanged",
+      "passed": true
+    },
+    {
+      "actor": "rotork",
+      "route": "cross-tenant Work list",
+      "http": 403,
+      "expected": 403,
+      "state": "historical Work unchanged",
+      "passed": true
+    },
+    {
+      "actor": "rybex",
+      "route": "admin configuration denied to project manager",
+      "http": 403,
+      "expected": 403,
+      "state": "read-only",
+      "passed": true
+    },
+    {
+      "actor": "rybex",
+      "route": "private evidence index",
+      "http": 200,
+      "expected": 200,
+      "state": "read-only",
+      "passed": true
+    },
+    {
+      "actor": "rotork",
+      "route": "cross-tenant private evidence index",
+      "http": 403,
+      "expected": 403,
+      "state": "read-only",
+      "passed": true
+    },
+    {
+      "actor": "rybex",
+      "route": "create synthetic Work",
+      "http": 201,
+      "expected": 201,
+      "state": "synthetic count 1->2",
+      "passed": true
+    },
+    {
+      "actor": "rybex",
+      "route": "exact replay",
+      "http": 201,
+      "expected": 201,
+      "state": "synthetic count 2",
+      "passed": true
+    },
+    {
+      "actor": "rybex",
+      "route": "conflicting replay",
+      "http": 409,
+      "expected": 409,
+      "state": "synthetic count 2",
+      "passed": true
+    },
+    {
+      "actor": "rybex",
+      "route": "incorrect configuration version",
+      "http": 422,
+      "expected": 422,
+      "state": "synthetic count 2",
+      "passed": true
+    },
+    {
+      "actor": "rotork",
+      "route": "auditor create Work",
+      "http": 403,
+      "expected": 403,
+      "state": "synthetic count 2",
+      "passed": true
+    },
+    {
+      "actor": "rybex",
+      "route": "forged Work ID",
+      "http": 404,
+      "expected": 404,
+      "state": "read-only",
+      "passed": true
+    },
+    {
+      "actor": "rybex",
+      "route": "revoked membership with existing GoTrue session",
+      "http": 403,
+      "expected": 403,
+      "state": "synthetic count 2",
+      "passed": true
+    },
+    {
+      "actor": "anonymous",
+      "route": "Work list",
+      "http": 401,
+      "expected": 401,
+      "state": "read-only",
+      "passed": true
+    }
+  ],
+  "all_expected_results": true,
+  "historical_customer_work_modified": false
+}

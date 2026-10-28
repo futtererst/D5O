@@ -21,6 +21,15 @@ for(let i=0;i<30;i++) {
   await new Promise(r=>setTimeout(r,1000));
 }
 if(!ready) throw Error("recovery PostgreSQL did not become ready");
+// The image can report ready before its one-time initialization restart.
+await new Promise(r=>setTimeout(r,6000));
+let stable=false;
+for(let i=0;i<15;i++){
+  const p=spawnSync("docker",["exec",container,"psql","-U","supabase_admin","-d","postgres","-At","-c","select 1"],{encoding:"utf8"});
+  if(p.status===0){stable=true;break}
+  await new Promise(r=>setTimeout(r,1000));
+}
+if(!stable) throw Error("recovery PostgreSQL did not stabilize");
 const inspect=JSON.parse(run("docker",["inspect",container]))[0];
 if(inspect.HostConfig.NetworkMode!=="none"||Object.keys(inspect.HostConfig.PortBindings||{}).length)
   throw Error("recovery container network isolation failed");

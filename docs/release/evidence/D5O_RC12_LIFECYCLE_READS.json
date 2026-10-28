@@ -1,0 +1,58 @@
+{
+  "format": "d5o-rc12-lifecycle-read-http-v1",
+  "application_commit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "runtime": "production build, isolated rehearsal target",
+  "auth": "actual GoTrue session",
+  "database": "historical upgraded ledger 202",
+  "synthetic_work_found_in_phase_projection": false,
+  "synthetic_string_matches_in_projection": 0,
+  "phase_work_record_count": 18,
+  "connected_creation_available": true,
+  "connected_version_id_present": true,
+  "connected_work_type_count": 0,
+  "calls": [
+    {
+      "name": "workspace resolution",
+      "path": "/api/d5o-hosted/workspaces",
+      "http": 200,
+      "error_code": null
+    },
+    {
+      "name": "phase Work projection",
+      "path": "/api/d5o-hosted/prototype-state",
+      "http": 200,
+      "error_code": null
+    },
+    {
+      "name": "configuration catalog",
+      "path": "/api/d5o-hosted/prototype-catalog",
+      "http": 200,
+      "error_code": null
+    },
+    {
+      "name": "scheduling",
+      "path": "/api/d5o-hosted/prototype-schedule",
+      "http": 200,
+      "error_code": null
+    },
+    {
+      "name": "organization overview",
+      "path": "/api/d5o-hosted/org-admin",
+      "http": 403,
+      "error_code": "admin_membership_required"
+    },
+    {
+      "name": "connected-service eligibility",
+      "path": "/api/d5o-hosted/connected-work",
+      "http": 200,
+      "error_code": null
+    },
+    {
+      "name": "private evidence index",
+      "path": "/api/d5o-hosted/private-evidence-index",
+      "http": 200,
+      "error_code": null
+    }
+  ],
+  "scope": "read-only surfaces only; no lifecycle command completion claimed"
+}

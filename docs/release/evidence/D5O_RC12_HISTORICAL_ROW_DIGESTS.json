@@ -1,0 +1,2006 @@
+{
+  "format": "d5o-rc12-historical-row-multiset-v1",
+  "reference": "fresh restored post-upgrade encrypted checkpoint; network none",
+  "tested": "upgraded historical database after only synthetic Auth/Work tests",
+  "tables": [
+    {
+      "table": "auth.audit_log_entries",
+      "historical_rows": 0,
+      "tested_rows": 22,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.custom_oauth_providers",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.flow_state",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.identities",
+      "historical_rows": 25,
+      "tested_rows": 27,
+      "historical_multiset_sha256": "61a766117ed2f644d0436ac0a484c39900e2fcafac419bcd586ef8e0ef3cce35",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.instances",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.mfa_amr_claims",
+      "historical_rows": 0,
+      "tested_rows": 20,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.mfa_challenges",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.mfa_factors",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.mfa_recovery_code_sets",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.mfa_recovery_codes",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.oauth_authorizations",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.oauth_client_states",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.oauth_clients",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.oauth_consents",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.one_time_tokens",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.refresh_tokens",
+      "historical_rows": 0,
+      "tested_rows": 20,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.saml_providers",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.saml_relay_states",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.schema_migrations",
+      "historical_rows": 0,
+      "tested_rows": 82,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.scim_tokens",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.scim_users",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.sessions",
+      "historical_rows": 0,
+      "tested_rows": 20,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.sso_domains",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.sso_providers",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.users",
+      "historical_rows": 25,
+      "tested_rows": 27,
+      "historical_multiset_sha256": "70c0cbd3224e9ce3259274ca620befa5ce44b90af5c4cf4a9b0e2d3c4f1551a1",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.webauthn_challenges",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "auth.webauthn_credentials",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.admin_binding_corrections",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "bf0f668b4e9b3c7dc699009f0a141c9e60c2eee8d70a8f789d060bd94bd88663",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.admin_identity_requests",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "650c8dc6b9b891c81c7add8ca659e338fe78c1d828dba269fb4220a32181b2ac",
+      "missing_historical_row_signatures": 2
+    },
+    {
+      "table": "d5o_hosted.admin_membership_reasons",
+      "historical_rows": 4,
+      "tested_rows": 4,
+      "historical_multiset_sha256": "542e9cb2c336b2bfddd988dc9029a1045c167ee5a1c6120f16313ddb1949192f",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.admin_succession_events",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.configuration_admin_events",
+      "historical_rows": 10,
+      "tested_rows": 10,
+      "historical_multiset_sha256": "d8556b390ba367f86b0f61559a13668e35b05aa176d5cacfb09fd2bc790670f0",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.configuration_admin_receipts",
+      "historical_rows": 10,
+      "tested_rows": 10,
+      "historical_multiset_sha256": "63dd33c0c21d4cb7516c35745fc9a7689f2d7dcce8c49863ded890f1836cdc88",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.configuration_create_rights",
+      "historical_rows": 20,
+      "tested_rows": 20,
+      "historical_multiset_sha256": "fbbdc89328c68a813384af717eb0f6f5ae1bcb7974ffb026fe900afeaf8e5b02",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.configuration_handoff_roles",
+      "historical_rows": 12,
+      "tested_rows": 12,
+      "historical_multiset_sha256": "e860ef88f84a7798bf611bd3d8cb574643233d5175c1fca1afeed9c088cad5ee",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.configuration_tenants",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "87dfa7612f7dd3a4c3042a9026ec3a1496c46c82c3172209b3d9bc451fb7ad1b",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.configuration_versions",
+      "historical_rows": 4,
+      "tested_rows": 4,
+      "historical_multiset_sha256": "5012641982396b72789f893dc829549472cea4b0f190c91a9228e21d1894a083",
+      "missing_historical_row_signatures": 4
+    },
+    {
+      "table": "d5o_hosted.configuration_work_types",
+      "historical_rows": 10,
+      "tested_rows": 10,
+      "historical_multiset_sha256": "3d1f9b4ce839528f29808d8a3a6d3f32c8f55e456528a99a7e465c3725db3976",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_create_receipts",
+      "historical_rows": 15,
+      "tested_rows": 16,
+      "historical_multiset_sha256": "d8e75ce2f2ffd3482e4f7d33a2b48b82aeda47a64b71160328c349d0c2955f10",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_crew_profile_events",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_crew_profiles",
+      "historical_rows": 8,
+      "tested_rows": 8,
+      "historical_multiset_sha256": "d6290a2d1bb51d0c728b831bef2f58f5d9663b41786ba24a1800124e23858c60",
+      "missing_historical_row_signatures": 8
+    },
+    {
+      "table": "d5o_hosted.connected_define_events",
+      "historical_rows": 55,
+      "tested_rows": 55,
+      "historical_multiset_sha256": "fb2fd1b9d8b67fcabffaa9ff0605c4078163a2ea67ae66d35168443dee3c45e2",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_define_receipts",
+      "historical_rows": 55,
+      "tested_rows": 55,
+      "historical_multiset_sha256": "d731d8493c28735bcfdd3a9c738f09ea51c618ff6b054543b1649600d846b279",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_define_states",
+      "historical_rows": 11,
+      "tested_rows": 11,
+      "historical_multiset_sha256": "4d201d614bf6c5f08268572864de41e9b0cb3b5b109805377a5b6114824ab088",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_deploy_events",
+      "historical_rows": 61,
+      "tested_rows": 61,
+      "historical_multiset_sha256": "0ae6259b253cad8321a9bd082c21254ada83145c5555bab13aa425f9e471b391",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_deploy_receipts",
+      "historical_rows": 61,
+      "tested_rows": 61,
+      "historical_multiset_sha256": "be17c3cd59d08fb00d90bc7ff73298d906b1d91432c57dbc1a28f5956206444c",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_deploy_states",
+      "historical_rows": 5,
+      "tested_rows": 5,
+      "historical_multiset_sha256": "f27394fe8709209b8f9176eb390813a53b676588ef4ad155747973f2210de4d6",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_design_events",
+      "historical_rows": 286,
+      "tested_rows": 286,
+      "historical_multiset_sha256": "5b584586688e52d2e95d03f6994df5b430f9c2409a44daa9e1ed2496b43cc305",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_design_handoff_events",
+      "historical_rows": 20,
+      "tested_rows": 20,
+      "historical_multiset_sha256": "232ad6bb67dfd26a516771026559d637a15afc118890be3d41ee47fd038090af",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_design_handoff_receipts",
+      "historical_rows": 20,
+      "tested_rows": 20,
+      "historical_multiset_sha256": "c5706947e8efa328756c603a665c8e0c362e55915f6831154991124e7afa6caa",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_design_handoffs",
+      "historical_rows": 10,
+      "tested_rows": 10,
+      "historical_multiset_sha256": "e31f3bf11f79146a2df59538f344f04667e87059aaebd2ed68d062f089541860",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_design_receipts",
+      "historical_rows": 286,
+      "tested_rows": 286,
+      "historical_multiset_sha256": "cbcfc544b58c83756f1c2ceca43feebf90ae86f6a3b21ba0f948172824874b5f",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_design_states",
+      "historical_rows": 10,
+      "tested_rows": 10,
+      "historical_multiset_sha256": "79dca19e0d8ddac106fe7db0b26f80c3232d52f74b2bcb1a447ce30f50cc1707",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_estimate_events",
+      "historical_rows": 37,
+      "tested_rows": 37,
+      "historical_multiset_sha256": "0c14a15a98a91fb307948dae23a4c85bb835c6cae79049d96c0b35db6c08bb99",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_estimate_receipts",
+      "historical_rows": 37,
+      "tested_rows": 37,
+      "historical_multiset_sha256": "1915f0a000a85b162352a561b039a56a9055538062f5fff3c78abb8ba8ad22b6",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_estimate_states",
+      "historical_rows": 11,
+      "tested_rows": 11,
+      "historical_multiset_sha256": "ba697dfe2a2fd99e83242ee134274417a77c09029f173a428c31d1705d54001d",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_field_change_events",
+      "historical_rows": 3,
+      "tested_rows": 3,
+      "historical_multiset_sha256": "6221b71c431be2a7409fb57eaf9b0e45517f92ebd83d90a5ec12878967f273b9",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_field_change_receipts",
+      "historical_rows": 3,
+      "tested_rows": 3,
+      "historical_multiset_sha256": "db10993865e72cd35fae786e697c1247456809f03c537db452d32b54e9ca399c",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_field_changes",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "268eac430ddf9bde9e8c157f31df435e0392cf4e94f5b25c860b11d75f8aaa81",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_job_bill_history",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_job_bills",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_job_cash_events",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_job_costs",
+      "historical_rows": 4,
+      "tested_rows": 4,
+      "historical_multiset_sha256": "52056a4bc63b4ddd27dfad10f7e577385fa99fc6dcb93dee6f7d73de08ccd8ca",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_job_finance_events",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_job_finance_receipts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_job_finance_states",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "238819f8cc6a631339272b7bd87c1a9ca003732c099d7655533391306c016e54",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_offer_events",
+      "historical_rows": 43,
+      "tested_rows": 43,
+      "historical_multiset_sha256": "3b2ef53e8217ec911113c348600a3bc8574150dd59f4b00e249f483911c6dc87",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_offer_receipts",
+      "historical_rows": 43,
+      "tested_rows": 43,
+      "historical_multiset_sha256": "a09baf4c99c75a28ceb090406970a79ee93097697f40144a56846d824f6a5ecc",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_offer_states",
+      "historical_rows": 11,
+      "tested_rows": 11,
+      "historical_multiset_sha256": "6043b5e45438039a5a8ed9776a8c04890a4b31ae5c510a1a50c7cb3b2a8db90e",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_operate_events",
+      "historical_rows": 4,
+      "tested_rows": 4,
+      "historical_multiset_sha256": "36e15d00b9a3c286a8f9285f3ef5186c4f753adf6ce687b2b80401f16d874257",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_operate_receipts",
+      "historical_rows": 4,
+      "tested_rows": 4,
+      "historical_multiset_sha256": "ee9e8ec421bb3387713b0d8e3a03faefb65c2e18bff08044679361b8463feaca",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_operate_states",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "e2aaec4018c0fe8f0744f7f5bedc1306fa124e7bd94bb97b7f47ed19a3f0c4e3",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_package_receipts",
+      "historical_rows": 14,
+      "tested_rows": 14,
+      "historical_multiset_sha256": "bac65360f0d4c3e611edbc91f29967e32151c98488278b87c5ad60e6657eed61",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_package_states",
+      "historical_rows": 14,
+      "tested_rows": 14,
+      "historical_multiset_sha256": "df66984358636e5e023ffe9b7be716bb90d9144eb8cd0f19f9ca151804e53ffb",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_pricing_active",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "4978b383fb793cd4f355924a14286650e9240976412829b1b884f86806f9dd1d",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_pricing_events",
+      "historical_rows": 7,
+      "tested_rows": 7,
+      "historical_multiset_sha256": "530cb930cae310bfeb868f47aa3754783c489df26da2df58d42a5d6e7c10d02b",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_pricing_policies",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "638b4a386579597931c2cfef88fae4b216d9eb687e08c069d9fca208d8f94b25",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_pricing_receipts",
+      "historical_rows": 7,
+      "tested_rows": 7,
+      "historical_multiset_sha256": "3c58e867c60ff739b7459a8d50f7c668a8cdf25baf8877e4a423a7e89bcab3fb",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_pursuit_events",
+      "historical_rows": 55,
+      "tested_rows": 55,
+      "historical_multiset_sha256": "fd0649364a072f6679b993f95fe64e7b2e4da36caa03bf1a27eb12df4a64bc70",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_pursuit_receipts",
+      "historical_rows": 55,
+      "tested_rows": 55,
+      "historical_multiset_sha256": "1d8ee5cd89685e21290e19422a9337be8598c28b6ce61b836389455f3209b30d",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_pursuit_states",
+      "historical_rows": 11,
+      "tested_rows": 11,
+      "historical_multiset_sha256": "5dfb7dc0eebb1133061f1f7d9c9f78585faea669766707d199099c1ae74c1238",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_rom_design_events",
+      "historical_rows": 3,
+      "tested_rows": 3,
+      "historical_multiset_sha256": "228b9f96b34c0f5f97cd74846bcfe428070f1e1ee99061da9057b58b73200421",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_rom_design_receipts",
+      "historical_rows": 3,
+      "tested_rows": 3,
+      "historical_multiset_sha256": "d681b251cfde369219ff87f300cc20744ee85bfe071291a0c7547633038469ab",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_rom_design_states",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "edef21a8d532db2d9a655306513ea71e6c140f77f199d3ce28f099406432d71e",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_schedule_events",
+      "historical_rows": 52,
+      "tested_rows": 52,
+      "historical_multiset_sha256": "b006f5ee543687da239836ded497014b6e94cf86bf883080eb99cbefd3a8e33a",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_schedule_receipts",
+      "historical_rows": 52,
+      "tested_rows": 52,
+      "historical_multiset_sha256": "f74da4049092d2d41c25bc24e0227782ce6acc91870aec8d23f3f8e5462a0886",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_schedule_states",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "b1b532739a3f76fa13394496d7b457debe0ffb0c48092fbc0b7bbe194c319e61",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_billing_terms",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_billing_terms_events",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_billing_terms_receipts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_cost_entries",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_cost_events",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_cost_receipts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_cost_states",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_finance_events",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_finance_receipts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_finance_states",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_invoice_events",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_invoice_payments",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_invoice_receipts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_invoices",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_service_work",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_solution_events",
+      "historical_rows": 24,
+      "tested_rows": 24,
+      "historical_multiset_sha256": "79ee98cd8fb87954b1833afa0580736d632f38a918d2cd92266fd38fad910fe7",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_solution_receipts",
+      "historical_rows": 24,
+      "tested_rows": 24,
+      "historical_multiset_sha256": "70ef4fe7da5a4d0e2c3db16791736751a07efb008dfcd37b3431e7aa769c7c69",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_solution_states",
+      "historical_rows": 11,
+      "tested_rows": 11,
+      "historical_multiset_sha256": "0ae9e6a1d0d1ad7ffae1905a29839e21acba19d2f14358cda3bac0d40057cc45",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_workforce_commands",
+      "historical_rows": 21,
+      "tested_rows": 21,
+      "historical_multiset_sha256": "b57f05743ff9a8a7dd23049c0fdd04d61965f6aa7d6044a722a30e07fb68d1be",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.connected_workforce_states",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "3ee29eedfed73fdedd55b24572553565a3b16fb2a5468d0ac095451adb4bda47",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.crew_binding_events",
+      "historical_rows": 7,
+      "tested_rows": 7,
+      "historical_multiset_sha256": "7500916238597045a978faf488da9e4cb952874599376a76b933a45d34dabeb6",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.crew_bindings",
+      "historical_rows": 7,
+      "tested_rows": 7,
+      "historical_multiset_sha256": "0bf210474f2ce8dc4a5d2b802ad7b27eed55ddcb8e27a6143dd482961c0e3b7c",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.customer_decision_evidence",
+      "historical_rows": 3,
+      "tested_rows": 3,
+      "historical_multiset_sha256": "044f18251790eb662d017b451386022c54860cce9d1c9763773b8299969b8113",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_cost_claims",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "3ef413fbf543034b88aeaaf91cc85965865ab069c2341e517b087684edfde7ac",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_cost_events",
+      "historical_rows": 11,
+      "tested_rows": 11,
+      "historical_multiset_sha256": "4ae2e4d9db48e71922b02c103da0006db9e222981ab2241df6012ad7d4dfcb75",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_cost_evidence",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "138c2141b5dd7dd0591b6d7b1e307db1e07d6460e76a21bd79efecd37eb87487",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_cost_links",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "664d5fa56c572cfa3467d924d605d47555888327b2d987c142f87f352c5061eb",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_cost_positions",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "2fa67abc1692fb59615601c853f928c277a273ca2a8280e7240868a4e0a55a1a",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_cost_rate_basis",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "554ad3c703a282d439f3103667e66d45eea7eb033d0b7b995bf38e9104043a56",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_cost_receipts",
+      "historical_rows": 11,
+      "tested_rows": 11,
+      "historical_multiset_sha256": "f245c25fe6f4b30e71f354887b06a57403cebe9912fb124806621d9c40dc625d",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_document_evidence",
+      "historical_rows": 13,
+      "tested_rows": 13,
+      "historical_multiset_sha256": "ff04eb95e9274aa0c546878661770a1928d5d4f29905b59f144835a9829ace6f",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_internal_rate_events",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "79708898925a2d74b308a60c9a1ee9c3027147f508d9071d92c9f2ddb02d5918",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_internal_rate_positions",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "2bd9db3feae85ed38172e8d3fa1771806259d054cd0f860427b19c70583c8756",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_internal_rate_receipts",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "98e080e40166062027d5d2d1036d8addf3bb4048fe6d467c810d64b04965920d",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_internal_rates",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "a8c8bde6d2469c613773d74722b4dc4394f79717e47251ed094c8182f6b06de6",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_spend_authorities",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "0c826f7c23013643006b6e9e5650ed5d23867130699591b1d09620ce3642c7b0",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_spend_commitments",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "40e04962ddde3a503df346ef119b2d5efb70a840b963379f540a0e476d41528b",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_spend_events",
+      "historical_rows": 4,
+      "tested_rows": 4,
+      "historical_multiset_sha256": "aba201385f9480139c5c10312732ed01ee357e77d4ae67781d3bdd17fe214aaf",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_spend_positions",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "658f5f03005ad8aacffe97e018ab441c96a5f155972b241b3c45e26bc63a70f7",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.design_spend_receipts",
+      "historical_rows": 4,
+      "tested_rows": 4,
+      "historical_multiset_sha256": "5e17b1666f168aae14b8078c2d38537e41c09cc6b109ca6003f30bdcf774551b",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.graybar_document_extractions",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.graybar_documents",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.graybar_events",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.graybar_job_cost_links",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.graybar_job_cost_receipts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.graybar_products",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.graybar_receipts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.graybar_states",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.handoff_configuration_events",
+      "historical_rows": 6,
+      "tested_rows": 6,
+      "historical_multiset_sha256": "f0c278c307398083888a5e5b4b1eda1eb92b34da1f5aea9bc8c23ef7e839bb82",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.handoff_configuration_receipts",
+      "historical_rows": 6,
+      "tested_rows": 6,
+      "historical_multiset_sha256": "7c9541c9cfec508d589612f3ecff6e76ac6a0387b3ef95740c12dcf64cbeb31b",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.handoff_route_events",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.handoff_route_receipts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.initial_configuration_events",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "798a3d72b39bf7ab3caf4031f2d23c727ffccbef5a70addedcb5c30eee49c54f",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.initial_configuration_receipts",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "6250d9608aab2d5dd054f42088176e27577d49533e962ada3c9396f324db3b4f",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.labor_actuals",
+      "historical_rows": 3,
+      "tested_rows": 3,
+      "historical_multiset_sha256": "f6aa8d66e73bdff116a0e4ef3b0381aecec07b24d967a33cfd2ae927489a3646",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.labor_authorities",
+      "historical_rows": 11,
+      "tested_rows": 11,
+      "historical_multiset_sha256": "772dacc3662cf38665853e243756a7f95f70e5954ba3acebc9b09af7cb8e6f7a",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.labor_authority_events",
+      "historical_rows": 22,
+      "tested_rows": 22,
+      "historical_multiset_sha256": "2a5fbd819fa84c38ae4388f7e00de3cb87b5989d0901de1b1678c11ba746f53e",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.labor_authority_positions",
+      "historical_rows": 10,
+      "tested_rows": 10,
+      "historical_multiset_sha256": "a91903111e45bb854c258bba9eb84d8c80f955cbdbc5758aeb5cf4968b63efd4",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.labor_authority_receipts",
+      "historical_rows": 22,
+      "tested_rows": 22,
+      "historical_multiset_sha256": "81624bbfd77c76f3bd56884ea42bac3831dadde14bb47b60280ac3b3175617f2",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.labor_booking_intents",
+      "historical_rows": 12,
+      "tested_rows": 12,
+      "historical_multiset_sha256": "33536de1829d19d2b8cdd606f83937755ea30e6a67d1ff67d2806ec3198cece5",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.labor_cost_adjustments",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.labor_reservations",
+      "historical_rows": 16,
+      "tested_rows": 16,
+      "historical_multiset_sha256": "b01c3557c597f9cd0cf7f2e3499994b319339fc837c671b08664388edc33456d",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.membership_assignment_events",
+      "historical_rows": 12,
+      "tested_rows": 12,
+      "historical_multiset_sha256": "ba0fb6a740715310b464c25fd85d6381d3c7ab285b840bf0b278a37d42f2031a",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.memberships",
+      "historical_rows": 20,
+      "tested_rows": 23,
+      "historical_multiset_sha256": "869ca6f2136cb12d52591ae46264f87d880a907f091d9bd92f039b1b36b58612",
+      "missing_historical_row_signatures": 20
+    },
+    {
+      "table": "d5o_hosted.outlook_assessments",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "5157d3082a6a234f8d8eb2e9c33dbb358b05ec75b09ddf8b83516af41d74d37e",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.prototype_state_revisions",
+      "historical_rows": 250,
+      "tested_rows": 252,
+      "historical_multiset_sha256": "68419544722888b15518c5b311c46607209b3d6dba64470a3c8fa5f1c60d7959",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.prototype_states",
+      "historical_rows": 4,
+      "tested_rows": 4,
+      "historical_multiset_sha256": "05a0073158044a3998ba7d2c0622461e3deeee237b76cd6663884c46b0bac29a",
+      "missing_historical_row_signatures": 2
+    },
+    {
+      "table": "d5o_hosted.purchase_authorities",
+      "historical_rows": 12,
+      "tested_rows": 12,
+      "historical_multiset_sha256": "ffdfaaaab350728c44cbbe4b9a0692b1c7c34ae5218183139cd515b2a0360cb2",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.purchase_authority_events",
+      "historical_rows": 25,
+      "tested_rows": 25,
+      "historical_multiset_sha256": "f91ea76d5fda14bfdb52aff85baf80160b263d919af409d46f2629cb109828ef",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.purchase_authority_positions",
+      "historical_rows": 11,
+      "tested_rows": 11,
+      "historical_multiset_sha256": "00daa01da08eebc6ac6d01c08797da0098a112d43b18d643162bc9472ee42271",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.purchase_authority_receipts",
+      "historical_rows": 25,
+      "tested_rows": 25,
+      "historical_multiset_sha256": "96b278472f3be697260cf207b856ae240edc89788bba0b89473f5f1f9afd59f2",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.purchase_reservations",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.spending_delegate_categories",
+      "historical_rows": 6,
+      "tested_rows": 6,
+      "historical_multiset_sha256": "14755a893022c3ad86fb1cf144ec57e33bbe365754d0f1157a213381166b0c51",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.spending_delegate_events",
+      "historical_rows": 8,
+      "tested_rows": 8,
+      "historical_multiset_sha256": "faf8cba514b725d7e884ea39c817918b9358dfe16a020aef0bd269d35444d28b",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.spending_delegate_positions",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "d7cc3b4500ceaf1a49347db3dc1234bffae092e8ca3cfbdf148e1180918ba622",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.spending_delegate_receipts",
+      "historical_rows": 8,
+      "tested_rows": 8,
+      "historical_multiset_sha256": "ac96499576cb1878d0b31ea6dd8c0984db22e2c0a930783f7bec6a16a1c12252",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.spending_delegate_rules",
+      "historical_rows": 8,
+      "tested_rows": 8,
+      "historical_multiset_sha256": "03908c71b7578fb09e958280c349aaee093e3b611e560f85fd0c0e5390940426",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.subcontract_companies",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.subcontract_cost_links",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.subcontract_events",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.subcontract_receipts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.subcontract_reservations",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.subcontract_states",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.synthetic_beta_admin_bootstrap",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "3f02d66669a6e7af6b46e89558cc59bd478edf3005fe3272bff554b28d430a52",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.work_command_receipts",
+      "historical_rows": 0,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.work_events",
+      "historical_rows": 15,
+      "tested_rows": 18,
+      "historical_multiset_sha256": "97fa0db8175e943a6e7948d970939fc8c7685e8bb2e987279cf0ed471d588262",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.work_identity_links",
+      "historical_rows": 15,
+      "tested_rows": 16,
+      "historical_multiset_sha256": "7169dc88987d131ea72359c47abf2a258b77aca21d309d907a5fc434bf1cc10b",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.work_records",
+      "historical_rows": 15,
+      "tested_rows": 18,
+      "historical_multiset_sha256": "cd0bcb18bb7722584ae970b1b7d4841b13399f904af74bad6bec03326c08e832",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "d5o_hosted.workspaces",
+      "historical_rows": 2,
+      "tested_rows": 3,
+      "historical_multiset_sha256": "dd3ba445b277ee4270df1479c15ca215e1acf4730e72bb87cbfece2a139f75f7",
+      "missing_historical_row_signatures": 2
+    },
+    {
+      "table": "public.acceptance_records",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.activity_events",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.archive_package_items",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.as_built_records",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.attachments",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.audit_events",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "90f009ab7d962013e5b5227e7d313119539e4aee4ada5c9e9e7b397e36f8cd10",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.billing_backup_items",
+      "historical_rows": 3,
+      "tested_rows": 3,
+      "historical_multiset_sha256": "2dfc847295d3bf71805528ca2b5b3f00d5f8b978e8a22776148631975d8417ff",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.budget_baseline_items",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.budget_baselines",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.change_event_backups",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.change_event_links",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "12ddafa575ea8a61dbecdc64cde78269647e7951fedb57a7a3d26a93d7a7fefe",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.change_events",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "4eddec3773e35f079f681fc827cee36dcb681113a4d62a004df9e5fc4bc0f460",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.change_pricing_records",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.changed_conditions",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "d79ef1099f6cc5a837640a6b337c56eff86a7cf7b515372f44df1d3dd9a59d22",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.closeout_packages",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "6b920c7f46377036bc63c018915d9a16410aa81543139c34d726ba770497a6d5",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.closeout_requirements",
+      "historical_rows": 3,
+      "tested_rows": 3,
+      "historical_multiset_sha256": "a1c20402ac484aa666d8b49dd6ae789ef4f6ed07276491ab20709bcba3af4960",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.comments",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.commercial_exposure_items",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.companies",
+      "historical_rows": 3,
+      "tested_rows": 3,
+      "historical_multiset_sha256": "1fc081afa312eaff5e4bcee0e675d013ba0ea77cc04b82f65770c026deb79424",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.contacts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.contract_baselines",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "232a0114444f8a2193a81251cba52a4fd29012ca6c4eae527dde3646964cb0f2",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.corrective_actions",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "adc857adcc695f99e4377aaf3bb24c1d55ca3bb67e355d966dfb1fd6d6efe315",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.cost_codes",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.crew_members",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.crew_plans",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.crews",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.d5o_gates",
+      "historical_rows": 12,
+      "tested_rows": 12,
+      "historical_multiset_sha256": "ae7e6cf81894a87c26316f934be8bc073488fd04e54c7e1b595cc1027f1ac9aa",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.daily_report_crew_members",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.daily_reports",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "ddb0732c7aea44ab432ee5b99038a9d8fa5ee6d019704c3f9198c878717e58f5",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.employees",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.entity_attachments",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.equipment",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.equipment_readiness_items",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.equipment_usage_entries",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.field_blockers",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.field_delays",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.field_photo_records",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.flow_down_obligations",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.gate_artifacts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.gc_performance_profiles",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.go_no_go_score_dimensions",
+      "historical_rows": 8,
+      "tested_rows": 8,
+      "historical_multiset_sha256": "424a48b7793c7196d18de59e6fdc44d9497f584f80bb53bc0f22a636a9e758a2",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.go_no_go_scores",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "07f864ffed86fc694cebc4e244a973bf7c4cd53cb179424ac1c31e170a57a665",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.improvement_actions",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.installed_quantities",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.jha_records",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.labor_hour_entries",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.lessons_learned",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "280de28f5834e1cbc275db3132892887c63b57efb8ccc8f4a7b0f8e288e862db",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.lien_waivers",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "639a9bacfbb0d9ebaf5560018079a8cde3241127a04f78754d2ab1a1eafbf68c",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.material_readiness_items",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.material_receipts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.materials",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.mobilization_plans",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "0c9548be3a3e5f0e1a52ae580c05148c2f0c5d39de0d4dd7bc3624981fd00501",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.notice_requirements",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.opportunities",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "36afd467dc56828c4171aad469952676d0321dccc9ca1d6b1fc21ad2386d40ff",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.opportunity_documents",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.opportunity_reviews",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.organizations",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "21817ba7ad08a27efd65a40ffaaaeed091a3a750f516aa8c92d840cea77eb232",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.pay_applications",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "a9883e3024babd6d44a58c9df63c511c235030733f6c8d11f2374395874c00fa",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.permissions",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.permit_access_items",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.production_rate_records",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "9957925b752d56a3fd64c88f961468b39511f306424deb2ebc10be1c2f35b8bc",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.project_decisions",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.project_issues",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.project_performance_scorecards",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.project_risks",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.project_setup_artifacts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.projects",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "7b2749e8bbe17972c165f8504ceda85ae122a61308f7d6599e20462b03501539",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.punch_items",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.quality_deficiencies",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "d50caef660d62bcecb20d14e0f8decb117d875b1b29032cef365a86b322e81e6",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.quality_inspections",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.rfi_links",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "f22d26b413fc75d21809fdac79d34d91eb85a9610461c17a9fd05f0aaf062a96",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.rfis",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "5ccb3c66197fc16d476651cb48c94648e3263d4581f4be06f95c2d3302e3c76c",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.risk_library_items",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.role_permissions",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.roles",
+      "historical_rows": 10,
+      "tested_rows": 10,
+      "historical_multiset_sha256": "01c0386f149c7d4805aba3131cffe09ff3d0b6896684f7ca935014d6f01cd1c5",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.safety_incidents",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.safety_observations",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "c2622ee16d82452468f8f3e7b60ca83fd658ba19507cc9d85253570ca6145493",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.safety_plans",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.schedule_baselines",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.schedule_milestones",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.schedule_of_value_lines",
+      "historical_rows": 3,
+      "tested_rows": 3,
+      "historical_multiset_sha256": "7780a618ff0db70caa7d21826117821171e0bd23aa859c94ad6e339457f33d71",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.scope_matrix_items",
+      "historical_rows": 5,
+      "tested_rows": 5,
+      "historical_multiset_sha256": "000b4b745327c1ced3373ec938d93a5cfb582c63fb9fcf35162986a2a5768b49",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.status_history",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "29e5287ac8d81a1cc8c1543447d1bb546f7fb588212278ab61cd1a2fbf71e283",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.submittal_links",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.submittals",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.supervisor_signoffs",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.test_records",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "a608138d1a04aec7fb7380f38843cd7db55524e20ba9ba3f32fa3f0be2218b5a",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.toolbox_talks",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.user_profiles",
+      "historical_rows": 8,
+      "tested_rows": 8,
+      "historical_multiset_sha256": "62d7746f34d2447e16858fe2713947f660b5710eadccfcf2d9747682d0242574",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.utility_locate_records",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.vendor_performance_profiles",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.warranty_records",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.work_packages",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "e4e16ac1871dc14d961b82662bcf9b8bd9480e67eb7eb96b4a13fe9fab724be3",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.workflow_evidence_requirements",
+      "historical_rows": 5,
+      "tested_rows": 5,
+      "historical_multiset_sha256": "683bff7d41b4d9c623c4cb4f830711444f18805d3c26b25446db6ca131b15eab",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.workflow_instances",
+      "historical_rows": 5,
+      "tested_rows": 5,
+      "historical_multiset_sha256": "0b6f903d4bae9e9b1fe36e4a0919c3e4543c2b0635fcc2696b2a45e5d37f7fae",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.workflow_signals",
+      "historical_rows": 5,
+      "tested_rows": 5,
+      "historical_multiset_sha256": "2c42705af139ad3cc8867a2ad1788db5810e14d6b0afb7e4768cae3746085737",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.workflow_source_links",
+      "historical_rows": 7,
+      "tested_rows": 7,
+      "historical_multiset_sha256": "49e1c29569f0e1b0dec2b29cc742c5b9f8e2fd4e1ad725974f93a6959ce8f457",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.workflow_transactions",
+      "historical_rows": 2,
+      "tested_rows": 2,
+      "historical_multiset_sha256": "0d316a597c6249677bc2d2ca8ba3c4961aea35ed56341da1614f37866c410cdb",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.workspace_memberships",
+      "historical_rows": 8,
+      "tested_rows": 8,
+      "historical_multiset_sha256": "7548860a5e7f4e196a6a8047610f15cd7b3cb0eeacf2edb139cd3689f25d9b0d",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "public.workspaces",
+      "historical_rows": 1,
+      "tested_rows": 1,
+      "historical_multiset_sha256": "fb1f1457ffdd79f722534878fb383a928e9763d1b8c48da8cd545e2e0fa5938c",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "storage.buckets",
+      "historical_rows": 4,
+      "tested_rows": 4,
+      "historical_multiset_sha256": "693f3481c2bc8203ab5f47daaa75046e83f3957058db9b5947ab150f66e6be86",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "storage.buckets_analytics",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "storage.buckets_vectors",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "storage.migrations",
+      "historical_rows": 74,
+      "tested_rows": 75,
+      "historical_multiset_sha256": "e9e2fa99ab2b77daab8d52694c4a4d7fa2fae173e38acdea6ee0533dae0578e2",
+      "missing_historical_row_signatures": 2
+    },
+    {
+      "table": "storage.objects",
+      "historical_rows": 23,
+      "tested_rows": 23,
+      "historical_multiset_sha256": "2205365220b7b9a0b6da787f73bc23337bd295f826b19c0ce67049a5b9d63e5f",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "storage.s3_multipart_uploads",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "storage.s3_multipart_uploads_parts",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    },
+    {
+      "table": "storage.vector_indexes",
+      "historical_rows": 0,
+      "tested_rows": 0,
+      "historical_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_historical_row_signatures": 0
+    }
+  ],
+  "all_reference_row_signatures_present": false,
+  "tables_with_missing_signatures": [
+    "d5o_hosted.admin_identity_requests",
+    "d5o_hosted.configuration_versions",
+    "d5o_hosted.connected_crew_profiles",
+    "d5o_hosted.memberships",
+    "d5o_hosted.prototype_states",
+    "d5o_hosted.workspaces",
+    "storage.migrations"
+  ],
+  "production_modified": false
+}

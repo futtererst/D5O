@@ -1,0 +1,15 @@
+{
+  "format": "d5o-rc12-direct-storage-api-v1",
+  "api": "cached Supabase Storage API v1.84.19",
+  "service_role_objects_served": 23,
+  "service_role_bytes_served": 2252301,
+  "service_role_hashes_match": true,
+  "user_auth_provider": "actual GoTrue v2.195.0",
+  "same_tenant_direct_http": 400,
+  "cross_tenant_direct_http": 400,
+  "anonymous_direct_http": 400,
+  "missing_object_http": 400,
+  "positive_user_authorization_proven": false,
+  "policy_count_on_storage_objects": 0,
+  "interpretation": "RLS with no storage.objects SELECT policy withholds bytes from all direct end users; cross-tenant and revoked-specific policy behavior cannot be distinguished."
+}

@@ -1,0 +1,18 @@
+{
+  "format": "d5o-rc12-connected-create-http-v1",
+  "application_commit": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "auth": "actual GoTrue session",
+  "runtime": "production build, local rehearsal",
+  "prerequisites": {
+    "catalog_http": 200,
+    "capability_http": 200,
+    "connected_available": true,
+    "published_version_present": true
+  },
+  "create_http": 201,
+  "error_code": null,
+  "synthetic_work_delta": 1,
+  "identity_link_delta": 1,
+  "created_identity_pair": true,
+  "historical_customer_work_modified": false
+}

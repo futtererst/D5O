@@ -1,0 +1,11 @@
+{
+  "format": "d5o-rc12-privileged-rpc-v1",
+  "auth": "actual GoTrue v2.195.0",
+  "actor": "synthetic rotork auditor",
+  "rpc": "d5o_hosted_command_save_v1",
+  "http": 403,
+  "sqlstate": "42501",
+  "authenticated_execute_grant": false,
+  "service_role_execute_grant": true,
+  "permission_denied": true
+}

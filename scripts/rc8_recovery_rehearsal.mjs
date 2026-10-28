@@ -17,6 +17,14 @@ let ready=false;for(let i=0;i<30;i++){
   await new Promise(r=>setTimeout(r,1000));
 }
 if(!ready)throw Error("offline recovery database not ready");
+// The image briefly accepts connections before its initialization restart.
+// Wait for that restart to finish before running the first restore command.
+await new Promise(r=>setTimeout(r,6000));
+let stable=false;for(let i=0;i<15;i++){
+  if(spawnSync("docker",["exec",container,"psql","-U","supabase_admin","-d","postgres","-At","-c","select 1"],{encoding:"utf8"}).status===0){stable=true;break}
+  await new Promise(r=>setTimeout(r,1000));
+}
+if(!stable)throw Error("offline recovery database did not stabilize");
 const inspect=JSON.parse(run("docker",["inspect",container]))[0];
 if(inspect.HostConfig.NetworkMode!=="none"||Object.keys(inspect.HostConfig.PortBindings||{}).length)throw Error("network isolation failure");
 const env={D5O_RC7_CONTAINER:container};

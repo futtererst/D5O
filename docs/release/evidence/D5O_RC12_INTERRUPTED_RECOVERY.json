@@ -1,0 +1,20 @@
+{
+  "format": "d5o-rc12-interrupted-recovery-v1",
+  "checkpoint": "authorized encrypted pre-upgrade local copy",
+  "isolated_restore_seconds": 36.93,
+  "restored_ledger": 177,
+  "restored_auth_users": 25,
+  "restored_auth_identities": 25,
+  "restored_work_records": 15,
+  "restored_storage_metadata": 23,
+  "private_objects_hash_verified": 23,
+  "private_bytes_hash_verified": 2252301,
+  "injected_sqlstate": "P0001",
+  "injected_ddl_rolled_back": true,
+  "post_failure_ledger": 177,
+  "post_failure_auth_users": 25,
+  "post_failure_work_records": 15,
+  "post_failure_storage_metadata": 23,
+  "production_rto_rpo_claimed": false,
+  "atomic_production_checkpoint_claimed": false
+}

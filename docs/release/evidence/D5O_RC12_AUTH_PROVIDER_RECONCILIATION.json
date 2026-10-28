@@ -1,0 +1,18 @@
+{
+  "format": "d5o-rc12-auth-provider-ledger-reconciliation-v1",
+  "project": "fcawktdjoxvahhgvkebx",
+  "production_query": "read-only catalog and provider-ledger metadata",
+  "original_encrypted_checkpoint_provider_ledger_rows": 0,
+  "production_provider_ledger_rows": 82,
+  "production_provider_ledger_latest": "20260831180000",
+  "provider_ledger_versions_md5": "759eb14d85b5159366a5a1f1ffb47c18",
+  "logical_auth_columns": 271,
+  "production_and_restored_logical_columns_md5": "eb6948a44226d47677f14b063a69cc64",
+  "exact_production_versions_copied_to_isolated_restore": 82,
+  "isolated_provider_ledger_after_gotrue_rows": 82,
+  "isolated_auth_column_fingerprint_after_gotrue": "eb6948a44226d47677f14b063a69cc64",
+  "gotrue_image": "public.ecr.aws/supabase/gotrue:v2.195.0",
+  "historical_customer_credentials_changed": false,
+  "production_modified": false,
+  "consistency_limit": "The original checkpoint omitted provider ledger rows. Their exact identifiers were read later from production; provider-ledger identity at the checkpoint instant is not independently proved."
+}

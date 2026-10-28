@@ -1,0 +1,23 @@
+{
+  "format": "d5o-rc12-source-and-hosted-binding-v1",
+  "repository_base": "f378f0392409cb346dd579afd281521877c59811",
+  "frozen_application": "8b6b0d9e4aa484d0f0db1d075a969b79e01b0989",
+  "frozen_application_is_ancestor": true,
+  "migration_manifest_files": 236,
+  "migration_sha256_mismatches": 0,
+  "bridge_pre_215_sha256": "0f076c496f756b8f56965b104cddd8c77c558344c89ca84cbf85946dfa924af5",
+  "bridge_post_215_sha256": "b15dcd56a30fc4b46e81ea792fbfd51e19213630b698bd5734334f0cccbdf5d8",
+  "supabase_project_ref": "fcawktdjoxvahhgvkebx",
+  "supabase_database_version": "17.6.1.127",
+  "vercel_project_id": "prj_HF8KhxUFvONQlpMr53FdhEgmIpFG",
+  "vercel_project_name": "d5o-system-of-work",
+  "latest_production_deployment_id": "dpl_DYXNRK2PyF4UUUKqpPqNHVYhVKXm",
+  "latest_production_deployment_sha": "64487f8ec34da78325b0d87958ba5e29c46dd5fc",
+  "latest_production_deployment_is_frozen_application": false,
+  "production_environment_names_present": ["D5O_SOURCE_SHA", "D5O_COMMAND_RUNTIME", "SUPABASE_SECRET_KEY", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "NEXT_PUBLIC_SUPABASE_URL", "RYBEXOS_RUNTIME_MODE", "D5O_HOSTED_ENABLED", "RYBEXOS_DATA_SOURCE", "RYBEXOS_AUTH_MODE"],
+  "deployed_secret_values_read": false,
+  "effective_runtime_bindings_verified": false,
+  "client_static_files_scanned_for_local_service_token": 210,
+  "local_service_token_found_in_client_static": false,
+  "production_modified": false
+}
