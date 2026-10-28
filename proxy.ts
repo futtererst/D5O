@@ -33,7 +33,11 @@ export async function proxy(request: NextRequest) {
   if (hostedD5O && pathname !== "/work" && pathname !== "/work/procurement" && pathname !== "/work/labor" && pathname !== "/work/my-schedule"
     && (pathname !== "/work/admin" && !pathname.startsWith("/work/admin/"))
     && (pathname !== "/platform-admin" && !pathname.startsWith("/platform-admin/"))
-    && !pathname.startsWith("/work/my-schedule/") && !pathname.startsWith("/api/d5o-hosted/")) {
+    && pathname !== "/work/initial-invitation" && pathname !== "/work/onboarding"
+    && pathname !== "/work/connected-work" && !pathname.startsWith("/work/customer/")
+    && !pathname.startsWith("/work/my-schedule/") && !pathname.startsWith("/api/d5o-hosted/")
+    && pathname !== "/api/d5o-platform/provisioning"
+    && pathname !== "/api/d5o-platform/initial-admin-accept") {
     return new NextResponse("The hosted D5O work surface is not yet available.", {
       status: 503,
       headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" }

@@ -9,6 +9,7 @@ import { chromium } from "@playwright/test";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
+const hostedRehearsal = process.env.D5O_RC18_HOSTED_REHEARSAL === "1";
 const output = resolve(root, "docs/architecture/evidence/phase2c-two-tenant-results.json");
 const evidence = { baseline: "b4a4e5c43c3e3a78dc07191019dd0ba638bf4a63",
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
@@ -27,15 +28,27 @@ async function check(name, run) {
 const freePort = () => new Promise((done, fail) => { const socket = createServer();socket.once("error", fail);
   socket.listen(0,"127.0.0.1",()=>{const address=socket.address();socket.close(()=>done(address.port));}); });
 async function startNext(url, anon, service) {
-  const port = await freePort();
-  const env = { ...process.env, NODE_ENV: "development", NEXT_TELEMETRY_DISABLED: "1",
+  // Rehearsal requests must use the existing approved origin in request-origin.ts.
+  const port = hostedRehearsal ? 61643 : await freePort();
+  const env = { ...process.env, NODE_ENV: hostedRehearsal ? "production" : "development", NEXT_TELEMETRY_DISABLED: "1",
     NEXT_PUBLIC_SUPABASE_URL: url, NEXT_PUBLIC_SUPABASE_ANON_KEY: anon, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: anon,
     SUPABASE_SECRET_KEY: service, SUPABASE_SERVICE_ROLE_KEY: service, D5O_HOSTED_ENABLED: "1",
-    D5O_ISOLATED_PILOT: "1", D5O_ISOLATED_PILOT_URL: url,
-    D5O_ISOLATED_APP_ORIGIN: `http://127.0.0.1:${port}`, D5O_COMMAND_RUNTIME: "pilot",
-    RYBEXOS_RUNTIME_MODE: "test", RYBEXOS_AUTH_MODE: "supabase", RYBEXOS_DATA_SOURCE: "database" };
+    D5O_ISOLATED_PILOT: hostedRehearsal ? undefined : "1",
+    D5O_ISOLATED_PILOT_URL: hostedRehearsal ? undefined : url,
+    D5O_REHEARSAL_TARGET_URL: hostedRehearsal ? url : undefined,
+    D5O_ISOLATED_APP_ORIGIN: `http://127.0.0.1:${port}`,
+    D5O_COMMAND_RUNTIME: hostedRehearsal ? "rehearsal" : "pilot",
+    RYBEXOS_RUNTIME_MODE: hostedRehearsal ? "production" : "test",
+    RYBEXOS_AUTH_MODE: "supabase", RYBEXOS_DATA_SOURCE: "database",
+    CIRCLE_NODE_TOTAL: hostedRehearsal ? "2" : process.env.CIRCLE_NODE_TOTAL };
+  if (hostedRehearsal) {
+    const build = spawnSync(process.execPath, [resolve(root,"node_modules/next/dist/bin/next"),
+      "build","--webpack"], {cwd:root,env,encoding:"utf8",shell:false,maxBuffer:10*1024*1024});
+    if (build.status !== 0) throw Error(`hosted_build_failed:${(build.stderr || build.stdout).slice(-1000)}`);
+  }
   const handle = spawn(process.execPath, [resolve(root,"node_modules/next/dist/bin/next"),
-    "dev","--webpack","-p",String(port),"-H","127.0.0.1"],{cwd:root,env,stdio:"ignore",shell:false});
+    ...(hostedRehearsal ? ["start"] : ["dev","--webpack"]),"-p",String(port),"-H","127.0.0.1"],
+    {cwd:root,env,stdio:"ignore",shell:false});
   for(let n=0;n<160;n++) { try { if((await fetch(`http://127.0.0.1:${port}/api/health`)).ok)
     return {handle,port}; } catch { /* startup */ } await new Promise((done)=>setTimeout(done,500)); }
   handle.kill();throw Error("next_start_timeout");
@@ -48,6 +61,7 @@ try {
   const service = runtime.status.SERVICE_ROLE_KEY ?? runtime.status.SECRET_KEY;
   assert(url === `http://127.0.0.1:${runtime.ports.api}` && anon && service);
   evidence.environment = { projectId: runtime.projectId, apiPort: runtime.ports.api, loopbackOnly: true };
+  evidence.runtimeMode = hostedRehearsal ? "production_rehearsal" : "test_pilot";
   const admin = createClient(url, service, { auth: { persistSession: false } });
   const users = {};
   for (const key of ["vendor","a_admin","b_admin","outsider"]) {
