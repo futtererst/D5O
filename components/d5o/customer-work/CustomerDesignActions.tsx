@@ -198,7 +198,8 @@ export function CustomerDesignActions({ workspace, work, connectedPackages, role
         <label>Estimated person hours<input name="hours" type="number" min="1" required /></label>
         <label>Prerequisite<input name="prerequisite" required /></label>
         <label>Required date<input name="date" type="date" required /></label>
-        <label>Shift<input name="shift" required /></label>
+        <label>Shift (24-hour start-end)<input name="shift" pattern="(?:0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]-(?:0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]"
+          placeholder="08:00-16:00" title="Use a 24-hour shift such as 08:00-16:00" required /></label>
         <button disabled={busy}>Save dated crew demand</button>
       </form>}
       {owner && !activeRelease && disciplines.map((discipline) => !packageReviews.some((item) => item.discipline === discipline)

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRybexSupabaseAdminClient, createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
+import { customerWorkspaceKey } from "@/lib/d5o/hosted/customer-work-scope";
 
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
@@ -8,7 +9,8 @@ export async function GET(request: NextRequest) {
   try {
     const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
     const commandId = request.nextUrl.searchParams.get("commandId") ?? "";
-    if (workspace !== "rybex" || commandId.length < 8 || commandId.length > 120) return reply({ error: "invalid_request" }, 400);
+    if (!(workspace === "rybex" || customerWorkspaceKey.test(workspace) && workspace !== "rotork") ||
+      commandId.length < 8 || commandId.length > 120) return reply({ error: "invalid_request" }, 400);
     const context = await hostedPrototypeContext(workspace);
     if (context.actor.role !== "admin") return reply({ error: "admin_membership_required" }, 403);
     const client = createRybexSupabaseAdminClient();

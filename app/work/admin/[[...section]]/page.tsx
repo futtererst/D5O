@@ -11,6 +11,7 @@ import { AdminOverview } from "@/components/d5o/admin/AdminOverview";
 import { AdminMobileNav } from "@/components/d5o/admin/AdminMobileNav";
 import { AdminIdentityBoundary } from "@/components/d5o/admin/AdminIdentityBoundary";
 import { OrgAdminPanel } from "@/components/d5o/admin/OrgAdminPanel";
+import { CustomerWorkforceAdmin } from "@/components/d5o/admin/CustomerWorkforceAdmin";
 import { D5OProductHeader } from "@/components/d5o/platform/D5OProductHeader";
 import { invitationDeliveryPolicy } from "@/lib/d5o/auth/approved-test-recipient";
 import { customerAdminWorkspaceAuthorized } from "@/lib/d5o/admin/customer-workspace";
@@ -45,8 +46,9 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
   if (!sections.some(([key]) => key === active)) notFound();
   const newSections = ["organization", "organization-settings", "business-units", "locations",
     "teams", "people", "invitations", "roles", "activity"];
-  const visibleSections = sections.filter(([key]) => workspace === "rybex" || key === "configuration" || newSections.includes(key));
-  if (workspace !== "rybex" && active !== "configuration" && !newSections.includes(active)) notFound();
+  const visibleSections = sections.filter(([key]) => workspace === "rybex" ||
+    ["configuration", "workforce"].includes(key) || newSections.includes(key));
+  if (workspace !== "rybex" && !["configuration", "workforce"].includes(active) && !newSections.includes(active)) notFound();
   if (section?.length === 2 && !["users", "workforce"].includes(active)) notFound();
   const selectedId = section?.[1];
   if (selectedId && !/^[0-9a-f-]{36}$/i.test(selectedId)) notFound();
@@ -92,7 +94,9 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
       {active === "users" && <MemberAccessPanel workspace="rybex" selectedUserId={selectedId}
         initialSearch={(query.search ?? "").slice(0, 120)} initialOffset={offset}
         invitationPolicy={invitationDeliveryPolicy()} />}
-      {active === "workforce" && <CrewAccessPanel selectedPersonId={selectedId} />}
+      {active === "workforce" && (workspace === "rybex"
+        ? <CrewAccessPanel selectedPersonId={selectedId} />
+        : <CustomerWorkforceAdmin workspace={workspace} />)}
       {active === "configuration" && <AdminConfigurationEditor workspace={workspace} />}
       {active === "authority" && <div className={styles.authority}><SpendingDelegationAdmin workspace="rybex" />
         <DesignInternalRateControl workspace="rybex" role="admin" /></div>}

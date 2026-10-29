@@ -1,5 +1,18 @@
 # Local qualification defect and gap register
 
+## GREEN launch findings, 2026-10-29
+
+| ID | Severity | Reproduction and cause | Correction / current verification |
+| --- | --- | --- | --- |
+| GR-01 | Medium | Hosted customer-offer submission accepted free text in the UI, while the authoritative command accepts four exact method values. A reasonable custom entry failed with `submission input invalid`. | Changed the input to the four approved choices in `1dad064`; Preview build is ready. Browser regression on the new build remains. |
+| GR-02 | Medium | A new Design document displayed a custody outage because the expected 404 for a draft without a PDF was treated as a service error. | Treat only that 404 as an empty receipt in `1dad064`; Preview build is ready. Browser regression remains. |
+| GR-03 | High | An optional but saved crew demand was omitted from the accepted Design release snapshot. The hosted Develop scheduler then showed no capability and could not book a crew. | Forward SQL fix in `1dad064` applied to GREEN ledger `20261029230000`; exact existing fictional release is still missing its historical snapshot. No silent repair or audit rewrite was made. |
+| GR-04 | High | Hosted Design accepted `Day shift` as demand text, but field-start authority requires a 24-hour `HH:mm-HH:mm` interval. This can strand an accepted release. | UI and database demand/release validation prepared; migration dry-run passed. Commit, GREEN migration and hosted regression remain. |
+| GR-05 | High | Customer-tenant Administration had no Workforce page and the roster API was pilot-only, so a qualified bound crew could not be configured for the six-phase hosted journey. | Tenant-scoped API, admin page and roster UI prepared under explicit owner authorization; cross-tenant/wrong-role tests and GREEN deployment remain. |
+| GR-06 | Critical release gate | Hosted private evidence uploads do not call a malware scanner. GREEN Preview was explicitly authorized for fictional unscanned files; production would otherwise report readiness as green. | Production readiness now blocks hosted promotion while scanning is unimplemented; Preview remains visibly warned. Verified by scanner readiness test. A scanner integration and operating endpoint remain required. |
+
+The earlier local qualification entries below remain historical; their closed/open dispositions at the top of the file supersede older baseline rows.
+
 Current disposition after the final local pass is recorded below. The original entries remain as the `e275da6a` baseline, and the [final assessment](../d5o-final-local-qualification/ASSESSMENT.md) has machine evidence.
 
 | ID | Severity/class | Final disposition |

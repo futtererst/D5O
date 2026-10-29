@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { shiftHours, type Assignment, type PublishedSchedule, type SharedSchedule } from "@/components/d5o/platform/schedule-model";
+import { customerWorkspaceKey } from "@/lib/d5o/hosted/customer-work-scope";
 
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
@@ -36,7 +37,8 @@ function futureBooking(item: Assignment, clock: ReturnType<typeof localClock>) {
 export async function GET(request: NextRequest) {
   const workspace = request.nextUrl.searchParams.get("workspace");
   const personId = request.nextUrl.searchParams.get("personId");
-  if (workspace !== "rybex" || !personId || !/^[0-9a-f-]{36}$/i.test(personId)) return reply({ error: "invalid_scope" }, 400);
+  if (!(workspace === "rybex" || workspace && customerWorkspaceKey.test(workspace) && workspace !== "rotork") ||
+    !personId || !/^[0-9a-f-]{36}$/i.test(personId)) return reply({ error: "invalid_scope" }, 400);
   try {
     const context = await hostedPrototypeContext(workspace);
     if (context.actor.role !== "admin") return reply({ error: "admin_membership_required" }, 403);

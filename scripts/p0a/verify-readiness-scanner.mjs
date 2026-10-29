@@ -43,7 +43,8 @@ const configured = load("lib/d5o/security/production-config.ts", imports,
   { ...base, RYBEXOS_SCANNER_MODE: "local_service", RYBEXOS_SCANNER_URL: "http://127.0.0.1:9999" }).getProductionReadiness();
 assert.equal(configured.ok, true);
 const hosted = { ...base, NEXT_PUBLIC_SUPABASE_URL: "https://fcawktdjoxvahhgvkebx.supabase.co",
-  D5O_HOSTED_ENABLED: "1", D5O_COMMAND_RUNTIME: "production", RYBEXOS_SCANNER_MODE: "disabled" };
+  D5O_HOSTED_ENABLED: "1", D5O_COMMAND_RUNTIME: "production", VERCEL_ENV: "preview",
+  RYBEXOS_SCANNER_MODE: "disabled" };
 const hostedImports = { ...imports,
   "../billing-v2/persistence-mode": { getBillingV2PersistenceMode: () => "local" },
   "../field-issue-escalation/persistence-mode": { getFieldIssuePersistenceMode: () => "local" },
@@ -54,6 +55,10 @@ assert.equal(hostedReady.ok, true);
 assert.equal(hostedReady.scope, "d5o_hosted");
 assert(hostedReady.issues.some((issue) => issue.code === "scanner_disabled" && issue.severity === "warning"));
 assert(hostedReady.issues.some((issue) => issue.code === "legacy_billing_unavailable" && issue.severity === "warning"));
+const productionTarget = load("lib/d5o/security/production-config.ts", hostedImports,
+  { ...hosted, VERCEL_ENV: "production" }).getProductionReadiness();
+assert.equal(productionTarget.ok, false);
+assert(productionTarget.issues.some((issue) => issue.code === "hosted_scanner_unimplemented" && issue.severity === "blocker"));
 for (const env of [
   { ...hosted, RYBEXOS_SCANNER_MODE: "local_service", RYBEXOS_SCANNER_URL: "https://scanner.invalid" },
   { ...hosted, D5O_COMMAND_RUNTIME: "rehearsal" },
@@ -62,4 +67,4 @@ for (const env of [
   const result = load("lib/d5o/security/production-config.ts", hostedImports, env).getProductionReadiness();
   assert.equal(result.ok, false, "hosted scanner or target mismatch must block readiness");
 }
-console.log("PASS: legacy scanner requirement remains; hosted D5O reports approved disabled mode and rejects wrong bindings");
+console.log("PASS: legacy scanner requirement remains; fictional hosted Preview is marked unscanned and production is blocked");

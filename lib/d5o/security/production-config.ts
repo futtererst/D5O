@@ -73,8 +73,11 @@ export function getProductionReadiness(): ProductionReadinessResult {
   }
 
   if (hostedD5O) {
-    // The accepted D5O hosted release does not scan private evidence. Its
-    // server-mediated upload/download and membership checks remain mandatory.
+    // Hosted evidence routes have no scanner adapter. Fictional Preview
+    // acceptance may use the approved disabled mode; production cannot.
+    if (process.env.VERCEL_ENV !== "preview") {
+      issues.push(blocker("hosted_scanner_unimplemented", "Hosted evidence uploads require a verified malware scanner before production."));
+    }
     if (scannerMode !== "disabled") {
       issues.push(blocker("scanner_contract", "Hosted D5O requires explicit RYBEXOS_SCANNER_MODE=disabled; its evidence routes do not invoke the legacy scanner."));
     } else {

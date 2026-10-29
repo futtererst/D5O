@@ -29,7 +29,8 @@ export default async function CustomerWorkPage({ params, searchParams }: {
         {["admin", "project_manager"].includes(scope.context.actor.role) &&
           <Link href={`/work/connected-work?workspace=${encodeURIComponent(workspace)}`}>Create Work</Link>}
         {scope.context.actor.role === "admin" &&
-          <Link href={`/work/admin/configuration?workspace=${encodeURIComponent(workspace)}`}>Configuration</Link>}</nav>
+          <><Link href={`/work/admin/workforce?workspace=${encodeURIComponent(workspace)}`}>Workforce</Link>
+            <Link href={`/work/admin/configuration?workspace=${encodeURIComponent(workspace)}`}>Configuration</Link></>}</nav>
     </header>
     <CustomerWorkExperience key={workspace} workspace={workspace} initialWorkId={work ?? ""}
       initialTaskId={task ?? ""} />
