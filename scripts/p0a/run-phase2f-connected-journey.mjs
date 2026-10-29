@@ -130,11 +130,11 @@ if(executionDay===0 || executionDay===6) {
 }
 const executionShift = currentFridayOvernight ? "23:00–10:59"
   : `${String(Math.max(0,executionHour-2)).padStart(2,"0")}:00–${String(Math.min(23,executionHour+6)).padStart(2,"0")}:59`;
-// Economic and labor authorities are checked against the database's real
-// current_date. Their validity can begin today while the disposable field
-// shift is evaluated under its controlled qualification clock.
+// Publication checks both the database's real current_date and the booked
+// field date. Include both when a disposable qualification clock is pinned to
+// a historical business day.
 const authorityValidFrom = useQualificationClock
-  ? new Date().toISOString().slice(0,10) : executionDate;
+  ? [new Date().toISOString().slice(0,10), executionDate].sort()[0] : executionDate;
 let runtime, server, designBrowser;
 const q = (value) => `'${String(value).replaceAll("'", "''")}'`;
 function sql(query) {
