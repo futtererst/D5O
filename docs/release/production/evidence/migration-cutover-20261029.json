@@ -79,6 +79,15 @@
     "status": "NOT_EXECUTED_OR_QUALIFIED",
     "source": "https://supabase.com/docs/guides/api/securing-your-api"
   },
+  "postCheckpointDriftGate": {
+    "script": "scripts/production/checkpoint-drift.mjs",
+    "categories": ["auth_users", "auth_identities", "auth_sessions", "auth_refresh_tokens", "storage_metadata", "work_events", "command_receipts", "migration_ledger"],
+    "productionReadOnlySnapshotAndCompare": "UNCHANGED",
+    "syntheticChangedAuthDigest": "DRIFT_STOP",
+    "migrationRunnerIntegration": "apply-production requires an approved baseline SHA-256 and an UNCHANGED comparison before first migration",
+    "productionWriteExecuted": false,
+    "limits": "Detects row/metadata drift before migration; does not prevent independent Auth or privileged Storage writes, and does not compare object bytes"
+  },
   "productionMutationPerformed": false,
   "disposableContainerRemoved": true,
   "notQualified": [

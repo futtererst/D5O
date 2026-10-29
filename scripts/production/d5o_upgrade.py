@@ -146,6 +146,11 @@ def approval_check(args, manifest_sha):
         fail("approval identity mismatch")
     if not approval.get("approvalId") or not approval.get("releaseOwner") or not approval.get("checkpointId"):
         fail("incomplete release approval")
+    if not args.drift_baseline_file or not approval.get("driftBaselineSha256"):
+        fail("post-checkpoint drift baseline and approved hash required")
+    baseline = Path(args.drift_baseline_file).resolve()
+    if not baseline.is_file() or digest(baseline.read_bytes()) != approval["driftBaselineSha256"]:
+        fail("post-checkpoint drift baseline hash mismatch")
     expiry = dt.datetime.fromisoformat(approval["expiresUtc"].replace("Z", "+00:00"))
     if expiry <= dt.datetime.now(dt.timezone.utc):
         fail("release approval expired")
@@ -180,6 +185,7 @@ def main():
     ap.add_argument("--uri-file")
     ap.add_argument("--psql-binary")
     ap.add_argument("--approval-file")
+    ap.add_argument("--drift-baseline-file")
     ap.add_argument("--inject-failure-order", type=int)
     args = ap.parse_args()
     if (args.transport == "docker") != (args.project_ref == "LOCAL_REHEARSAL"):
@@ -195,6 +201,12 @@ def main():
     command, env = (local_environment(args.container, args.project_ref) if args.transport == "docker"
                     else production_environment(args.uri_file, args.project_ref, args.psql_binary))
     fingerprint(command, env)
+    if args.mode == "apply-production":
+        drift = subprocess.run(["node", str(ROOT / "scripts/production/checkpoint-drift.mjs"),
+                                "compare", args.uri_file, args.drift_baseline_file],
+                               capture_output=True, text=True, timeout=90)
+        if drift.returncode != 0 or json.loads(drift.stdout).get("status") != "UNCHANGED":
+            fail("post-checkpoint Auth, business, ledger or Storage metadata drift; do not migrate")
     result = {"mode": args.mode, "target": args.project_ref, "sourceCommit": source_commit(),
               "manifestSha256": manifest_sha, "startingLedger": 177,
               "orders": [], "status": "PREFLIGHT_PASS"}
