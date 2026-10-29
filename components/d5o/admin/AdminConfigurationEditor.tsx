@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useAdminCommand } from "./useAdminCommand";
+import { PricingPolicyAdmin } from "../platform/PricingPolicyAdmin";
 
 type Route = { key: string; role: string; revision: number; eligibleCount: number };
 type WorkType = { key: string; label: string; status: "active" | "disabled"; roles: string[] };
@@ -115,6 +116,7 @@ function differences(active: Version, draft: Version) {
 export function AdminConfigurationEditor({ workspace }: { workspace: string }) {
   const [inventory, setInventory] = useState<Inventory | null>(null);
   const [loadError, setLoadError] = useState("");
+  const [pricingNotice, setPricingNotice] = useState("");
   const [reason, setReason] = useState("");
   const [field, setField] = useState<Field>("deploy-start-lead");
   const [typeKey, setTypeKey] = useState("technical-delivery");
@@ -255,5 +257,9 @@ export function AdminConfigurationEditor({ workspace }: { workspace: string }) {
       <button type="button" disabled={busy || Boolean(pending) || reason.trim().length < 8 || differences(active, draft).length === 0} onClick={() => run("validate-publish", draft)}>Validate and publish v{draft.version}</button>
     </>}
     {candidate && active && <section><h3>Validated candidate v{candidate.version}</h3><p>Frozen and published for review; v{active.version} remains effective. {differences(active, candidate).length} supported change(s) are recorded.</p><ul>{differences(active, candidate).map((change) => <li key={change}>{change}</li>)}</ul><button type="button" disabled={busy || Boolean(pending) || reason.trim().length < 8} onClick={() => run("activate", candidate)}>Activate v{candidate.version} for future Work</button></section>}
+    <section aria-label="Develop pricing configuration">
+      {pricingNotice && <p role="status">{pricingNotice}</p>}
+      <PricingPolicyAdmin workspace={workspace} hosted onNotice={setPricingNotice} onPolicyUpdated={async () => {}} />
+    </section>
   </section>;
 }

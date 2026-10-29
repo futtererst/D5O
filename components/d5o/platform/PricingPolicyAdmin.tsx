@@ -1,17 +1,16 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import type { WorkspaceKey } from "./work-types";
 import { validatePricingPolicy, type PricingCategory, type PricingPolicy, type PricingRate } from "./develop-pricing";
 import styles from "./DevelopPlanning.module.css";
 
 type PolicyResponse = { revision: number; policies: PricingPolicy[]; active: { id: string; version: number } | null; canAdmin: boolean; message?: string };
 const categories: PricingCategory[] = ["labor", "material", "equipment", "subcontract", "travel", "mobilization", "setup", "recurring", "other"];
 const value = (form: FormData, key: string) => String(form.get(key) ?? "").trim();
-const emptyPolicy = (workspace: WorkspaceKey): PricingPolicy => ({ id: crypto.randomUUID(), version: 1, status: "draft", workspace, name: "", currency: "USD", effectiveFrom: new Date().toISOString().slice(0, 10), rates: [], targetMarginPercent: 0, floorMarginPercent: 0, overheadPercent: 0, contingencyPercent: 0, maxDiscountPercent: 0, method: "target-margin", solutionApproverRole: "operations_leader", pricingApproverRole: "operations_leader", marginExceptionRole: "admin", proposalApproverRole: "operations_leader" });
+const emptyPolicy = (workspace: string): PricingPolicy => ({ id: crypto.randomUUID(), version: 1, status: "draft", workspace, name: "", currency: "USD", effectiveFrom: new Date().toISOString().slice(0, 10), rates: [], targetMarginPercent: 0, floorMarginPercent: 0, overheadPercent: 0, contingencyPercent: 0, maxDiscountPercent: 0, method: "target-margin", solutionApproverRole: "operations_leader", pricingApproverRole: "operations_leader", marginExceptionRole: "admin", proposalApproverRole: "operations_leader" });
 
 export function PricingPolicyAdmin({ workspace, hosted, onNotice, onPolicyUpdated, onState }: {
-  workspace: WorkspaceKey; hosted: boolean; onNotice: (message: string) => void;
+  workspace: string; hosted: boolean; onNotice: (message: string) => void;
   onPolicyUpdated: () => Promise<void>; onState?: (state: PolicyResponse) => void;
 }) {
   const [state, setState] = useState<PolicyResponse | null>(null);

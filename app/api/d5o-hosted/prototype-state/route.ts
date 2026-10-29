@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     if (text.length > 100_000) return reply({ error: "policy_too_large" }, 413);
     try {
       const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
-      if (!["rybex", "rotork"].includes(workspace)) return reply({ error: "invalid_target" }, 400);
+      if (!workspacePattern.test(workspace)) return reply({ error: "invalid_target" }, 400);
       const command = JSON.parse(text) as PricingPolicyCommand;
       if (!command || !["save-draft", "publish", "activate"].includes(command.action) || !Number.isInteger(command.expectedRevision)) return reply({ error: "invalid_command" }, 400);
       if (authoritativeD5OCommandsReady()) {
