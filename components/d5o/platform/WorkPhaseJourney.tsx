@@ -5,7 +5,7 @@ import type { WorkRecord } from "./work-types";
 export type WorkPhase = "Discover" | "Define" | "Develop" | "Design" | "Deploy" | "Operate";
 export type WorkControl = "Overview" | "Lifecycle" | "Readiness" | "Issues & changes" | "Evidence" | "Commercial" | "Lifecycle Value" | "History";
 
-export const workPhases: WorkPhase[] = ["Discover", "Define", "Design", "Develop", "Deploy", "Operate"];
+export const workPhases: WorkPhase[] = ["Discover", "Define", "Develop", "Design", "Deploy", "Operate"];
 
 export function WorkPhaseJourney({ active, record, onChoose, visiblePhases = workPhases }: {
   active?: WorkPhase;

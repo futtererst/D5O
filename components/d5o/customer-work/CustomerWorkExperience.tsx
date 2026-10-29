@@ -19,7 +19,7 @@ import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import type { CustomerDesignAction } from "@/lib/d5o/hosted/customer-design-contract";
 import type { DefineDraftInput } from "@/lib/d5o/hosted/customer-define-draft";
 
-const phases = ["Discover", "Define", "Design", "Develop", "Deploy", "Operate"] as const;
+const phases = ["Discover", "Define", "Develop", "Design", "Deploy", "Operate"] as const;
 type Phase = typeof phases[number];
 type PhaseDetail = { status: string; entryEvidence?: string | null;
   completionEvidence?: string | null; preparationEvidence?: string | null;
