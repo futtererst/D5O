@@ -1,0 +1,56 @@
+{
+  "startedAt": "2026-10-29T13:10:22.406Z",
+  "checks": [
+    {
+      "name": "source_auth_storage_database_fixture",
+      "status": "PASS"
+    },
+    {
+      "name": "interrupted_transaction_rolled_back",
+      "status": "PASS"
+    },
+    {
+      "name": "logical_database_auth_backup_captured",
+      "status": "PASS",
+      "tableCount": 3,
+      "backupSha256": "b83c9e1fea0859f1ac559be228cfe2fac68d0556a60bc3da95d398f6fd3c79a8"
+    },
+    {
+      "name": "restored_database_and_auth_identity",
+      "status": "PASS",
+      "userIdPreserved": true,
+      "reauthenticationSucceeded": true
+    },
+    {
+      "name": "restored_storage_bytes_match_database_reference",
+      "status": "PASS",
+      "sha256": "8dd603b29011869dc51422dc073d241d7c79279727d5934ecfa437ccf571fbf2",
+      "anonymousDenied": true,
+      "metadataIdPreserved": false
+    }
+  ],
+  "sourceCleanup": {
+    "projectId": "d5o-p0a-a5330350-630",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "targetCleanup": {
+    "projectId": "d5o-p0a-e133b054-bab",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "error": null,
+  "finishedAt": "2026-10-29T13:14:00.234Z",
+  "summary": {
+    "passed": 5,
+    "error": false,
+    "sourceCleanupVerified": true,
+    "targetCleanupVerified": true
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "startedAt": "2026-10-29T12:44:46.488Z",
+  "tests": [
+    {
+      "name": "purchase_order",
+      "status": "PASS",
+      "boundaryCases": 3,
+      "wrongActorDenied": true,
+      "selectedActorAllowed": true,
+      "before": "0:0:0:0",
+      "after": "0:0:0:0"
+    },
+    {
+      "name": "subcontract_allocation_agreement_variation",
+      "status": "PASS",
+      "boundaryCases": 9,
+      "wrongActorDenied": true,
+      "selectedActorAllowed": true,
+      "before": "0:0:0:0",
+      "after": "0:0:0:0"
+    }
+  ],
+  "setupError": null,
+  "cleanup": {
+    "projectId": "d5o-p0a-ca8eb4d4-d55",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "environment": {
+    "projectId": "d5o-p0a-ca8eb4d4-d55",
+    "productionAccess": false,
+    "loopbackOnly": true,
+    "fictionalDataOnly": true
+  },
+  "finishedAt": "2026-10-29T12:46:51.639Z",
+  "summary": {
+    "passed": 2,
+    "setupError": false,
+    "cleanupVerified": true
+  }
+}
