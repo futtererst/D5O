@@ -1,0 +1,42 @@
+{
+  "checkedAtUtc": "2026-10-29T05:25:49Z",
+  "checkpointWindowUtc": ["2026-10-29T06:00:00Z", "2026-10-29T07:00:00Z"],
+  "decision": "CANCEL_BEFORE_MAINTENANCE",
+  "productionChanged": false,
+  "maintenanceStarted": false,
+  "writerInventory": {
+    "vercelApplicationCommands": "WAF could block app traffic; no rule exists or was applied",
+    "directDataApi": "separate Supabase endpoint; application WAF cannot block it",
+    "auth": "separate provider API; sign-in and session operations can write",
+    "storage": "separate provider API; service-role operations bypass end-user RLS",
+    "scheduledJobs": "no deployed Edge Functions, pg_cron, or pg_net found",
+    "webhooks": "no outbound HTTP trigger candidates found among 125 user triggers",
+    "postgresSessions": "live authenticator and supabase_admin sessions observed",
+    "privilegedConnections": "available to provider and database operators; no enforced connection-wide freeze"
+  },
+  "candidateControls": {
+    "databaseDefaultReadOnly": "INSUFFICIENT_SOFT_FREEZE",
+    "vercelFirewallAlone": "INSUFFICIENT_SUPABASE_ENDPOINTS_REMAIN",
+    "shareTableLocks": {
+      "tables": 290,
+      "currentOperatorRoleEligible": 285,
+      "providerOwnedExcluded": ["auth.schema_migrations", "realtime.schema_migrations", "storage.buckets_vectors", "storage.migrations", "storage.vector_indexes"],
+      "completeBarrierTested": false
+    }
+  },
+  "localBoundaryProof": "NOT_EXECUTED_NO_COMPLETE_SUPPORTED_CONTROL",
+  "productionInventory": {
+    "projectRef": "fcawktdjoxvahhgvkebx",
+    "ledgerRows": 177,
+    "storageObjectMetadataRows": 23,
+    "inventorySha256": "2640511d7f5b872dbdf42ae9bf30ea279cc8da9404a910e7963ddb8d7c99c2e4",
+    "approvedStartingLedgerFingerprintMatched": true
+  },
+  "checkpointApprovalSha256": "f0cbcde30f594cc64cbd819a48b4feef9c6334d6833509ac426cd0911eb6afae",
+  "activeApprovalFileInvalidated": true,
+  "restrictedCancelledApprovalRecordRetained": true,
+  "quiescenceAttestationPresent": false,
+  "checkpointDestinationEmpty": true,
+  "checkpointCaptured": false,
+  "isolatedRestoreExecuted": false
+}
