@@ -1,5 +1,22 @@
 # Controlled D5O cutover runbook — checkpoint window cancelled, execution gated
 
+## Current roll-forward-first gate (2026-10-29)
+
+Use the existing 25-order guarded migration runner and pinned Vercel archive. Stop D5O business commands, direct exposed business RPC calls and uploads during the schema/application switch; drain incompatible transactions. Do not infer that this stops independent Auth or privileged Storage changes. The prior local migration tests established a clean 177→202 path and a lock-timeout stop at order 212 with ledger 177; they did **not** prove a complete old-app/new-app concurrent cutover. Do not use the cancelled maintenance window.
+
+The read-only `node scripts/production/launch-preflight.mjs <verified-release-archive> <restricted-db-uri-file>` checks source ancestry/tree, archive, all 236 file hashes, bridge hashes, Vercel project, Production variable **names**, and the 177-entry starting ledger/object inventory. It intentionally reports `cutoverGoNoGo: NO_GO` until effective values, current recovery point and release authorization are separately verified. Production currently lacks `RYBEXOS_SCANNER_MODE`; set it to the approved `disabled` value only in an authorized configuration change, and disclose that evidence is unscanned. Do not export Production secret values merely to satisfy this check.
+
+| Failure boundary | Permitted first response | Database restore condition |
+| --- | --- | --- |
+| Order-212 lock timeout before any committed order | Stop, verify ledger remains 177 and historical invariants, release D5O commands only after compatible state is confirmed. | No restore if the original schema and records are intact. |
+| Later migration order fails after prior orders commit | Keep D5O writes blocked; assess a reviewed forward correction or resume from the actual ledger. | Only with a verified recovery point and reconciliation of later Auth/Storage changes. |
+| New deployment fails on upgraded schema | Keep writes blocked; roll forward with a reviewed application fix. Revert only the application if old-version schema compatibility is proven. | Application rollback alone does not undo the database. |
+| Auth credential or identity changes after checkpoint | Compare provider-managed state and preserve/reconcile those changes with Supabase support. | No blind restore to an older Auth state. |
+| Storage object or metadata changes after checkpoint | Compare dynamic object inventory, bytes and evidence associations; preserve/reconcile every changed object. | No database-only or byte-only restore while pairs differ. |
+| Tenant-security or historical-integrity failure | Stop traffic and preserve evidence; seek reviewed correction or provider-assisted recovery. | Restore only after isolated proof of a consistent database/Auth/object set. |
+
+The latest daily managed database backup is older than the release boundary, PITR is not enabled, and database backup excludes Storage object bytes. The current 23-object encrypted capture is byte-verified but was not atomic with a current database/Auth checkpoint. Supabase support ticket **SU-529961** asks for a supported reconciliation/restore method. Until its answer and a bounded rehearsal establish the recovery path, this runbook is an executable **preflight and stop procedure**, not authority to migrate or deploy.
+
 ## 2026-10-29 deployment input check
 
 The durable archive SHA-256 `c9ebbcdc12194355388114eacb9f9b0ecb92fc89e219a3a5e8034cac4309e557` was reverified (192,952,320 bytes). A clean extraction linked locally to Vercel project `prj_HF8KhxUFvONQlpMr53FdhEgmIpFG` passed `vercel deploy <extracted-directory> --dry --scope team_YSItyDw0cqxobdy4YBp9osYV --non-interactive` with CLI 59.19.0: Next.js, 1,914 deploy inputs, no deployment created. The eventual production command is the same source directory and project with `--prod` instead of `--dry`, only after production variables, source identity, recovery and final authorization pass. The dry run proves input detection, not a hosted build or effective production binding. [Evidence](evidence/migration-cutover-20261029.json).

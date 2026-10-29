@@ -1,0 +1,58 @@
+{
+  "dateUtc": "2026-10-29",
+  "productionMutationPerformed": false,
+  "supabaseProject": "fcawktdjoxvahhgvkebx",
+  "vercelProject": "prj_HF8KhxUFvONQlpMr53FdhEgmIpFG",
+  "applicationSource": "8ca44e778adc3913d9eca686da8c8473e4c85167",
+  "applicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "releaseArchiveSha256": "c9ebbcdc12194355388114eacb9f9b0ecb92fc89e219a3a5e8034cac4309e557",
+  "migrationManifestSha256": "c7e3cc0cb3740c2b0acf00b19160b489ced836accfdd470949c4c65d65c8ebb1",
+  "startingLedgerEntries": 177,
+  "expectedLedgerEntries": 202,
+  "managedBackup": {
+    "latestObservedPhysicalUtc": "2026-10-28T08:37:49Z",
+    "pointInTimeRecoveryEnabled": false,
+    "storageObjectBytesIncluded": false,
+    "source": "Supabase D5O Pro project dashboard and official database-backup guidance"
+  },
+  "currentPrivateStorageCopy": {
+    "objectCount": 23,
+    "totalBytes": 2252301,
+    "inventorySha256BeforeAndAfter": "2640511d7f5b872dbdf42ae9bf30ea279cc8da9404a910e7963ddb8d7c99c2e4",
+    "metadataPlaintextSha256BeforeAndAfter": "e200571be7596727ba2852654112a00963fa49d82433d845c2d4a99cfcb3d8bf",
+    "encryptedByteIndexSha256": "4d62c0ea5d48b04fbd3a4fd58aad4fd50815dcc9a40d5a712d13f111c87ce929",
+    "missingOrSizeMismatchedObjects": 0,
+    "isolatedByteAndAssociationVerification": "PASS",
+    "matchedCurrentDatabaseAuthStorageCheckpoint": false
+  },
+  "isolatedRestore": {
+    "migrationLedgerEntries": 177,
+    "authUsers": 25,
+    "authIdentities": 25,
+    "historicalWorkRows": 15,
+    "storageMetadataRows": 23,
+    "restoreSeconds": 51.51,
+    "privateBytesAndAssociationsVerified": true,
+    "disposableContainerRemoved": true
+  },
+  "readOnlyPreflight": {
+    "applicationAncestry": "PASS",
+    "applicationTree": "PASS",
+    "releaseArchive": "PASS",
+    "migrationManifestAndFiles": "PASS",
+    "atomicBridgeSources": "PASS",
+    "vercelProject": "PASS",
+    "productionStartingLedgerAndStorageInventory": "PASS",
+    "productionVariableNames": "FAIL: RYBEXOS_SCANNER_MODE absent",
+    "effectiveBindingValuesVerified": false,
+    "recoveryCheckpointVerified": false,
+    "cutoverGoNoGo": "NO_GO"
+  },
+  "providerSupport": {
+    "ticketId": "SU-529961",
+    "submitted": true,
+    "projectSupportAccessEnabled": false,
+    "providerAnswerReceived": false
+  },
+  "cancelledWindowReused": false
+}
