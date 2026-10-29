@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { personHoursForShift } from "@/lib/d5o/hosted/booking-hours";
 
 type Demand = { qualification?: string; minimumPeople?: number; estimatedPersonHours?: number;
   requiredSlots?: Array<{ date: string; shift: string }> };
@@ -48,6 +49,7 @@ export function CustomerDevelopActions({ workspace, workId, role, onChanged }: {
   const release = snapshot?.work.design?.releases?.find((item) => item.status === "Accepted");
   const demand = release?.crewDemandSnapshot;
   const slot = demand?.requiredSlots?.[0];
+  const bookingHours = personHoursForShift(slot?.shift ?? "");
   const nextDate = slot ? new Date(Date.parse(`${slot.date}T00:00:00Z`) + 86400000)
     .toISOString().slice(0, 10) : "";
   const overnight = Boolean(slot?.shift && /^\d\d:\d\d[–-]\d\d:\d\d$/.test(slot.shift)
@@ -62,8 +64,8 @@ export function CustomerDevelopActions({ workspace, workId, role, onChanged }: {
     && !(snapshot?.schedule.state.availabilityBlocks ?? []).some((block) =>
       block.person === item.person && (block.date === slot?.date
         || overnight && block.date === nextDate))
-    && item.weeklyCapacityHours >= (demand?.estimatedPersonHours ?? 0) /
-      Math.max(1, demand?.minimumPeople ?? 1)), [snapshot, demand, slot, overnight, nextDate]);
+    && bookingHours > 0 && item.weeklyCapacityHours >= bookingHours),
+    [snapshot, demand, slot, overnight, nextDate, bookingHours]);
   const assignments = (snapshot?.schedule.state.assignments ?? []).filter((item) =>
     item.workId === workId && item.packageId === release?.packageId);
   const booking = assignments[0];
@@ -81,7 +83,8 @@ export function CustomerDevelopActions({ workspace, workId, role, onChanged }: {
       const day = slot && snapshot.schedule.state.anchorDate
         ? weekDay(snapshot.schedule.state.anchorDate, slot.date) : null;
       const chosen = qualified.filter((item) => people.includes(item.person));
-      if (action === "save-booking" && (!slot || !day || chosen.length < (demand?.minimumPeople ?? 1)
+      if (action === "save-booking" && (!slot || !day || bookingHours <= 0 || bookingHours > 24
+        || chosen.length < (demand?.minimumPeople ?? 1)
         || day.day < 0 || day.day > 4))
         throw Error("Choose enough qualified workers for the weekday demand slot.");
       const payload = { workId, packageId: release.packageId, action,
@@ -90,8 +93,7 @@ export function CustomerDevelopActions({ workspace, workId, role, onChanged }: {
           id: `booking-${crypto.randomUUID()}`, crew: `Assigned ${chosen.map((item) => item.displayName).join(", ")}`,
           people: chosen.map((item) => item.person), workId, packageId: release.packageId,
           week: day?.week, day: day?.day, date: slot?.date, shift: slot?.shift,
-          personHoursPerWorker: (demand?.estimatedPersonHours ?? 0) /
-            Math.max(1, chosen.length) } } : {}),
+          personHoursPerWorker: bookingHours } } : {}),
         ...(action === "publish-week" ? { week: booking?.week } : {}),
         ...(action === "authorize-start" ? { reason: reason.trim(),
           sourceRevision: snapshot.sourceRevision,
