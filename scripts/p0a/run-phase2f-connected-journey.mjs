@@ -7588,7 +7588,7 @@ try {
     const page=await context.newPage();
     const target=`http://127.0.0.1:${server.port}/work/customer/${a.workspaceKey}`;
     try {
-      await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=${encodeURIComponent(target)}`);
+      await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=${encodeURIComponent(`/work/customer/${a.workspaceKey}`)}`);
       await page.getByLabel("Email").fill(users.a_pm.email);
       await page.getByLabel("Password").fill(users.a_pm.password);
       await page.getByRole("button",{name:"Continue to your work"}).click();
