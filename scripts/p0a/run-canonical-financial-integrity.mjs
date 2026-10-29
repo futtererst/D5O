@@ -57,10 +57,10 @@ function fixture(tenant, users) {
   const id = { workspace: uuid(), configTenant: uuid(), configVersion: uuid(), work: uuid(),
     presentation: `${tenant}-financial-${uuid().replaceAll("-", "")}`, bom: uuid(), quote: uuid(),
     doc: uuid() };
-  const workKey = tenant === "a" ? "rybex" : "rotork";
+  const workKey = tenant === "a" ? "rybex" : tenant === "b" ? "rotork" : "financial_race_test";
   const account = `FICTIONAL-${tenant.toUpperCase()}-ACCOUNT`;
   const amounts = tenant === "b" ? [300000, 300000, 200000, 200001, 100000]
-    : [300000, 300000, 200000, 200001];
+    : tenant === "c" ? [100000] : [300000, 300000, 200000, 200001];
   const materials = amounts.map(() => uuid());
   const quoteLines = amounts.map((amount, index) => ({ lineNumber: String(index + 1),
     graybarSku: `FICTIONAL-${tenant}-${index}`, description: `Fictional material ${index + 1}`,
@@ -567,6 +567,103 @@ try {
     assert.equal(totals, "600000:300000:100000");
     return { wrongReviewerDenied: true, selectedDelegateApprovedViaBrowser: true,
       combinedCommittedMinor: 1000000, parentCapMinor: 1000000 };
+  });
+  await check("PO and subcontract variation cannot jointly overspend shared parent cap", async () => {
+    const c = fixture("c", users.a);
+    const purchase = (role, action, input, revision, sourceDigest) =>
+      call(`a_${role}`, "d5o_purchase_authority_command_v1", {
+        p_workspace_key: c.workKey, p_presentation_id: c.presentation,
+        p_action: action, p_input: input, p_command_id: uuid(),
+        p_expected_revision: revision, p_expected_source_digest: sourceDigest });
+    const purchaseRead = await call("a_pm", "d5o_purchase_authority_read_v1", {
+      p_workspace_key: c.workKey, p_presentation_id: c.presentation });
+    assert.ifError(purchaseRead.error);
+    const purchaseDigest = purchaseRead.data.source.digest;
+    const preparedAuthority = await purchase("pm", "prepare", {
+      parentCapMinor: "1000000", purchaseCapMinor: "1000000", subcontractEnabled: true,
+      validFrom: new Date().toISOString().slice(0, 10), validUntil: "2027-12-31",
+      purchasingEntity: "Fictional cross-family purchasing", graybarAccountReference: c.account,
+      scope: "Fictional shared budget race", fundingSource: "Fictional customer funding",
+      sourceReference: "FICTIONAL-RACE-AWARD", conditions: "Independent approvals required"
+    }, purchaseRead.data.revision, purchaseDigest);
+    assert.ifError(preparedAuthority.error);
+    const authority = await purchase("admin", "approve", {
+      authorityId: preparedAuthority.data.subjectId,
+      reason: "Independent fictional shared budget authority" },
+    preparedAuthority.data.revision, purchaseDigest);
+    assert.ifError(authority.error);
+    const graybar = (role, action, input, revision) => call(`a_${role}`,
+      "d5o_graybar_command_v1", { p_workspace_key: c.workKey,
+        p_presentation_id: c.presentation, p_action: action, p_input: input,
+        p_command_id: uuid(), p_expected_revision: revision });
+    const poDraft = await graybar("pm", "prepare-po", {
+      lines: [{ materialId: c.materials[0], quantity: "1", unit: "each" }],
+      shipTo: "Fictional race site", accountReference: c.account,
+      requiredDate: "2027-01-15", budgetMinor: "1000000" }, 1);
+    assert.ifError(poDraft.error);
+    const orderId = poDraft.data.state.orders[0].id;
+    const subcontract = (role, action, input, revision, digest) =>
+      call(`a_${role}`, "d5o_subcontract_command_v1", {
+        p_workspace_key: c.workKey, p_presentation_id: c.presentation,
+        p_action: action, p_input: input, p_command_id: uuid(),
+        p_expected_revision: revision, p_expected_source_digest: digest });
+    const initial = await call("a_pm", "d5o_subcontract_read_v1", {
+      p_workspace_key: c.workKey, p_presentation_id: c.presentation });
+    assert.ifError(initial.error);
+    const subcontractDigest = initial.data.source.digest;
+    const allocation = await subcontract("pm", "prepare-allocation", {
+      capMinor: "1000000", scope: "Fictional installation race scope",
+      conditions: "Independent approvals required", sourceReference: "FICTIONAL-RACE-SUBCONTRACT"
+    }, initial.data.revision, subcontractDigest);
+    assert.ifError(allocation.error);
+    const allocationApproved = await subcontract("admin", "review-allocation", {
+      allocationId: allocation.data.subjectId, decision: "Approved",
+      reason: "Independent fictional allocation" }, allocation.data.revision, subcontractDigest);
+    assert.ifError(allocationApproved.error);
+    const company = await subcontract("pm", "register-company", {
+      name: "Fictional Race Contractor", contactName: "Fictional Contact",
+      contactReference: "fictional@example.test" }, allocationApproved.data.revision, subcontractDigest);
+    assert.ifError(company.error);
+    const agreement = await subcontract("pm", "prepare-agreement", {
+      companyId: company.data.subjectId, documentId: c.doc, amountMinor: "900000",
+      agreementReference: "FICTIONAL-RACE-AGREEMENT", scope: "Fictional site work",
+      exclusions: "None", deliverables: "Fictional installed assembly",
+      acceptanceCriteria: "Independent inspection", scheduleBasis: "Fictional schedule",
+      milestoneBasis: "One completion milestone" }, company.data.revision, subcontractDigest);
+    assert.ifError(agreement.error);
+    const agreementApproved = await subcontract("admin", "review-agreement", {
+      agreementId: agreement.data.subjectId, decision: "Approved",
+      reason: "Independent fictional agreement" }, agreement.data.revision, subcontractDigest);
+    assert.ifError(agreementApproved.error);
+    const variation = await subcontract("pm", "prepare-variation", {
+      agreementId: agreement.data.subjectId, deltaMinor: "100000", documentId: c.doc,
+      scopeDifference: "Fictional extra work", scheduleImpact: "One day",
+      rationale: "Fictional site condition" }, agreementApproved.data.revision, subcontractDigest);
+    assert.ifError(variation.error);
+    const before = sql(`select
+      (select coalesce(sum(amount_minor),0) from d5o_hosted.purchase_reservations
+       where workspace_id=${q(c.workspace)} and work_id=${q(c.work)})||':'||
+      (select coalesce(sum(amount_minor),0) from d5o_hosted.subcontract_reservations
+       where workspace_id=${q(c.workspace)} and work_id=${q(c.work)});`);
+    assert.equal(before, "0:900000");
+    const [poResult, variationResult] = await Promise.all([
+      graybar("admin", "approve-po", { orderId,
+        authorityBasis: "Independent fictional PO race approval" }, poDraft.data.revision),
+      subcontract("admin", "review-variation", {
+        agreementId: agreement.data.subjectId, variationId: variation.data.subjectId,
+        decision: "Approved", reason: "Independent fictional variation race approval"
+      }, variation.data.revision, subcontractDigest)
+    ]);
+    assert.equal([poResult, variationResult].filter((item) => !item.error).length, 1,
+      `cross_family_race:${JSON.stringify({poResult,variationResult}).slice(0,900)}`);
+    const after = sql(`select
+      (select coalesce(sum(amount_minor),0) from d5o_hosted.purchase_reservations
+       where workspace_id=${q(c.workspace)} and work_id=${q(c.work)})||':'||
+      (select coalesce(sum(amount_minor),0) from d5o_hosted.subcontract_reservations
+       where workspace_id=${q(c.workspace)} and work_id=${q(c.work)});`);
+    assert(["100000:900000", "0:1000000"].includes(after), `shared_cap_overspend:${after}`);
+    return { before, after, accepted: 1, rejected: 1,
+      rejectedCode: (poResult.error ?? variationResult.error).code };
   });
 } catch (error) { evidence.error = String(error.stack ?? error).slice(0, 2500); }
 finally {

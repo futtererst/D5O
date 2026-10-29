@@ -1,0 +1,100 @@
+{
+  "startedAt": "2026-10-29T15:48:39.902Z",
+  "checks": [
+    {
+      "name": "two tenant source and independent parent authority",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "canonical purchase approval concurrency and exact cap",
+      "status": "PASS",
+      "detail": {
+        "concurrentAccepted": 1,
+        "rejectedRetry": true,
+        "exactCapMinor": 500000,
+        "reservations": "2:500000",
+        "events": "6",
+        "winnerRevision": 6
+      }
+    },
+    {
+      "name": "PO draft cancellation and replay have no commitment effect",
+      "status": "PASS",
+      "detail": {
+        "cancelledDraft": true,
+        "replacementDraft": true,
+        "replaySameRevision": true,
+        "unchangedReservations": "2:500000"
+      }
+    },
+    {
+      "name": "canonical subcontract agreement and variation share parent cap with POs",
+      "status": "PASS",
+      "detail": {
+        "parentCapMinor": 1000000,
+        "purchaseMinor": 500000,
+        "subcontractMinor": 500000,
+        "exactVariationMinor": 100000,
+        "aboveDenied": true
+      }
+    },
+    {
+      "name": "canonical Design commitments serialize under their cap",
+      "status": "PASS",
+      "detail": {
+        "concurrentAccepted": 1,
+        "capMinor": 600000,
+        "committedMinor": 600000,
+        "aboveDenied": true,
+        "persisted": "2:600000"
+      }
+    },
+    {
+      "name": "labor authority cap changes preserve existing exposure",
+      "status": "PASS",
+      "detail": {
+        "exposedMinor": 300000,
+        "belowDenied": true,
+        "exactApproved": true,
+        "remainingMinor": 0
+      }
+    },
+    {
+      "name": "selected delegate alone approves a canonical PO at the combined cap",
+      "status": "PASS",
+      "detail": {
+        "wrongReviewerDenied": true,
+        "selectedDelegateApprovedViaBrowser": true,
+        "combinedCommittedMinor": 1000000,
+        "parentCapMinor": 1000000
+      }
+    },
+    {
+      "name": "PO and subcontract variation cannot jointly overspend shared parent cap",
+      "status": "PASS",
+      "detail": {
+        "before": "0:900000",
+        "after": "100000:900000",
+        "accepted": 1,
+        "rejected": 1,
+        "rejectedCode": "23514"
+      }
+    }
+  ],
+  "error": null,
+  "cleanup": {
+    "projectId": "d5o-p0a-2b415a8b-07e",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "finishedAt": "2026-10-29T15:50:21.016Z",
+  "summary": {
+    "passed": 8,
+    "error": false,
+    "cleanupVerified": true
+  }
+}
