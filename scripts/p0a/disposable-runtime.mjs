@@ -14,7 +14,8 @@ const run = (root, command, args, env = createSanitizedChildEnv(), timeoutMs = 0
   ...(timeoutMs ? { timeout: timeoutMs } : {}),
 });
 
-export async function createP0aRuntime(root = process.cwd(), { migrationCutoff = null } = {}) {
+export async function createP0aRuntime(root = process.cwd(), { migrationCutoff = null,
+  jwtExpirySeconds = null } = {}) {
   root = resolve(root);
   const projectId = `${PREFIX}${randomUUID().slice(0, 12)}`;
   const projectDir = mkdtempSync(join(tmpdir(), projectId + "-"));
@@ -34,6 +35,12 @@ export async function createP0aRuntime(root = process.cwd(), { migrationCutoff =
     const releaseMinimal = process.env.D5O_RELEASE_MINIMAL_STACK === "1";
     let config = rewriteSupabaseConfigForProject(
       readFileSync(join(root, "supabase", "config.toml"), "utf8"), projectId, ports);
+    if (jwtExpirySeconds !== null) {
+      if (!Number.isInteger(jwtExpirySeconds) || jwtExpirySeconds < 60 || jwtExpirySeconds > 3600)
+        throw new Error("isolated_jwt_expiry_out_of_range");
+      if (!/^jwt_expiry = 3600$/m.test(config)) throw new Error("isolated_jwt_expiry_source_changed");
+      config = config.replace(/^jwt_expiry = 3600$/m, `jwt_expiry = ${jwtExpirySeconds}`);
+    }
     if (releaseMinimal) config = config.replace(/(\[analytics\]\s*enabled\s*=\s*)true/, "$1false");
     writeFileSync(join(projectDir, "supabase", "config.toml"), config);
     runtime.network = createP0aNetwork(root, projectId);

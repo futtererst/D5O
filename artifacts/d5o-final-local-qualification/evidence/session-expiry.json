@@ -1,0 +1,46 @@
+{
+  "startedAt": "2026-10-29T16:03:19.959Z",
+  "checks": [
+    {
+      "name": "fictional browser signs in with five-minute local JWT",
+      "status": "PASS",
+      "detail": {
+        "jwtExpirySeconds": 300,
+        "userId": "78f62c41-5555-443e-802c-3118a4298482"
+      }
+    },
+    {
+      "name": "expired access token refreshes on protected browser navigation",
+      "status": "PASS",
+      "detail": {
+        "elapsedSeconds": 311,
+        "protectedPage": "/work"
+      }
+    },
+    {
+      "name": "missing session cannot navigate to protected Work",
+      "status": "PASS",
+      "detail": {
+        "redirectedTo": "/auth/sign-in"
+      }
+    }
+  ],
+  "error": null,
+  "cleanup": {
+    "projectId": "d5o-p0a-da01c1ef-d02",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "cookieNamesAfterExpiry": [
+    "sb-127-auth-token"
+  ],
+  "finishedAt": "2026-10-29T16:09:49.490Z",
+  "summary": {
+    "passed": 3,
+    "error": false,
+    "cleanupVerified": true
+  }
+}
