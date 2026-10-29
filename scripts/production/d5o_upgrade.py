@@ -113,15 +113,36 @@ def sql_call(command, env, sql, timeout=180):
         fail(line)
     return run.stdout.strip()
 
-def fingerprint(command, env):
+def fingerprint(command, env, resume_count=None):
     expected = json.loads(START_PATH.read_text(encoding="utf8"))["fingerprints_sha256"]
     for label, query in PROBES.items():
+        if label == "ledger" and resume_count is not None:
+            query = "select row_to_json(t)::text from (select version,name,statements from supabase_migrations.schema_migrations order by version limit 177) t"
         if digest(sql_call(command, env, query + ";").encode()) != expected[label]:
             fail("approved starting fingerprint mismatch: " + label)
     if sql_call(command, env, "select current_database()") != "postgres":
         fail("unexpected database name")
-    if sql_call(command, env, "select count(*)||'|'||max(version) from supabase_migrations.schema_migrations") != "177|20261021123923":
+    if resume_count is None and sql_call(command, env, "select count(*)||'|'||max(version) from supabase_migrations.schema_migrations") != "177|20261021123923":
         fail("starting ledger mismatch")
+
+def verified_resume_prefix(command, env, selected, resume_count):
+    if not 178 <= resume_count <= 201:
+        fail("resume ledger count outside reviewed partial-migration range")
+    actual = sql_call(command, env, "select version from supabase_migrations.schema_migrations order by version offset 177")
+    expected = [item["version"] for item in selected[:resume_count - 177]]
+    if actual.splitlines() != expected:
+        fail("partial ledger versions are not the exact reviewed prefix")
+    for item in selected[:resume_count - 177]:
+        parts = [(ROOT / "supabase/migrations" / item["filename"]).read_text(encoding="utf8")]
+        if item["order"] == 215:
+            parts = [(ROOT / "scripts/rc8_bridge_pre_215.sql").read_text(), parts[0],
+                     (ROOT / "scripts/rc8_bridge_post_215.sql").read_text()]
+        literal_parts = "array[" + ",".join(literal(part) for part in parts) + "]::text[]"
+        matched = sql_call(command, env, "select coalesce((select statements=" + literal_parts +
+                           " from supabase_migrations.schema_migrations where version=" + literal(item["version"]) + "),false)")
+        if matched != "t":
+            fail("partial ledger SQL differs from reviewed source at order " + str(item["order"]))
+    return selected[resume_count - 177:]
 
 def historical_hashes(command, env):
     parts = ["select '" + label + "' as label,md5(coalesce(string_agg(md5((" + expr + ")::text),'|' order by md5((" + expr + ")::text)),'')) from " + table + " t"
@@ -129,7 +150,7 @@ def historical_hashes(command, env):
     return dict(row.split("|", 1) for row in sql_call(command, env, " union all ".join(parts)).splitlines())
 
 def approval_check(args, manifest_sha):
-    if args.mode != "apply-production":
+    if args.mode not in ("apply-production", "resume-production"):
         return
     if not args.approval_file or not os.environ.get("D5O_APPROVAL_FILE_SHA256"):
         fail("separate release-owner approval artifact and pinned hash required")
@@ -144,6 +165,9 @@ def approval_check(args, manifest_sha):
                 "startingLedgerSha256": json.loads(START_PATH.read_text())["fingerprints_sha256"]["ledger"]}
     if any(approval.get(key) != value for key, value in required.items()):
         fail("approval identity mismatch")
+    if args.mode == "resume-production" and (approval.get("resumeFromLedger") != args.resume_from_ledger or
+                                             approval.get("reviewedPartialStop") is not True):
+        fail("separate partial-migration review and exact resume ledger approval required")
     if not approval.get("approvalId") or not approval.get("releaseOwner") or not approval.get("checkpointId"):
         fail("incomplete release approval")
     if not args.drift_baseline_file or not approval.get("driftBaselineSha256"):
@@ -178,7 +202,7 @@ def apply_order(command, env, item, inject_failure):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--mode", choices=("plan", "apply-rehearsal", "apply-production"), default="plan")
+    ap.add_argument("--mode", choices=("plan", "apply-rehearsal", "apply-production", "resume-rehearsal", "resume-production"), default="plan")
     ap.add_argument("--transport", choices=("docker", "psql"), required=True)
     ap.add_argument("--project-ref", required=True)
     ap.add_argument("--container", default=LOCAL_CONTAINER)
@@ -187,28 +211,35 @@ def main():
     ap.add_argument("--approval-file")
     ap.add_argument("--drift-baseline-file")
     ap.add_argument("--inject-failure-order", type=int)
+    ap.add_argument("--resume-from-ledger", type=int)
     args = ap.parse_args()
     if (args.transport == "docker") != (args.project_ref == "LOCAL_REHEARSAL"):
         fail("transport and target identity disagree")
-    if args.mode == "apply-production" and args.transport != "psql":
+    if args.mode in ("apply-production", "resume-production") and args.transport != "psql":
         fail("production apply requires production transport")
-    if args.mode == "apply-rehearsal" and args.transport != "docker":
+    if args.mode in ("apply-rehearsal", "resume-rehearsal") and args.transport != "docker":
         fail("rehearsal apply requires isolated Docker transport")
+    if (args.mode.startswith("resume-") != (args.resume_from_ledger is not None)):
+        fail("resume mode requires an exact partial ledger count")
     if args.inject_failure_order and (args.mode != "apply-rehearsal" or args.inject_failure_order not in range(212, 237)):
         fail("failure injection allowed only for rehearsal orders 212-236")
     selected, manifest_sha = load_sources()
     approval_check(args, manifest_sha)  # Before connecting or writing.
     command, env = (local_environment(args.container, args.project_ref) if args.transport == "docker"
                     else production_environment(args.uri_file, args.project_ref, args.psql_binary))
-    fingerprint(command, env)
-    if args.mode == "apply-production":
+    fingerprint(command, env, args.resume_from_ledger)
+    if args.mode.startswith("resume-"):
+        if sql_call(command, env, "select count(*) from supabase_migrations.schema_migrations") != str(args.resume_from_ledger):
+            fail("partial ledger count changed")
+        selected = verified_resume_prefix(command, env, selected, args.resume_from_ledger)
+    if args.mode in ("apply-production", "resume-production"):
         drift = subprocess.run(["node", str(ROOT / "scripts/production/checkpoint-drift.mjs"),
                                 "compare", args.uri_file, args.drift_baseline_file],
                                capture_output=True, text=True, timeout=90)
         if drift.returncode != 0 or json.loads(drift.stdout).get("status") != "UNCHANGED":
             fail("post-checkpoint Auth, business, ledger or Storage metadata drift; do not migrate")
     result = {"mode": args.mode, "target": args.project_ref, "sourceCommit": source_commit(),
-              "manifestSha256": manifest_sha, "startingLedger": 177,
+              "manifestSha256": manifest_sha, "startingLedger": args.resume_from_ledger or 177,
               "orders": [], "status": "PREFLIGHT_PASS"}
     if args.mode == "plan":
         result["orders"] = [{"order": x["order"], "sha256": x["sha256"]} for x in selected]
@@ -223,6 +254,9 @@ def main():
             result["failedOrder"] = item["order"]
             result["error"] = str(error)
             result["ledgerAfterStop"] = sql_call(command, env, "select count(*) from supabase_migrations.schema_migrations")
+            stopped_hashes = historical_hashes(command, env)
+            result["historicalHashesPreservedOnStop"] = {
+                name: value == stopped_hashes[name] for name, value in before.items()}
             print(json.dumps(result))
             sys.exit(2)
         result["orders"].append({"order": item["order"], "ledgerStatements": count})

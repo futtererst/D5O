@@ -1,0 +1,43 @@
+{
+  "dateUtc": "2026-10-29",
+  "productionMutationPerformed": false,
+  "releaseBranchStart": "3e38595363cb431232f92e9510193fcf240589c3",
+  "remoteBranchBefore": "f50dfef0a5af4d8e45212e37d4d2900aed86092b",
+  "applicationSource": "8ca44e778adc3913d9eca686da8c8473e4c85167",
+  "applicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "migrationManifestSha256": "c7e3cc0cb3740c2b0acf00b19160b489ced836accfdd470949c4c65d65c8ebb1",
+  "isolatedHistoricalRehearsal": {
+    "restore": "PASS: 177 ledger, 25 Auth users, 25 identities, 15 historical Work, 23 private objects and 2252301 encrypted-copy bytes verified",
+    "injectedFailureOrder": 216,
+    "ledgerAfterInjectedFailure": 181,
+    "failedOrderCommitted": false,
+    "resumePrefix": "PASS: versions and stored SQL statements 212-215 matched frozen source, including three-part atomic bridge",
+    "resumedOrders": "216-236",
+    "ledgerAfterResume": 202,
+    "protectedHistoricalDigestClassesUnchanged": 10,
+    "bridgeSecurityPostconditions": "PASS",
+    "staleResumeCountDenied": true,
+    "productionResumeWithoutApprovalDenied": true,
+    "disposableDatabaseNetwork": "none"
+  },
+  "productionDataApi": {
+    "dashboardSetting": "enabled",
+    "supportedDisableControl": true,
+    "productionTogglePerformed": false,
+    "localCombinedVercelAndDataApiInterruptionTest": "NOT EXECUTED",
+    "authAndStorageIndependentlyControlled": false
+  },
+  "recovery": {
+    "currentEncryptedPrivateObjectCopyVerified": true,
+    "currentMatchedDatabaseAuthStorageCheckpoint": false,
+    "automaticDatabaseRestorePermittedAfterAuthOrStorageDrift": false,
+    "pointInTimeRecoveryEnabled": false
+  },
+  "applicationCompatibility": {
+    "exactCandidateLocalAcceptancePreviouslyPassed": true,
+    "oldAppAgainstIntermediateOrFinalHistoricalSchema": "NOT EXECUTED",
+    "newAppAgainstThisUpgradedHistoricalRestore": "NOT EXECUTED",
+    "hostedDeploymentFailureForwardRecovery": "NOT EXECUTED"
+  },
+  "cutoverGoNoGo": "NO_GO"
+}
