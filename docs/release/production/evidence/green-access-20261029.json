@@ -1,0 +1,36 @@
+{
+  "recordedAtUtc": "2026-10-29T09:04:19Z",
+  "blueProject": "fcawktdjoxvahhgvkebx",
+  "greenProject": "qeungkghkdqhtkmlksef",
+  "greenStorageCredential": {
+    "restrictedFile": "C:\\Users\\futte\\AppData\\Local\\D5O-RC6-Access\\green-storage-key.txt",
+    "credentialType": "existing sb_secret",
+    "aclPrincipals": ["SHAWNT13\\futte", "NT AUTHORITY\\SYSTEM"],
+    "greenBucketListHttpStatus": 200,
+    "blueBucketListAccepted": false,
+    "privateProbe": {
+      "bucketCreated": true,
+      "objectUploaded": true,
+      "objectBytesReadBack": true,
+      "objectDeleted": true,
+      "bucketDeleted": true
+    }
+  },
+  "greenDatabaseCredential": {
+    "available": false,
+    "required": "GREEN PostgreSQL session-pooler URI with password and TLS"
+  },
+  "securityNote": "The CLI's ordinary project-key listing emitted GREEN's legacy service-role JWT in tool output. That legacy key must be rotated or disabled before GREEN hosts users. The separate sb_secret credential was captured without printing its value.",
+  "greenStateAfterProbe": {
+    "authUsers": 0,
+    "authIdentities": 0,
+    "storageBuckets": 0,
+    "storageObjects": 0,
+    "migrationLedgerPresent": false
+  },
+  "transfer": "NOT_STARTED",
+  "migration": "NOT_STARTED",
+  "hostedDeployment": "NOT_STARTED",
+  "blueModified": false,
+  "secretsCommitted": false
+}
