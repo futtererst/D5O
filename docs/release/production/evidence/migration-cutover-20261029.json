@@ -1,0 +1,68 @@
+{
+  "dateUtc": "2026-10-29",
+  "sourceCommit": "f50dfef0a5af4d8e45212e37d4d2900aed86092b",
+  "applicationSourceCommit": "8ca44e778adc3913d9eca686da8c8473e4c85167",
+  "applicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "migrationManifestSha256": "c7e3cc0cb3740c2b0acf00b19160b489ced836accfdd470949c4c65d65c8ebb1",
+  "migrationOrders": "212-236",
+  "bridgePreSha256": "0f076c496f756b8f56965b104cddd8c77c558344c89ca84cbf85946dfa924af5",
+  "bridgePostSha256": "b15dcd56a30fc4b46e81ea792fbfd51e19213630b698bd5734334f0cccbdf5d8",
+  "isolatedRestore": {
+    "result": "PASS",
+    "ledgerBefore": 177,
+    "authUsers": 25,
+    "authIdentities": 25,
+    "historicalWork": 15,
+    "storageMetadataObjects": 23,
+    "protectedObjectBytes": 2252301,
+    "elapsedSeconds": 30.92
+  },
+  "concurrentLockProbe": {
+    "target": "d5o_hosted.workspaces",
+    "heldLock": "ROW EXCLUSIVE",
+    "runner": "scripts/production/d5o_upgrade.py --mode apply-rehearsal --transport docker",
+    "result": "EXPECTED_LOCK_TIMEOUT",
+    "failedOrder": 212,
+    "ledgerAfterFailure": 177,
+    "partialMigrationEntries": 0
+  },
+  "uncontendedUpgrade": {
+    "result": "PASS",
+    "elapsedSeconds": 15.25,
+    "ledgerAfter": 202,
+    "appliedOrders": 25,
+    "bridgeLedgerStatements": 3,
+    "protectedHistoricalDigestClassesUnchanged": 10,
+    "bridgeSecurityPostconditions": "PASS"
+  },
+  "sourceInspection": {
+    "migrationFilesInspected": 25,
+    "directAuthTableDmlDetected": false,
+    "directStorageTableDmlDetected": false,
+    "directStorageObjectByteOperationsDetected": false,
+    "note": "Source inspection is not proof that concurrent old-application commands are compatible. The migrations replace active D5O functions and alter business tables."
+  },
+  "deploymentArchive": {
+    "sha256": "c9ebbcdc12194355388114eacb9f9b0ecb92fc89e219a3a5e8034cac4309e557",
+    "bytes": 192952320,
+    "targetVercelProject": "prj_HF8KhxUFvONQlpMr53FdhEgmIpFG"
+  },
+  "vercelDeployDryRun": {
+    "result": "PASS",
+    "cliVersion": "59.19.0",
+    "project": "prj_HF8KhxUFvONQlpMr53FdhEgmIpFG",
+    "framework": "Next.js",
+    "candidateFiles": 1914,
+    "candidateBytes": 16758849,
+    "source": "clean extraction of verified archive",
+    "deploymentCreated": false
+  },
+  "productionMutationPerformed": false,
+  "disposableContainerRemoved": true,
+  "notQualified": [
+    "Old application commands concurrently executing across all 25 migrations",
+    "Reversible block of direct Data API mutations during the cutover",
+    "Matched production database/Auth/Storage checkpoint and isolated restore",
+    "Actual production Vercel binding and deployment"
+  ]
+}

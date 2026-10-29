@@ -1,4 +1,8 @@
-# Controlled D5O cutover runbook — checkpoint window approved, execution gated
+# Controlled D5O cutover runbook — checkpoint window cancelled, execution gated
+
+## 2026-10-29 deployment input check
+
+The durable archive SHA-256 `c9ebbcdc12194355388114eacb9f9b0ecb92fc89e219a3a5e8034cac4309e557` was reverified (192,952,320 bytes). A clean extraction linked locally to Vercel project `prj_HF8KhxUFvONQlpMr53FdhEgmIpFG` passed `vercel deploy <extracted-directory> --dry --scope team_YSItyDw0cqxobdy4YBp9osYV --non-interactive` with CLI 59.19.0: Next.js, 1,914 deploy inputs, no deployment created. The eventual production command is the same source directory and project with `--prod` instead of `--dry`, only after production variables, source identity, recovery and final authorization pass. The dry run proves input detection, not a hosted build or effective production binding. [Evidence](evidence/migration-cutover-20261029.json).
 
 **2026-10-29 stop decision:** cancel the approved 06:00–07:00 UTC checkpoint attempt before maintenance. The write boundary has not passed local proof and no operator may create the required quiescence attestation. Do not apply the Vercel firewall or database soft read-only default as substitutes. The existing approval record remains a historical record of the cancelled window; it must not be reused for another time. See [write-boundary evidence](evidence/write-boundary-20261029.json).
 
