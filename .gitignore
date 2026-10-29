@@ -1,4 +1,5 @@
 node_modules
+prisma/generated/
 .next
 out
 dist
