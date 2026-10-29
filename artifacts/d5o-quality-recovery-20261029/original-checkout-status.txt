@@ -1,0 +1,545 @@
+ M .env.example
+ M .gitignore
+ M README.md
+ M app/actions/evidence-uploads.ts
+ M app/actions/workflow-completions.ts
+ M app/actions/workflow-transactions.ts
+ M app/billing/page.tsx
+ M app/changes/page.tsx
+ M app/closeout/page.tsx
+ M app/command-center/page.tsx
+ M app/field-execution/page.tsx
+ M app/globals.css
+ M app/layout.tsx
+ M app/pipeline/new/page.tsx
+ M app/pipeline/page.tsx
+ M app/projects/page.tsx
+ M app/rfis-submittals/page.tsx
+ M components/d5o/billing/ApprovedNotBilledQueue.tsx
+ M components/d5o/change-control/ChangeBackupPanel.tsx
+ M components/d5o/change-control/ChangeControlDashboard.tsx
+ M components/d5o/change-control/ChangeEventTable.tsx
+ M components/d5o/change-control/NoticeDeadlineQueue.tsx
+ M components/d5o/closeout/ArchivePackagePanel.tsx
+ M components/d5o/closeout/CloseoutRequirementTracker.tsx
+ M components/d5o/closeout/CommercialCloseoutPanel.tsx
+ M components/d5o/closeout/RetainageReleasePanel.tsx
+ M components/d5o/end-user/ActionCockpit.tsx
+ M components/d5o/end-user/ActionWorkspaceLayout.tsx
+ M components/d5o/end-user/FocusedTaskPanel.tsx
+ M components/layout/PrimaryNav.tsx
+ M docs/billing-v2-replacement-ui-implementation-plan.md
+ M docs/billing-v2-ui-failure-review.md
+ M docs/capability-maturity-map.md
+ M docs/closeout-completion-qa-report.md
+ M docs/cta-outcome-clarity-qa-report.md
+ M docs/cta-outcome-remediation-backlog.md
+ M docs/demo-readiness.md
+ M docs/developer-notes.md
+ M docs/enterprise-dependency-map.md
+ M docs/enterprise-operating-system-acceptance-standard.md
+ M docs/enterprise-os-backlog.md
+ M docs/field-issue-completion-qa-report.md
+ M docs/pilot-mode-qa-report.md
+ M docs/production-readiness-gap-review.md
+ M docs/production-roadmap.md
+ M docs/recommended-next-implementation.md
+ M docs/route-inventory.md
+ M docs/workflow-business-outcome-qa-report.md
+ M docs/workflow-completion-qa-report.md
+ M docs/workflow-execution-qa-report.md
+ M eslint.config.mjs
+ M lib/d5o/auth/auth-mode.ts
+ M lib/d5o/auth/current-user.ts
+ M lib/d5o/auth/permission-guard.ts
+ M lib/d5o/auth/workflow-transaction-permissions.ts
+ M lib/d5o/billing-v2/billing-v2-history.ts
+ M lib/d5o/billing-v2/demo-state.ts
+ M lib/d5o/billing-v2/types.ts
+ M lib/d5o/data/data-source.ts
+ M lib/d5o/data/workflow-transaction-writes.ts
+ M lib/d5o/end-user/task-outcome-contract.ts
+ M lib/d5o/evidence/evidence-store.ts
+ M lib/d5o/modules.ts
+ M lib/d5o/rbac.ts
+ M lib/d5o/security/rls-readiness.ts
+ M lib/d5o/simplification/page-summary.ts
+ M lib/d5o/types.ts
+ M lib/d5o/workflow-completion/completion-store-mode.ts
+ M lib/d5o/workflow/derive-workflows.ts
+ M lib/d5o/workflow/transaction-store.ts
+ M lib/d5o/workflow/transactions.ts
+ M next.config.mjs
+ M package-lock.json
+ M package.json
+ M scripts/qa-cta-outcomes.mjs
+ M scripts/qa-pilot-mode.mjs
+ M scripts/qa-pilot-progress-hydration.mjs
+ M scripts/qa-workflow-business-outcomes.mjs
+ M scripts/qa-workflow-completion.mjs
+ M scripts/qa-workflow-execution.mjs
+ M scripts/qa-workflow-state-architecture.mjs
+ M scripts/smoke-routes.mjs
+ M scripts/verify-all.mjs
+ M scripts/verify-billing-v2-domain.mjs
+ M scripts/verify-cta-outcomes.mjs
+ M scripts/verify-pilot-acceptance-gate.mjs
+ M scripts/verify-pilot-billing-task-usability.mjs
+ M scripts/verify-pilot-progress-hydration.mjs
+ M scripts/verify-task-outcome-contracts.mjs
+ M scripts/verify-workflow-actions.mjs
+ M scripts/verify-workflow-business-outcomes.mjs
+ M scripts/verify-workflow-execution-qa.mjs
+ M tsconfig.json
+?? .codex-npm-cache/
+?? .playwright-mcp/
+?? .tmp-d5o-admin-release/
+?? .tmp-d5o-commit-audit/
+?? .tmp-d5o-layout-release-check/
+?? .tmp-d5o-main-reconcile/
+?? .tmp-d5o-mobile-layout/
+?? .tmp-d5o-phase1b-approval/
+?? .tmp-d5o-phase2a-org-access/
+?? .tmp-d5o-phase2b-tenant-onboarding/
+?? .tmp-d5o-phase2c-enterprise-admin/
+?? .tmp-d5o-phase2d-six-phase-config/
+?? .tmp-d5o-phase2e-connected-qualification/
+?? .tmp-d5o-phase2f-connected-execution/
+?? .tmp-d5o-phase2g-tenant-neutral-work/
+?? .tmp-d5o-phase2h-completion/
+?? .tmp-d5o-phase2h-work-actions/
+?? .tmp-d5o-phase2hr-shared-actions/
+?? .tmp-d5o-phase2hs-develop-execution/
+?? .tmp-d5o-phase2ht-service-execution/
+?? .tmp-d5o-phase2htb-browser-qualification/
+?? .tmp-d5o-phase2htc-closure/
+?? .tmp-d5o-phase2htd-security-closure/
+?? .tmp-d5o-phase2hte-gate-b-closure/
+?? .tmp-d5o-phase2hu-deploy-employee/
+?? .tmp-d5o-phase2hv-operate/
+?? .tmp-d5o-phase2hvc-integrated/
+?? .tmp-d5o-public-signup/
+?? .tmp-d5o-qualification-2/
+?? .tmp-d5o-qualification-3/
+?? .tmp-d5o-qualification-4/
+?? .tmp-d5o-qualification-5/
+?? .tmp-d5o-qualification-6/
+?? .tmp-d5o-qualification-7/
+?? .tmp-d5o-qualification/
+?? .tmp-d5o-quality-recovery-20261029/
+?? .tmp-d5o-rc1-qualification/
+?? .tmp-d5o-rc2-staging/
+?? .tmp-d5o-rc3-six-phase-browser/
+?? .tmp-d5o-rc3c-final-browser/
+?? .tmp-d5o-rc4-release-baseline/
+?? .tmp-d5o-rc4a-scope-change/
+?? .tmp-d5o-rc4b-execution-holds/
+?? .tmp-d5o-rc4b1-integrity-closure/
+?? .tmp-d5o-rc5-migration-reconciliation/
+?? .tmp-d5o-release-e7/
+?? .tmp-d5o-shared-layout-before/
+?? .tmp-d5o-shared-layout-release/
+?? .tmp-d5o-successor/
+?? .tmp-d5o-zero-baseline.zip
+?? .tmp-d5o-zero-baseline/
+?? .tmp-d5o-zero-lifecycle-final/
+?? .tmp-d5o-zero-lifecycle-phase1/
+?? .tmp-d5o-zero-lifecycle-successor/
+?? .tmp-dep-install-repro-cache/
+?? .tmp-dep-install-repro/
+?? Install-RybexOS-P1-01A-Authority-v1.1.ps1
+?? Repair-RybexOS-P1-01A-Authority-v1.2.ps1
+?? RybexOS_P1-01A_Repo_Ready_Authority_v1.1.zip
+?? RybexOS_P1-01A_Role_and_Accountability_Authority_v1.1.md
+?? app/actions/billing-v2.ts
+?? app/actions/closeout-final-billing.ts
+?? app/actions/field-issue-escalation.ts
+?? app/actions/opportunities-ShawnT13.ts
+?? app/actions/opportunities.ts
+?? app/api/auth/
+?? app/api/health/
+?? app/api/readiness/
+?? app/auth/
+?? app/globals-ShawnT13.css
+?? app/layout-ShawnT13.tsx
+?? app/pipeline/[opportunityId]/
+?? app/pipeline/loading.tsx
+?? app/projects/register/
+?? artifacts/
+?? components/d5o/billing-v2/
+?? components/d5o/billing/ApprovedNotBilledQueue-ShawnT13.tsx
+?? components/d5o/change-control/ChangeBackupPanel-ShawnT13.tsx
+?? components/d5o/change-control/ChangeControlDashboard-ShawnT13.tsx
+?? components/d5o/change-control/ChangeEventTable-ShawnT13.tsx
+?? components/d5o/change-control/NoticeDeadlineQueue-ShawnT13.tsx
+?? components/d5o/closeout-final-billing/
+?? components/d5o/closeout/ArchivePackagePanel-ShawnT13.tsx
+?? components/d5o/closeout/CloseoutRequirementTracker-ShawnT13.tsx
+?? components/d5o/closeout/CommercialCloseoutPanel-ShawnT13.tsx
+?? components/d5o/closeout/RetainageReleasePanel-ShawnT13.tsx
+?? components/d5o/define/
+?? components/d5o/field-issue-escalation/
+?? components/layout/PrimaryNav-ShawnT13.tsx
+?? components/layout/primary-nav-model.ts
+?? config/
+?? debug.log
+?? docs/adr/0006-foundation-0a-identity-role-workspace-model.md
+?? docs/adr/0007-foundation-0b-command-transaction-evidence-model.md
+?? docs/adr/0008-foundation-0c-billing-v2-persistence-model.md
+?? docs/adr/0009-foundation-0d-field-rfi-change-persistence-model.md
+?? docs/adr/0010-foundation-0e-closeout-production-persistence-model.md
+?? docs/adr/0011-foundation-0f-production-runtime-cutover.md
+?? docs/adr/0012-foundation-0f-supabase-ssr-session-bridge.md
+?? docs/adr/0013-p1-01a-opportunity-intake-qualification-model.md
+?? docs/app-shell-journey-containment-audit.md
+?? docs/app-shell-journey-containment-report.md
+?? docs/architecture/
+?? docs/backup-restore-runbook.md
+?? docs/billing-closeout-release-projection-semantic-diagnosis.md
+?? docs/billing-closeout-release-projection-semantic-report.md
+?? docs/billing-mobile-unresolved-simplification-report.md
+?? docs/billing-mobile-unresolved-usability-diagnosis.md
+?? docs/billing-page-layout-redesign-report.md
+?? docs/billing-resolved-state-simplification-report.md
+?? docs/billing-resolved-state-usability-diagnosis.md
+?? docs/billing-v2-guided-ui-replacement-report.md
+?? docs/billing-v2-persisted-slice-hardening-report.md
+?? docs/billing-v2-persisted-vertical-slice-report.md
+?? docs/changes-downstream-entitlement-audit.md
+?? docs/changes-downstream-entitlement-report.md
+?? docs/changes-mobile-created-simplification-report.md
+?? docs/changes-mobile-created-usability-diagnosis.md
+?? docs/closeout-final-billing-persisted-vertical-slice-report.md
+?? docs/closeout-mobile-unresolved-simplification-report.md
+?? docs/closeout-mobile-unresolved-usability-diagnosis.md
+?? docs/closeout-page-layout-redesign-report.md
+?? docs/closeout-resolved-state-simplification-report.md
+?? docs/closeout-resolved-state-usability-diagnosis.md
+?? docs/codex-prompts/
+?? docs/command-center-c-plus-action-queue-rebuild-plan.md
+?? docs/command-center-c-plus-action-queue-rebuild-report.md
+?? docs/command-center-supporting-context-audit.md
+?? docs/command-center-supporting-context-content-model.md
+?? docs/command-center-supporting-context-implementation-plan.md
+?? docs/command-center-supporting-context-implementation-report.md
+?? docs/command-center-visual-triage-audit.md
+?? docs/command-center-visual-triage-report.md
+?? docs/controlled-pilot-demo-lockdown.md
+?? docs/core-workbench-consistency-audit.md
+?? docs/core-workbench-consistency-report.md
+?? docs/d5o-rebaseline-current.md
+?? docs/deployment/
+?? docs/field-execution-page-layout-redesign-report.md
+?? docs/field-issue-persisted-vertical-slice-report.md
+?? docs/foundation-0a-identity-workspace-security-plan.md
+?? docs/foundation-0a-identity-workspace-security-report.md
+?? docs/foundation-0a-local-supabase-verification-report.md
+?? docs/foundation-0b-command-audit-concurrency-evidence-plan.md
+?? docs/foundation-0b-command-audit-concurrency-evidence-report.md
+?? docs/foundation-0c-billing-v2-production-persistence-plan.md
+?? docs/foundation-0c-billing-v2-production-persistence-report.md
+?? docs/foundation-0d-field-rfi-change-production-persistence-plan.md
+?? docs/foundation-0d-field-rfi-change-production-persistence-report.md
+?? docs/foundation-0e-closeout-production-persistence-plan.md
+?? docs/foundation-0e-closeout-production-persistence-report.md
+?? docs/foundation-0f-authenticated-browser-session-bridge-plan.md
+?? docs/foundation-0f-authenticated-browser-session-bridge-report.md
+?? docs/foundation-0f-cutover-production-hardening-plan.md
+?? docs/foundation-0f-cutover-production-hardening-report.md
+?? docs/guided-work-surface-redesign-report.md
+?? docs/incident-response-runbook.md
+?? docs/manual-visual-acceptance-review.md
+?? docs/mobile-shell-and-journey-state-visual-qa-audit.md
+?? docs/mobile-shell-and-journey-state-visual-qa-report.md
+?? docs/operating-slice-review-approval-contract-assessment.md
+?? docs/p1-01a-acceptance-closure-report.md
+?? docs/p1-01a-acceptance-defect-remediation-plan.md
+?? docs/p1-01a-acceptance-defect-remediation-report.md
+?? docs/p1-01a-automated-acceptance-coverage-matrix.md
+?? docs/p1-01a-controlled-visual-debt-register.md
+?? docs/p1-01a-css-remediation-findings.md
+?? docs/p1-01a-css-remediation-report.md
+?? docs/p1-01a-gate-evidence-integrity-review.md
+?? docs/p1-01a-human-acceptance-remediation-report.md
+?? docs/p1-01a-human-acceptance-remediation-traceability.md
+?? docs/p1-01a-human-visual-acceptance-record.md
+?? docs/p1-01a-visual-acceptance-review.md
+?? docs/p1-01a-workstream-0-preflight.md
+?? docs/p1-01b-authorization-decision-brief.md
+?? docs/page-layout-visual-journey-blueprint.md
+?? docs/persisted-operating-slice-pattern.md
+?? docs/phase-0-exit-conditions-register.md
+?? docs/phase-0-exit-review.md
+?? docs/phase-0-production-foundation-execution-plan.md
+?? docs/phase-1-activation-decision.md
+?? docs/phase-1-opportunity-project-control-activation-brief.md
+?? docs/phase-1-p1-01-acceptance-contract.md
+?? docs/phase-1-p1-01-business-outcome-and-scope.md
+?? docs/phase-1-p1-01-current-scaffold-assessment.md
+?? docs/phase-1-p1-01-domain-data-security-spec.md
+?? docs/phase-1-p1-01-implementation-readiness-decision.md
+?? docs/phase-1-p1-01-user-journey-and-workflow.md
+?? docs/phase-1-p1-01-users-roles-responsibility.md
+?? docs/phase-1-p1-01-ux-page-blueprints.md
+?? docs/phase-1-p1-01a-opportunity-intake-qualification-plan.md
+?? docs/phase-1-p1-01a-opportunity-intake-qualification-report.md
+?? docs/post-batch-1-visual-re-review.md
+?? docs/post-batch-2-visual-acceptance-review.md
+?? docs/post-batch-3-visual-acceptance-review.md
+?? docs/product-experience/
+?? docs/product-quality-recovery-audit.md
+?? docs/product-strategy/
+?? docs/production-cutover-manifest.md
+?? docs/production-cutover-runbook.md
+?? docs/production-gap-audit-after-three-slices.md
+?? docs/production-rollback-runbook.md
+?? docs/production-runtime-runbook.md
+?? docs/recommended-next-implementation-ShawnT13.md
+?? docs/repo-engineering-account.md
+?? docs/rfis-submittals-downstream-record-audit.md
+?? docs/rfis-submittals-downstream-record-report.md
+?? docs/rfis-submittals-mobile-created-render-failure.md
+?? docs/rfis-submittals-mobile-created-simplification-report.md
+?? docs/rfis-submittals-mobile-created-usability-diagnosis.md
+?? docs/rybexos-master-build-plan-ShawnT13.md
+?? docs/rybexos-master-build-plan.md
+?? docs/visual-remediation-batch-1-plan.md
+?? docs/visual-remediation-batch-1-report.md
+?? docs/visual-remediation-batch-2-plan.md
+?? docs/visual-remediation-batch-2-recommendation.md
+?? docs/visual-remediation-batch-2-report.md
+?? docs/visual-remediation-batch-3-plan.md
+?? docs/visual-remediation-batch-3-recommendation.md
+?? docs/visual-remediation-batch-3-report.md
+?? docs/visual-remediation-batch-4-recommendation.md
+?? docs/visual-remediation-priority-backlog.md
+?? docs/workflow-verify-actions-cleanup-plan.md
+?? docs/workflow-verify-actions-cleanup-report.md
+?? lib/d5o/auth/redirects.ts
+?? lib/d5o/auth/request-context.ts
+?? lib/d5o/auth/roles.ts
+?? lib/d5o/auth/supabase-browser.ts
+?? lib/d5o/auth/supabase-server.ts
+?? lib/d5o/auth/workspace-context.ts
+?? lib/d5o/billing-v2/app-state.ts
+?? lib/d5o/billing-v2/database-store.ts
+?? lib/d5o/billing-v2/operating-slice.ts
+?? lib/d5o/billing-v2/persisted-store.ts
+?? lib/d5o/billing-v2/persistence-mode.ts
+?? lib/d5o/billing-v2/store.ts
+?? lib/d5o/closeout-final-billing/
+?? lib/d5o/commands/
+?? lib/d5o/evidence/production-evidence-service.ts
+?? lib/d5o/evidence/scanner/
+?? lib/d5o/field-issue-escalation/
+?? lib/d5o/observability/
+?? lib/d5o/operating-slices/
+?? lib/d5o/opportunities/
+?? lib/d5o/security/production-config.ts
+?? lib/d5o/security/production-module-availability.ts
+?? lib/d5o/security/production-readiness.ts
+?? lib/d5o/security/runtime-mode.ts
+?? lib/d5o/types-ShawnT13.ts
+?? output/
+?? package-ShawnT13.json
+?? package-lock-ShawnT13.json
+?? prisma/
+?? prototype/
+?? proxy.ts
+?? scripts/.benefactor-trial/
+?? scripts/apply-cfg-runtime-01-local.mjs
+?? scripts/bootstrap-foundation-0a-local.mjs
+?? scripts/capture-app-shell-journey-screenshots.mjs
+?? scripts/capture-cfg-runtime-01-browser.mjs
+?? scripts/capture-cfg-runtime-02-browser.mjs
+?? scripts/capture-cfg-runtime-03-browser.mjs
+?? scripts/capture-guided-work-surface-screenshots.mjs
+?? scripts/capture-journey-state-screenshots.mjs
+?? scripts/capture-p1-01a-acceptance-package.mjs
+?? scripts/capture-p1-01a-human-acceptance.mjs
+?? scripts/capture-p1-01b-1-implementation.mjs
+?? scripts/capture-p1-01b-2-implementation.mjs
+?? scripts/capture-page-layout-screenshots.mjs
+?? scripts/capture-product-quality-screenshots.mjs
+?? scripts/cfg-runtime-01-utils.mjs
+?? scripts/cfg-runtime-03-evidence-output.mjs
+?? scripts/cfg-runtime-03-loopback-guard.mjs
+?? scripts/cfg-runtime-03-qualification-attempt.mjs
+?? scripts/cfg-runtime-03-qualification-runtime.mjs
+?? scripts/cfg-runtime-03-repository-boundary.mjs
+?? scripts/configuration-foundation-static-utils.mjs
+?? scripts/finalize-cfg-runtime-03-prompt6-candidate.mjs
+?? scripts/finalize-cfg-runtime-03-prompt9-candidate.mjs
+?? scripts/foundation-0b-test-utils.mjs
+?? scripts/freeze-cfg-runtime-01-foundation-baseline.mjs
+?? scripts/generate-cfg-runtime-03-candidate-inventory.mjs
+?? scripts/load-cfg-runtime-01-pack-local.mjs
+?? scripts/load-cfg-runtime-02-pack-local.mjs
+?? scripts/load-cfg-runtime-03-pack-local.mjs
+?? scripts/local-foundation-0f-scanner-service.mjs
+?? scripts/local-supabase-config-utils.mjs
+?? scripts/local-supabase-loopback-network.mjs
+?? scripts/manage-rybex-local-stack.mjs
+?? scripts/migrate-billing-v2-local-to-supabase.mjs
+?? scripts/migrate-closeout-local-to-supabase.mjs
+?? scripts/migrate-core-local-to-supabase.mjs
+?? scripts/migrate-field-issue-local-to-supabase.mjs
+?? scripts/qa-billing-v2-workflow.mjs
+?? scripts/qa-closeout-final-billing-persisted-slice.mjs
+?? scripts/qa-d5o-audit-browser.mjs
+?? scripts/qa-field-issue-persisted-slice.mjs
+?? scripts/qa-foundation-0a-security.mjs
+?? scripts/qa-foundation-0b-command-security.mjs
+?? scripts/qa-foundation-0b-evidence-security.mjs
+?? scripts/qa-foundation-0c-billing-browser.mjs
+?? scripts/qa-foundation-0c-billing-persistence.mjs
+?? scripts/qa-foundation-0d-field-browser.mjs
+?? scripts/qa-foundation-0d-field-rfi-change-persistence.mjs
+?? scripts/qa-foundation-0e-closeout-browser.mjs
+?? scripts/qa-foundation-0e-closeout-persistence.mjs
+?? scripts/qa-foundation-0f-auth-session.mjs
+?? scripts/qa-foundation-0f-backup-restore.mjs
+?? scripts/qa-foundation-0f-core-journey.mjs
+?? scripts/qa-foundation-0f-performance.mjs
+?? scripts/qa-foundation-0f-resilience.mjs
+?? scripts/qa-p1-01a-browser-ShawnT13.mjs
+?? scripts/qa-p1-01a-browser.mjs
+?? scripts/qa-p1-01a-opportunity-ShawnT13.mjs
+?? scripts/qa-p1-01a-opportunity.mjs
+?? scripts/qa-p1-01b-1-live-local.mjs
+?? scripts/qa-p1-01b-2-live-local-ShawnT13.mjs
+?? scripts/qa-p1-01b-2-live-local.mjs
+?? scripts/qualification-child-env.mjs
+?? scripts/reset-controlled-pilot-demo.mjs
+?? scripts/run-cfg-runtime-03-prompt11-ledger.mjs
+?? scripts/run-cfg-runtime-03-prompt13-targeted.mjs
+?? scripts/run-cfg-runtime-03-prompt6-ledger.mjs
+?? scripts/run-cfg-runtime-03-prompt9-ledger.mjs
+?? scripts/run-cfg-runtime-03-regression.mjs
+?? scripts/run-d5o-audit-browser.mjs
+?? scripts/run-foundation-0a-local-gate-ShawnT13.mjs
+?? scripts/run-foundation-0a-local-gate.mjs
+?? scripts/run-foundation-0b-local-gate-ShawnT13.mjs
+?? scripts/run-foundation-0b-local-gate.mjs
+?? scripts/run-foundation-0c-local-gate-ShawnT13.mjs
+?? scripts/run-foundation-0c-local-gate.mjs
+?? scripts/run-foundation-0d-local-gate-ShawnT13.mjs
+?? scripts/run-foundation-0d-local-gate.mjs
+?? scripts/run-foundation-0e-local-gate.mjs
+?? scripts/run-foundation-0f-local-gate.mjs
+?? scripts/run-guarded-qualification-supabase.mjs
+?? scripts/run-p1-01a-acceptance-closure.mjs
+?? scripts/run-p1-01a-local-gate-ShawnT13.mjs
+?? scripts/run-p1-01a-local-gate.mjs
+?? scripts/run-prisma-local.mjs
+?? scripts/run-supabase-loopback.mjs
+?? scripts/run-with-cfg-runtime-03-qualification.mjs
+?? scripts/smoke-routes-ShawnT13.mjs
+?? scripts/temp-inspect-hydration.mjs
+?? scripts/verify-app-shell-journey-containment.mjs
+?? scripts/verify-billing-closeout-release-projection.mjs
+?? scripts/verify-billing-mobile-unresolved-simplification.mjs
+?? scripts/verify-billing-resolved-state-simplification.mjs
+?? scripts/verify-billing-v2-persisted-slice.mjs
+?? scripts/verify-billing-v2-ui.mjs
+?? scripts/verify-cfg-runtime-01-database.mjs
+?? scripts/verify-cfg-runtime-01-static.mjs
+?? scripts/verify-cfg-runtime-02-database.mjs
+?? scripts/verify-cfg-runtime-02-static.mjs
+?? scripts/verify-cfg-runtime-03-authoritative-baseline.mjs
+?? scripts/verify-cfg-runtime-03-complete-universe.mjs
+?? scripts/verify-cfg-runtime-03-database.mjs
+?? scripts/verify-cfg-runtime-03-evidence-lineage.mjs
+?? scripts/verify-cfg-runtime-03-evidence-output-isolation.mjs
+?? scripts/verify-cfg-runtime-03-launch-authority.mjs
+?? scripts/verify-cfg-runtime-03-loopback-boundary.mjs
+?? scripts/verify-cfg-runtime-03-migration-immutability.mjs
+?? scripts/verify-cfg-runtime-03-nested-output.mjs
+?? scripts/verify-cfg-runtime-03-qualification-isolation.mjs
+?? scripts/verify-cfg-runtime-03-relocated-copy.mjs
+?? scripts/verify-cfg-runtime-03-revision-authority.mjs
+?? scripts/verify-cfg-runtime-03-root-output-authority.mjs
+?? scripts/verify-cfg-runtime-03-static.mjs
+?? scripts/verify-changes-downstream-entitlement.mjs
+?? scripts/verify-changes-mobile-created-simplification.mjs
+?? scripts/verify-closeout-final-billing-persisted-slice.mjs
+?? scripts/verify-closeout-mobile-unresolved-simplification.mjs
+?? scripts/verify-closeout-resolved-state-simplification.mjs
+?? scripts/verify-command-center-c-plus-action-queue.mjs
+?? scripts/verify-command-center-supporting-context.mjs
+?? scripts/verify-command-center-visual-triage.mjs
+?? scripts/verify-configuration-effective-resolution-static.mjs
+?? scripts/verify-configuration-foundation-database.mjs
+?? scripts/verify-configuration-foundation-migration-order.mjs
+?? scripts/verify-configuration-foundation-negative-controls.mjs
+?? scripts/verify-configuration-foundation-no-regression.mjs
+?? scripts/verify-configuration-foundation-rls-static.mjs
+?? scripts/verify-configuration-foundation-schema-static.mjs
+?? scripts/verify-configuration-foundation-template-pack-seeds-static.mjs
+?? scripts/verify-configuration-foundation.mjs
+?? scripts/verify-controlled-pilot-demo.mjs
+?? scripts/verify-core-workbench-consistency.mjs
+?? scripts/verify-field-execution-mobile-unresolved-simplification.mjs
+?? scripts/verify-field-issue-persisted-slice.mjs
+?? scripts/verify-foundation-0a.mjs
+?? scripts/verify-foundation-0b.mjs
+?? scripts/verify-foundation-0c.mjs
+?? scripts/verify-foundation-0d.mjs
+?? scripts/verify-foundation-0e.mjs
+?? scripts/verify-foundation-0f-auth-session-bridge.mjs
+?? scripts/verify-foundation-0f-security.mjs
+?? scripts/verify-foundation-0f.mjs
+?? scripts/verify-guided-work-surface.mjs
+?? scripts/verify-mobile-shell-and-journey-state.mjs
+?? scripts/verify-operating-slices.mjs
+?? scripts/verify-p1-01a-acceptance-package.mjs
+?? scripts/verify-p1-01a.mjs
+?? scripts/verify-p1-01b-1-ShawnT13.mjs
+?? scripts/verify-p1-01b-1.mjs
+?? scripts/verify-p1-01b-2.mjs
+?? scripts/verify-page-layout-visual-journey.mjs
+?? scripts/verify-primary-nav-contract.mjs
+?? scripts/verify-product-quality-recovery.mjs
+?? scripts/verify-production-config.mjs
+?? scripts/verify-production-no-local-fallback.mjs
+?? scripts/verify-rfis-submittals-downstream-record.mjs
+?? scripts/verify-rfis-submittals-mobile-created-simplification.mjs
+?? scripts/verify-visual-remediation-batch-1.mjs
+?? scripts/verify-visual-remediation-batch-2.mjs
+?? scripts/verify-visual-remediation-batch-3.mjs
+?? scripts/verify-workflow-runtime-authority.mjs
+?? supabase/.branches/
+?? supabase/.temp/
+?? supabase/config-ShawnT13.toml
+?? supabase/config.toml
+?? supabase/migrations/0005_identity_workspace_security.sql
+?? supabase/migrations/0006_shared_command_audit_evidence.sql
+?? supabase/migrations/0007_billing_v2_production_persistence.sql
+?? supabase/migrations/0008_field_issue_rfi_change_production_persistence.sql
+?? supabase/migrations/0009_closeout_production_persistence.sql
+?? supabase/migrations/0010_production_cutover_hardening.sql
+?? supabase/migrations/0011_p1_01a_opportunity_intake_qualification.sql
+?? supabase/migrations/0012_p1_01a_acceptance_remediation.sql
+?? supabase/migrations/0013_p1_01a_role_accountability_read_model.sql
+?? supabase/migrations/0014_p1_01a_decision_owner_actions.sql
+?? supabase/migrations/0015_p1_01b_1_pursuit_authorization.sql
+?? supabase/migrations/0016_p1_01b_2_bid_submission_outcome-ShawnT13.sql
+?? supabase/migrations/0016_p1_01b_2_bid_submission_outcome.sql
+?? supabase/migrations/0017_configuration_foundation_core.sql
+?? supabase/migrations/0018_configuration_template_packs_versions.sql
+?? supabase/migrations/0019_configuration_tenant_activation_versions.sql
+?? supabase/migrations/0020_configuration_phase_gate_definitions.sql
+?? supabase/migrations/0021_configuration_work_types_streams_lanes.sql
+?? supabase/migrations/0022_configuration_roles_permissions_decision_rights.sql
+?? supabase/migrations/0023_configuration_artifact_evidence_definitions.sql
+?? supabase/migrations/0024_configuration_kpi_financial_workforce_handoff_governance.sql
+?? supabase/migrations/0025_configuration_audit_effective_resolution.sql
+?? supabase/migrations/0026_configuration_template_pack_seed_data.sql
+?? supabase/migrations/0027_cfg_runtime_01_pricing_review_readiness.sql
+?? supabase/migrations/0028_cfg_runtime_02_pursuit_authorization.sql
+?? supabase/migrations/0029_cfg_runtime_03_bid_submission_approval.sql
+?? supabase/migrations/0030_cfg_runtime_03_evidence_persistence_authority.sql
+?? supabase/migrations/0031_cfg_runtime_03_actor_profile_identity_coherence.sql
+?? tsconfig-ShawnT13.json
+?? wsl
+?? {

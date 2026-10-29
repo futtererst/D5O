@@ -1,0 +1,1119 @@
+{
+  "baseline": "639308061ff236ac0afb6487088a44c315e9b554",
+  "startedAt": "2026-10-29T11:28:09.685Z",
+  "tests": [
+    {
+      "name": "vendor sees validated immutable template directory",
+      "status": "PASS",
+      "detail": {
+        "template": "Service Operations",
+        "version": 1,
+        "outsiderDenied": true
+      }
+    },
+    {
+      "name": "vendor publishes an executable crew-demand template version",
+      "status": "PASS",
+      "detail": {
+        "versionId": "608d1b92-706c-410e-8347-039d8cf7914a",
+        "crewDemandRequired": true
+      }
+    },
+    {
+      "name": "vendor provisions A and B through one authoritative command",
+      "status": "PASS",
+      "detail": {
+        "A": "tenant_a_test",
+        "B": "tenant_b_test",
+        "independentVersions": true
+      }
+    },
+    {
+      "name": "non-vendor and customer cannot provision or mutate template",
+      "status": "PASS",
+      "detail": {
+        "denied": true
+      }
+    },
+    {
+      "name": "replay, collision and duplicate tenant key preserve one result",
+      "status": "PASS",
+      "detail": {
+        "replay": true,
+        "collisionDenied": true
+      }
+    },
+    {
+      "name": "concurrent identical provisioning creates one tenant",
+      "status": "PASS",
+      "detail": {
+        "sameResult": true,
+        "workspaceCount": 1
+      }
+    },
+    {
+      "name": "provider failure remains inactive and vendor recovery replaces only the offer",
+      "status": "PASS",
+      "detail": {
+        "failedState": true,
+        "recoveredState": "awaiting_admin",
+        "duplicateTenant": false,
+        "grantCount": 0
+      }
+    },
+    {
+      "name": "expired initial invitation recovers without a duplicate tenant",
+      "status": "PASS",
+      "detail": {
+        "expiredDenied": true,
+        "oldOfferDenied": true,
+        "recoveryReplaySafe": true
+      }
+    },
+    {
+      "name": "governed template version is validated, published, immutable and retired",
+      "status": "PASS",
+      "detail": {
+        "publishedVersion": "b9a84911-4ae4-488e-b15c-97e3e5439db2",
+        "immutable": true,
+        "unpublishedSelectionDenied": true,
+        "retiredSelectionDenied": true
+      }
+    },
+    {
+      "name": "initial offers are tenant-bound and accepted by exact recipients",
+      "status": "PASS",
+      "detail": {
+        "A": "accepted",
+        "B": "accepted",
+        "replaySafe": true
+      }
+    },
+    {
+      "name": "incomplete tenants cannot create Work or activate",
+      "status": "PASS",
+      "detail": {
+        "workDenied": "42501",
+        "activationDenied": "23514",
+        "customerActivationDenied": true
+      }
+    },
+    {
+      "name": "tenant_a_test publishes its own USD 10000 threshold",
+      "status": "PASS",
+      "detail": {
+        "thresholdMinor": 1000000,
+        "versionId": "623432be-c60e-4ab2-9a4d-e8b52ddca5f4"
+      }
+    },
+    {
+      "name": "tenant_b_test publishes its own USD 25000 threshold",
+      "status": "PASS",
+      "detail": {
+        "thresholdMinor": 2500000,
+        "versionId": "dfa17e38-f19b-44b2-8916-30e7179575b2"
+      }
+    },
+    {
+      "name": "tenant_a_test confirms readiness and vendor activates",
+      "status": "PASS",
+      "detail": {
+        "ready": "ready",
+        "activated": "active",
+        "replaySafe": true,
+        "staleDenied": true
+      }
+    },
+    {
+      "name": "tenant_b_test confirms readiness and vendor activates",
+      "status": "PASS",
+      "detail": {
+        "ready": "ready",
+        "activated": "active",
+        "replaySafe": true,
+        "staleDenied": true
+      }
+    },
+    {
+      "name": "vendor grants and flags connected Work independently",
+      "status": "PASS",
+      "detail": {
+        "A": true,
+        "B": false,
+        "replaySafe": true,
+        "customerDenied": true,
+        "crossTenantReadDenied": true
+      }
+    },
+    {
+      "name": "Discover policy publication controls connected Work creation",
+      "status": "PASS",
+      "detail": {
+        "activeVersion": "a9bd3c2b-4228-4767-baf2-08230a8d784b",
+        "required": true,
+        "invalidPolicyDenied": true,
+        "historicalUnchanged": true
+      }
+    },
+    {
+      "name": "direct RPC enforces entitlement and Discover policy",
+      "status": "PASS",
+      "detail": {
+        "A": "de1d46f8-23e6-4f3d-8d28-8e1e9d6ab40c",
+        "B": "capability_unavailable",
+        "missingIntakeDenied": true,
+        "coreBypassDenied": true,
+        "replaySafe": true
+      }
+    },
+    {
+      "name": "both tenants onboard independent commercial and operations authorities",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "role": "billing_commercial_lead",
+          "userId": "04ef3fa3-5c51-4520-b829-da1236fb59dd"
+        },
+        {
+          "tenant": "tenant_a_test",
+          "role": "operations_leader",
+          "userId": "71a41780-6b2a-48fb-8287-50ec2c4cf6c8"
+        },
+        {
+          "tenant": "tenant_a_test",
+          "role": "operations_leader",
+          "userId": "210c047f-eef0-48a8-9554-b7e72b19cd88"
+        },
+        {
+          "tenant": "tenant_a_test",
+          "role": "project_manager",
+          "userId": "18dfd293-f2e8-402c-a875-91beae69924a"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "role": "billing_commercial_lead",
+          "userId": "f84365aa-1dff-4ad9-a660-cd3979b9e449"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "role": "operations_leader",
+          "userId": "8a23a7be-c289-4cc3-9e0b-0fcba242442a"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "role": "operations_leader",
+          "userId": "b3bc5023-72a0-4f0f-ab3a-16a70bc6eecf"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "role": "project_manager",
+          "userId": "27fb973f-cb66-4e57-856f-df10a2b3028e"
+        }
+      ]
+    },
+    {
+      "name": "two tenant administrators publish distinct six-phase requirement sets",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "versionId": "364a4ecb-c4e0-43ec-9440-2a109bc09ec8",
+          "strict": true,
+          "define": true,
+          "develop": true,
+          "design": true,
+          "deploy": true,
+          "operate": true
+        },
+        {
+          "tenant": "tenant_b_test",
+          "versionId": "a7ae0210-04d6-48e6-b5a9-2c8bf57feb65",
+          "strict": false,
+          "define": false,
+          "develop": false,
+          "design": false,
+          "deploy": false,
+          "operate": false
+        }
+      ]
+    },
+    {
+      "name": "pinned Define command rejects missing risk only for strict tenant",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "policyVersionId": "364a4ecb-c4e0-43ec-9440-2a109bc09ec8",
+          "decision": "define_risk_narrative_required",
+          "crossTenantDenied": true,
+          "coreBypassDenied": true
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "policyVersionId": "a7ae0210-04d6-48e6-b5a9-2c8bf57feb65",
+          "decision": "definition_unavailable",
+          "crossTenantDenied": true,
+          "coreBypassDenied": true
+        }
+      ]
+    },
+    {
+      "name": "connected source contract is available for authorized fixture progression",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "revision": 2,
+          "recordId": "tenant_a_test-569beb5473424d74ae14fed6e5cb873d",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "discoveryKeys": [
+            "fit",
+            "need",
+            "phase",
+            "source",
+            "estimate",
+            "proposal",
+            "closeDate",
+            "procurement",
+            "pursuitControl"
+          ],
+          "pursuit": {
+            "spend": {
+              "cap": 0,
+              "status": "not_requested",
+              "purpose": ""
+            },
+            "status": "draft",
+            "handoff": {
+              "brief": "",
+              "status": "not_started",
+              "receiver": "",
+              "revision": 0
+            },
+            "history": [],
+            "currency": "USD",
+            "revision": 0,
+            "knownRisk": "",
+            "requester": "",
+            "roughValue": "",
+            "requiredDate": "",
+            "intendedOutcome": ""
+          },
+          "definitionKeys": [],
+          "developKeys": [],
+          "packageCount": 0
+        },
+        {
+          "tenant": "tenant_b_test",
+          "revision": 1,
+          "recordId": "tenant_b_test-ab310b933d5841af9bec7972d4687ef8",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "discoveryKeys": [
+            "fit",
+            "need",
+            "phase",
+            "source",
+            "estimate",
+            "proposal",
+            "closeDate",
+            "procurement",
+            "pursuitControl"
+          ],
+          "pursuit": {
+            "spend": {
+              "cap": 0,
+              "status": "not_requested",
+              "purpose": ""
+            },
+            "status": "draft",
+            "handoff": {
+              "brief": "",
+              "status": "not_started",
+              "receiver": "",
+              "revision": 0
+            },
+            "history": [],
+            "currency": "USD",
+            "revision": 0,
+            "knownRisk": "",
+            "requester": "",
+            "roughValue": "",
+            "requiredDate": "",
+            "intendedOutcome": ""
+          },
+          "definitionKeys": [],
+          "developKeys": [],
+          "packageCount": 0
+        }
+      ]
+    },
+    {
+      "name": "both tenants complete Discover intake and independent Define handoff",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "sourceRevision": 2,
+          "decisionRevision": 5,
+          "handoff": "accepted"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "sourceRevision": 1,
+          "decisionRevision": 5,
+          "handoff": "accepted"
+        }
+      ]
+    },
+    {
+      "name": "both tenants submit an authorized and complete Define draft",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "versionId": "364a4ecb-c4e0-43ec-9440-2a109bc09ec8",
+          "sourceRevision": 3,
+          "result": "submit"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "versionId": "a7ae0210-04d6-48e6-b5a9-2c8bf57feb65",
+          "sourceRevision": 2,
+          "result": "submit"
+        }
+      ]
+    },
+    {
+      "name": "independent Define reviews approve and hand off each pinned baseline",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "versionId": "364a4ecb-c4e0-43ec-9440-2a109bc09ec8",
+          "definitionStatus": "Approved",
+          "handoffStatus": "accepted",
+          "decisionRevision": 5
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "versionId": "a7ae0210-04d6-48e6-b5a9-2c8bf57feb65",
+          "definitionStatus": "Approved",
+          "handoffStatus": "accepted",
+          "decisionRevision": 5
+        }
+      ]
+    },
+    {
+      "name": "tenant administrators publish a bounded pricing prerequisite for solution decisions",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "policyId": "phase2e-price",
+          "version": 1
+        },
+        {
+          "tenant": "tenant_b_test",
+          "policyId": "phase2e-price",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "Develop policy rejects missing option evidence and accepts a documented selected solution",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "versionId": "364a4ecb-c4e0-43ec-9440-2a109bc09ec8",
+          "missingEvidenceDenied": true,
+          "solutionStatus": "Approved",
+          "sourceRevision": 5
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "versionId": "a7ae0210-04d6-48e6-b5a9-2c8bf57feb65",
+          "missingEvidenceDenied": false,
+          "solutionStatus": "Approved",
+          "sourceRevision": 3
+        }
+      ]
+    },
+    {
+      "name": "Design handoff rejects an absent offer revision before award",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "denied": "stale_state"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "denied": "stale_state"
+        }
+      ]
+    },
+    {
+      "name": "both tenants approve a detailed estimate from the selected solution",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "estimateStatus": "Approved",
+          "revision": 1,
+          "policyId": "phase2e-price"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "estimateStatus": "Approved",
+          "revision": 1,
+          "policyId": "phase2e-price"
+        }
+      ]
+    },
+    {
+      "name": "two fictional customer awards establish exact Design handoff basis",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "offerStatus": "Submitted",
+          "awardSource": "SYNTHETIC-PHASE2E-AWARD-A"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "offerStatus": "Submitted",
+          "awardSource": "SYNTHETIC-PHASE2E-AWARD-B"
+        }
+      ]
+    },
+    {
+      "name": "Design receives exact awarded scope through independent handoff",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "status": "accepted",
+          "sourceRevision": 6
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "status": "accepted",
+          "sourceRevision": 4
+        }
+      ]
+    },
+    {
+      "name": "both tenants create a connected Design package and issue its document",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "packageId": "wp-b031c2f9a8604e37a59d634a917c6c8e",
+          "documentId": "phase2e-a-procedure",
+          "evidenceId": "c5cae070-e900-4d58-b2d3-1f661d457286",
+          "documentStatus": "Issued for use"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "packageId": "wp-d81b8d13ac2c47949cc4066243acba88",
+          "documentId": "phase2e-b-procedure",
+          "evidenceId": "2b34fc21-8180-486c-bcb3-e5238bd07744",
+          "documentStatus": "Issued for use"
+        }
+      ]
+    },
+    {
+      "name": "Design policy denies missing method and accepts reviewed package release",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "packageId": "wp-b031c2f9a8604e37a59d634a917c6c8e",
+          "methodRequired": true,
+          "prematureRelease": "package_release_readiness_blocked",
+          "releaseStatus": "Accepted",
+          "versionId": "364a4ecb-c4e0-43ec-9440-2a109bc09ec8",
+          "browserReceipt": false
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "packageId": "wp-d81b8d13ac2c47949cc4066243acba88",
+          "methodRequired": false,
+          "prematureRelease": null,
+          "releaseStatus": "Accepted",
+          "versionId": "a7ae0210-04d6-48e6-b5a9-2c8bf57feb65",
+          "browserReceipt": false
+        }
+      ]
+    },
+    {
+      "name": "both connected Works receive independent purchase and labor authority",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "purchaseAuthorityId": "7c4c37a2-2aa0-4c6c-93e7-35c81c0c3159",
+          "laborAuthorityId": "5121d2a4-1490-4afc-a0dc-e4ddffe42ba7",
+          "independentApproverId": "90d76dad-7fc4-4e6f-b828-b54ce85c5ce6"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "purchaseAuthorityId": "8e5fc27b-6987-4dbf-90f3-38aeeb94443f",
+          "laborAuthorityId": "fc471859-edc7-4bec-95d4-448d50af4997",
+          "independentApproverId": "8f2ab0aa-c6a9-4586-b2a9-699a46b28c2a"
+        }
+      ]
+    },
+    {
+      "name": "both accepted Design packages receive qualified, published and acknowledged crew",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "packageId": "wp-b031c2f9a8604e37a59d634a917c6c8e",
+          "bookingId": "phase2f-a-booking",
+          "publicationId": "2b973b05-9b01-4b05-bd7e-43d21047ef89",
+          "workerId": "9f2f04ff-8b0b-4cc2-a521-9b1c8bf59d73",
+          "unqualifiedDenied": true
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "packageId": "wp-d81b8d13ac2c47949cc4066243acba88",
+          "bookingId": "phase2f-b-booking",
+          "publicationId": "8dbcde75-ea07-4200-89cd-c3538ef600b0",
+          "workerId": "e1849848-4074-47f9-83bb-993305fc7f44",
+          "unqualifiedDenied": true
+        }
+      ]
+    },
+    {
+      "name": "both tenants authorize current published Work through field-start command",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "permitId": "6407daaf-8bb5-4297-b0da-0b28b59ccc33",
+          "releaseId": "a3c44814-c258-450f-9217-268187e4aac5",
+          "configurationVersionId": "364a4ecb-c4e0-43ec-9440-2a109bc09ec8",
+          "unauthorizedDenied": true,
+          "crossTenantDenied": true
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "permitId": "d4490631-04a1-435b-8384-cf473b5ef7a2",
+          "releaseId": "9efc0f0a-166a-4669-9554-1ed48b7d6189",
+          "configurationVersionId": "a7ae0210-04d6-48e6-b5a9-2c8bf57feb65",
+          "unauthorizedDenied": true,
+          "crossTenantDenied": true
+        }
+      ]
+    },
+    {
+      "name": "Deploy completion enforces reviewed evidence only for the pinned strict tenant",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "tenant_a_test-569beb5473424d74ae14fed6e5cb873d",
+          "packageId": "wp-b031c2f9a8604e37a59d634a917c6c8e",
+          "bookingId": "phase2f-a-booking",
+          "reportId": "c0d6bd39-6770-4abb-acd0-9d078889731d",
+          "inspectionId": "b9032bee-b658-4835-9b5f-7ba0c427ac14",
+          "fieldChangeId": "99d644f0-6210-45e8-8670-9be88e6647d1",
+          "upload": {
+            "status": 200,
+            "body": "{\"evidenceId\":\"2114e337-f4fc-405c-a597-e91a72ddb105\",\"state\":{\"revision\":6,\"records\":[{\"workerProgress\":{\"releaseId\":\"a3c44814-c258-450f-9217-268187e4aac5\",\"plannedQuantity\":1,\"reviewedQuantity\":0,\"remainingQuantity\":1,\"unit\":\"service\"},\"id\":\"tenant_a_test-569beb5473424d74ae14fed6e5cb873d\",\"canonicalWorkId\":\"569beb54-7342-4d74-ae14-fed6e5cb873d\",\"workspace\":\"tenant_a_test\",\"title\":\"Phase 2D policy qualification\",\"type\":\"Lifecycle Service\",\"customer\":\"Fictional Customer\",\"site\":\"Test location\",\"s"
+          },
+          "policyRejection": "{\"error\":\"reviewed_evidence_required\",\"message\":\"reviewed_evidence_required\"}",
+          "completionId": "c30f3319-b20a-4dd6-9eda-01df6ce64ef0",
+          "evidenceRead": {
+            "status": 200,
+            "bytes": 68
+          }
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "tenant_b_test-ab310b933d5841af9bec7972d4687ef8",
+          "packageId": "wp-d81b8d13ac2c47949cc4066243acba88",
+          "bookingId": "phase2f-b-booking",
+          "reportId": "f838a0c7-9966-43ef-b842-ac0aa04897b8",
+          "inspectionId": "b9ef7b89-af5c-4f47-b827-d01e5dd4b13c",
+          "fieldChangeId": "13c5adbc-60df-4bf1-8f72-47e1a56a8a52",
+          "upload": {
+            "status": 200,
+            "body": "{\"evidenceId\":\"11885fb3-f081-4e9a-baca-3281a3a91c5c\",\"state\":{\"revision\":4,\"records\":[{\"workerProgress\":{\"releaseId\":\"9efc0f0a-166a-4669-9554-1ed48b7d6189\",\"plannedQuantity\":1,\"reviewedQuantity\":0,\"remainingQuantity\":1,\"unit\":\"service\"},\"id\":\"tenant_b_test-ab310b933d5841af9bec7972d4687ef8\",\"canonicalWorkId\":\"ab310b93-3d58-41af-9bec-7972d4687ef8\",\"workspace\":\"tenant_b_test\",\"title\":\"Phase 2D policy qualification\",\"type\":\"Lifecycle Service\",\"customer\":\"Fictional Customer\",\"site\":\"Test location\",\"s"
+          },
+          "policyRejection": null,
+          "completionId": "45a6d155-b7cd-4935-a611-72e0a05a24dc",
+          "evidenceRead": {
+            "status": 200,
+            "bytes": 68
+          }
+        }
+      ]
+    },
+    {
+      "name": "both tenants capture independent customer and Operations acceptance",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "tenant_a_test-569beb5473424d74ae14fed6e5cb873d",
+          "turnoverId": "ca56bdfc-00bc-4629-831e-9cc86fc52134",
+          "workAcceptanceId": "b600b3cf-b884-444d-954c-5c143d7fb641",
+          "configurationVersionId": "364a4ecb-c4e0-43ec-9440-2a109bc09ec8"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "tenant_b_test-ab310b933d5841af9bec7972d4687ef8",
+          "turnoverId": "fe17837f-aa50-42d7-9db3-5198702e49c6",
+          "workAcceptanceId": "b72d8ee2-17e0-4b3c-8ba7-063da809d12f",
+          "configurationVersionId": "a7ae0210-04d6-48e6-b5a9-2c8bf57feb65"
+        }
+      ]
+    },
+    {
+      "name": "tenant-neutral Deploy adapters reject foreign and wrong-role actors without state change",
+      "status": "PASS",
+      "detail": {
+        "workerManager": {
+          "status": 403,
+          "body": {
+            "error": "work_role_forbidden"
+          }
+        },
+        "foreignField": {
+          "status": 403,
+          "body": {
+            "error": "workspace_forbidden",
+            "message": "workspace_forbidden"
+          }
+        },
+        "foreignManager": {
+          "status": 403,
+          "body": {
+            "error": "workspace_forbidden"
+          }
+        },
+        "foreignIssue": {
+          "status": 403,
+          "body": {
+            "error": "connected_work_unavailable"
+          }
+        },
+        "unchangedDeployRevision": 14
+      }
+    },
+    {
+      "name": "Operate support acceptance follows exact Deploy receipt and pinned documentation policy",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "workAcceptanceId": "b600b3cf-b884-444d-954c-5c143d7fb641",
+          "activation": "Active",
+          "financialCloseout": "Pending",
+          "documentationPolicyRejection": "support_document_review_required",
+          "configurationVersionId": "364a4ecb-c4e0-43ec-9440-2a109bc09ec8"
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "workAcceptanceId": "b72d8ee2-17e0-4b3c-8ba7-063da809d12f",
+          "activation": "Active",
+          "financialCloseout": "Pending",
+          "documentationPolicyRejection": null,
+          "configurationVersionId": "a7ae0210-04d6-48e6-b5a9-2c8bf57feb65"
+        }
+      ]
+    },
+    {
+      "name": "cross-tenant Deploy and Operate RPCs reject the foreign actor",
+      "status": "PASS",
+      "detail": {
+        "tenant": "tenant_a_test",
+        "foreignActorId": "8a23a7be-c289-4cc3-9e0b-0fcba242442a",
+        "deployError": "field_membership_required",
+        "operateError": "connected_service_forbidden"
+      }
+    },
+    {
+      "name": "connected Deploy and Operate events retain exact Work, actor and tenant",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "deployEvents": 14,
+          "operateEvents": 6,
+          "deployEventRefs": [
+            {
+              "actor": "71a41780-6b2a-48fb-8287-50ec2c4cf6c8",
+              "action": "authorize-start",
+              "revision": 1,
+              "commandId": "fd866919-0618-4b74-aeb2-d09722da357d"
+            },
+            {
+              "actor": "9f2f04ff-8b0b-4cc2-a521-9b1c8bf59d73",
+              "action": "register-upload",
+              "revision": 2,
+              "commandId": "fb4f93b8-870f-4f2a-9d65-b062afb65963"
+            },
+            {
+              "actor": "9f2f04ff-8b0b-4cc2-a521-9b1c8bf59d73",
+              "action": "save-report",
+              "revision": 3,
+              "commandId": "742db508-f06a-46e3-9428-a22499dd4706"
+            },
+            {
+              "actor": "9f2f04ff-8b0b-4cc2-a521-9b1c8bf59d73",
+              "action": "submit-report",
+              "revision": 4,
+              "commandId": "46d1e7a4-884f-405b-8592-f8638efcfa4b"
+            },
+            {
+              "actor": "71a41780-6b2a-48fb-8287-50ec2c4cf6c8",
+              "action": "review-report",
+              "revision": 5,
+              "commandId": "9d48967b-2f12-4702-825c-1f4ca40e88c9"
+            },
+            {
+              "actor": "9f2f04ff-8b0b-4cc2-a521-9b1c8bf59d73",
+              "action": "record-inspection",
+              "revision": 6,
+              "commandId": "f98c59b4-0c31-4dd5-8164-ce3f6d1dae7c"
+            },
+            {
+              "actor": "71a41780-6b2a-48fb-8287-50ec2c4cf6c8",
+              "action": "review-inspection",
+              "revision": 7,
+              "commandId": "aaacd585-6155-4533-96a6-f611de312af5"
+            },
+            {
+              "actor": "71a41780-6b2a-48fb-8287-50ec2c4cf6c8",
+              "action": "review-evidence",
+              "revision": 8,
+              "commandId": "dc699a21-1243-49c5-9b01-53a9ebb6c93c"
+            },
+            {
+              "actor": "71a41780-6b2a-48fb-8287-50ec2c4cf6c8",
+              "action": "review-completion",
+              "revision": 9,
+              "commandId": "df18ad08-314e-4fbe-9af7-2d8459250976"
+            },
+            {
+              "actor": "18dfd293-f2e8-402c-a875-91beae69924a",
+              "action": "assemble-turnover",
+              "revision": 10,
+              "commandId": "9676879b-2397-4bd8-be12-eec782ab5232"
+            },
+            {
+              "actor": "210c047f-eef0-48a8-9554-b7e72b19cd88",
+              "action": "accept-client",
+              "revision": 11,
+              "commandId": "39a95921-a43f-49a2-b0eb-9ba4931df279"
+            },
+            {
+              "actor": "71a41780-6b2a-48fb-8287-50ec2c4cf6c8",
+              "action": "respond-operate",
+              "revision": 12,
+              "commandId": "83ff88c0-2964-4567-92b3-e6ce3a39f7d9"
+            },
+            {
+              "actor": "210c047f-eef0-48a8-9554-b7e72b19cd88",
+              "action": "accept-work",
+              "revision": 13,
+              "commandId": "49f3e7bb-1a1c-4100-a24d-59a1ce690db8"
+            },
+            {
+              "actor": "71a41780-6b2a-48fb-8287-50ec2c4cf6c8",
+              "action": "respond-operate-work",
+              "revision": 14,
+              "commandId": "0c40fb82-456f-47e0-a591-953b2ca9439b"
+            }
+          ],
+          "operateEventRefs": [
+            {
+              "actor": "71a41780-6b2a-48fb-8287-50ec2c4cf6c8",
+              "action": "receive-handoff",
+              "revision": 1,
+              "commandId": "phase2f-a-receive-handoff"
+            },
+            {
+              "actor": "18dfd293-f2e8-402c-a875-91beae69924a",
+              "action": "add-asset",
+              "revision": 2,
+              "commandId": "phase2f-a-add-asset"
+            },
+            {
+              "actor": "18dfd293-f2e8-402c-a875-91beae69924a",
+              "action": "support-document-submit",
+              "revision": 3,
+              "commandId": "phase2f-a-submit-support-document"
+            },
+            {
+              "actor": "210c047f-eef0-48a8-9554-b7e72b19cd88",
+              "action": "support-document-review",
+              "revision": 4,
+              "commandId": "phase2f-a-review-support-document"
+            },
+            {
+              "actor": "71a41780-6b2a-48fb-8287-50ec2c4cf6c8",
+              "action": "accept-support",
+              "revision": 5,
+              "commandId": "phase2f-a-accept-support-reviewed"
+            },
+            {
+              "actor": "71a41780-6b2a-48fb-8287-50ec2c4cf6c8",
+              "action": "activate",
+              "revision": 6,
+              "commandId": "phase2f-a-activate-support"
+            }
+          ]
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "deployEvents": 13,
+          "operateEvents": 4,
+          "deployEventRefs": [
+            {
+              "actor": "8a23a7be-c289-4cc3-9e0b-0fcba242442a",
+              "action": "authorize-start",
+              "revision": 1,
+              "commandId": "0c1ab864-5185-4a4f-9028-0ca8209cee9a"
+            },
+            {
+              "actor": "e1849848-4074-47f9-83bb-993305fc7f44",
+              "action": "register-upload",
+              "revision": 2,
+              "commandId": "ab4ea41c-559b-474d-a1b0-45f15c8efee2"
+            },
+            {
+              "actor": "e1849848-4074-47f9-83bb-993305fc7f44",
+              "action": "save-report",
+              "revision": 3,
+              "commandId": "37edc8c3-fec1-4d07-bb56-5475f43a4ee7"
+            },
+            {
+              "actor": "e1849848-4074-47f9-83bb-993305fc7f44",
+              "action": "submit-report",
+              "revision": 4,
+              "commandId": "3073a2b5-ea35-4b45-86f6-d8e702fa1ae9"
+            },
+            {
+              "actor": "8a23a7be-c289-4cc3-9e0b-0fcba242442a",
+              "action": "review-report",
+              "revision": 5,
+              "commandId": "31e9c467-3776-43f8-98df-ae0e5c4bd24a"
+            },
+            {
+              "actor": "e1849848-4074-47f9-83bb-993305fc7f44",
+              "action": "record-inspection",
+              "revision": 6,
+              "commandId": "d68c65ed-1e63-402f-9fa2-1aae000df660"
+            },
+            {
+              "actor": "8a23a7be-c289-4cc3-9e0b-0fcba242442a",
+              "action": "review-inspection",
+              "revision": 7,
+              "commandId": "064f2499-7487-438a-9acc-1fefbeda4d35"
+            },
+            {
+              "actor": "8a23a7be-c289-4cc3-9e0b-0fcba242442a",
+              "action": "review-completion",
+              "revision": 8,
+              "commandId": "0c4cfe4b-8a7d-46ac-8795-8a5fa8b6419a"
+            },
+            {
+              "actor": "27fb973f-cb66-4e57-856f-df10a2b3028e",
+              "action": "assemble-turnover",
+              "revision": 9,
+              "commandId": "42965362-18f3-4c87-934f-3622cbf80a35"
+            },
+            {
+              "actor": "b3bc5023-72a0-4f0f-ab3a-16a70bc6eecf",
+              "action": "accept-client",
+              "revision": 10,
+              "commandId": "380cd049-ccae-4c3e-9aec-6073afb5352d"
+            },
+            {
+              "actor": "8a23a7be-c289-4cc3-9e0b-0fcba242442a",
+              "action": "respond-operate",
+              "revision": 11,
+              "commandId": "a711061c-f634-4d0c-8e1b-106a24125aaa"
+            },
+            {
+              "actor": "b3bc5023-72a0-4f0f-ab3a-16a70bc6eecf",
+              "action": "accept-work",
+              "revision": 12,
+              "commandId": "3becde53-e3c9-482f-887c-f724846248d4"
+            },
+            {
+              "actor": "8a23a7be-c289-4cc3-9e0b-0fcba242442a",
+              "action": "respond-operate-work",
+              "revision": 13,
+              "commandId": "c8bbf6d8-abe1-4247-a079-ebd8f6f8b2d5"
+            }
+          ],
+          "operateEventRefs": [
+            {
+              "actor": "8a23a7be-c289-4cc3-9e0b-0fcba242442a",
+              "action": "receive-handoff",
+              "revision": 1,
+              "commandId": "phase2f-b-receive-handoff"
+            },
+            {
+              "actor": "27fb973f-cb66-4e57-856f-df10a2b3028e",
+              "action": "add-asset",
+              "revision": 2,
+              "commandId": "phase2f-b-add-asset"
+            },
+            {
+              "actor": "8a23a7be-c289-4cc3-9e0b-0fcba242442a",
+              "action": "accept-support",
+              "revision": 3,
+              "commandId": "phase2f-b-accept-support-without-review"
+            },
+            {
+              "actor": "8a23a7be-c289-4cc3-9e0b-0fcba242442a",
+              "action": "activate",
+              "revision": 4,
+              "commandId": "phase2f-b-activate-support"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "new published tenant policy does not repin completed connected Work",
+      "status": "PASS",
+      "detail": {
+        "tenant": "tenant_a_test",
+        "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+        "pinnedVersion": "364a4ecb-c4e0-43ec-9440-2a109bc09ec8",
+        "newActiveVersion": "5dbf9cb1-655d-447b-ae9e-e003571a5296",
+        "priorDecisionPreserved": true
+      }
+    },
+    {
+      "name": "connected decisions retain tenant, actor, Work and audit events",
+      "status": "PASS",
+      "detail": [
+        {
+          "tenant": "tenant_a_test",
+          "workId": "569beb54-7342-4d74-ae14-fed6e5cb873d",
+          "actorScopedEvents": {
+            "define": 5,
+            "develop": 2,
+            "design": 17
+          }
+        },
+        {
+          "tenant": "tenant_b_test",
+          "workId": "ab310b93-3d58-41af-9bec-7972d4687ef8",
+          "actorScopedEvents": {
+            "define": 5,
+            "develop": 2,
+            "design": 16
+          }
+        }
+      ]
+    },
+    {
+      "name": "cross-tenant Design mutation is denied by the authoritative command",
+      "status": "PASS",
+      "detail": {
+        "tenant": "tenant_a_test",
+        "foreignActor": "8f2ab0aa-c6a9-4586-b2a9-699a46b28c2a",
+        "denied": "design_editor_denied"
+      }
+    },
+    {
+      "name": "authenticated tenant administration and connected Work entry render",
+      "status": "PASS",
+      "detail": {
+        "files": [
+          "a-configuration.png",
+          "a-connected-work.png",
+          "a-pilot-work-gate.png",
+          "b-configuration.png",
+          "b-connected-work.png",
+          "b-pilot-work-gate.png"
+        ],
+        "ephemeralPreview": "http://127.0.0.1:61492/work/connected-work"
+      }
+    },
+    {
+      "name": "field evidence access rechecks membership, rollout and tenant lifecycle",
+      "status": "PASS",
+      "detail": {
+        "evidenceId": "2114e337-f4fc-405c-a597-e91a72ddb105",
+        "forgedStatus": 404,
+        "suspendedStatus": 403,
+        "suspendedRpc": "field_membership_required",
+        "disabledStatus": 403,
+        "disabledRpc": "assigned_worker_required",
+        "tenantStatus": 403,
+        "tenantRpc": "workspace_forbidden",
+        "unchangedDeployRevision": 14
+      }
+    }
+  ],
+  "setupError": null,
+  "cleanup": {
+    "projectId": "d5o-p0a-5fddceee-0f2",
+    "stopExit": 0,
+    "networkError": null,
+    "projectDirectoryAbsent": true,
+    "residualContainers": [],
+    "clean": true
+  },
+  "disposableClock": {
+    "at": "2026-10-26T14:00:00Z",
+    "scope": "field-start and connected Operate commands in disposable database only"
+  },
+  "environment": {
+    "projectId": "d5o-p0a-5fddceee-0f2",
+    "apiPort": 57621,
+    "loopbackOnly": true
+  },
+  "finishedAt": "2026-10-29T11:37:23.117Z",
+  "summary": {
+    "passed": 47,
+    "failed": 0,
+    "setupError": false,
+    "cleanupVerified": true
+  }
+}
