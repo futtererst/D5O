@@ -7620,7 +7620,10 @@ finally {
     mkdirSync(dirname(output),{recursive:true});
     writeFileSync(output,JSON.stringify({...evidence,cleanupPending:true},null,2)+"\n");
   }
-  if(runtime) evidence.cleanup=cleanupP0aRuntime(runtime);
+  if(runtime) {
+    try { evidence.cleanup=cleanupP0aRuntime(runtime); }
+    catch(error) { evidence.cleanup={clean:false,error:String(error.message)}; }
+  }
   evidence.finishedAt=new Date().toISOString();
   evidence.summary={passed:evidence.tests.filter((t)=>t.status==="PASS").length,
     failed:evidence.tests.filter((t)=>t.status==="FAIL").length,
