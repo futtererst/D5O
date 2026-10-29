@@ -158,7 +158,7 @@ export function AdminConfigurationEditor({ workspace }: { workspace: string }) {
       <span>New Work uses the active version. Existing Work keeps its recorded configuration.</span></div>
       <strong>{active ? `Active v${active.version}` : "Loading active version"}</strong></header>
     <nav aria-label="Configuration phases" className="d5o-admin-phase-nav">
-      {["Overview","Discover","Define","Develop","Design","Deploy","Operate","Shared policies","Drafts and publication","Version history","Audit activity"].map((item) =>
+      {["Overview","Discover","Define","Design","Develop","Deploy","Operate","Shared policies","Drafts and publication","Version history","Audit activity"].map((item) =>
         <a key={item} href={`#config-${item.toLowerCase().replaceAll(" ","-")}`}>{item}</a>)}
     </nav>
     {loadError && <p role="alert">{loadError}</p>}
