@@ -1,5 +1,19 @@
 # Local qualification defect and gap register
 
+Current disposition after the final local pass is recorded below. The original entries remain as the `e275da6a` baseline, and the [final assessment](../d5o-final-local-qualification/ASSESSMENT.md) has machine evidence.
+
+| ID | Severity/class | Final disposition |
+| --- | --- | --- |
+| LQ-04 | High / financial qualification gap | **Closed for implemented commands:** 20/20 tenant-specific service thresholds and 8/8 canonical financial cases passed, including cross-family concurrent PO/variation parent-cap race, persisted totals, replay, denial, and delegate UI approval. Approved-PO revision is not exposed by the current API and remains a scope decision, FLQ-01. |
+| LQ-05 | Medium / browser qualification gap | **Closed for tested UI:** 66/66 two-tenant journey, six phases at 900 px, touch and keyboard navigation, logout/fresh sign-in, and bounded labor persistence. Natural JWT expiry over elapsed token lifetime remains FLQ-02. |
+| LQ-06 | High / hosted blocker | **Open:** matched GREEN PostgreSQL/Auth/Storage restore, hosted migrations, two-tenant acceptance and rollback remain external. |
+| LQ-07 | Medium / dependency risk | **Closed locally:** supported Prisma 7.10.1 upgrade passed CLI validate/generate, typecheck and build; full npm audit has zero advisories. |
+| FLQ-01 | Scope / unclassified until requirement decision | No approved-PO revision action exists in the current Graybar route/RPC. Draft cancel, replay and replacement passed. Determine whether a post-approval PO revision is approved current-release scope; if so, it requires implementation and regression before local PASS. |
+| FLQ-02 | Medium / evidence gap | **Closed locally:** production Auth proxy with a supported five-minute JWT refreshed protected `/work` after 311 seconds; clearing session cookies denied navigation. 3/3 disposable browser checks passed. Hosted inactivity/time-box policy remains a GREEN configuration check. |
+| FLQ-03 | Medium / test assertion | New tablet and logout checks assumed an Account menu on Customer Work and allowed an absolute sign-in return URL. Root cause: the page's actual path is Switch organization → Sign out and the route accepts internal paths. Corrected in `6046dae` and `b4b137c`; final 66/66 passed without product change. |
+| FLQ-04 | Low / evidence hygiene | Routine browser, service, recovery, and finance outputs previously targeted tracked paths or changed `next-env.d.ts`. Redirected to ignored `.tmp/d5o-evidence`, added generated-file restoration, manually retained five curated evidence files; final worktree clean after runs. Two archived duplicate files were preserved after automatic approval review rejected their deletion. |
+| FLQ-05 | Medium / local infrastructure | Docker engine returned API 500 during an extended run's teardown; restart and exact disposable-stack cleanup restored service. Independent final 66/66 browser and 8/8 finance runs had clean disposal. The earlier transient browser 401's cause was not isolated, so no product correction is claimed. |
+
 The original recovery register remains at `artifacts/d5o-quality-recovery-20261029/DEFECT_REGISTER.md`. This addendum records new findings and unresolved scope precisely.
 
 | ID | Severity/class | Root cause and impact | Disposition and evidence |

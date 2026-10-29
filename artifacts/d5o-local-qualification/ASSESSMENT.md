@@ -1,5 +1,7 @@
 # D5O local qualification — 29 October 2026
 
+> Historical snapshot from commit `e275da6a`. The current assessment is [D5O final local qualification](../d5o-final-local-qualification/ASSESSMENT.md), with eight canonical finance checks, 66 authenticated browser checks, Prisma 7 advisory remediation, and the current release decision. The findings below retain their original as-of date.
+
 ## Decision
 
 **Local qualification: CONDITIONAL. Production promotion: BLOCKED.** The candidate passed the connected two-tenant browser journey, the historical Configuration Foundation suite, local database/Auth/Storage recovery probe, lint, typecheck, build, and focused security checks. The requested exhaustive financial matrix and all browser acceptance details are not yet proven. GREEN matched restore, deployed candidate acceptance, and promotion authorization remain external gates. No production or GREEN state was touched.
