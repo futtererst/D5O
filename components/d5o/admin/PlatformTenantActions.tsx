@@ -34,6 +34,7 @@ export function PlatformTenantActions({ tenant }: { tenant: ProvisionedTenant })
   if (!tenant.initialAdministrator) return <p>Existing pilot: lifecycle and capability controls are unavailable.</p>;
   const canActivate = tenant.status === "ready";
   const canRecover = tenant.status === "failed" || tenant.invitationStatus === "revoked" ||
+    (tenant.status === "awaiting_admin" && tenant.invitationStatus === "pending") ||
     Boolean(tenant.invitationExpiresAt && new Date(tenant.invitationExpiresAt) < new Date());
   return <section className={styles.section}><h2>Vendor actions</h2>
     <label className={styles.full}>Decision reason<textarea required minLength={8} maxLength={500}
