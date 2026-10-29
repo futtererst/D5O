@@ -100,7 +100,8 @@ def local_environment(container, project_ref):
         fail("wrong local rehearsal target")
     check = subprocess.run(["docker", "inspect", container], capture_output=True, text=True, check=True)
     target = json.loads(check.stdout)[0]
-    if target["HostConfig"]["NetworkMode"] != "none" or target["HostConfig"].get("PortBindings"):
+    networks = set(target["NetworkSettings"].get("Networks") or {})
+    if target["HostConfig"]["NetworkMode"] != "none" or networks - {"none"} or target["HostConfig"].get("PortBindings"):
         fail("rehearsal target is not network-isolated")
     return ["docker", "exec", "-i", container, "psql", "-U", "supabase_admin", "-d", "postgres", "-q", "-X", "-v", "ON_ERROR_STOP=1", "-At"], dict(os.environ)
 

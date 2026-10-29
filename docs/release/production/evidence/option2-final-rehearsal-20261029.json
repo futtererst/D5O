@@ -1,0 +1,61 @@
+{
+  "dateUtc": "2026-10-29",
+  "productionMutationPerformed": false,
+  "applicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "sourceManifestSha256": "c7e3cc0cb3740c2b0acf00b19160b489ced836accfdd470949c4c65d65c8ebb1",
+  "historicalRestore": {
+    "ledger": 177,
+    "authUsers": 25,
+    "authIdentities": 25,
+    "historicalWork": 15,
+    "privateObjects": 23,
+    "privateBytes": 2252301,
+    "isolated": true
+  },
+  "localDataApi": {
+    "positiveBefore": {"tablePostHttp": 201, "directRpcHttp": 204, "syntheticRows": 2},
+    "interruption": {"tablePost": "UNAVAILABLE", "directRpc": "UNAVAILABLE", "syntheticRowsAfter": 2, "inFlightDatabaseTransactions": 0},
+    "restoration": {"readHttp": 200, "tablePostHttp": 201, "directRpcHttp": 204, "syntheticRowsAfter": 4},
+    "productionDashboardToggleChanged": false,
+    "applicationTrafficRestrictionTested": false
+  },
+  "migration": {
+    "from": 177,
+    "to": 202,
+    "orders": "212-236",
+    "atomicBridgeStatementCount": 3,
+    "protectedHistoricalDigestClassesUnchanged": 10,
+    "runnerRejectedNetworkConnectedHistoricalFixture": true
+  },
+  "injectedDeploymentFailure": {
+    "failure": "scanner setting absent in local candidate process",
+    "initialHealthHttp": 200,
+    "initialReadinessHttp": 503,
+    "initialBlocker": "scanner_contract",
+    "sameBuildRetryWithScannerDisabledHealthHttp": 200,
+    "sameBuildRetryReadinessHttp": 200,
+    "authenticatedBusinessCommandAgainstMigratedHistoricalCopy": "NOT EXECUTED",
+    "oldApplicationCompatibilityWithMigratedSchema": "NOT EXECUTED",
+    "supportedApplicationFallbackDemonstrated": false
+  },
+  "afterRetry": {
+    "ledger": 202,
+    "authUsers": 25,
+    "authIdentities": 25,
+    "historicalWork": 15,
+    "privateObjects": 23,
+    "privateByteHashesAndAssociationsVerified": true
+  },
+  "productionConfiguration": {
+    "requiredScannerDisabledVariablePresent": false,
+    "effectiveSecretBindingsVerified": false,
+    "productionChanged": false
+  },
+  "option3": {
+    "existingProOrganizationAdditionalProjectQuoteUsdPerMonth": 10,
+    "additionalUsageChargesPossible": true,
+    "isolatedProjectCreated": false
+  },
+  "disposableCleanupVerified": true,
+  "decision": "OPTION_3_REQUIRED"
+}
