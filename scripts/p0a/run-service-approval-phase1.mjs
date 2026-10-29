@@ -7,9 +7,13 @@ import { createServer } from "node:net";
 import { createClient } from "@supabase/supabase-js";
 import { chromium } from "@playwright/test";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
+import { captureNextEnv } from "./next-env-guard.mjs";
 
 const root = resolve(process.cwd());
-const output = resolve(root, "docs/architecture/evidence/phase1-two-tenant-results.json");
+const restoreNextEnv = captureNextEnv(root);
+const evidencePath = (legacyPath) => resolve(root,
+  process.env.D5O_EVIDENCE_ROOT || ".tmp/d5o-evidence/service-approval", legacyPath);
+const output = evidencePath("docs/architecture/evidence/phase1-two-tenant-results.json");
 const evidence = { startedAt: new Date().toISOString(), environment: "disposable local Supabase",
   tests: [], cleanup: null, setupError: null };
 let runtime, server;
@@ -134,7 +138,7 @@ try {
   await check("authenticated customer configuration screenshots", async () => {
     server = await startNext(url, anon, service);
     const browser = await chromium.launch();
-    const directory = resolve(root, "docs/architecture/evidence/phase1-admin-ui");
+    const directory = evidencePath("docs/architecture/evidence/phase1-admin-ui");
     mkdirSync(directory, { recursive: true });
     try {
       const files = [];
@@ -281,7 +285,7 @@ try {
   });
   await check("customer administrator edits, validates and activates policy in browser", async () => {
     const browser = await chromium.launch();
-    const directory = resolve(root, "docs/architecture/evidence/phase1-admin-ui");
+    const directory = evidencePath("docs/architecture/evidence/phase1-admin-ui");
     try {
       const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
       const target = "/work/admin/configuration?workspace=enterprise_test";
@@ -377,13 +381,14 @@ try {
 } catch (error) { evidence.setupError = String(error.message).slice(0, 1200); }
 finally {
   if (server) { server.process.kill(); await new Promise((done) => setTimeout(done, 1000)); }
+  restoreNextEnv();
   if (runtime) evidence.cleanup = cleanupP0aRuntime(runtime);
   evidence.finishedAt = new Date().toISOString();
   evidence.summary = { passed: evidence.tests.filter((t) => t.status === "PASS").length,
     failed: evidence.tests.filter((t) => t.status === "FAIL").length,
     setupError: Boolean(evidence.setupError), cleanupVerified: Boolean(evidence.cleanup?.clean) };
-  mkdirSync(resolve(root, "docs/architecture/evidence"), { recursive: true });
+  mkdirSync(resolve(output, ".."), { recursive: true });
   writeFileSync(output, `${JSON.stringify(evidence, null, 2)}\n`);
-  console.log(JSON.stringify({ ...evidence.summary, output: "docs/architecture/evidence/phase1-two-tenant-results.json" }));
+  console.log(JSON.stringify({ ...evidence.summary, output }));
   if (evidence.setupError || evidence.summary.failed || !evidence.summary.cleanupVerified) process.exitCode = 1;
 }

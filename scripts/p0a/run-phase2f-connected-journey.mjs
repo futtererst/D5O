@@ -8,8 +8,10 @@ import { createClient } from "@supabase/supabase-js";
 import { chromium } from "@playwright/test";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
+import { captureNextEnv } from "./next-env-guard.mjs";
 
 const root = resolve(process.cwd());
+const restoreNextEnv = captureNextEnv(root);
 const releaseHostedLifecycle = process.env.D5O_RELEASE_HOSTED_LIFECYCLE === "1";
 const rc4a = process.env.D5O_RC4A_BROWSER === "1";
 const rc4b = process.env.D5O_RC4B_BROWSER === "1";
@@ -33,7 +35,9 @@ const phase2hsGateA = process.env.D5O_PHASE2HS_GATE_A === "1" || phase2hsGateB;
 const phase2hr = process.env.D5O_PHASE2HR === "1" || phase2hsGateA;
 const phase2hCompletion = process.env.D5O_PHASE2H_COMPLETION === "1" || phase2hr;
 const phase2h = process.env.D5O_PHASE2H === "1" || phase2hCompletion;
-const output = resolve(root, releaseHostedLifecycle
+const evidencePath = (legacyPath) => resolve(root,
+  process.env.D5O_EVIDENCE_ROOT || ".tmp/d5o-evidence/phase2f", legacyPath);
+const output = evidencePath(releaseHostedLifecycle
   ? "docs/release/production/evidence/hosted-lifecycle-qualification.json"
   : rc4b1
   ? "docs/release/evidence/D5O_RC4B1_INTEGRITY.json"
@@ -87,7 +91,7 @@ const evidence = { baseline: process.env.D5O_SOURCE_SHA || (rc3 ? "e3396521099a5
     : "8d536b4ce74282fe6c3a0e2dbb66b1752ca51ec2"),
   startedAt: new Date().toISOString(), tests: [], setupError: null, cleanup: null };
 let rc3PrepublicationDraftId=null;
-const browserEvidenceDir = (legacyPath) => resolve(root,releaseHostedLifecycle
+const browserEvidenceDir = (legacyPath) => evidencePath(releaseHostedLifecycle
   ? "docs/release/production/evidence/hosted-lifecycle-browser" : rc4b1
   ? "docs/release/evidence/rc4b1-browser" : rc4b
   ? "docs/release/evidence/rc4b-browser" : rc4a
@@ -316,7 +320,6 @@ try {
       .filter({hasText:title}).first();
     try { await task.waitFor({state:"visible",timeout:30000}); }
     catch (error) {
-      if (!releaseHostedLifecycle) throw error;
       const diagnostic=await page.evaluate(async({workspace,workId})=>{
         const [listResponse,detailResponse]=await Promise.all([
           fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}`),
@@ -335,7 +338,7 @@ try {
           packageCount:record?.design?.packages?.length??0};
       },{workspace:tenant.workspaceKey,workId});
       evidence.missingTaskDiagnostic={expectedTitle:title,...diagnostic};
-      throw Error(`hosted_task_not_projected:${title}`);
+      throw Error(`hosted_task_not_projected:${actor}:${title}:${JSON.stringify(diagnostic).slice(0,900)}`);
     }
     const href=await task.getAttribute("href");
     assert(href?.includes(workId),`${actor}:wrong_task_work:${href}`);
@@ -636,7 +639,7 @@ try {
         pin:detail.record?.phaseConfigurationVersionId,
         replay:detail.phaseStatus?.replayMatches};
     },{workspace:tenant.workspaceKey,workId});
-    const dir=resolve(root,phase2htGateA
+    const dir=evidencePath(phase2htGateA
       ? "docs/architecture/evidence/phase2ht-gate-a-browser"
       : "docs/architecture/evidence/phase2hs-develop-browser");
     mkdirSync(dir,{recursive:true});
@@ -3521,7 +3524,7 @@ try {
         await oldPage.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}/assignments`);
         await oldPage.getByText("No published assignment is available.").waitFor({timeout:30000});
         assert.equal(await oldPage.getByRole("button",{name:"Acknowledge assignment"}).count(),0);
-        const dir=resolve(root,"docs/architecture/evidence/phase2ht-gate-a-browser");
+        const dir=evidencePath("docs/architecture/evidence/phase2ht-gate-a-browser");
         mkdirSync(dir,{recursive:true});
         await oldPage.screenshot({path:resolve(dir,"b-reassigned-worker-mobile.png"),fullPage:true});
         designPages.set("b_worker",oldPage);
@@ -3593,7 +3596,7 @@ try {
         assert.equal(ackResponse.status(),200,`${prefix}:browser-ack:${JSON.stringify(result)}`);
         await page.reload();
         await page.getByText("Acknowledged by you").waitFor({timeout:30000});
-        const dir=resolve(root,phase2htGateA
+        const dir=evidencePath(phase2htGateA
           ? "docs/architecture/evidence/phase2ht-gate-a-browser"
           : "docs/architecture/evidence/phase2hs-develop-browser");
         mkdirSync(dir,{recursive:true});
@@ -3672,7 +3675,7 @@ try {
         await page.reload();
         await page.getByText("Your next responsibility is Deploy execution",{exact:false})
           .waitFor({timeout:30000});
-        const dir=resolve(root,phase2htGateA
+        const dir=evidencePath(phase2htGateA
           ? "docs/architecture/evidence/phase2ht-gate-a-browser"
           : "docs/architecture/evidence/phase2hs-develop-browser");
         await page.screenshot({path:resolve(dir,`${prefix}-deploy-responsibility.png`),fullPage:true});
@@ -3933,6 +3936,7 @@ try {
         await page.getByRole("heading",{name:"Work lifecycle"}).waitFor({timeout:30000});
       }
       deployPages.set(actor,page);
+      page.__d5oActor=actor;
       if(page.url()!==`http://127.0.0.1:${server.port}${path}`)
         await page.goto(`http://127.0.0.1:${server.port}${path}`);
       return page;
@@ -3967,7 +3971,8 @@ try {
         `:${error.message}:${JSON.stringify(diagnostics)}`);
     }
     const body=await response.text().catch(()=>"response body unavailable after navigation");
-    assert.equal(response.status(),expected,`deploy_browser:${endpoint}:${body}`);
+    assert.equal(response.status(),expected,
+      `deploy_browser:${page.__d5oActor??"unknown"}:${page.url()}:${endpoint}:${body}`);
     return {status:response.status(),body:body.slice(0,500),
       ...(phase2hvc && endpoint.includes("prototype-operate-command")
         ? {command:response.request().postDataJSON()} : {})};
@@ -4239,7 +4244,7 @@ try {
     const publication=basis.schedule.state.publications.at(-1);
     const booking=publication?.assignments.find((item)=>item.packageId===basis.packageId&&item.workId===basis.work.id);
     assert(booking,`${prefix}:published_field_booking_missing`);
-    const dir=resolve(root,phase2hvcFinal?"docs/release/evidence/phase2hvc-final-browser":phase2hvc?"docs/release/evidence/phase2hvc-browser":phase2hv?"docs/architecture/evidence/phase2hv-browser":"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
+    const dir=evidencePath(phase2hvcFinal?"docs/release/evidence/phase2hvc-final-browser":phase2hvc?"docs/release/evidence/phase2hvc-browser":phase2hv?"docs/architecture/evidence/phase2hv-browser":"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
     const workerActor=phase2htGateA&&prefix==="b"?"b_replacement":`${prefix}_worker`;
     const worker=await deployPage(workerActor,tenant,
       `/work/customer/${tenant.workspaceKey}/assignments`,{width:390,height:844});
@@ -4822,7 +4827,7 @@ try {
       "/api/d5o-hosted/prototype-deploy-command",200);
     current=await connectedBasis(prefix,tenant);
     assert.equal(current.deploy.state.workAcceptance?.receipt,"Accepted");
-    const dir=resolve(root,phase2hvcFinal?"docs/release/evidence/phase2hvc-final-browser":phase2hvc?"docs/release/evidence/phase2hvc-browser":phase2hv?"docs/architecture/evidence/phase2hv-browser":"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
+    const dir=evidencePath(phase2hvcFinal?"docs/release/evidence/phase2hvc-final-browser":phase2hvc?"docs/release/evidence/phase2hvc-browser":phase2hv?"docs/architecture/evidence/phase2hv-browser":"docs/architecture/evidence/phase2hu-browser");mkdirSync(dir,{recursive:true});
     await ops.screenshot({path:resolve(dir,`${prefix}-deploy-accepted.png`),fullPage:true});
     await ops.goto(`http://127.0.0.1:${server.port}/work/customer/${tenant.workspaceKey}`);
     await ops.getByRole("heading",{name:"Work lifecycle"}).waitFor();
@@ -5080,7 +5085,7 @@ try {
     await deployPage(`${prefix}_ops`,tenant,path);
     await queue.getByText("Support Active. Financial closeout remains Pending.").waitFor();
     await queue.getByText("Replay matched").waitFor();
-    const dir=resolve(root,phase2hvcFinal?"docs/release/evidence/phase2hvc-final-browser":phase2hvc?"docs/release/evidence/phase2hvc-browser":"docs/architecture/evidence/phase2hv-browser");mkdirSync(dir,{recursive:true});
+    const dir=evidencePath(phase2hvcFinal?"docs/release/evidence/phase2hvc-final-browser":phase2hvc?"docs/release/evidence/phase2hvc-browser":"docs/architecture/evidence/phase2hv-browser");mkdirSync(dir,{recursive:true});
     await queue.screenshot({path:resolve(dir,`${prefix}-operate-desktop.png`),fullPage:true});
     await queue.setViewportSize({width:390,height:844});
     await queue.screenshot({path:resolve(dir,`${prefix}-operate-mobile.png`),fullPage:true});
@@ -6030,7 +6035,7 @@ try {
                 from d5o_hosted.connected_create_receipts r
                 join d5o_hosted.work_records w on w.id=r.work_id and w.workspace_id=r.workspace_id
                 where r.workspace_id=${q(tenant.workspaceId)} and w.title=${q(browserWork)}),'[]'::jsonb))::text;`));
-            const evidenceDir=resolve(root,"docs/architecture/evidence/phase2hte-gate-b-browser");
+            const evidenceDir=evidencePath("docs/architecture/evidence/phase2hte-gate-b-browser");
             mkdirSync(evidenceDir,{recursive:true});
             const screenshot=resolve(evidenceDir,`${prefix}-creation-state.png`);
             await page.screenshot({path:screenshot,fullPage:true}).catch(()=>{});
@@ -6053,7 +6058,7 @@ try {
                 where r.workspace_id=${q(tenant.workspaceId)} and w.title=${q(browserWork)}))::text;`));
             const probe={tenant:tenant.workspaceKey,receiptVisible,persisted,
               route:page.url(),expectedTitle:browserWork};
-            const probeDir=resolve(root,"docs/architecture/evidence/phase2hte-gate-b-browser");
+            const probeDir=evidencePath("docs/architecture/evidence/phase2hte-gate-b-browser");
             mkdirSync(probeDir,{recursive:true});
             await page.screenshot({path:resolve(probeDir,`${prefix}-creation-after-reload.png`),fullPage:true});
             writeFileSync(resolve(root,`docs/architecture/evidence/phase2hte-reload-probe-${prefix}.json`),
@@ -7507,10 +7512,110 @@ try {
       removedMember:removedHttp.status,initialJobCount:basis.operate.state.jobs.length,
       finalJobCount:afterRemoval.operate.state.jobs.length};
   });
+  if(rc3) await check("published labor has bounded database commitments in both tenants",async()=>{
+    const outcomes=[];
+    for(const [prefix,tenant] of [["a",a],["b",b]]){
+      const basis=await connectedBasis(prefix,tenant);
+      const read=await call(`${prefix}_pm`,"d5o_labor_authority_read_v1",{
+        p_workspace_key:tenant.workspaceKey,p_presentation_id:basis.work.id});
+      assert(!read.error,`${prefix}:labor_read:${read.error?.message}`);
+      const counts=sql(`select count(*)||':'||coalesce(sum(r.amount_minor),0)
+        from d5o_hosted.labor_reservations r join d5o_hosted.work_identity_links l
+          on l.workspace_id=r.workspace_id and l.work_id=r.work_id
+        where l.workspace_id=${q(tenant.workspaceId)} and l.presentation_id=${q(basis.work.id)}
+          and r.status='Active';`).split(":").map(Number);
+      assert(counts[0]>0 && counts[1]>0,`${prefix}:missing_labor_commitment:${counts}`);
+      assert(read.data.laborExposureMinor>=counts[1],`${prefix}:labor_exposure_below_reservations`);
+      assert(read.data.laborExposureMinor<=read.data.laborCapMinor,`${prefix}:labor_cap_exceeded`);
+      assert(read.data.parentRemainingMinor>=0,`${prefix}:parent_cap_exceeded`);
+      outcomes.push({tenant:tenant.workspaceKey,reservations:counts[0],reservedMinor:counts[1],
+        exposureMinor:read.data.laborExposureMinor,capMinor:read.data.laborCapMinor});
+    }
+    return outcomes;
+  });
+  if(rc3) await check("tablet touch navigation and phase persistence",async()=>{
+    if(!designBrowser)designBrowser=await chromium.launch();
+    const context=await designBrowser.newContext({viewport:{width:900,height:1180},hasTouch:true,isMobile:true});
+    const page=await context.newPage();
+    try {
+      await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=%2Fwork`);
+      await page.getByLabel("Email").fill(users.a_pm.email);
+      await page.getByLabel("Password").fill(users.a_pm.password);
+      await page.getByRole("button",{name:"Continue to your work"}).click();
+      await page.waitForURL((url)=>!url.pathname.startsWith("/auth/sign-in"));
+      const workId=(await connectedBasis("a",a)).work.id;
+      const widths=[];
+      for(const phase of ["discover","define","develop","design","deploy","operate"]){
+        await page.goto(`http://127.0.0.1:${server.port}/work/customer/${a.workspaceKey}?work=${workId}#phase-${phase}`);
+        await page.getByText("Loading current Work and phase decisions…")
+          .waitFor({state:"hidden",timeout:30000});
+        const width=await page.evaluate(()=>({document:document.documentElement.scrollWidth,
+          viewport:document.documentElement.clientWidth}));
+        assert(width.document<=width.viewport+2,`tablet_${phase}_overflow:${JSON.stringify(width)}`);
+        widths.push({phase,...width});
+      }
+      await page.getByRole("button",{name:/^Account/}).tap();
+      await page.getByRole("menuitem",{name:"Sign out"}).waitFor({state:"visible"});
+      await page.screenshot({path:evidencePath("docs/release/evidence/rc3-browser/a-tablet-operate.png"),fullPage:true});
+      await page.keyboard.press("Escape");
+      return {widths,touchMenuOpened:true};
+    } finally {await context.close();}
+  });
+  if(rc3) await check("keyboard menu focus and accessible work controls",async()=>{
+    const page=await rc3SignedInPage("a_pm");
+    await page.goto(`http://127.0.0.1:${server.port}/work/customer/${a.workspaceKey}`);
+    await page.getByRole("heading",{name:"Work lifecycle"}).waitFor();
+    const account=page.getByRole("button",{name:/^Account/});
+    await account.focus();
+    await page.keyboard.press("Enter");
+    const signOut=page.getByRole("menuitem",{name:"Sign out"});
+    await signOut.waitFor({state:"visible"});
+    await page.keyboard.press("Escape");
+    assert.equal(await account.evaluate((element)=>document.activeElement===element),true);
+    const unnamed=await page.evaluate(()=>[...document.querySelectorAll("button,a[href],input,select")]
+      .filter((element)=>{const style=getComputedStyle(element);return style.display!=="none"
+        && style.visibility!=="hidden" && element.getBoundingClientRect().width>0;})
+      .filter((element)=>!element.getAttribute("aria-label") && !element.getAttribute("title")
+        && !element.textContent?.trim() && !(element instanceof HTMLInputElement && element.labels?.length))
+      .slice(0,10).map((element)=>element.outerHTML.slice(0,160)));
+    assert.deepEqual(unnamed,[],`unnamed_interactive_controls:${JSON.stringify(unnamed)}`);
+    return {accountKeyboardOpen:true,escapeReturnsFocus:true,unnamedControls:0};
+  });
+  if(rc3) await check("logout clears Work access and fresh sign-in restores persisted record",async()=>{
+    if(!designBrowser)designBrowser=await chromium.launch();
+    const context=await designBrowser.newContext({viewport:{width:900,height:900}});
+    const page=await context.newPage();
+    const target=`http://127.0.0.1:${server.port}/work/customer/${a.workspaceKey}`;
+    try {
+      await page.goto(`http://127.0.0.1:${server.port}/auth/sign-in?next=${encodeURIComponent(target)}`);
+      await page.getByLabel("Email").fill(users.a_pm.email);
+      await page.getByLabel("Password").fill(users.a_pm.password);
+      await page.getByRole("button",{name:"Continue to your work"}).click();
+      await page.getByRole("heading",{name:"Work lifecycle"}).waitFor();
+      await page.getByRole("button",{name:/^Account/}).click();
+      await page.getByRole("menuitem",{name:"Sign out"}).click();
+      await page.waitForURL((url)=>url.pathname.startsWith("/auth/sign-in"),{timeout:30000});
+      await page.goto(target);
+      await page.waitForURL((url)=>url.pathname.startsWith("/auth/sign-in"),{timeout:30000});
+      await page.getByLabel("Email").fill(users.a_pm.email);
+      await page.getByLabel("Password").fill(users.a_pm.password);
+      await page.getByRole("button",{name:"Continue to your work"}).click();
+      await page.getByRole("heading",{name:"Work lifecycle"}).waitFor();
+      const workId=(await connectedBasis("a",a)).work.id;
+      const persisted=await page.evaluate(async({workspace,workId})=>{
+        const response=await fetch(`/api/d5o-hosted/customer-work?workspace=${workspace}&workId=${workId}`);
+        return {status:response.status,body:await response.json()};
+      },{workspace:a.workspaceKey,workId});
+      assert.equal(persisted.status,200);
+      assert(persisted.body.record,`fresh_session_record_missing:${JSON.stringify(persisted).slice(0,250)}`);
+      return {logoutRedirect:true,unauthorizedNavigationDenied:true,freshSessionRecord:true};
+    } finally {await context.close();}
+  });
 } catch(error) {evidence.setupError=String(error.message).slice(-2500);}
 finally {
   if(designBrowser) await designBrowser.close();
   if(server) server.handle.kill();
+  restoreNextEnv();
   if(releaseHostedLifecycle) {
     mkdirSync(dirname(output),{recursive:true});
     writeFileSync(output,JSON.stringify({...evidence,cleanupPending:true},null,2)+"\n");
@@ -7520,29 +7625,8 @@ finally {
   evidence.summary={passed:evidence.tests.filter((t)=>t.status==="PASS").length,
     failed:evidence.tests.filter((t)=>t.status==="FAIL").length,
     setupError:Boolean(evidence.setupError),cleanupVerified:Boolean(evidence.cleanup?.clean)};
-  mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
   mkdirSync(dirname(output),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
-  console.log(JSON.stringify({...evidence.summary,output:releaseHostedLifecycle
-    ? "docs/release/production/evidence/hosted-lifecycle-qualification.json" : rc4b1
-    ? "docs/release/evidence/D5O_RC4B1_INTEGRITY.json" : rc4b
-    ? "docs/release/evidence/D5O_RC4B_EXECUTION_HOLDS.json" : rc4a
-    ? "docs/release/evidence/D5O_RC4A_SCOPE_CHANGE_BROWSER.json" : phase2hv
-    ? "docs/architecture/evidence/phase2hv-two-tenant-results.json" : rc0DeployIntegrity
-    ? "docs/release/D5O_RC0_DEPLOY_INTEGRITY.json" : phase2hu
-    ? "docs/architecture/evidence/phase2hu-two-tenant-results.json" : phase2htd
-    ? "docs/architecture/evidence/phase2htd-targeted-results.json" : phase2htc
-    ? "docs/architecture/evidence/phase2htc-two-tenant-results.json" : phase2htGateA
-    ? "docs/architecture/evidence/phase2ht-gate-a-results.json" : phase2htGateB
-    ? "docs/architecture/evidence/phase2ht-gate-b-results.json" : phase2hsGateB
-    ? "docs/architecture/evidence/phase2hs-develop-gate-results.json" : phase2hsGateA
-    ? "docs/architecture/evidence/phase2hs-design-gate-results.json" : phase2hr
-    ? "docs/architecture/evidence/phase2hr-design-browser-results.json"
-    : phase2hCompletion
-    ? "docs/architecture/evidence/phase2h-completion-define-results.json"
-    : phase2h
-    ? "docs/architecture/evidence/phase2h-connected-journey-results.json"
-    : phase2g ? "docs/architecture/evidence/phase2g-two-tenant-results.json"
-    : "docs/architecture/evidence/phase2f-connected-journey-results.json"}));
+  console.log(JSON.stringify({...evidence.summary,output}));
   if(evidence.summary.failed||evidence.summary.setupError||!evidence.summary.cleanupVerified) process.exitCode=1;
 }

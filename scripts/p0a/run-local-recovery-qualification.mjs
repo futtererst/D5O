@@ -2,12 +2,13 @@ import assert from "node:assert/strict";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root = resolve(process.cwd());
-const output = resolve(root, "artifacts/d5o-local-qualification/local-recovery.json");
+const output = resolve(root, process.env.D5O_EVIDENCE_ROOT || ".tmp/d5o-evidence/recovery",
+  "local-recovery.json");
 const evidence = { startedAt: new Date().toISOString(), checks: [], sourceCleanup: null,
   targetCleanup: null, error: null };
 const q = (value) => `'${String(value).replaceAll("'", "''")}'`;
@@ -116,7 +117,7 @@ finally {
   evidence.summary = { passed: evidence.checks.filter((item) => item.status === "PASS").length,
     error: Boolean(evidence.error), sourceCleanupVerified: Boolean(evidence.sourceCleanup?.clean),
     targetCleanupVerified: Boolean(evidence.targetCleanup?.clean) };
-  mkdirSync(resolve(root, "artifacts/d5o-local-qualification"), { recursive: true });
+  mkdirSync(dirname(output), { recursive: true });
   writeFileSync(output, `${JSON.stringify(evidence, null, 2)}\n`);
   console.log(JSON.stringify({ ...evidence.summary, output }));
   if (evidence.error || !evidence.sourceCleanup?.clean || !evidence.targetCleanup?.clean) process.exitCode = 1;
