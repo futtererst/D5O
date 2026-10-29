@@ -57,6 +57,28 @@
     "source": "clean extraction of verified archive",
     "deploymentCreated": false
   },
+  "readOnlyProductionRecheck": {
+    "sourceCommit": "738d31f7d8ae1589c4d26f0f3e35e4cd832ea3eb",
+    "ledgerRows": 177,
+    "approvedStartingLedgerFingerprintMatched": true,
+    "storageMetadataObjects": 23,
+    "storageInventorySha256": "2640511d7f5b872dbdf42ae9bf30ea279cc8da9404a910e7963ddb8d7c99c2e4",
+    "storageObjectPolicyRows": 0,
+    "authUsersUpdatedLast24Hours": 0,
+    "authUsersSignedInLast24Hours": 0,
+    "authSessionsCreatedLast24Hours": 0,
+    "authSessionsUpdatedLast24Hours": 0,
+    "note": "These observations do not prevent later privileged Storage or Auth writes."
+  },
+  "minimalBusinessFenceCandidate": {
+    "applicationIngress": "Block Vercel business-command and upload routes during migration and old/new application switch",
+    "directRpcIngress": "Temporarily disable the Supabase Data API using its supported project setting",
+    "readAccess": "Application read access may be interrupted; the Data API setting also removes REST reads",
+    "auth": "Independent provider endpoint; must be inventoried and recovered separately",
+    "storage": "No end-user storage.objects policies observed; privileged service-role writers still require operator accounting",
+    "status": "NOT_EXECUTED_OR_QUALIFIED",
+    "source": "https://supabase.com/docs/guides/api/securing-your-api"
+  },
   "productionMutationPerformed": false,
   "disposableContainerRemoved": true,
   "notQualified": [
