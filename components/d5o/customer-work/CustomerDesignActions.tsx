@@ -13,10 +13,10 @@ type Package = { packageId: string; name?: string; revision?: number;
   scope?: string; location?: string; systems?: string; materials?: string; access?: string;
   permit?: string; safetyControls?: string; equipment?: string; method?: string;
   rollback?: string; verification?: string; proof?: string; acceptingAuthority?: string;
-  windowStart?: string; windowEnd?: string;
+  windowStart?: string; windowEnd?: string; materialRequiredDate?: string;
   completionBasis?: { unit?: string; criterion?: string } };
 type DesignWork = { id: string; owner?: string; design?: { packages?: Package[]; documents?: Document[];
-  reviews?: Review[]; releases?: Array<{ id: string; packageId: string; status: string }>;
+  reviews?: Review[]; releases?: Array<{ id: string; packageId: string; status: string; holdKind?: string }>;
   changes?: Array<{ id: string; packageId: string; source: string; openedRevision: number; status: string }> };
   discovery?: { outcome?: string; designHandoff?: { status?: string; submittedByActorId?: string } };
   definition?: { scopeControl?: { requirements?: Array<{ id: string; state?: string; description?: string }> } } };
@@ -47,6 +47,9 @@ export function CustomerDesignActions({ workspace, work, connectedPackages, role
     && ["Awaiting receipt", "Accepted"].includes(item.status)) ?? false;
   const acceptedRelease = work.design?.releases?.find((item) => item.packageId === chosen?.packageId
     && item.status === "Accepted");
+  const scheduleCorrectionHeld = work.design?.releases?.some((item) =>
+    item.packageId === chosen?.packageId && item.status === "Held"
+    && item.holdKind === "Schedule correction") ?? false;
   const packageChanges = work.design?.changes?.filter((item) => item.packageId === chosen?.packageId) ?? [];
   const heldReleases = work.design?.releases?.filter((item) => item.packageId === chosen?.packageId
     && item.status === "Hold pending acknowledgment") ?? [];
@@ -170,7 +173,9 @@ export function CustomerDesignActions({ workspace, work, connectedPackages, role
           requirementIds: requirements.map((item) => item.id), predecessorIds: [],
           documentRefs: governingDocument ? [`${governingDocument.id}@${governingDocument.revision}`] : [],
           materials: str(data, "materials"), materialLines: [], materialStatus: "Unknown",
-          materialRequiredDate: str(data, "start"), materialForecastDate: "", materialSource: "",
+          materialRequiredDate: scheduleCorrectionHeld
+            ? chosen.materialRequiredDate ?? "" : str(data, "start"),
+          materialForecastDate: "", materialSource: "",
           access: str(data, "access"), permit: str(data, "permit"), safetyControls: str(data, "safety"),
           equipment: str(data, "equipment"), method: str(data, "method"), rollback: str(data, "rollback"),
           verification: str(data, "verification"), proof: str(data, "proof"),
