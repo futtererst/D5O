@@ -15,7 +15,8 @@ assert.equal(existsSync(resolve(root, "components/d5o/workflow/WorkflowTransacti
 assert.ok(panelSource.includes("/api/workflow-transactions"), "Canonical React panel must call the server-owned endpoint.");
 assert.ok(routeSource.includes("commitWorkflowTransaction"), "Endpoint must delegate to the canonical server action.");
 assert.doesNotMatch(routeSource, /request\.(?:runtime|store|adapter)/, "Browser input must not select runtime authority.");
-assert.ok(actionSource.includes("isProductionRuntime() && !databaseStoreEnabled"), "Production must fail closed when database authority is unavailable.");
+assert.ok(actionSource.includes("if (isProductionRuntime())"), "Generic production workflow actions must fail closed.");
+assert.ok(read("lib/d5o/data/workflow-transaction-writes.ts").includes("if (isProductionRuntime())"), "Generic database persistence must independently reject production writes.");
 assert.ok(actionSource.includes("isWorkflowTransactionType"), "Server action must reject missing or invalid transaction authority.");
 assert.ok(actionSource.includes("getWorkflowTransactionDefinition"), "Server action must enforce workflow-to-transaction authority.");
 assert.ok(actionSource.includes("runtime authority is missing or invalid"), "Invalid authority must return a controlled result.");

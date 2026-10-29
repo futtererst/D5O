@@ -4,7 +4,7 @@ import { getCurrentRybexUser, getDatabaseSafeActorUserId } from "@/lib/d5o/auth/
 import { assertWorkflowTransactionPermission } from "@/lib/d5o/auth/permission-guard";
 import { isDatabaseMode } from "@/lib/d5o/data/data-source";
 import { persistWorkflowTransaction } from "@/lib/d5o/data/workflow-transaction-writes";
-import { isProductionRuntime, productionLocalAdapterError } from "@/lib/d5o/security/runtime-mode";
+import { isProductionRuntime } from "@/lib/d5o/security/runtime-mode";
 import { applyWorkflowTransaction } from "@/lib/d5o/workflow/apply-transaction";
 import { isDatabaseWorkflowTransactionStore } from "@/lib/d5o/workflow/transaction-store";
 import {
@@ -63,6 +63,16 @@ export async function commitWorkflowTransaction(
     };
   }
 
+  // The legacy endpoint accepts a workflow snapshot from its caller. Its
+  // database adapter does not provide an atomic, tenant-authorized command.
+  if (isProductionRuntime()) {
+    return {
+      success: false,
+      mode: "database",
+      message: "Generic workflow transactions are unavailable in production until server-owned, atomic authorization is implemented."
+    };
+  }
+
   const timestamp = new Date().toISOString();
   const currentUser = await getCurrentRybexUser();
   const databaseStoreEnabled = isDatabaseMode() && isDatabaseWorkflowTransactionStore();
@@ -103,20 +113,6 @@ export async function commitWorkflowTransaction(
         requiredPermissions: [],
         message: error instanceof Error ? error.message : "Workflow transaction permission denied."
       }
-    };
-  }
-
-  if (isProductionRuntime() && !databaseStoreEnabled) {
-    return {
-      success: false,
-      mode: "database",
-      message: productionLocalAdapterError("Workflow transactions"),
-      actor: {
-        name: currentUser.name,
-        role: currentUser.role,
-        source: currentUser.source
-      },
-      permission
     };
   }
 

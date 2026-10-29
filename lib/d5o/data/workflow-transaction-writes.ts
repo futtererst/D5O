@@ -1,6 +1,7 @@
 import { isDatabaseMode } from "./data-source";
 import { insertSupabaseRow, readSupabaseTable, updateSupabaseRows } from "./database-client";
 import { isDatabaseWorkflowTransactionStore } from "../workflow/transaction-store";
+import { isProductionRuntime } from "../security/runtime-mode";
 import {
   defaultWorkflowPersistenceContext,
   mapWorkflowToWorkflowInstanceInsert
@@ -68,6 +69,10 @@ export async function persistWorkflowTransaction({
   result,
   actorUserId = null
 }: PersistWorkflowTransactionArgs): Promise<PersistWorkflowTransactionResult> {
+  if (isProductionRuntime()) {
+    throw new Error("Generic workflow transaction persistence is unavailable in production until an atomic, server-authorized command replaces it.");
+  }
+
   if (!canUseDatabaseWorkflowTransactionStore()) {
     throw new Error("Database workflow transaction store is not enabled. Use local transaction state or set both database modes explicitly.");
   }

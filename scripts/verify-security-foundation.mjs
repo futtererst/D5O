@@ -92,6 +92,7 @@ for (const result of scanSourceFiles()) {
       (content.includes('"use client"') || content.includes("'use client'"));
     const serverOnlyReference = [
       "lib/d5o/auth/supabase-server.ts",
+      "lib/d5o/auth/runtime-identity.ts",
       "lib/d5o/security/production-config.ts"
     ].includes(normalized);
     if (serverOnlyReference && !content.trimStart().startsWith('import "server-only";')) {

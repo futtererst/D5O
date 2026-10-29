@@ -1,3 +1,4 @@
+import "server-only";
 import { createHash } from "node:crypto";
 
 export type D5OCommandRuntime = "pilot" | "rehearsal" | "production" | "staging";

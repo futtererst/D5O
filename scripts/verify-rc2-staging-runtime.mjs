@@ -1,8 +1,17 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import ts from "typescript";
-import { resolveD5OCommandRuntime } from "../lib/d5o/auth/runtime-identity.ts";
+
+// Exercise the real server-only module under the same react-server condition
+// Next uses for Server Components. Do not strip its boundary marker for tests.
+if (!process.execArgv.includes("--conditions=react-server")) {
+  const result = spawnSync(process.execPath, ["--conditions=react-server", fileURLToPath(import.meta.url)], { stdio: "inherit" });
+  process.exit(result.status ?? 1);
+}
+const { resolveD5OCommandRuntime } = await import("../lib/d5o/auth/runtime-identity.ts");
 
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
 const check = (label, env, expected) => {

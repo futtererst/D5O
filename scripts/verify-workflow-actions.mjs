@@ -84,8 +84,8 @@ if (!actionSource.includes("runtime authority is missing or invalid") || !action
   failures.push("Workflow transaction server action does not fail closed for missing, invalid, or mismatched authority.");
 }
 
-if (!actionSource.includes("isProductionRuntime() && !databaseStoreEnabled")) {
-  failures.push("Workflow transaction server action does not fail closed when production database authority is unavailable.");
+if (!actionSource.includes("if (isProductionRuntime())")) {
+  failures.push("Generic workflow transaction action must reject production writes.");
 }
 
 if (!routeSource.includes("commitWorkflowTransaction") || /request\.(?:runtime|store|adapter)/.test(routeSource)) {
