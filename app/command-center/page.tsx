@@ -136,7 +136,7 @@ export default async function CommandCenterPage() {
               </p>
             ) : null}
             <p className="command-c-plus-lead">
-              Internal guided demo: <Link href="/pilot">Open Pilot Mode</Link>.
+              <Link href="/work">Open customer work</Link>.
             </p>
           </div>
           <dl className="command-c-plus-summary" aria-label="Operating queue summary">

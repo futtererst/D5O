@@ -45,6 +45,8 @@ export function CustomerDesignActions({ workspace, work, connectedPackages, role
     && item.revision === chosen?.revision);
   const activeRelease = work.design?.releases?.some((item) => item.packageId === chosen?.packageId
     && ["Awaiting receipt", "Accepted"].includes(item.status)) ?? false;
+  const acceptedRelease = work.design?.releases?.find((item) => item.packageId === chosen?.packageId
+    && item.status === "Accepted");
   const packageChanges = work.design?.changes?.filter((item) => item.packageId === chosen?.packageId) ?? [];
   const heldReleases = work.design?.releases?.filter((item) => item.packageId === chosen?.packageId
     && item.status === "Hold pending acknowledgment") ?? [];
@@ -98,6 +100,16 @@ export function CustomerDesignActions({ workspace, work, connectedPackages, role
           <label>Schedule impact<textarea name="scheduleImpact" minLength={5} required /></label>
           <button disabled={busy}>Record change and hold active release</button>
         </form>}
+      {owner && acceptedRelease && <form onSubmit={(event) => void submit(event,
+        "record-schedule-hold", (data) => ({ packageId: chosen.packageId,
+          releaseId: acceptedRelease.id, proposedDate: str(data, "proposedDate"),
+          note: str(data, "note") }))}>
+        <h5>Correct an accepted crew window</h5>
+        <p>Hold this release for independent acknowledgment before revising its dates or crew demand. The accepted release stays in the audit history.</p>
+        <label>New planned date<input name="proposedDate" type="date" required /></label>
+        <label>Correction reason<textarea name="note" minLength={20} required /></label>
+        <button disabled={busy}>Request schedule hold</button>
+      </form>}
       {heldReleases.length > 0 && ["admin","field_supervisor","operations_leader"].includes(role) &&
         heldReleases.map((release) => <form key={release.id} onSubmit={(event) => void submit(event,
           "acknowledge-hold", (data) => ({ releaseId: release.id, note: str(data,"note") }))}>
