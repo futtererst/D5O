@@ -7554,24 +7554,17 @@ try {
         assert(width.document<=width.viewport+2,`tablet_${phase}_overflow:${JSON.stringify(width)}`);
         widths.push({phase,...width});
       }
-      await page.getByRole("button",{name:/^Account/}).tap();
-      await page.getByRole("menuitem",{name:"Sign out"}).waitFor({state:"visible"});
       await page.screenshot({path:evidencePath("docs/release/evidence/rc3-browser/a-tablet-operate.png"),fullPage:true});
-      await page.keyboard.press("Escape");
-      return {widths,touchMenuOpened:true};
+      await page.getByRole("link",{name:"Switch organization"}).tap();
+      await page.waitForURL((url)=>url.pathname==="/work");
+      await page.getByRole("link",{name:"Sign out"}).first().waitFor({state:"visible"});
+      return {widths,touchWorkspaceNavigation:true,signOutReachable:true};
     } finally {await context.close();}
   });
   if(rc3) await check("keyboard menu focus and accessible work controls",async()=>{
     const page=await rc3SignedInPage("a_pm");
     await page.goto(`http://127.0.0.1:${server.port}/work/customer/${a.workspaceKey}`);
     await page.getByRole("heading",{name:"Work lifecycle"}).waitFor();
-    const account=page.getByRole("button",{name:/^Account/});
-    await account.focus();
-    await page.keyboard.press("Enter");
-    const signOut=page.getByRole("menuitem",{name:"Sign out"});
-    await signOut.waitFor({state:"visible"});
-    await page.keyboard.press("Escape");
-    assert.equal(await account.evaluate((element)=>document.activeElement===element),true);
     const unnamed=await page.evaluate(()=>[...document.querySelectorAll("button,a[href],input,select")]
       .filter((element)=>{const style=getComputedStyle(element);return style.display!=="none"
         && style.visibility!=="hidden" && element.getBoundingClientRect().width>0;})
@@ -7579,7 +7572,15 @@ try {
         && !element.textContent?.trim() && !(element instanceof HTMLInputElement && element.labels?.length))
       .slice(0,10).map((element)=>element.outerHTML.slice(0,160)));
     assert.deepEqual(unnamed,[],`unnamed_interactive_controls:${JSON.stringify(unnamed)}`);
-    return {accountKeyboardOpen:true,escapeReturnsFocus:true,unnamedControls:0};
+    const switchOrganization=page.getByRole("link",{name:"Switch organization"});
+    await switchOrganization.focus();
+    await page.keyboard.press("Enter");
+    await page.waitForURL((url)=>url.pathname==="/work");
+    const signOut=page.getByRole("link",{name:"Sign out"}).first();
+    await signOut.waitFor({state:"visible"});
+    await signOut.focus();
+    assert.equal(await signOut.evaluate((element)=>document.activeElement===element),true);
+    return {keyboardWorkspaceNavigation:true,signOutKeyboardReachable:true,unnamedControls:0};
   });
   if(rc3) await check("logout clears Work access and fresh sign-in restores persisted record",async()=>{
     if(!designBrowser)designBrowser=await chromium.launch();
@@ -7592,8 +7593,9 @@ try {
       await page.getByLabel("Password").fill(users.a_pm.password);
       await page.getByRole("button",{name:"Continue to your work"}).click();
       await page.getByRole("heading",{name:"Work lifecycle"}).waitFor();
-      await page.getByRole("button",{name:/^Account/}).click();
-      await page.getByRole("menuitem",{name:"Sign out"}).click();
+      await page.getByRole("link",{name:"Switch organization"}).click();
+      await page.waitForURL((url)=>url.pathname==="/work");
+      await page.getByRole("link",{name:"Sign out"}).first().click();
       await page.waitForURL((url)=>url.pathname.startsWith("/auth/sign-in"),{timeout:30000});
       await page.goto(target);
       await page.waitForURL((url)=>url.pathname.startsWith("/auth/sign-in"),{timeout:30000});

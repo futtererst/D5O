@@ -271,12 +271,28 @@ try {
     const duplicate = await call("a_pm", "d5o_graybar_command_v1", {
       ...args, p_command_id: uuid(), p_expected_revision: cancelled.data.revision });
     assert.equal(duplicate.error?.code, "42501");
+    const replacement = await call("a_pm", "d5o_graybar_command_v1", {
+      ...args, p_action: "prepare-po", p_input: {
+        lines: [{ materialId: a.materials[3], quantity: "1", unit: "each" }],
+        shipTo: "Revised fictional site", accountReference: a.account,
+        requiredDate: "2027-01-16", budgetMinor: "500000" },
+      p_command_id: uuid(), p_expected_revision: cancelled.data.revision });
+    assert.ifError(replacement.error);
+    const replacementOrder = replacement.data.state.orders.find((order) => order.status === "Prepared"
+      && order.lines[0].materialId === a.materials[3]);
+    assert(replacementOrder && replacementOrder.id !== a.pendingOrderId);
+    const withdrawn = await call("a_pm", "d5o_graybar_command_v1", {
+      ...args, p_input: { orderId: replacementOrder.id,
+        reason: "Withdraw revised over-cap fictional purchase draft" },
+      p_command_id: uuid(), p_expected_revision: replacement.data.revision });
+    assert.ifError(withdrawn.error);
     assert.equal(sql(`select count(*)||':'||sum(amount_minor) from d5o_hosted.purchase_reservations
       where workspace_id=${q(a.workspace)} and work_id=${q(a.work)};`), before);
     const events = sql(`select count(*) from d5o_hosted.graybar_events
       where workspace_id=${q(a.workspace)} and work_id=${q(a.work)};`);
-    assert.equal(events, "7");
-    return { cancelledDraft: true, replaySameRevision: true, unchangedReservations: before };
+    assert.equal(events, "9");
+    return { cancelledDraft: true, replacementDraft: true,
+      replaySameRevision: true, unchangedReservations: before };
   });
   await check("canonical subcontract agreement and variation share parent cap with POs", async () => {
     const read = () => call("a_pm", "d5o_subcontract_read_v1",
