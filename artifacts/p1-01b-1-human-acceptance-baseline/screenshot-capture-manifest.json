@@ -1,0 +1,479 @@
+{
+  "captureTimestamp": "2026-06-29T16:28:46.373Z",
+  "localUrl": "http://127.0.0.1:64303",
+  "routePattern": "/pipeline/p1-01b-1-review?pursuitState={state}",
+  "totalStates": 12,
+  "totalScreenshotsCaptured": 36,
+  "totalFailures": 0,
+  "mobileClippingDetected": false,
+  "captures": [
+    {
+      "captureTimestamp": "2026-06-29T16:27:48.596Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=decision-ready",
+      "viewportDimensions": {
+        "width": 1440,
+        "height": 1024
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-01-D.png",
+      "frameId": "P1B1-IMPL-01-D",
+      "state": "Decision-ready / approve recommended",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:27:49.799Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=decision-ready",
+      "viewportDimensions": {
+        "width": 834,
+        "height": 1112
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-01-T.png",
+      "frameId": "P1B1-IMPL-01-T",
+      "state": "Decision-ready / approve recommended",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:27:51.571Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=decision-ready",
+      "viewportDimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-01-M.png",
+      "frameId": "P1B1-IMPL-01-M",
+      "state": "Decision-ready / approve recommended",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:27:53.207Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=hold-pending-evidence",
+      "viewportDimensions": {
+        "width": 1440,
+        "height": 1024
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-02-D.png",
+      "frameId": "P1B1-IMPL-02-D",
+      "state": "Hold pending evidence",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:27:55.173Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=hold-pending-evidence",
+      "viewportDimensions": {
+        "width": 834,
+        "height": 1112
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-02-T.png",
+      "frameId": "P1B1-IMPL-02-T",
+      "state": "Hold pending evidence",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:27:56.778Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=hold-pending-evidence",
+      "viewportDimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-02-M.png",
+      "frameId": "P1B1-IMPL-02-M",
+      "state": "Hold pending evidence",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:27:58.766Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=decline-recommended",
+      "viewportDimensions": {
+        "width": 1440,
+        "height": 1024
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-03-D.png",
+      "frameId": "P1B1-IMPL-03-D",
+      "state": "Decline recommended / risk-heavy",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:00.400Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=decline-recommended",
+      "viewportDimensions": {
+        "width": 834,
+        "height": 1112
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-03-T.png",
+      "frameId": "P1B1-IMPL-03-T",
+      "state": "Decline recommended / risk-heavy",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:01.620Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=decline-recommended",
+      "viewportDimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-03-M.png",
+      "frameId": "P1B1-IMPL-03-M",
+      "state": "Decline recommended / risk-heavy",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:03.134Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=authorized-outcome",
+      "viewportDimensions": {
+        "width": 1440,
+        "height": 1024
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-04-D.png",
+      "frameId": "P1B1-IMPL-04-D",
+      "state": "Authorized outcome",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:04.670Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=authorized-outcome",
+      "viewportDimensions": {
+        "width": 834,
+        "height": 1112
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-04-T.png",
+      "frameId": "P1B1-IMPL-04-T",
+      "state": "Authorized outcome",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:06.065Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=authorized-outcome",
+      "viewportDimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-04-M.png",
+      "frameId": "P1B1-IMPL-04-M",
+      "state": "Authorized outcome",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:07.487Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=hold-outcome",
+      "viewportDimensions": {
+        "width": 1440,
+        "height": 1024
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-05-D.png",
+      "frameId": "P1B1-IMPL-05-D",
+      "state": "Hold outcome",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:08.840Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=hold-outcome",
+      "viewportDimensions": {
+        "width": 834,
+        "height": 1112
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-05-T.png",
+      "frameId": "P1B1-IMPL-05-T",
+      "state": "Hold outcome",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:10.296Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=hold-outcome",
+      "viewportDimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-05-M.png",
+      "frameId": "P1B1-IMPL-05-M",
+      "state": "Hold outcome",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:11.694Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=declined-outcome",
+      "viewportDimensions": {
+        "width": 1440,
+        "height": 1024
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-06-D.png",
+      "frameId": "P1B1-IMPL-06-D",
+      "state": "Declined outcome",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:13.250Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=declined-outcome",
+      "viewportDimensions": {
+        "width": 834,
+        "height": 1112
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-06-T.png",
+      "frameId": "P1B1-IMPL-06-T",
+      "state": "Declined outcome",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:14.780Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=declined-outcome",
+      "viewportDimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-06-M.png",
+      "frameId": "P1B1-IMPL-06-M",
+      "state": "Declined outcome",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:16.193Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=auditor-read-only",
+      "viewportDimensions": {
+        "width": 1440,
+        "height": 1024
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-07-D.png",
+      "frameId": "P1B1-IMPL-07-D",
+      "state": "Auditor read-only",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:17.721Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=auditor-read-only",
+      "viewportDimensions": {
+        "width": 834,
+        "height": 1112
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-07-T.png",
+      "frameId": "P1B1-IMPL-07-T",
+      "state": "Auditor read-only",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:19.384Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=auditor-read-only",
+      "viewportDimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-07-M.png",
+      "frameId": "P1B1-IMPL-07-M",
+      "state": "Auditor read-only",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:21.098Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=stale-conflict",
+      "viewportDimensions": {
+        "width": 1440,
+        "height": 1024
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-08-D.png",
+      "frameId": "P1B1-IMPL-08-D",
+      "state": "Stale/conflict",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:22.615Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=stale-conflict",
+      "viewportDimensions": {
+        "width": 834,
+        "height": 1112
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-08-T.png",
+      "frameId": "P1B1-IMPL-08-T",
+      "state": "Stale/conflict",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:24.060Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=stale-conflict",
+      "viewportDimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-08-M.png",
+      "frameId": "P1B1-IMPL-08-M",
+      "state": "Stale/conflict",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:25.673Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=unavailable",
+      "viewportDimensions": {
+        "width": 1440,
+        "height": 1024
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-09-D.png",
+      "frameId": "P1B1-IMPL-09-D",
+      "state": "Unavailable / permission or eligibility blocked",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:27.086Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=unavailable",
+      "viewportDimensions": {
+        "width": 834,
+        "height": 1112
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-09-T.png",
+      "frameId": "P1B1-IMPL-09-T",
+      "state": "Unavailable / permission or eligibility blocked",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:28.479Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=unavailable",
+      "viewportDimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-09-M.png",
+      "frameId": "P1B1-IMPL-09-M",
+      "state": "Unavailable / permission or eligibility blocked",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:30.009Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=loading",
+      "viewportDimensions": {
+        "width": 1440,
+        "height": 1024
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-10-D.png",
+      "frameId": "P1B1-IMPL-10-D",
+      "state": "Loading",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:31.519Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=loading",
+      "viewportDimensions": {
+        "width": 834,
+        "height": 1112
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-10-T.png",
+      "frameId": "P1B1-IMPL-10-T",
+      "state": "Loading",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:33.051Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=loading",
+      "viewportDimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-10-M.png",
+      "frameId": "P1B1-IMPL-10-M",
+      "state": "Loading",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:34.529Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=empty",
+      "viewportDimensions": {
+        "width": 1440,
+        "height": 1024
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-11-D.png",
+      "frameId": "P1B1-IMPL-11-D",
+      "state": "Empty / no qualified opportunity selected or available",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:35.749Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=empty",
+      "viewportDimensions": {
+        "width": 834,
+        "height": 1112
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-11-T.png",
+      "frameId": "P1B1-IMPL-11-T",
+      "state": "Empty / no qualified opportunity selected or available",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:37.120Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=empty",
+      "viewportDimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-11-M.png",
+      "frameId": "P1B1-IMPL-11-M",
+      "state": "Empty / no qualified opportunity selected or available",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:39.571Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=action-failure",
+      "viewportDimensions": {
+        "width": 1440,
+        "height": 1024
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-12-D.png",
+      "frameId": "P1B1-IMPL-12-D",
+      "state": "Action failure / recovery",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:41.031Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=action-failure",
+      "viewportDimensions": {
+        "width": 834,
+        "height": 1112
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-12-T.png",
+      "frameId": "P1B1-IMPL-12-T",
+      "state": "Action failure / recovery",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    },
+    {
+      "captureTimestamp": "2026-06-29T16:28:42.443Z",
+      "localUrl": "http://127.0.0.1:64303/pipeline/p1-01b-1-review?pursuitState=action-failure",
+      "viewportDimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotPath": "artifacts/p1-01b-1-implementation-candidate/screenshots/P1B1-IMPL-12-M.png",
+      "frameId": "P1B1-IMPL-12-M",
+      "state": "Action failure / recovery",
+      "captureResult": "pass",
+      "notes": "Captured via local Next server; no horizontal overflow or checked text clipping detected."
+    }
+  ]
+}

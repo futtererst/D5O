@@ -1,0 +1,88 @@
+{
+  "acceptanceDate": "2026-07-07",
+  "acceptedScope": "P1-01B.2 Bid Submission / Pursuit Outcome only",
+  "strategicClassification": "Rybex Data Center Infrastructure Template Pack reference workflow",
+  "humanAcceptanceVerdict": "ACCEPTED",
+  "gitBranch": "feature/billing-v2-guided-ui-replacement",
+  "dirtyWorktreeNote": "The repository had a broad pre-existing dirty worktree before this acceptance-closure task. This closure records P1-01B.2 acceptance and does not assert ownership of unrelated dirty files.",
+  "sourceEvidenceDocuments": [
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-human-acceptance-closure.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-acceptance-proof-matrix.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-configurability-acceptance-record.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-implementation-acceptance-review.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-live-local-qa-unblock-rerun-report.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-implementation-candidate-report.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-implementation-mapping.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-configurability-guardrail-precheck.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-full-independent-visual-authority-rereview.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-full-visual-authority-spec.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-full-state-transition-matrix.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-per-action-authority-matrix.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-evidence-dependency-matrix.md"
+  ],
+  "sourceArtifactFolders": [
+    "artifacts/p1-01b-2-implementation-candidate/",
+    "artifacts/p1-01b-2-implementation-candidate/screenshots/",
+    "artifacts/p1-01b-2-implementation-acceptance-review/live-browser-qa/",
+    "artifacts/p1-01b-2-implementation-acceptance-review/live-browser-qa/screenshots/"
+  ],
+  "sourceArtifactFiles": {
+    "deterministicScreenshotManifest": "artifacts/p1-01b-2-implementation-candidate/screenshot-capture-manifest.json",
+    "liveQaManifest": "artifacts/p1-01b-2-implementation-acceptance-review/live-browser-qa/live-browser-qa-manifest.json",
+    "liveQaResults": "artifacts/p1-01b-2-implementation-acceptance-review/live-browser-qa/live-browser-qa-results.json",
+    "desktopContactSheet": "artifacts/p1-01b-2-implementation-candidate/contact-sheet-desktop.png",
+    "tabletContactSheet": "artifacts/p1-01b-2-implementation-candidate/contact-sheet-tablet.png",
+    "mobileContactSheet": "artifacts/p1-01b-2-implementation-candidate/contact-sheet-mobile.png"
+  },
+  "deterministicEvidence": {
+    "stateCount": 16,
+    "screenshotCount": 48,
+    "captureFailures": 0,
+    "mobileClippingDetected": false
+  },
+  "liveQaEvidence": {
+    "scenarioCount": 18,
+    "passed": 18,
+    "failed": 0,
+    "blocked": 0,
+    "localSupabaseUrl": "http://127.0.0.1:54321",
+    "remoteSupabaseUsed": false,
+    "productionOrStagingMutationAttempted": false
+  },
+  "acceptedBoundaryEvidence": {
+    "selectedIntentToAwardHandoffOnly": true,
+    "awardValidationStarted": false,
+    "lostWithdrawnNoSubmitTerminal": true,
+    "p1_01b_3Authorized": false,
+    "demoReadinessApproved": false,
+    "productionReadinessApproved": false
+  },
+  "configurabilityGuardrailEvidencePaths": [
+    "docs/architecture/d5o-configurability-guardrail-checklist.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-configurability-guardrail-precheck.md",
+    "docs/product-experience/p1-01b/p1-01b-2/p1-01b-2-configurability-acceptance-record.md"
+  ],
+  "baselineSnapshotPolicy": {
+    "fullScreenshotFoldersCopied": false,
+    "snapshottedFiles": [
+      "artifacts/p1-01b-2-human-acceptance-baseline/screenshot-capture-manifest.json",
+      "artifacts/p1-01b-2-human-acceptance-baseline/live-browser-qa-manifest.json",
+      "artifacts/p1-01b-2-human-acceptance-baseline/live-browser-qa-results.json",
+      "artifacts/p1-01b-2-human-acceptance-baseline/contact-sheet-desktop.png",
+      "artifacts/p1-01b-2-human-acceptance-baseline/contact-sheet-tablet.png",
+      "artifacts/p1-01b-2-human-acceptance-baseline/contact-sheet-mobile.png",
+      "artifacts/p1-01b-2-human-acceptance-baseline/p1-01b-2-implementation-acceptance-review.md",
+      "artifacts/p1-01b-2-human-acceptance-baseline/p1-01b-2-live-local-qa-unblock-rerun-report.md",
+      "artifacts/p1-01b-2-human-acceptance-baseline/p1-01b-2-configurability-guardrail-precheck.md"
+    ],
+    "reason": "The baseline snapshots compact manifests, contact sheets, and key review documents while referencing full source screenshot folders to avoid duplicating large image sets."
+  },
+  "advisory": {
+    "workflowVerifyActions": "Still fails on the pre-existing/unrelated legacy WorkflowTransactionRuntime fallback. Not a P1-01B.2 acceptance blocker."
+  },
+  "noGoStatuses": {
+    "p1_01b_3": "NO-GO / unauthorized",
+    "demoReadiness": "NO-GO",
+    "productionReadiness": "NO-GO"
+  }
+}

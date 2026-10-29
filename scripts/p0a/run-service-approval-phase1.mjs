@@ -207,13 +207,48 @@ try {
       return first.data;
     });
   }
+  for (const [tenant, workspace, threshold] of [
+    ["a", "rybex", 1000000], ["b", "enterprise_test", 2500000],
+  ]) {
+    await check(`${tenant} service approval exact, below and above threshold persists correctly`, async () => {
+      const outcomes = [];
+      for (const [boundary, amount, required] of [
+        ["below", threshold - 1, false], ["exact", threshold, false], ["above", threshold + 1, true],
+      ]) {
+        const created = await call(`${tenant}_pm`, "d5o_hosted_create_work_v1", {
+          p_workspace_key: workspace, p_command_id: `boundary-${tenant}-${boundary}-work`,
+          p_configuration_version_id: versions[tenant], p_work_type_key: "lifecycle-service",
+          p_title: `Fictional ${tenant} ${boundary} threshold service` });
+        assert(!created.error, `${tenant}:${boundary}:create:${created.error?.message}`);
+        const workId = created.data.workId;
+        const request = await call(`${tenant}_pm`, "d5o_hosted_service_approval_command_v1", {
+          p_workspace_key: workspace, p_work_id: workId, p_action: "request",
+          p_amount_minor: amount, p_currency: "USD", p_command_id: `boundary-${tenant}-${boundary}-request` });
+        assert(!request.error, `${tenant}:${boundary}:request:${request.error?.message}`);
+        assert.equal(request.data.approvalRequired, required);
+        assert.equal(request.data.status, required ? "pending" : "not_required");
+        const persisted = sql(`select amount_minor||':'||threshold_minor||':'||approval_required||':'||status
+          from d5o_hosted.service_approval_requests where work_id=${quoted(workId)};`);
+        assert.equal(persisted, `${amount}:${threshold}:${required}:${required ? "pending" : "not_required"}`);
+        assert.equal(Number(sql(`select count(*) from d5o_hosted.service_approval_events
+          where work_id=${quoted(workId)};`)), 1);
+        outcomes.push({ boundary, amountMinor: amount, workId, approvalRequired: required });
+      }
+      return outcomes;
+    });
+  }
   await check("cross-tenant, currency, and unauthorized bypass denied", async () => {
+    const before = sql(`select (select count(*) from d5o_hosted.service_approval_events where work_id=${quoted(work.a)})||':'||
+      (select status from d5o_hosted.service_approval_requests where work_id=${quoted(work.a)});`);
     const base = { p_workspace_key: "rybex", p_work_id: work.a, p_action: "approve",
       p_amount_minor: 1500000, p_currency: "USD", p_command_id: "unauthorized-bypass-phase1" };
     const cross = await call("b_ops", "d5o_hosted_service_approval_command_v1", base);
     const self = await call("a_pm", "d5o_hosted_service_approval_command_v1", base);
     const currency = await call("a_ops", "d5o_hosted_service_approval_command_v1", { ...base, p_currency: "EUR" });
     assert(cross.error && self.error && currency.error);
+    const after = sql(`select (select count(*) from d5o_hosted.service_approval_events where work_id=${quoted(work.a)})||':'||
+      (select status from d5o_hosted.service_approval_requests where work_id=${quoted(work.a)});`);
+    assert.equal(after, before, "rejected approvals changed financial state or audit events");
     return { crossTenant: cross.error.code, wrongRole: self.error.code, currency: currency.error.code };
   });
   await check("independent approver records versioned decision and audit", async () => {

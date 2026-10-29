@@ -44,6 +44,23 @@ select public.d5o_spending_delegate_command_v1('rybex','add',
   'priority','100','validFrom',current_date,'validUntil',current_date+30,
   'sourceReference','FICTIONAL-PO-DELEGATION-TEST'),
  'fictional-po-delegation-command-001',0);
+reset role;
+do $$
+declare amount bigint; selected uuid;
+begin
+ foreach amount in array array[99999::bigint,100000::bigint,100001::bigint] loop
+  selected:=d5o_hosted.spending_delegate_selected_v1(
+   '00000000-0000-4000-8000-000000000201',
+   '00000000-0000-4000-8000-000000000401','purchase_order','admin',
+   amount,'USD','00000000-0000-4000-8000-000000000103',current_date);
+  if amount<=100000 and selected is distinct from '00000000-0000-4000-8000-000000000102'::uuid then
+   raise exception 'po_delegate_boundary_below_or_exact_failed % %',amount,selected; end if;
+  if amount>100000 and selected is not null then
+   raise exception 'po_delegate_above_limit_allowed % %',amount,selected; end if;
+ end loop;
+ raise notice 'PO_DELEGATE_BOUNDARIES_PASS';
+end $$;
+set local role authenticated;
 do $$
 declare route jsonb; queue jsonb;
 begin

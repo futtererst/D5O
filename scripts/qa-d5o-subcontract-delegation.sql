@@ -57,6 +57,25 @@ begin
   revision:=revision+1;
  end loop;
 end $$;
+reset role;
+do $$
+declare category_key text; amount bigint; selected uuid;
+begin
+ foreach category_key in array array['subcontract_allocation','subcontract_agreement','subcontract_variation'] loop
+  foreach amount in array array[99999::bigint,100000::bigint,100001::bigint] loop
+   selected:=d5o_hosted.spending_delegate_selected_v1(
+    '00000000-0000-4000-8000-000000001201',
+    '00000000-0000-4000-8000-000000001401',category_key,'admin',
+    amount,'USD','00000000-0000-4000-8000-000000001103',current_date);
+   if amount<=100000 and selected is distinct from '00000000-0000-4000-8000-000000001102'::uuid then
+    raise exception 'sub_delegate_boundary_below_or_exact_failed % % %',category_key,amount,selected; end if;
+   if amount>100000 and selected is not null then
+    raise exception 'sub_delegate_above_limit_allowed % % %',category_key,amount,selected; end if;
+  end loop;
+ end loop;
+ raise notice 'SUB_DELEGATE_BOUNDARIES_PASS';
+end $$;
+set local role authenticated;
 do $$
 declare r jsonb; focus text; subject uuid;
 begin

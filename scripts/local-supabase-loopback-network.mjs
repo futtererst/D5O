@@ -13,13 +13,21 @@ export function ensureLoopbackNetwork(projectId, options = {}) {
   const networkName = options.networkName ?? loopbackNetworkName(projectId);
   const inspect = runDocker(["network", "inspect", networkName, "--format", "{{json .Options}}"], { allowFailure: true, env: options.env });
   if (inspect.status !== 0) {
-    const created = runDocker([
+    const baseArgs = [
       "network", "create", "--driver", "bridge",
       "--opt", `${LOOPBACK_BINDING_OPTION}=${LOOPBACK_BINDING_ADDRESS}`,
       "--label", "com.rybex.local-only=true",
       "--label", `com.rybex.supabase-project=${projectId}`,
-      networkName,
-    ], { env: options.env });
+    ];
+    let created = runDocker([...baseArgs, networkName], { env: options.env });
+    if (created.status !== 0 && /all predefined address pools have been fully subnetted/i.test(created.stderr)) {
+      // A busy local Docker daemon can exhaust its default address pool. Use
+      // a bounded disposable subnet without changing any existing network.
+      for (let octet = 230; octet < 240 && created.status !== 0; octet++) {
+        created = runDocker([...baseArgs, "--subnet", `10.253.${octet}.0/24`, networkName], { env: options.env });
+        if (created.status !== 0 && !/overlap|pool|subnet/i.test(created.stderr)) break;
+      }
+    }
     if (created.status !== 0) throw new Error(`Unable to create loopback-authoritative Docker network: ${created.stderr || created.stdout}`);
   }
   assertLoopbackNetwork(networkName, options);

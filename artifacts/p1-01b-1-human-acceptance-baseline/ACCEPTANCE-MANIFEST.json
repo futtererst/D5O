@@ -1,0 +1,64 @@
+{
+  "acceptanceDate": "2026-06-29",
+  "acceptedScope": "P1-01B.1 Pursuit Authorization only",
+  "humanAcceptanceVerdict": "ACCEPTED",
+  "businessQuestionAccepted": "This opportunity is qualified. Should Rybex pursue it?",
+  "sourceEvidenceDocuments": [
+    "docs/product-experience/p1-01b/p1-01b-1/p1-01b-1-v2-completion-independent-visual-authority-review.md",
+    "docs/product-experience/p1-01b/p1-01b-1/p1-01b-1-implementation-candidate-report.md",
+    "docs/product-experience/p1-01b/p1-01b-1/p1-01b-1-implementation-acceptance-review.md",
+    "docs/product-experience/p1-01b/p1-01b-1/p1-01b-1-implementation-acceptance-rerun-report.md",
+    "docs/product-experience/p1-01b/p1-01b-1/p1-01b-1-implementation-acceptance-condition-closure-report.md",
+    "docs/product-experience/p1-01b/p1-01b-1/p1-01b-1-implementation-acceptance-condition-closure-gap-log.md",
+    "docs/product-experience/p1-01b/p1-01b-1/p1-01b-1-human-acceptance-closure.md",
+    "docs/product-experience/p1-01b/p1-01b-1/p1-01b-1-acceptance-proof-matrix.md"
+  ],
+  "sourceArtifactFolders": [
+    "artifacts/p1-01b-1-implementation-candidate/screenshots/",
+    "artifacts/p1-01b-1-implementation-acceptance-review/condition-closure-live-qa/screenshots/"
+  ],
+  "sourceArtifactFiles": [
+    "artifacts/p1-01b-1-implementation-candidate/screenshot-capture-manifest.json",
+    "artifacts/p1-01b-1-implementation-candidate/contact-sheet-desktop.png",
+    "artifacts/p1-01b-1-implementation-candidate/contact-sheet-tablet.png",
+    "artifacts/p1-01b-1-implementation-candidate/contact-sheet-mobile.png",
+    "artifacts/p1-01b-1-implementation-acceptance-review/condition-closure-live-qa/condition-closure-live-qa-manifest.json",
+    "artifacts/p1-01b-1-implementation-acceptance-review/condition-closure-live-qa/condition-closure-live-qa-results.json"
+  ],
+  "baselineSnapshotFiles": [
+    "artifacts/p1-01b-1-human-acceptance-baseline/screenshot-capture-manifest.json",
+    "artifacts/p1-01b-1-human-acceptance-baseline/condition-closure-live-qa-manifest.json",
+    "artifacts/p1-01b-1-human-acceptance-baseline/condition-closure-live-qa-results.json",
+    "artifacts/p1-01b-1-human-acceptance-baseline/contact-sheet-desktop.png",
+    "artifacts/p1-01b-1-human-acceptance-baseline/contact-sheet-tablet.png",
+    "artifacts/p1-01b-1-human-acceptance-baseline/contact-sheet-mobile.png"
+  ],
+  "deterministicScreenshotCount": 36,
+  "deterministicCaptureFailures": 0,
+  "mobileClippingDetected": false,
+  "liveQaScenarioCount": 9,
+  "liveQaPassed": 9,
+  "liveQaFailed": 0,
+  "liveQaBlocked": 0,
+  "contactSheetPaths": {
+    "desktop": "artifacts/p1-01b-1-implementation-candidate/contact-sheet-desktop.png",
+    "tablet": "artifacts/p1-01b-1-implementation-candidate/contact-sheet-tablet.png",
+    "mobile": "artifacts/p1-01b-1-implementation-candidate/contact-sheet-mobile.png"
+  },
+  "conditionClosureEvidencePaths": {
+    "report": "docs/product-experience/p1-01b/p1-01b-1/p1-01b-1-implementation-acceptance-condition-closure-report.md",
+    "gapLog": "docs/product-experience/p1-01b/p1-01b-1/p1-01b-1-implementation-acceptance-condition-closure-gap-log.md",
+    "manifest": "artifacts/p1-01b-1-implementation-acceptance-review/condition-closure-live-qa/condition-closure-live-qa-manifest.json",
+    "results": "artifacts/p1-01b-1-implementation-acceptance-review/condition-closure-live-qa/condition-closure-live-qa-results.json",
+    "unassignedAdminScreenshot": "artifacts/p1-01b-1-implementation-acceptance-review/condition-closure-live-qa/screenshots/F-unavailable-desktop.png"
+  },
+  "explicitNoGoStatuses": {
+    "p1_01b_2": "Not authorized",
+    "p1_01b_3": "Not authorized",
+    "demoReadiness": "No-Go",
+    "productionReadiness": "No-Go",
+    "broadPhase1": "Not authorized"
+  },
+  "gitBranch": "feature/billing-v2-guided-ui-replacement",
+  "dirtyWorktreeNotes": "Repository was broadly dirty before this closure task. This baseline records acceptance evidence only and does not require runtime, schema, route, auth, package, or test changes."
+}
