@@ -1,0 +1,54 @@
+{
+  "recordedAtUtc": "2026-10-29T08:36:26Z",
+  "releaseBranchCommit": "1e66d37c7dd570b3bc162c07f6f21f795e179e63",
+  "applicationTree": "84f2081b3b6266abf7d89906b04f816622838f2c",
+  "blue": {
+    "project": "fcawktdjoxvahhgvkebx",
+    "mode": "read-only",
+    "ledgerEntries": 177,
+    "authUsers": 25,
+    "authIdentities": 25,
+    "storageBuckets": 4,
+    "storageObjects": 23
+  },
+  "green": {
+    "project": "qeungkghkdqhtkmlksef",
+    "postgresVersion": "17.11.0.003",
+    "authUsers": 0,
+    "authIdentities": 0,
+    "storageBuckets": 0,
+    "storageObjects": 0,
+    "migrationLedgerPresent": false,
+    "modified": false
+  },
+  "managedTableColumnContracts": {
+    "tables": ["auth.users", "auth.identities", "auth.sessions", "auth.refresh_tokens", "storage.buckets", "storage.objects"],
+    "blueAndGreenMatch": true,
+    "scope": "columns, data types and NOT NULL flags only; no restore or runtime compatibility claim"
+  },
+  "protectedInitialCapture": {
+    "databaseArchive": {
+      "encrypted": true,
+      "aesGcmAuthenticated": true,
+      "plaintextBytes": 51646335,
+      "plaintextSha256": "7b426b540b3fd4d27bd04139c37d804ef974bc75fbbb4b0a064b5a8f50bdeea6",
+      "encryptedSha256": "01cedbc35d38e55c82f6b419161e36025621661b757e095558b58b4e7d86586c"
+    },
+    "storage": {
+      "objects": 23,
+      "plaintextBytes": 2252301,
+      "allObjectAesGcmTagsVerified": true,
+      "encryptedIndexAuthenticated": true,
+      "sizeMismatches": 0,
+      "metadataBeforeAfterMatch": true,
+      "metadataPlaintextSha256": "e200571be7596727ba2852654112a00963fa49d82433d845c2d4a99cfcb3d8bf"
+    },
+    "atomicWithDatabase": false,
+    "isFinalSynchronization": false,
+    "repositoryContainsProtectedData": false
+  },
+  "transferStatus": "NOT_STARTED",
+  "blockingDependency": "Restricted GREEN PostgreSQL URI and GREEN Storage service credential are unavailable; provider-managed Auth and Storage state must be transferred without copying project secrets or overwriting managed settings.",
+  "hostedCandidateStatus": "NOT_DEPLOYED",
+  "blueModified": false
+}

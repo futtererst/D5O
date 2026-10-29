@@ -57,6 +57,10 @@ const mount = `type=bind,source=${uriPath},target=/run/secret/postgres-url.txt,r
 const child = spawn("docker", ["run", "--rm", "--pull=never", "--read-only", "--tmpfs", "/tmp",
   "--network", "bridge", "--mount", mount, "postgres:17-alpine", "sh", "-eu", "-c", shell],
   { stdio: ["ignore", "pipe", "pipe"] });
+const childClose = new Promise((resolve, reject) => {
+  child.once("error", reject);
+  child.once("close", resolve);
+});
 let stderr = "";
 child.stderr.on("data", (chunk) => { if (stderr.length < 10000) stderr += chunk.toString("utf8"); });
 const key = loadProtectedKey(outDir);
@@ -79,7 +83,7 @@ try {
   await pipeline(child.stdout, hashPass, cipher, output, { end: false });
   output.end(cipher.getAuthTag());
   await new Promise((resolve, reject) => { output.once("finish", resolve); output.once("error", reject); });
-  const code = await new Promise((resolve) => child.once("close", resolve));
+  const code = await childClose;
   if (code !== 0) throw Error("metadata_export_failed:exit=" + code);
   const encryptedHash = createHash("sha256");
   for await (const chunk of createReadStream(outputPath)) encryptedHash.update(chunk);

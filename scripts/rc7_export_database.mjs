@@ -44,6 +44,12 @@ const shell = `uri="$(cat /run/secret/postgres-url.txt)"; export PGOPTIONS='-c d
 const args = ["run", "--rm", "--pull=never", "--read-only", "--tmpfs", "/tmp", "--network", "bridge",
   "--mount", mount, "postgres:17-alpine", "sh", "-eu", "-c", shell];
 const child = spawn("docker", args, { stdio: ["ignore", "pipe", "pipe"] });
+// Register completion before consuming stdout: pg_dump can exit while the
+// encrypted stream is still being flushed, before a later close listener.
+const childClose = new Promise((resolve, reject) => {
+  child.once("error", reject);
+  child.once("close", resolve);
+});
 let stderr = "";
 child.stderr.on("data", (chunk) => { if (stderr.length < 10000) stderr += chunk.toString("utf8"); });
 const output = createWriteStream(outputPath, { flags: "wx", mode: 0o600 });
@@ -55,7 +61,7 @@ try {
     output.once("finish", resolve);
     output.once("error", reject);
   });
-  const code = await new Promise((resolve) => child.once("close", resolve));
+  const code = await childClose;
   if (code !== 0) throw Error("pg_dump_failed:exit=" + code);
   const encrypted = createReadStream(outputPath);
   const encryptedHash = createHash("sha256");
