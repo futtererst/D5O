@@ -65,7 +65,12 @@ export function CustomerCommercialActions({work,role,busy,onCommand,onSaveInitia
       <form onSubmit={form("record-customer-submission",offerRevision,(data)=>({
         recipient:field(data,"recipient"),method:field(data,"method"),dueDate:field(data,"dueDate")}))}>
         <label>Customer recipient<input name="recipient" required /></label>
-        <label>Submission method<input name="method" defaultValue="Customer portal" required /></label>
+        <label>Submission method<select name="method" defaultValue="Customer portal" required>
+          <option>Customer portal</option>
+          <option>Email</option>
+          <option>Procurement platform</option>
+          <option>Direct presentation</option>
+        </select></label>
         <label>Customer response due<input name="dueDate" type="date" required /></label>
         <button disabled={busy}>Record exact customer submission</button>
       </form>}

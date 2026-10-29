@@ -18,6 +18,7 @@ export function DesignDocumentEvidence({ workspace, workId, documentId, revision
     let active = true;
     fetch(endpoint, { cache: "no-store" }).then(async (response) => {
       if (!active) return;
+      if (response.status === 404) { setReceipt(null); setMessage(""); return; }
       if (!response.ok) { setMessage("Document custody could not be loaded. Refresh before submitting for review."); return; }
       const found = await response.json() as Receipt;
       if (active && found.evidenceId) { setReceipt(found); onEvidence?.(found.evidenceId, documentId); }
