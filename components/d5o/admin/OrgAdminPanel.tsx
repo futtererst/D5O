@@ -30,6 +30,7 @@ export function OrgAdminPanel({ workspace, kind, settingsOnly = false }: {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [successionMode, setSuccessionMode] = useState<"grant" | "restore">("grant");
   const endpoint = "/api/d5o-hosted/org-admin";
   const read = useCallback(async (section: string, query = "", pageOffset = 0) => {
     const params = new URLSearchParams({ workspace, kind: section, search: query,
@@ -75,6 +76,19 @@ export function OrgAdminPanel({ workspace, kind, settingsOnly = false }: {
       if (!response.ok) throw Error(body.message ?? body.error ?? "Invitation rejected");
       await refresh(); setMessage(body.message ?? "Invitation decision recorded.");
     } catch (error) { setMessage(error instanceof Error ? error.message : "Invitation rejected"); }
+    finally { setBusy(false); }
+  }
+
+  async function succession(action: "grant" | "restore", target: Item, reason: string) {
+    setBusy(true); setMessage("");
+    try {
+      const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workspace, action: `member.admin-${action}`, email: label(target.email),
+          expectedRevision: Number(target.revision), reason, commandId: crypto.randomUUID() }) });
+      const body = await response.json() as { error?: string; message?: string };
+      if (!response.ok) throw Error(body.message ?? body.error ?? "Administrator decision rejected");
+      await refresh(); setMessage("Administrator decision saved in the tenant audit history.");
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Administrator decision rejected"); }
     finally { setBusy(false); }
   }
 
@@ -212,7 +226,30 @@ export function OrgAdminPanel({ workspace, kind, settingsOnly = false }: {
             {!["admin", "field_worker"].includes(label(row.role)) && status(row) !== "removed" &&
               <button type="button" disabled={busy} onClick={() => { if (window.confirm(`Remove ${label(row.email)} from this tenant?`))
                 void command("member.remove", row, {}, `Remove tenant access for ${label(row.email)}`); }}>Remove access</button>}
-          </div></td></tr>)}</tbody></table></div> : !loading && <p className={styles.empty}>No members match this search.</p>}</>}
+          </div></td></tr>)}</tbody></table></div> : !loading && <p className={styles.empty}>No members match this search.</p>}
+      <details><summary>Protected administrator succession</summary>
+        <p>A separate administrator may grant a confirmed tenant member administrator access, then restore that member’s prior role. Decisions are audited; the last active administrator cannot be removed.</p>
+        <form className={styles.form} onSubmit={(event) => { event.preventDefault();
+          const fields = new FormData(event.currentTarget);
+          const target = records.find((row) => id(row) === label(fields.get("targetId")));
+          const reason = label(fields.get("reason")).trim();
+          if (target && window.confirm(`${successionMode === "grant" ? "Grant" : "Restore"} administrator access for ${label(target.email)}?`))
+            void succession(successionMode, target, reason);
+        }}>
+          <label>Decision<select value={successionMode} onChange={(event) => setSuccessionMode(event.target.value as "grant" | "restore")}>
+            <option value="grant">Grant independent administrator access</option>
+            <option value="restore">Restore a successor’s previous role</option>
+          </select></label>
+          <label>Tenant member<select name="targetId" key={successionMode} required defaultValue="">
+            <option value="">Select a member</option>
+            {records.filter((row) => status(row) === "active" && (successionMode === "grant"
+              ? !["admin", "field_worker"].includes(label(row.role)) : label(row.role) === "admin"))
+              .map((row) => <option key={id(row)} value={id(row)}>{label(row.email)}</option>)}
+          </select></label>
+          <label>Recorded reason<input name="reason" minLength={12} maxLength={500} required /></label>
+          <button disabled={busy}>Record protected decision</button>
+        </form>
+      </details></>}
     {(["invitations", "activity"] as string[]).includes(kind) && <form className={styles.search}
       onSubmit={(event) => { event.preventDefault(); setOffset(0); setSubmittedSearch(search); }}>
       <label>Search {kind}<input value={search} onChange={(event) => setSearch(event.target.value)} /></label>

@@ -91,6 +91,21 @@ export async function POST(request: NextRequest) {
         p_workspace_key: workspace, p_command_id: input.inviteId, p_reason: input.reason.trim() });
       return result.error ? failure(result.error) : reply({ result: result.data });
     }
+    if (input.action === "member.admin-grant" || input.action === "member.admin-restore") {
+      if (!input.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email) ||
+        !Number.isInteger(input.expectedRevision) || (input.expectedRevision ?? 0) < 1 ||
+        input.reason.trim().length < 12) return reply({ error: "invalid_admin_succession" }, 400);
+      const admin = createRybexSupabaseAdminClient();
+      const result = await (admin.rpc as unknown as (name: string, args: Record<string, unknown>) =>
+        Promise<RpcResult>)("d5o_hosted_customer_admin_succession_v1", {
+        p_workspace_key: workspace, p_admin_user_id: context.actor.id,
+        p_admin_membership_id: context.actor.membershipId,
+        p_target_email: input.email.trim().toLowerCase(),
+        p_action: input.action === "member.admin-grant" ? "grant" : "restore",
+        p_expected_revision: input.expectedRevision, p_reason: input.reason.trim(),
+        p_command_id: input.commandId });
+      return result.error ? failure(result.error) : reply({ result: result.data });
+    }
     if (!Number.isInteger(input.expectedRevision) || (input.expectedRevision ?? -1) < 0 ||
       !input.data || Array.isArray(input.data) || typeof input.data !== "object" ||
       (input.id && !/^[0-9a-f-]{36}$/i.test(input.id))) return reply({ error: "invalid_org_command" }, 400);
