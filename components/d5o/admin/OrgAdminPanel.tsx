@@ -31,6 +31,8 @@ export function OrgAdminPanel({ workspace, kind, settingsOnly = false }: {
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [successionMode, setSuccessionMode] = useState<"grant" | "restore">("grant");
+  const [pendingSuccession, setPendingSuccession] = useState<{
+    action: "grant" | "restore"; target: Item; reason: string } | null>(null);
   const endpoint = "/api/d5o-hosted/org-admin";
   const read = useCallback(async (section: string, query = "", pageOffset = 0) => {
     const params = new URLSearchParams({ workspace, kind: section, search: query,
@@ -233,10 +235,10 @@ export function OrgAdminPanel({ workspace, kind, settingsOnly = false }: {
           const fields = new FormData(event.currentTarget);
           const target = records.find((row) => id(row) === label(fields.get("targetId")));
           const reason = label(fields.get("reason")).trim();
-          if (target && window.confirm(`${successionMode === "grant" ? "Grant" : "Restore"} administrator access for ${label(target.email)}?`))
-            void succession(successionMode, target, reason);
+          if (target && reason.length >= 12) setPendingSuccession({ action: successionMode, target, reason });
         }}>
-          <label>Decision<select value={successionMode} onChange={(event) => setSuccessionMode(event.target.value as "grant" | "restore")}>
+          <label>Decision<select value={successionMode} onChange={(event) => {
+            setSuccessionMode(event.target.value as "grant" | "restore"); setPendingSuccession(null); }}>
             <option value="grant">Grant independent administrator access</option>
             <option value="restore">Restore a successor’s previous role</option>
           </select></label>
@@ -247,8 +249,19 @@ export function OrgAdminPanel({ workspace, kind, settingsOnly = false }: {
               .map((row) => <option key={id(row)} value={id(row)}>{label(row.email)}</option>)}
           </select></label>
           <label>Recorded reason<input name="reason" minLength={12} maxLength={500} required /></label>
-          <button disabled={busy}>Record protected decision</button>
+          <button disabled={busy}>Review protected decision</button>
         </form>
+        {pendingSuccession && <div role="alert" className={styles.form}>
+          <p>{pendingSuccession.action === "grant" ? "Grant independent administrator access to" : "Restore the prior role for"} <strong>{label(pendingSuccession.target.email)}</strong> in this tenant?</p>
+          <p>Reason: {pendingSuccession.reason}</p>
+          <div className={styles.actions}>
+            <button type="button" disabled={busy} onClick={() => {
+              const decision = pendingSuccession; setPendingSuccession(null);
+              void succession(decision.action, decision.target, decision.reason);
+            }}>Confirm protected decision</button>
+            <button type="button" disabled={busy} onClick={() => setPendingSuccession(null)}>Cancel</button>
+          </div>
+        </div>}
       </details></>}
     {(["invitations", "activity"] as string[]).includes(kind) && <form className={styles.search}
       onSubmit={(event) => { event.preventDefault(); setOffset(0); setSubmittedSearch(search); }}>
