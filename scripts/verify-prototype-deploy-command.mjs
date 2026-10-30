@@ -3,17 +3,23 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import ts from "typescript";
 
+class FixtureDate extends Date {
+  constructor(...args) { super(...(args.length ? args : ["2026-10-12T12:00:00Z"])); }
+  static now() { return Date.parse("2026-10-12T12:00:00Z"); }
+}
+
 function load(file, dependencies = {}) {
   const compiled = ts.transpileModule(readFileSync(file, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const exports = {};
-  vm.runInNewContext(compiled, { exports, require: (key) => { if (!(key in dependencies)) throw new Error(`Unexpected dependency: ${key}`); return dependencies[key]; }, structuredClone, crypto, Date, Set, Map }, { filename: file });
+  vm.runInNewContext(compiled, { exports, require: (key) => { if (!(key in dependencies)) throw new Error(`Unexpected dependency: ${key}`); return dependencies[key]; }, structuredClone, crypto, Date: FixtureDate, Set, Map }, { filename: file });
   return exports;
 }
 const deployPolicy = load("components/d5o/platform/deploy-policy.ts");
 const model = load("components/d5o/platform/deploy-model.ts", { "./deploy-policy": deployPolicy });
 const errors = load("lib/d5o/prototype-work/store-error.ts");
+const semanticJson = load("lib/d5o/prototype-work/semantic-json.ts");
 const serviceBasis = load("lib/d5o/prototype-work/service-execution-basis.ts");
-const { applyDeployCommand, assertSnapshotDeployIntegrity } = load("lib/d5o/prototype-work/deploy-command.ts", { "@/components/d5o/platform/deploy-model": model, "@/components/d5o/platform/deploy-policy": deployPolicy, "./store-error": errors, "./service-execution-basis": serviceBasis });
+const { applyDeployCommand, assertSnapshotDeployIntegrity } = load("lib/d5o/prototype-work/deploy-command.ts", { "@/components/d5o/platform/deploy-model": model, "@/components/d5o/platform/deploy-policy": deployPolicy, "./store-error": errors, "./semantic-json": semanticJson, "./service-execution-basis": serviceBasis });
 const actor = {
   worker: { id: "worker", name: "Worker", membershipId: "m-worker", role: "field_technician", person: "Alex" },
   otherWorker: { id: "other-worker", name: "Other Worker", membershipId: "m-other-worker", role: "field_technician", person: "Casey" },
@@ -23,7 +29,7 @@ const actor = {
 };
 assert.throws(() => applyDeployCommand({ id: "rybex-service", workspace: "rybex", title: "Service", type: "Lifecycle service", history: [], serviceSource: { parentWorkId: "rybex-parent", requestId: "request-1" } }, { action: "authorize-start", workId: "rybex-service", packageId: "p1", expectedRevision: 1, commandId: "missing-source", note: "Start after authorization" }, actor.supervisor, null), (error) => error.code === "service_basis_blocked");
 const detail = { packageId: "p1", revision: 2, scope: "Certify data hall fiber", location: "Hall A", requirementIds: ["fiber-cert"], predecessorIds: [], completionBasis: { kind: "Measured", plannedQuantity: 12, unit: "m" }, materialLines: [{ id: "m1", item: "Fiber", quantity: 2, availableQuantity: 2, unit: "reel", status: "Available", source: "Count" }], materialStatus: "Available", access: "Authorized", permit: "Approved permit", safetyControls: "Isolation", method: "MOP-1", verification: "Certify every strand", crewDemandRequired: true };
-const release = { id: "release-1", packageId: "p1", packageRevision: 2, configurationVersionId: "pin-1", status: "Accepted", snapshot: detail, crewDemandSnapshot: { minimumPeople: 1 }, documentRefs: ["doc@1"], sourceSnapshot: null };
+const release = { id: "release-1", packageId: "p1", packageRevision: 2, configurationVersionId: "pin-1", status: "Accepted", snapshot: detail, crewDemandSnapshot: { minimumPeople: 1, requiredSlots: [{ date: "2026-10-12", shift: "07:00–15:30" }] }, documentRefs: ["doc@1"], sourceSnapshot: null };
 let work = { id: "w1", workspace: "rybex", title: "Fiber", type: "Technical delivery", customer: "Customer", site: "Hall A", owner: "PM", stage: "Deploy", nextAction: "Execute", progress: 0, value: "", status: "moving", proof: [], blockers: [], history: [], packages: [{ id: "p1", name: "Fiber" }], phaseConfigurationVersionId: "pin-1", design: { releases: [release], packages: [detail], documents: [], reviews: [], history: [] } };
 const assignment = { id: "booking-1", crew: "Fiber", people: ["Alex"], workId: "w1", packageId: "p1", week: 0, day: 0, date: "2026-10-12", shift: "07:00–15:30" };
 const schedule = { revision: 2, assignments: [assignment], publications: [{ id: "publication-1", week: 0, assignments: [assignment] }], receipts: [], packageDemands: [] };
@@ -98,6 +104,8 @@ assert.equal(work.deploy.turnovers.at(-1).status, "Conditionally accepted");
 rejects({ action: "accept-work", packageId: "p1", signerName: "Customer", signerOrganization: "Owner", signerRole: "Director", authorityBasis: "Delegation", source: "final.pdf" }, "work_acceptance_blocked", actor.reviewer);
 send({ action: "assemble-turnover", packageId: "p1", operateOwner: "Lifecycle manager" }, actor.supervisor);
 const turnover = work.deploy.turnovers.at(-1);
+assert.equal(turnover.revision, conditional.revision + 1, "The new turnover must advance the revision");
+assert.equal(work.deploy.turnovers.find((item) => item.id === conditional.id)?.status, "Conditionally accepted", "The prior conditional decision must remain retained");
 rejects({ action: "accept-client", packageId: "p1", turnoverId: turnover.id, signerName: "Customer", signerOrganization: "Owner", authorityBasis: "Delegation", source: "letter.pdf" }, "acceptance_role_denied", actor.supervisor);
 send({ action: "accept-client", packageId: "p1", turnoverId: turnover.id, signerName: "Customer", signerOrganization: "Owner", authorityBasis: "Delegation", source: "letter.pdf" }, actor.reviewer);
 assert.equal(turnover.status, "Draft");
@@ -125,7 +133,7 @@ const exempt = structuredClone({ ...work, deploy: undefined, design: { ...work.d
 assert.equal(model.assessDeployReadiness(exempt, "p1", null).recommendation, "Ready for authorized start");
 const exemptStarted = applyDeployCommand(exempt, { action: "authorize-start", workId: "w1", packageId: "p1", expectedRevision: 1, commandId: "crew-exempt", note: "Approved no-crew work basis" }, actor.supervisor, null);
 assert.equal(exemptStarted.deploy.permits[0].publicationId, "crew-exempt");
-const { deployWorkerProjection } = load("lib/d5o/prototype-work/deploy-worker-projection.ts", { "server-only": {} });
+const { deployWorkerProjection } = load("lib/d5o/prototype-work/deploy-worker-projection.ts", { "server-only": {}, "@/components/d5o/platform/deploy-model": model });
 const workerView = deployWorkerProjection({ ...work, value: "$500,000", discovery: { secret: "commercial" } }, "p1", "booking-1", actor.worker.id);
 assert.equal(workerView.value, "");
 assert.equal(workerView.discovery, undefined);
