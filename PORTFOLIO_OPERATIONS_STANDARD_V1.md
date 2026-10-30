@@ -16,6 +16,14 @@ project owner, exact resource, purpose and environment with project-scoped
 `resource.ownership` evidence. Repository identity alone does not prove live
 service ownership.
 
+An observed provider resource may be recorded under the JARVIS portfolio
+registry with full provider account and resource IDs before application
+ownership is known. This `provider.resource_observed` evidence and its
+read-only reconciliation task remain separate from verified mappings and
+`resource.ownership` evidence. Deployment repository metadata is a source
+link, not owner confirmation. Preserve conflicting links and earlier
+observations. An observation alone never permits maintenance or execution.
+
 For each resource retain purpose, owner, environment, importance, health,
 usage, cost and timestamp; explicitly mark missing, inaccessible and not
 applicable telemetry. Record retention, protected or unique data, proposed
