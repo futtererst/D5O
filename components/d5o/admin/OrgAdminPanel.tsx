@@ -33,6 +33,8 @@ export function OrgAdminPanel({ workspace, kind, settingsOnly = false }: {
   const [successionMode, setSuccessionMode] = useState<"grant" | "restore">("grant");
   const [pendingSuccession, setPendingSuccession] = useState<{
     action: "grant" | "restore"; target: Item; reason: string } | null>(null);
+  const [pendingRoleChange, setPendingRoleChange] = useState<{
+    target: Item; role: string; reason: string } | null>(null);
   const endpoint = "/api/d5o-hosted/org-admin";
   const read = useCallback(async (section: string, query = "", pageOffset = 0) => {
     const params = new URLSearchParams({ workspace, kind: section, search: query,
@@ -217,9 +219,10 @@ export function OrgAdminPanel({ workspace, kind, settingsOnly = false }: {
               <button type="submit" disabled={busy}>Assign</button></form>}</td>
           <td>{status(row)}</td><td><div className={styles.actions}>
             {status(row) === "active" && !["admin", "field_worker"].includes(label(row.role)) && <>
-              <select aria-label={`New role for ${label(row.email)}`} defaultValue={label(row.role)}
-                onChange={(event) => { if (window.confirm(`Change ${label(row.email)} to ${event.target.selectedOptions[0].text}?`))
-                  void command("member.role", row, { role: event.target.value }, `Change role for ${label(row.email)}`); }}>
+              <select aria-label={`New role for ${label(row.email)}`}
+                value={pendingRoleChange && id(pendingRoleChange.target) === id(row)
+                  ? pendingRoleChange.role : label(row.role)}
+                onChange={(event) => setPendingRoleChange({ target: row, role: event.target.value, reason: "" })}>
                 {roleOptions}</select>
               <button type="button" disabled={busy} onClick={() => { if (window.confirm(`Suspend ${label(row.email)}?`))
                 void command("member.suspend", row, {}, `Suspend access for ${label(row.email)}`); }}>Suspend</button></>}
@@ -229,6 +232,18 @@ export function OrgAdminPanel({ workspace, kind, settingsOnly = false }: {
               <button type="button" disabled={busy} onClick={() => { if (window.confirm(`Remove ${label(row.email)} from this tenant?`))
                 void command("member.remove", row, {}, `Remove tenant access for ${label(row.email)}`); }}>Remove access</button>}
           </div></td></tr>)}</tbody></table></div> : !loading && <p className={styles.empty}>No members match this search.</p>}
+      {pendingRoleChange && <div role="alert" className={styles.form}>
+        <p>Change <strong>{label(pendingRoleChange.target.email)}</strong> to <strong>{roleLabels[pendingRoleChange.role]}</strong> in this tenant?</p>
+        <label>Recorded reason<input minLength={8} maxLength={500} value={pendingRoleChange.reason}
+          onChange={(event) => setPendingRoleChange({ ...pendingRoleChange, reason: event.target.value })} /></label>
+        <div className={styles.actions}>
+          <button type="button" disabled={busy || pendingRoleChange.reason.trim().length < 8}
+            onClick={() => { const decision = pendingRoleChange; setPendingRoleChange(null);
+              void command("member.role", decision.target, { role: decision.role }, decision.reason.trim()); }}>
+            Confirm role change</button>
+          <button type="button" disabled={busy} onClick={() => setPendingRoleChange(null)}>Cancel</button>
+        </div>
+      </div>}
       <details><summary>Protected administrator succession</summary>
         <p>A separate administrator may grant a confirmed tenant member administrator access, then restore that member’s prior role. Decisions are audited; the last active administrator cannot be removed.</p>
         <form className={styles.form} onSubmit={(event) => { event.preventDefault();
