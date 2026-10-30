@@ -76,7 +76,7 @@ export function CustomerDevelopActions({ workspace, workId, role, onChanged }: {
       && item.response === "acknowledged");
   const permitted = snapshot?.work.deploy?.permits?.some((item) =>
     item.packageId === release?.packageId && item.status === "Authorized") ?? false;
-  async function act(action: "save-booking" | "publish-week" | "authorize-start") {
+  async function act(action: "save-booking" | "publish-week" | "cancel-draft-booking" | "authorize-start") {
     if (!snapshot || !release?.packageId) return;
     setBusy(true); setError(""); setMessage("");
     try {
@@ -95,6 +95,7 @@ export function CustomerDevelopActions({ workspace, workId, role, onChanged }: {
           week: day?.week, day: day?.day, date: slot?.date, shift: slot?.shift,
           personHoursPerWorker: bookingHours } } : {}),
         ...(action === "publish-week" ? { week: booking?.week } : {}),
+        ...(action === "cancel-draft-booking" ? { assignmentId: booking?.id } : {}),
         ...(action === "authorize-start" ? { reason: reason.trim(),
           sourceRevision: snapshot.sourceRevision,
           designRevision: snapshot.work.design?.authorityRevision ?? 0,
@@ -138,7 +139,8 @@ export function CustomerDevelopActions({ workspace, workId, role, onChanged }: {
       {booking && <section><h5>Booking</h5><p>{booking.people.join(", ")} · {booking.date} {booking.shift} ·
         {published ? acknowledged ? " acknowledged by worker" : " awaiting worker response" : " draft"}</p>
         {["admin", "project_manager", "operations_leader"].includes(role) && !published &&
-          <button disabled={busy} onClick={() => void act("publish-week")}>Publish crew week</button>}
+          <><button disabled={busy} onClick={() => void act("publish-week")}>Publish crew week</button>
+            <button disabled={busy} onClick={() => void act("cancel-draft-booking")}>Withdraw draft booking</button></>}
       </section>}
       {permitted && <p role="status">Field start authorized. Develop is complete; the assigned employee can proceed to Deploy.</p>}
       {role === "operations_leader" && published && acknowledged && !permitted && <form

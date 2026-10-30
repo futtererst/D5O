@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
     return reply({ error: "client_configuration_override_forbidden" }, 400);
   if (!body || !body.workId || !/^[0-9a-f-]{36}$/i.test(body.commandId ?? "")
     || !Number.isInteger(body.expectedRevision)
-    || !["save-booking", "publish-week", "respond-booking", "authorize-start"].includes(body.action ?? ""))
+    || !["save-booking", "publish-week", "cancel-draft-booking", "respond-booking", "authorize-start"].includes(body.action ?? ""))
     return reply({ error: "invalid_command" }, 400);
   try {
     if (body.action === "respond-booking") {
@@ -139,6 +139,12 @@ export async function POST(request: NextRequest) {
         p_expected_design_revision: body.designRevision,
         p_expected_schedule_revision: body.scheduleRevision,
         p_expected_deploy_revision: body.deployRevision });
+    } else if (body.action === "cancel-draft-booking") {
+      if (!body.assignmentId) return reply({ error: "invalid_assignment" }, 400);
+      result = await call("d5o_hosted_cancel_draft_booking_v1", {
+        p_workspace_key: workspace, p_work_id: body.workId,
+        p_package_id: body.packageId, p_assignment_id: body.assignmentId,
+        p_command_id: body.commandId, p_expected_revision: body.expectedRevision });
     } else {
       if (body.action === "save-booking" && (!body.assignment
         || body.assignment.workId !== body.workId || body.assignment.packageId !== body.packageId))
