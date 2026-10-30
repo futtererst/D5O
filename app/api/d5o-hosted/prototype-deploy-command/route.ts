@@ -1,5 +1,6 @@
 import { authoritativeD5OCommandsReady } from "@/lib/d5o/auth/hosted-target";
 import { NextRequest, NextResponse } from "next/server";
+import { scanHostedUpload } from "@/lib/d5o/hosted/scan-upload";
 import { applyDeployCommand, deployCommandFingerprint, type DeployCommand } from "@/lib/d5o/prototype-work/deploy-command";
 import { PrototypeWorkError } from "@/lib/d5o/prototype-work/store-error";
 import { HostedStateError, hostedPrototypeContext } from "@/lib/d5o/hosted/prototype-context";
@@ -147,6 +148,9 @@ export async function PUT(request: NextRequest) {
       return reply({ error: "worker_upload_required", message: "The assigned worker must upload this package evidence from My assigned work." }, 403);
     if (work.phaseConfigurationVersionId && !config) return reply({ error: "deploy_policy_unavailable" }, 409);
     const bytes = Buffer.from(await file.arrayBuffer()), id = randomUUID();
+    const scan = await scanHostedUpload({ evidenceId: id, filename: file.name,
+      mimeType: file.type, bytes });
+    if (scan) return reply({ error: scan.error }, scan.status);
     uploadedPath = objectPath(workspace, workId, id);
     const uploaded = await admin.storage.from(bucket).upload(uploadedPath, bytes, { contentType: file.type, upsert: false });
     if (uploaded.error) throw new HostedStateError("evidence_storage_unavailable", 503);

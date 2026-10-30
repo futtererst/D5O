@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { scanHostedUpload } from "@/lib/d5o/hosted/scan-upload";
 import { createRybexSupabaseAdminClient, createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
@@ -48,6 +49,9 @@ export async function POST(request: NextRequest) {
       !bytes.subarray(-32).toString("ascii").includes("%%EOF"))
       return reply({ error: "design_cost_pdf_required" }, 400);
     const id = randomUUID(), checksum = createHash("sha256").update(bytes).digest("hex");
+    const scan = await scanHostedUpload({ evidenceId: id, filename: file.name,
+      mimeType: file.type, bytes });
+    if (scan) return reply({ error: scan.error }, scan.status);
     uploadedPath = `${selected.workspace}/${createHash("sha256").update(selected.workId).digest("hex")}/design-cost/${id}`;
     const admin = createRybexSupabaseAdminClient();
     const saved = await admin.storage.from(bucket).upload(uploadedPath, bytes, {

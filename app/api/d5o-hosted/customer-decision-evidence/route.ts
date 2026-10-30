@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { scanHostedUpload } from "@/lib/d5o/hosted/scan-upload";
 import type { WorkRecord } from "@/components/d5o/platform/work-types";
 import { createRybexSupabaseAdminClient, createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { hostedPrototypeContext, HostedStateError } from "@/lib/d5o/hosted/prototype-context";
@@ -137,6 +138,9 @@ export async function POST(request: NextRequest) {
     if (bytes.subarray(0, 5).toString("ascii") !== "%PDF-" || !bytes.subarray(-32).toString("ascii").includes("%%EOF"))
       return reply({ error: "signed_pdf_required" }, 400);
     const checksum = createHash("sha256").update(bytes).digest("hex");
+    const scan = await scanHostedUpload({ evidenceId: id, filename: file.name,
+      mimeType: file.type, bytes });
+    if (scan) return reply({ error: scan.error }, scan.status);
     uploadedPath = pathFor(target.workspace, workId, id);
     const admin = createRybexSupabaseAdminClient();
     const saved = await admin.storage.from(bucket).upload(uploadedPath, bytes, {

@@ -73,16 +73,14 @@ export function getProductionReadiness(): ProductionReadinessResult {
   }
 
   if (hostedD5O) {
-    // Hosted evidence routes have no scanner adapter. Fictional Preview
-    // acceptance may use the approved disabled mode; production cannot.
-    if (process.env.VERCEL_ENV !== "preview") {
-      issues.push(blocker("hosted_scanner_unimplemented", "Hosted evidence uploads require a verified malware scanner before production."));
-    }
-    if (scannerMode !== "disabled") {
-      issues.push(blocker("scanner_contract", "Hosted D5O requires explicit RYBEXOS_SCANNER_MODE=disabled; its evidence routes do not invoke the legacy scanner."));
-    } else {
-      issues.push(warning("scanner_disabled", "Hosted D5O private evidence is not malware scanned under the approved release scope."));
-    }
+    if (scannerMode !== "local_service")
+      issues.push(blocker("hosted_scanner_mode", "Hosted evidence requires a configured clean-only scanner before upload."));
+    if (!process.env.RYBEXOS_SCANNER_URL)
+      issues.push(blocker("scanner_url", "RYBEXOS_SCANNER_URL is required for hosted evidence scanning."));
+    else if (!/^https:\/\//i.test(process.env.RYBEXOS_SCANNER_URL))
+      issues.push(blocker("scanner_transport", "Hosted scanner traffic must use HTTPS."));
+    if (!process.env.RYBEXOS_SCANNER_TOKEN)
+      issues.push(blocker("scanner_auth", "Hosted scanner requests require a protected service token."));
   } else {
     // Legacy evidence custody still requires an implemented scanner.
     if (scannerMode !== "local_service") {

@@ -7,6 +7,7 @@ import { hostedWorkerContext } from "@/lib/d5o/hosted/worker-context";
 import type { SharedSchedule } from "@/components/d5o/platform/schedule-model";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 import { customerWorkScope } from "@/lib/d5o/hosted/customer-work-scope";
+import { scanHostedUpload } from "@/lib/d5o/hosted/scan-upload";
 
 export const dynamic = "force-dynamic";
 const bucket = "d5o-deploy-evidence";
@@ -79,6 +80,9 @@ export async function POST(request: NextRequest) {
       !bytes.subarray(-32).toString("ascii").includes("%%EOF"))
       return reply({ error: "design_pdf_required" }, 400);
     const id = randomUUID(), checksum = createHash("sha256").update(bytes).digest("hex");
+    const scan = await scanHostedUpload({ evidenceId: id, filename: file.name,
+      mimeType: file.type, bytes });
+    if (scan) return reply({ error: scan.error }, scan.status);
     uploadedPath = pathFor(scoped.workspace, scoped.workId, id);
     const admin = createRybexSupabaseAdminClient();
     const saved = await admin.storage.from(bucket).upload(uploadedPath, bytes, {

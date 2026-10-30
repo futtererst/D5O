@@ -19,7 +19,8 @@ export function getEvidenceScanner(): EvidenceScanner {
   const mode = getScannerMode();
 
   if (mode === "local_service" && process.env.RYBEXOS_SCANNER_URL) {
-    return new LocalServiceEvidenceScanner(process.env.RYBEXOS_SCANNER_URL);
+    return new LocalServiceEvidenceScanner(process.env.RYBEXOS_SCANNER_URL, undefined,
+      process.env.RYBEXOS_SCANNER_TOKEN);
   }
 
   return new UnavailableScanner();

@@ -4,6 +4,7 @@ import { createRybexSupabaseAdminClient, createRybexSupabaseServerClient } from 
 import { authoritativeD5OCommandsReady } from "@/lib/d5o/auth/hosted-target";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 import { graybarDocumentAssistant } from "@/lib/d5o/graybar/document-assistant";
+import { scanHostedUpload } from "@/lib/d5o/hosted/scan-upload";
 
 export const dynamic = "force-dynamic";
 const bucket = "d5o-deploy-evidence";
@@ -71,11 +72,15 @@ export async function POST(request: NextRequest) {
   const mediaType = /\.pdf$/i.test(file.name) ? "application/pdf" : /\.csv$/i.test(file.name) ? "text/csv" : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
   if (mediaType === "application/pdf" && bytes.subarray(0, 5).toString("ascii") !== "%PDF-") return reply({ error: "invalid_pdf" }, 400);
   if (mediaType.endsWith("sheet") && bytes.subarray(0, 2).toString("ascii") !== "PK") return reply({ error: "invalid_xlsx" }, 400);
+  const id = randomUUID();
+  const scan = await scanHostedUpload({ evidenceId: id, filename: file.name,
+    mimeType: mediaType, bytes });
+  if (scan) return reply({ error: scan.error }, scan.status);
   let extraction: Awaited<ReturnType<typeof extract>>;
   try { extraction = await extract(file, bytes); }
   catch { return reply({ error: "unreadable_document" }, 400); }
   const checksum = createHash("sha256").update(bytes).digest("hex");
-  const path = `${scoped.workspace}/${createHash("sha256").update(scoped.workId).digest("hex")}/graybar/${randomUUID()}`;
+  const path = `${scoped.workspace}/${createHash("sha256").update(scoped.workId).digest("hex")}/graybar/${id}`;
   const admin = createRybexSupabaseAdminClient();
   const stored = await admin.storage.from(bucket).upload(path, bytes, { contentType: mediaType, upsert: false });
   if (stored.error) return reply({ error: "private_upload_failed" }, 503);

@@ -50,21 +50,31 @@ const hostedImports = { ...imports,
   "../field-issue-escalation/persistence-mode": { getFieldIssuePersistenceMode: () => "local" },
   "../closeout-final-billing/persistence-mode": { getCloseoutFinalBillingPersistenceMode: () => "local" },
 };
-const hostedReady = load("lib/d5o/security/production-config.ts", hostedImports, hosted).getProductionReadiness();
-assert.equal(hostedReady.ok, true);
-assert.equal(hostedReady.scope, "d5o_hosted");
-assert(hostedReady.issues.some((issue) => issue.code === "scanner_disabled" && issue.severity === "warning"));
-assert(hostedReady.issues.some((issue) => issue.code === "legacy_billing_unavailable" && issue.severity === "warning"));
+const hostedDisabled = load("lib/d5o/security/production-config.ts", hostedImports, hosted).getProductionReadiness();
+assert.equal(hostedDisabled.ok, false);
+assert(hostedDisabled.issues.some((issue) => issue.code === "hosted_scanner_mode" && issue.severity === "blocker"));
+assert(hostedDisabled.issues.some((issue) => issue.code === "legacy_billing_unavailable" && issue.severity === "warning"));
 const productionTarget = load("lib/d5o/security/production-config.ts", hostedImports,
   { ...hosted, VERCEL_ENV: "production" }).getProductionReadiness();
 assert.equal(productionTarget.ok, false);
-assert(productionTarget.issues.some((issue) => issue.code === "hosted_scanner_unimplemented" && issue.severity === "blocker"));
+assert(productionTarget.issues.some((issue) => issue.code === "hosted_scanner_mode" && issue.severity === "blocker"));
+const hostedReady = load("lib/d5o/security/production-config.ts", hostedImports,
+  { ...hosted, RYBEXOS_SCANNER_MODE: "local_service",
+    RYBEXOS_SCANNER_URL: "https://scanner.example.invalid",
+    RYBEXOS_SCANNER_TOKEN: "synthetic" }).getProductionReadiness();
+assert.equal(hostedReady.ok, true);
+assert.equal(hostedReady.scope, "d5o_hosted");
+const noToken = load("lib/d5o/security/production-config.ts", hostedImports,
+  { ...hosted, RYBEXOS_SCANNER_MODE: "local_service",
+    RYBEXOS_SCANNER_URL: "https://scanner.example.invalid" }).getProductionReadiness();
+assert(noToken.issues.some((issue) => issue.code === "scanner_auth"));
 for (const env of [
   { ...hosted, RYBEXOS_SCANNER_MODE: "local_service", RYBEXOS_SCANNER_URL: "https://scanner.invalid" },
+  { ...hosted, RYBEXOS_SCANNER_MODE: "local_service", RYBEXOS_SCANNER_URL: "http://scanner.invalid", RYBEXOS_SCANNER_TOKEN: "synthetic" },
   { ...hosted, D5O_COMMAND_RUNTIME: "rehearsal" },
   { ...hosted, NEXT_PUBLIC_SUPABASE_URL: "https://wrong.invalid" },
 ]) {
   const result = load("lib/d5o/security/production-config.ts", hostedImports, env).getProductionReadiness();
   assert.equal(result.ok, false, "hosted scanner or target mismatch must block readiness");
 }
-console.log("PASS: legacy scanner requirement remains; fictional hosted Preview is marked unscanned and production is blocked");
+console.log("PASS: hosted Preview and production both require authenticated HTTPS scanning; legacy scanner gate remains");

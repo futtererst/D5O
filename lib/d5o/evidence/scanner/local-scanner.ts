@@ -7,7 +7,8 @@ const defaultTimeoutMs = 5000;
 export class LocalServiceEvidenceScanner implements EvidenceScanner {
   constructor(
     private readonly scannerUrl: string,
-    private readonly timeoutMs = defaultTimeoutMs
+    private readonly timeoutMs = defaultTimeoutMs,
+    private readonly scannerToken?: string
   ) {}
 
   async scan(input: EvidenceScanInput): Promise<EvidenceScanResult> {
@@ -22,7 +23,8 @@ export class LocalServiceEvidenceScanner implements EvidenceScanner {
           "x-rybexos-evidence-id": input.evidenceId,
           "x-rybexos-filename": input.filename,
           "x-rybexos-checksum": input.checksumSha256,
-          "x-rybexos-correlation-id": input.correlationId ?? ""
+          "x-rybexos-correlation-id": input.correlationId ?? "",
+          ...(this.scannerToken ? { authorization: `Bearer ${this.scannerToken}` } : {})
         },
         body: Buffer.from(input.bytes),
         cache: "no-store",
