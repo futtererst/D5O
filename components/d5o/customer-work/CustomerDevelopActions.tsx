@@ -1,12 +1,14 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { personHoursForShift } from "@/lib/d5o/hosted/booking-hours";
+import { currentCrewBooking } from "@/lib/d5o/hosted/current-crew-booking";
 
 type Demand = { qualification?: string; minimumPeople?: number; estimatedPersonHours?: number;
   requiredSlots?: Array<{ date: string; shift: string }> };
-type Release = { packageId?: string; status?: string; crewDemandSnapshot?: Demand };
+type Release = { id?: string; packageId?: string; status?: string; crewDemandSnapshot?: Demand };
 type Work = { id: string; design?: { authorityRevision?: number; releases?: Release[] };
-  deploy?: { authorityRevision?: number; permits?: Array<{ packageId?: string; status?: string }> } };
+  deploy?: { authorityRevision?: number; permits?: Array<{ packageId?: string; releaseId?: string;
+    status?: string }> } };
 type Assignment = { id: string; workId: string; packageId: string; week: number; day: number;
   date: string; shift: string; people: string[] };
 type Publication = { id: string; week: number; assignments: Assignment[] };
@@ -57,26 +59,30 @@ export function CustomerDevelopActions({ workspace, workId, role, onChanged }: {
   const unavailable = (person: string) => (snapshot?.schedule.state.availabilityBlocks ?? [])
     .some((block) => block.person === person && (block.date === slot?.date
       || overnight && block.date === nextDate));
-  const qualified = useMemo(() => (snapshot?.workforce.people ?? []).filter((item) =>
+  const qualified = (snapshot?.workforce.people ?? []).filter((item) =>
     item.active && item.bound && item.qualifications.includes(demand?.qualification ?? "")
     && (!item.qualificationExpiresOn?.[demand?.qualification ?? ""]
       || item.qualificationExpiresOn[demand?.qualification ?? ""] >= (overnight ? nextDate : slot?.date ?? ""))
     && !(snapshot?.schedule.state.availabilityBlocks ?? []).some((block) =>
       block.person === item.person && (block.date === slot?.date
         || overnight && block.date === nextDate))
-    && bookingHours > 0 && item.weeklyCapacityHours >= bookingHours),
-    [snapshot, demand, slot, overnight, nextDate, bookingHours]);
-  const assignments = (snapshot?.schedule.state.assignments ?? []).filter((item) =>
-    item.workId === workId && item.packageId === release?.packageId);
-  const booking = assignments[0];
-  const published = (snapshot?.schedule.state.publications ?? []).findLast((item) =>
-    item.assignments.some((assignment) => assignment.id === booking?.id));
+    && bookingHours > 0 && item.weeklyCapacityHours >= bookingHours);
+  const bookingState = currentCrewBooking(snapshot?.schedule.state.assignments ?? [],
+    snapshot?.schedule.state.publications ?? [], workId, release?.packageId ?? "", slot);
+  const booking = bookingState.current;
+  const published = bookingState.published;
+  const priorBooking = bookingState.prior;
+  const priorPublication = bookingState.activePriorPublication;
+  const withdrawPriorWeek = Boolean(booking && priorPublication
+    && priorPublication.week !== booking.week);
   const acknowledged = (snapshot?.schedule.state.receipts ?? []).some((item) =>
     item.assignmentId === booking?.id && item.publicationId === published?.id
       && item.response === "acknowledged");
   const permitted = snapshot?.work.deploy?.permits?.some((item) =>
-    item.packageId === release?.packageId && item.status === "Authorized") ?? false;
-  async function act(action: "save-booking" | "publish-week" | "cancel-draft-booking" | "authorize-start") {
+    item.packageId === release?.packageId && item.releaseId === release?.id
+      && item.status === "Authorized") ?? false;
+  async function act(action: "save-booking" | "publish-week" | "cancel-draft-booking" | "authorize-start",
+    weekOverride?: number) {
     if (!snapshot || !release?.packageId) return;
     setBusy(true); setError(""); setMessage("");
     try {
@@ -90,11 +96,12 @@ export function CustomerDevelopActions({ workspace, workId, role, onChanged }: {
       const payload = { workId, packageId: release.packageId, action,
         commandId: crypto.randomUUID(), expectedRevision: snapshot.schedule.revision,
         ...(action === "save-booking" ? { assignment: {
-          id: `booking-${crypto.randomUUID()}`, crew: `Assigned ${chosen.map((item) => item.displayName).join(", ")}`,
+          id: priorBooking?.id ?? `booking-${crypto.randomUUID()}`,
+          crew: `Assigned ${chosen.map((item) => item.displayName).join(", ")}`,
           people: chosen.map((item) => item.person), workId, packageId: release.packageId,
           week: day?.week, day: day?.day, date: slot?.date, shift: slot?.shift,
           personHoursPerWorker: bookingHours } } : {}),
-        ...(action === "publish-week" ? { week: booking?.week } : {}),
+        ...(action === "publish-week" ? { week: weekOverride ?? booking?.week } : {}),
         ...(action === "cancel-draft-booking" ? { assignmentId: booking?.id } : {}),
         ...(action === "authorize-start" ? { reason: reason.trim(),
           sourceRevision: snapshot.sourceRevision,
@@ -134,11 +141,16 @@ export function CustomerDevelopActions({ workspace, workId, role, onChanged }: {
                 (option) => option.value))} required>
               {qualified.map((item) => <option key={item.person} value={item.person}>{item.displayName}</option>)}
             </select></label>
-          <button disabled={busy || people.length < (demand?.minimumPeople ?? 1)}>Save crew booking</button>
+          <button disabled={busy || people.length < (demand?.minimumPeople ?? 1)}>{priorBooking
+            ? "Save corrected crew booking" : "Save crew booking"}</button>
         </form>}
+      {priorBooking && !booking && <p role="status">The earlier {priorBooking.date} booking is historical after the Design schedule correction. Assign crew for the accepted {slot?.date} shift.</p>}
       {booking && <section><h5>Booking</h5><p>{booking.people.join(", ")} · {booking.date} {booking.shift} ·
         {published ? acknowledged ? " acknowledged by worker" : " awaiting worker response" : " draft"}</p>
-        {["admin", "project_manager", "operations_leader"].includes(role) && !published &&
+        {["admin", "project_manager", "operations_leader"].includes(role) && withdrawPriorWeek &&
+          <button disabled={busy} onClick={() => void act("publish-week", priorPublication?.week)}>
+            Withdraw superseded crew week</button>}
+        {["admin", "project_manager", "operations_leader"].includes(role) && !published && !withdrawPriorWeek &&
           <><button disabled={busy} onClick={() => void act("publish-week")}>Publish crew week</button>
             <button disabled={busy} onClick={() => void act("cancel-draft-booking")}>Withdraw draft booking</button></>}
       </section>}

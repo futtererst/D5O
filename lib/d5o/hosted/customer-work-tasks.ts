@@ -1,3 +1,5 @@
+import { currentCrewBooking } from "./current-crew-booking";
+
 export type CustomerWorkTask = { id: string; workId: string; title: string; phase: string;
   status: "available" | "view_only"; revision: number; packageId?: string; releaseId?: string;
   dueDate?: string; action?: string; reviewRole?: string;
@@ -12,13 +14,14 @@ export type CustomerTaskWork = { id: string;
     reviews?: Array<{ id: string; packageId: string; revision?: number; discipline: string; status: string;
       requestedByActorId?: string }>;
     releases?: Array<{
-    id: string; packageId: string; status: string; issuedByActorId?: string }>;
+    id: string; packageId: string; status: string; issuedByActorId?: string;
+    crewDemandSnapshot?: { requiredSlots?: Array<{ date: string; shift: string }> } }>;
     changes?: Array<{ id: string; status: string }> };
   definition?: { status?: string; authorityRevision?: number;
   reviews?: { commercial?: string; delivery?: string };
   decisions?: Array<{ action?: string; actorId?: string; reviewRole?: string }>;
   developHandoff?: { status?: string; submittedByActorId?: string } };
-  deploy?: { permits?: Array<{ packageId?: string; status?: string }> } };
+  deploy?: { permits?: Array<{ packageId?: string; releaseId?: string; status?: string }> } };
 
 export type ServiceTaskWork = CustomerTaskWork & { operate?: {
   activation?: { status?: string };
@@ -80,8 +83,10 @@ export function serviceTasks(records: ServiceTaskWork[], role: string,
   });
 }
 
-type DevelopSchedule = { assignments?: Array<{ id?: string; workId?: string; packageId?: string }>;
-  publications?: Array<{ id?: string; assignments?: Array<{ id?: string }> }>;
+type DevelopSchedule = { assignments?: Array<{ id?: string; workId?: string; packageId?: string;
+    date?: string; shift?: string; week?: number }>;
+  publications?: Array<{ id?: string; week?: number; assignments?: Array<{ id?: string;
+    workId?: string; packageId?: string; date?: string; shift?: string }> }>;
   receipts?: Array<{ assignmentId?: string; publicationId?: string; response?: string }> };
 
 export function developTasks(records: CustomerTaskWork[], role: string,
@@ -92,20 +97,25 @@ export function developTasks(records: CustomerTaskWork[], role: string,
     .flatMap((release) => {
       const packageId = release.packageId;
       if (record.deploy?.permits?.some((item) => item.packageId === packageId
-        && item.status === "Authorized")) return [];
-      const booking = (schedule?.assignments ?? []).find((item) => item.workId === record.id
-        && item.packageId === packageId);
-      const publication = (schedule?.publications ?? []).findLast((item) =>
-        (item.assignments ?? []).some((assignment) => assignment.id === booking?.id));
+        && item.releaseId === release.id && item.status === "Authorized")) return [];
+      const slot = release.crewDemandSnapshot?.requiredSlots?.[0];
+      const position = currentCrewBooking(schedule?.assignments ?? [],
+        schedule?.publications ?? [], record.id, packageId, slot);
+      const booking = position.current;
+      const publication = position.published;
       const acknowledged = (schedule?.receipts ?? []).some((item) =>
         item.assignmentId === booking?.id && item.publicationId === publication?.id
           && item.response === "acknowledged");
-      const action = !booking ? "save-booking" : !publication ? "publish-week"
+      const action = !booking ? "save-booking"
+        : position.activePriorPublication && position.activePriorPublication.week !== booking.week
+          ? "withdraw-prior-week" : !publication ? "publish-week"
         : !acknowledged ? "await-acknowledgment" : "authorize-start";
       if (action === "authorize-start" && role !== "operations_leader") return [];
       return [{ id: `develop:${record.id}:${packageId}:${action}`,
         workId: record.id, packageId, phase: "Develop", action,
-        title: ({ "save-booking": "Assign qualified crew", "publish-week": "Publish crew assignment",
+        title: ({ "save-booking": "Assign qualified crew",
+          "withdraw-prior-week": "Withdraw superseded crew week",
+          "publish-week": "Publish crew assignment",
           "await-acknowledgment": "Await employee assignment response",
           "authorize-start": "Authorize field start" } as Record<string, string>)[action],
         status: action === "await-acknowledgment" ? "view_only" as const : "available" as const,
