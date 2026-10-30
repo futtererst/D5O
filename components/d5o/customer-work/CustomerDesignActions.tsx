@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import { DesignDocumentEvidence } from "@/components/d5o/platform/DesignDocumentEvidence";
 import { FieldChangeDesignSummary } from "@/components/d5o/platform/FieldChangeDesignSummary";
+import type { DesignMaterial, DesignPackage } from "@/components/d5o/platform/design-model";
 import type { CustomerDesignAction } from "@/lib/d5o/hosted/customer-design-contract";
 
 type Document = { id: string; revision: number; title: string; status: string; evidenceId?: string;
@@ -10,7 +11,9 @@ type Document = { id: string; revision: number; title: string; status: string; e
 type Review = { id: string; packageId: string; revision?: number; discipline: string; status: string;
   requestedByActorId?: string; decision?: string };
 type Package = { packageId: string; name?: string; revision?: number;
-  scope?: string; location?: string; systems?: string; materials?: string; access?: string;
+  scope?: string; location?: string; systems?: string; materials?: string;
+  materialLines?: DesignMaterial[]; materialStatus?: DesignPackage["materialStatus"];
+  materialForecastDate?: string; materialSource?: string; access?: string;
   permit?: string; safetyControls?: string; equipment?: string; method?: string;
   rollback?: string; verification?: string; proof?: string; acceptingAuthority?: string;
   windowStart?: string; windowEnd?: string; materialRequiredDate?: string;
@@ -25,6 +28,48 @@ type Props = { workspace: string; work: DesignWork; connectedPackages: Package[]
 const disciplines = ["Engineering", "Delivery", "Safety", "Quality"];
 const str = (form: FormData, key: string) => String(form.get(key) ?? "").trim();
 const note = "Design decision recorded against the exact connected Work revision";
+
+function MaterialLines({ initial }: { initial: DesignMaterial[] }) {
+  const [rows, setRows] = useState(initial);
+  const update = (index: number, patch: Partial<DesignMaterial>) =>
+    setRows((current) => current.map((row, i) => i === index ? { ...row, ...patch } : row));
+  return <fieldset><legend>Material and procurement lines</legend>
+    <p>Record each required item. Missing source or availability remains a release hold.</p>
+    {rows.map((row, index) => <div key={row.id}>
+      <input type="hidden" name="materialId" value={row.id} />
+      <label>Item<input name="materialItem" value={row.item} onChange={(event) => update(index, { item: event.target.value })} required /></label>
+      <label>Quantity<input name="materialQuantity" type="number" min="0.001" step="any" value={row.quantity || ""} onChange={(event) => update(index, { quantity: Number(event.target.value) })} required /></label>
+      <label>Unit<input name="materialUnit" value={row.unit} onChange={(event) => update(index, { unit: event.target.value })} required /></label>
+      <label>Source or quote<input name="materialSourceLine" value={row.source} onChange={(event) => update(index, { source: event.target.value })} required /></label>
+      <label>Source confidence<select name="materialConfidence" value={row.confidence ?? "Unknown"} onChange={(event) => update(index, { confidence: event.target.value as DesignMaterial["confidence"] })}>{["Unknown", "Planning assumption", "Supplier confirmed", "Physically counted"].map((value) => <option key={value}>{value}</option>)}</select></label>
+      <label>Material status<select name="materialStatusLine" value={row.status} onChange={(event) => update(index, { status: event.target.value as DesignMaterial["status"] })}>{["Unknown", "Planned", "Ordered", "Supplier confirmed", "Received", "Available"].map((value) => <option key={value}>{value}</option>)}</select></label>
+      <label>Required on site<input name="materialRequiredLine" type="date" value={row.requiredDate} onChange={(event) => update(index, { requiredDate: event.target.value })} required /></label>
+      <label>Forecast delivery<input name="materialForecastLine" type="date" value={row.forecastDate} onChange={(event) => update(index, { forecastDate: event.target.value })} /></label>
+      <label>Quote date<input name="materialQuoteDate" type="date" value={row.quoteDate ?? ""} onChange={(event) => update(index, { quoteDate: event.target.value })} /></label>
+      <label>Quote expiry<input name="materialQuoteExpiry" type="date" value={row.quoteExpiry ?? ""} onChange={(event) => update(index, { quoteExpiry: event.target.value })} /></label>
+      <label>Received quantity<input name="materialReceived" type="number" min="0" step="any" value={row.receivedQuantity ?? ""} onChange={(event) => update(index, { receivedQuantity: event.target.value === "" ? undefined : Number(event.target.value) })} /></label>
+      <label>Available quantity<input name="materialAvailable" type="number" min="0" step="any" value={row.availableQuantity ?? ""} onChange={(event) => update(index, { availableQuantity: event.target.value === "" ? undefined : Number(event.target.value) })} /></label>
+      <label>Approved alternative<input name="materialAlternative" value={row.alternative} onChange={(event) => update(index, { alternative: event.target.value })} /></label>
+      <button type="button" onClick={() => setRows((current) => current.filter((_, i) => i !== index))}>Remove material item</button>
+    </div>)}
+    <button type="button" onClick={() => setRows((current) => [...current, { id: crypto.randomUUID(), item: "", quantity: 0, unit: "", source: "", status: "Unknown", requiredDate: "", forecastDate: "", alternative: "" }])}>Add material item</button>
+  </fieldset>;
+}
+
+function materialLines(form: FormData): DesignMaterial[] {
+  const ids = form.getAll("materialId").map(String);
+  const value = (name: string, index: number) => String(form.getAll(name)[index] ?? "").trim();
+  return ids.map((id, index) => ({ id, item: value("materialItem", index),
+    quantity: Number(value("materialQuantity", index)), unit: value("materialUnit", index),
+    source: value("materialSourceLine", index),
+    confidence: value("materialConfidence", index) as DesignMaterial["confidence"],
+    status: value("materialStatusLine", index) as DesignMaterial["status"],
+    requiredDate: value("materialRequiredLine", index), forecastDate: value("materialForecastLine", index),
+    quoteDate: value("materialQuoteDate", index), quoteExpiry: value("materialQuoteExpiry", index),
+    receivedQuantity: value("materialReceived", index) === "" ? undefined : Number(value("materialReceived", index)),
+    availableQuantity: value("materialAvailable", index) === "" ? undefined : Number(value("materialAvailable", index)),
+    alternative: value("materialAlternative", index) }));
+}
 
 export function CustomerDesignActions({ workspace, work, connectedPackages, role, busy, onAction }: Props) {
   const [evidenceIds, setEvidenceIds] = useState<Record<string, string>>({});
@@ -172,10 +217,11 @@ export function CustomerDesignActions({ workspace, work, connectedPackages, role
             unit: str(data, "unit"), criterion: str(data, "criterion") },
           requirementIds: requirements.map((item) => item.id), predecessorIds: [],
           documentRefs: governingDocument ? [`${governingDocument.id}@${governingDocument.revision}`] : [],
-          materials: str(data, "materials"), materialLines: [], materialStatus: "Unknown",
+          materials: str(data, "materials"), materialLines: materialLines(data),
+          materialStatus: str(data, "materialStatus"),
           materialRequiredDate: scheduleCorrectionHeld
-            ? chosen.materialRequiredDate ?? "" : str(data, "start"),
-          materialForecastDate: "", materialSource: "",
+            ? chosen.materialRequiredDate ?? "" : str(data, "materialRequiredDate"),
+          materialForecastDate: str(data, "materialForecastDate"), materialSource: str(data, "materialSource"),
           access: str(data, "access"), permit: str(data, "permit"), safetyControls: str(data, "safety"),
           equipment: str(data, "equipment"), method: str(data, "method"), rollback: str(data, "rollback"),
           verification: str(data, "verification"), proof: str(data, "proof"),
@@ -200,6 +246,13 @@ export function CustomerDesignActions({ workspace, work, connectedPackages, role
               defaultValue={typeof value === "string" ? value : undefined}
               required={key !== "method"} /></label>;
           })}
+        <MaterialLines key={`${chosen.packageId}:${chosen.revision ?? 0}`} initial={chosen.materialLines ?? []} />
+        <label>Material position<select name="materialStatus" defaultValue={chosen.materialStatus ?? "Unknown"}>
+          {["Unknown", "Planned", "Ordered", "Supplier confirmed", "Received", "Available", "Not required"].map((value) => <option key={value}>{value}</option>)}
+        </select></label>
+        <label>Required on site<input name="materialRequiredDate" type="date" defaultValue={chosen.materialRequiredDate} /></label>
+        <label>Forecast delivery<input name="materialForecastDate" type="date" defaultValue={chosen.materialForecastDate} /></label>
+        <label>Material source or approved no-material scope<input name="materialSource" defaultValue={chosen.materialSource} /></label>
         <label>Execution start<input name="start" type="date" defaultValue={chosen.windowStart} required /></label>
         <label>Execution end<input name="end" type="date" defaultValue={chosen.windowEnd} required /></label>
         <button disabled={busy || requirements.length === 0 || !governingDocument}>Save package basis</button>

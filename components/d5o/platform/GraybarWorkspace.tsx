@@ -168,7 +168,10 @@ export function GraybarWorkspace({ workspace, workId, role, build, task, initial
     <main className={styles.main}>
       <div className={styles.heading}><div><p className={styles.eyebrow}>Connected work · document channel</p><h1>Source, buy and receive materials</h1>
         <p>{work?.title ?? workId} · {work?.customer ?? "Customer not stated"} · {work?.site ?? "Site not stated"}</p></div>
-        <div className={styles.inline}><Link href={`/work?workspace=${workspace}&record=${encodeURIComponent(workId)}`}>Open Work Record</Link>{task ? <><Link href={`/work?workspace=${workspace}&view=my-work`}>Back to My Work</Link><Link href={`/work/procurement?workspace=${workspace}&workId=${encodeURIComponent(workId)}`}>Supporting procurement context</Link></> : null}</div></div>
+        <div className={styles.inline}><Link href={workspace === "rybex" || workspace === "rotork"
+          ? `/work?workspace=${encodeURIComponent(workspace)}&record=${encodeURIComponent(workId)}`
+          : `/work/customer/${encodeURIComponent(workspace)}?work=${encodeURIComponent(workId)}`}>
+          Open Work Record</Link>{task ? <><Link href={`/work?workspace=${workspace}&view=my-work`}>Back to My Work</Link><Link href={`/work/procurement?workspace=${workspace}&workId=${encodeURIComponent(workId)}`}>Supporting procurement context</Link></> : null}</div></div>
       <div className={styles.notice}>Graybar account connection is unconfigured. These records use retained documents and controlled local submission; they do not send an order or query live account pricing. AI provider unavailable: extracted fields require human review.</div>
       {staleTask && <div role="alert" className={styles.notice}>This exact decision changed or was completed. No substitute Work, order or invoice was opened. <Link href={`/work?workspace=${workspace}&view=my-work`}>Return to refreshed My Work</Link>.</div>}
       {notice && <div role="status" className={styles.status}>{notice}</div>}
