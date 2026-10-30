@@ -7,15 +7,16 @@ import { operateState } from "@/components/d5o/platform/operate-model";
 import { supportDocumentationPositions } from "@/components/d5o/platform/support-documentation";
 import { SupportDocumentationPanel } from "@/components/d5o/platform/SupportDocumentationPanel";
 import type { OperateCommand } from "@/lib/d5o/prototype-work/operate-command";
+import { canLinkAcceptedHandoff } from "./operate-handoff-authority";
 
 type Intent = Omit<OperateCommand, "workId" | "expectedRevision" | "commandId">;
-type Props = { work: WorkRecord; role: string; policy: { requireDocumentationReview: boolean } | null;
+type Props = { work: WorkRecord; role: string; actorId: string; policy: { requireDocumentationReview: boolean } | null;
   busy: boolean; onCommand: (intent: Intent) => Promise<boolean> };
 const value = (data: FormData, key: string) => String(data.get(key) ?? "").trim();
 const evidenceHref = (work: WorkRecord, id: string) =>
   `/api/d5o-hosted/customer-decision-evidence?workspace=${encodeURIComponent(work.workspace)}&workId=${encodeURIComponent(work.id)}&evidenceId=${encodeURIComponent(id)}`;
 
-export function CustomerOperateActions({ work, role, policy, busy, onCommand }: Props) {
+export function CustomerOperateActions({ work, role, actorId, policy, busy, onCommand }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const state = operateState(work), receipt = work.deploy?.workAcceptance;
   const exact = !!currentWorkAcceptanceScope(work) && receipt?.receipt === "Accepted";
@@ -24,6 +25,7 @@ export function CustomerOperateActions({ work, role, policy, busy, onCommand }: 
   const reviewed = documents.filter((item) => item.kind === "as-built" && item.status === "Reviewed").length;
   const pending = documents.filter((item) => item.kind === "as-built" && item.status !== "Reviewed");
   const canReceive = role === "operations_leader";
+  const canLinkHandoff = canLinkAcceptedHandoff(receipt, role, actorId);
   const submit = (create: (data: FormData) => Intent) => async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); setSubmitting(true);
     const form = event.currentTarget;
@@ -48,7 +50,7 @@ export function CustomerOperateActions({ work, role, policy, busy, onCommand }: 
     <p>Documentation policy: {policy ? required ? "Independent as-built review required before support acceptance" :
       "Additional as-built review optional" : "Pinned policy unavailable"}. Reviewed as-built documents: {reviewed}.
       {pending.length ? ` ${pending.length} as-built obligation(s) need review.` : ""}</p>
-    {canReceive && exact && !state.source && <form onSubmit={submit((data) => ({ action: "receive-handoff",
+    {canLinkHandoff && exact && !state.source && <form onSubmit={submit((data) => ({ action: "receive-handoff",
       note: value(data, "note") }))}><label>Handoff review and remaining conditions
       <input name="note" minLength={10} required /></label><button disabled={busy || submitting}>Receive accepted handoff</button></form>}
     {state.source && !state.assets.length && !state.assetLinks?.some((item) => item.status === "Accepted") &&

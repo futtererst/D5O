@@ -402,7 +402,7 @@ export function CustomerWorkExperience({ workspace, initialWorkId, initialTaskId
           {phase === "Operate" && <><p>Support {status.supportStatus ?? "Pending"}; financial closeout {status.financialCloseout ?? "Pending"}.</p>
             {detail.phaseStatus.replayMatches &&
               <CustomerOperateActions work={detail.record as unknown as WorkRecord}
-                role={role} policy={detail.operatePolicy} busy={busy} onCommand={executeOperate} />}
+                role={role} actorId={detail.actorId} policy={detail.operatePolicy} busy={busy} onCommand={executeOperate} />}
             {detail.phaseStatus.replayMatches && detail.record.operate?.activation?.status === "Active" &&
               <CustomerServiceActions work={detail.record as unknown as WorkRecord}
                 sourceRevision={detail.revision} role={role} onChanged={() => load()} />}</>}
