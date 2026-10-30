@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { authoritativeD5OCommandsReady } from "@/lib/d5o/auth/hosted-target";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
+import { customerWorkspaceKey } from "@/lib/d5o/hosted/customer-work-scope";
 
 export const dynamic = "force-dynamic";
 const respond = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
@@ -13,7 +14,7 @@ const errorResponse = (error: RpcError) => respond({ error: error?.message ?? "d
 function target(request: NextRequest) {
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
   const workId = request.nextUrl.searchParams.get("workId") ?? "";
-  return ["rybex", "rotork"].includes(workspace) && /^[\w-]{8,120}$/.test(workId) ? { workspace, workId } : null;
+  return customerWorkspaceKey.test(workspace) && /^[\w-]{8,120}$/.test(workId) ? { workspace, workId } : null;
 }
 export async function GET(request: NextRequest) {
   const selected = target(request);

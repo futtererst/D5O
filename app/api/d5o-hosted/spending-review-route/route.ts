@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authoritativeD5OCommandsReady } from "@/lib/d5o/auth/hosted-target";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
+import { customerWorkspaceKey } from "@/lib/d5o/hosted/customer-work-scope";
 
 export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
@@ -10,7 +11,7 @@ export async function GET(request: NextRequest) {
   const category = q.get("category") ?? "";
   const subjectId = q.get("subjectId") ?? "";
   const respond = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
-  if (!["rybex", "rotork"].includes(workspace) ||
+  if (!customerWorkspaceKey.test(workspace) ||
     (category !== "internal_design_rate" && !/^[\w-]{8,120}$/.test(workId))
     || !["work_authority", "design_authority", "design_commitment", "purchase_order",
       "subcontract_allocation", "subcontract_agreement", "subcontract_variation", "field_labor_authority",

@@ -3,6 +3,7 @@ import { authoritativeD5OCommandsReady } from "@/lib/d5o/auth/hosted-target";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 import { graybarDirectAdapter, graybarDocumentCapabilities } from "@/lib/d5o/graybar/supplier-adapter";
+import { customerWorkspaceKey } from "@/lib/d5o/hosted/customer-work-scope";
 
 export const dynamic = "force-dynamic";
 const reply = (value: unknown, status = 200) => NextResponse.json(value, { status, headers: { "Cache-Control": "no-store" } });
@@ -10,7 +11,7 @@ const actions = new Set(["accept-quote", "assess-product", "prepare-bom", "appro
 function target(request: NextRequest) {
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
   const workId = request.nextUrl.searchParams.get("workId") ?? "";
-  return ["rybex", "rotork"].includes(workspace) && /^[\w-]{8,120}$/.test(workId) ? { workspace, workId } : null;
+  return customerWorkspaceKey.test(workspace) && /^[\w-]{8,120}$/.test(workId) ? { workspace, workId } : null;
 }
 const errorResult = (error: { code?: string; message: string } | null) => reply({ error: error?.message ?? "procurement_unavailable" }, error?.code === "42501" ? 403 : ["23505", "23514"].includes(error?.code ?? "") ? 409 : error?.code === "22023" ? 400 : 503);
 export async function GET(request: NextRequest) {

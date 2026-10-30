@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { SubcontractWorkspace } from "@/components/d5o/platform/SubcontractWorkspace";
+import { customerWorkspaceKey } from "@/lib/d5o/hosted/customer-work-scope";
 import "../enterprise.css";
 export const dynamic = "force-dynamic";
 export default async function SubcontractPage({ searchParams }: {
@@ -8,7 +9,7 @@ export default async function SubcontractPage({ searchParams }: {
 }) {
   const params = await searchParams;
   const workspace = params.workspace ?? "", workId = params.workId ?? "";
-  if (!["rybex", "rotork"].includes(workspace) || !/^[\w-]{8,120}$/.test(workId)) redirect("/work");
+  if (!customerWorkspaceKey.test(workspace) || !/^[\w-]{8,120}$/.test(workId)) redirect("/work");
   const client = await createRybexSupabaseServerClient();
   const user = await client.auth.getUser();
   if (!user.data.user) redirect("/auth/sign-in?next=" + encodeURIComponent("/work/subcontracts?workspace=" + workspace + "&workId=" + workId));

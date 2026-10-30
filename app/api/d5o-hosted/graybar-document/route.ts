@@ -5,6 +5,7 @@ import { authoritativeD5OCommandsReady } from "@/lib/d5o/auth/hosted-target";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
 import { graybarDocumentAssistant } from "@/lib/d5o/graybar/document-assistant";
 import { scanHostedUpload } from "@/lib/d5o/hosted/scan-upload";
+import { customerWorkspaceKey } from "@/lib/d5o/hosted/customer-work-scope";
 
 export const dynamic = "force-dynamic";
 const bucket = "d5o-deploy-evidence";
@@ -13,7 +14,7 @@ const kinds = new Set(["quote", "specification", "acknowledgment", "delivery", "
 function target(request: NextRequest) {
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
   const workId = request.nextUrl.searchParams.get("workId") ?? "";
-  return ["rybex", "rotork"].includes(workspace) && /^[\w-]{8,120}$/.test(workId) ? { workspace, workId } : null;
+  return customerWorkspaceKey.test(workspace) && /^[\w-]{8,120}$/.test(workId) ? { workspace, workId } : null;
 }
 async function actorAndScope(request: NextRequest) {
   const selected = target(request);

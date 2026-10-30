@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { GraybarWorkspace } from "@/components/d5o/platform/GraybarWorkspace";
 import { D5OProductHeader } from "@/components/d5o/platform/D5OProductHeader";
+import { customerWorkspaceKey } from "@/lib/d5o/hosted/customer-work-scope";
 import "../enterprise.css";
 import "../settings/notification-settings.css";
 
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
 export default async function ProcurementPage({ searchParams }: { searchParams: Promise<{ workspace?: string; workId?: string; step?: string; sourceRevision?: string; decision?: string }> }) {
   const params = await searchParams;
   const workspace = params.workspace ?? "", workId = params.workId ?? "";
-  if (!["rybex", "rotork"].includes(workspace) || !/^[\w-]{8,120}$/.test(workId)) redirect("/work");
+  if (!customerWorkspaceKey.test(workspace) || !/^[\w-]{8,120}$/.test(workId)) redirect("/work");
   const client = await createRybexSupabaseServerClient();
   const user = await client.auth.getUser();
   if (!user.data.user) redirect(`/auth/sign-in?next=${encodeURIComponent(`/work/procurement?workspace=${workspace}&workId=${workId}`)}`);

@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
 import { authoritativeD5OCommandsReady } from "@/lib/d5o/auth/hosted-target";
 import { validLocalScheduleOrigin } from "@/lib/d5o/scheduling/request-origin";
+import { customerWorkspaceKey } from "@/lib/d5o/hosted/customer-work-scope";
 
 export const dynamic = "force-dynamic";
 const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 const target = (request: NextRequest) => {
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "";
   const workId = request.nextUrl.searchParams.get("workId") ?? "";
-  return ["rybex", "rotork"].includes(workspace) && /^[\w-]{8,120}$/.test(workId) ? { workspace, workId } : null;
+  return customerWorkspaceKey.test(workspace) && /^[\w-]{8,120}$/.test(workId) ? { workspace, workId } : null;
 };
 type DbError = { code?: string; message: string } | null;
 const failure = (error: DbError) => reply({ error: error?.message ?? "supplier_cost_unavailable" },

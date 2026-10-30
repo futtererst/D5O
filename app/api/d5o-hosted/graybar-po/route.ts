@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { createRybexSupabaseServerClient } from "@/lib/d5o/auth/supabase-server";
+import { customerWorkspaceKey } from "@/lib/d5o/hosted/customer-work-scope";
 export const dynamic = "force-dynamic";
 const reply = (error: string, status: number) => NextResponse.json({ error }, { status, headers: { "Cache-Control": "no-store" } });
 type Order = { id: string; status: string; accountReference: string; shipTo: string; requiredDate: string; amountMinor: number; currency: string; lines: Array<{ materialId: string; graybarSku: string; quoteId: string; quoteLineNumber: string; quantity: string; unit: string; unitPriceMinor: string; packSize: string }> };
 type SourceQuote = { id: string; quoteNumber: string; quoteRevision: string; lines: Array<{ lineNumber: string; description: string; manufacturer: string; manufacturerPartNumber: string }> };
 export async function GET(request: NextRequest) {
   const workspace = request.nextUrl.searchParams.get("workspace") ?? "", workId = request.nextUrl.searchParams.get("workId") ?? "", orderId = request.nextUrl.searchParams.get("orderId") ?? "";
-  if (!["rybex", "rotork"].includes(workspace) || !/^[\w-]{8,120}$/.test(workId) || !/^[0-9a-f-]{36}$/i.test(orderId)) return reply("invalid_target", 400);
+  if (!customerWorkspaceKey.test(workspace) || !/^[\w-]{8,120}$/.test(workId) || !/^[0-9a-f-]{36}$/i.test(orderId)) return reply("invalid_target", 400);
   const client = await createRybexSupabaseServerClient();
   const call = client.rpc.bind(client) as unknown as (name: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: { message: string } | null }>;
   const result = await call("d5o_graybar_read_v1", { p_workspace_key: workspace, p_presentation_id: workId });
