@@ -18,6 +18,6 @@ export default async function SubcontractPage({ searchParams }: {
     .find((item) => item.workspaceKey === workspace)?.role;
   if (!role || role === "field_worker") redirect("/work?workspace=" + workspace);
   return <SubcontractWorkspace workspace={workspace} workId={workId} role={role}
-    build={process.env.D5O_SOURCE_SHA ?? "source-unidentified"}
+    build={process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.D5O_SOURCE_SHA ?? "source-unidentified"}
     task={params.sourceRevision ? { step: params.step ?? "", revision: Number(params.sourceRevision), decision: params.decision ?? "" } : undefined} />;
 }

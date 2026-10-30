@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 export default async function WorkHomePage({ searchParams }: {
   searchParams?: Promise<{ workspace?: string; setupError?: string }>;
 }) {
-  const sourceVersion = process.env.D5O_SOURCE_SHA ?? process.env.VERCEL_GIT_COMMIT_SHA ?? "source-unidentified";
+  const sourceVersion = process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.D5O_SOURCE_SHA ?? "source-unidentified";
   const commandRuntime = d5oCommandRuntime();
   const isolatedPilot = commandRuntime === "pilot" || commandRuntime === "rehearsal";
   const authoritativeCommands = commandRuntime !== null;

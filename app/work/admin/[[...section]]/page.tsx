@@ -104,7 +104,7 @@ export default async function WorkspaceAdminPage({ params, searchParams }: {
         actor:(query.actor ?? "").slice(0,120), action:(query.action ?? "").slice(0,120),
         subject:(query.subject ?? "").slice(0,120), from:query.from ?? "", to:query.to ?? "" }} />}
     </section>
-        <footer className={styles.diagnostic}>Build {(process.env.D5O_SOURCE_SHA ?? "source-unidentified").slice(0, 12)}</footer>
+        <footer className={styles.diagnostic}>Build {(process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.D5O_SOURCE_SHA ?? "source-unidentified").slice(0, 12)}</footer>
       </div>
     </div>
   </main></></AdminIdentityBoundary>;

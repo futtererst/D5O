@@ -22,6 +22,6 @@ export default async function LaborPage({ searchParams }: {
   if (!role || !["admin", "project_manager", "operations_leader", "billing_commercial_lead"].includes(role)) redirect("/work?workspace=" + workspace);
   return <><D5OProductHeader workspace={workspace as "rybex" | "rotork"} homeHref={`/work?workspace=${workspace}`} area="Labor authority" hostedPreview />
     <LaborAuthorityWorkspace workspace={workspace} workId={workId} role={role}
-      build={process.env.D5O_SOURCE_SHA ?? "source-unidentified"}
+      build={process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.D5O_SOURCE_SHA ?? "source-unidentified"}
       task={params.sourceRevision ? { step: params.step ?? "", revision: Number(params.sourceRevision), decision: params.decision ?? "" } : undefined} /></>;
 }

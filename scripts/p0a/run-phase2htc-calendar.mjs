@@ -7,7 +7,7 @@ import { createClient } from "@supabase/supabase-js";
 import { createP0aRuntime, cleanupP0aRuntime } from "./disposable-runtime.mjs";
 
 const root=resolve(process.cwd());
-const output=resolve(root,"docs/architecture/evidence/phase2htc-calendar-results.json");
+const output=resolve(root,".tmp/phase2htc-calendar-results.json");
 const evidence={baseline:"6e28685f44795b1a3f6b19877d575b609be43729",
   environment:"disposable local Supabase/PostgreSQL",tests:[],cleanup:null};
 let runtime;
@@ -27,7 +27,7 @@ const cases=[
   {name:"missing holiday list",at:"2026-10-26T14:00:00Z",due:"2026-10-26T18:00:00Z",calendar:"Business hours"},
   {name:"empty holiday list",at:"2026-10-26T14:00:00Z",due:"2026-10-26T18:00:00Z",calendar:"Business hours",holidays:[]},
   {name:"invalid calendar structure",at:"2026-10-26T14:00:00Z",error:"service_calendar_invalid",calendar:"Business hours",holidays:"not-an-array"},
-  {name:"missing required calendar",at:"2026-10-26T14:00:00Z",error:"service_calendar_invalid",holidays:[]},
+  {name:"legacy pinned policy without calendar uses business hours",at:"2026-10-26T14:00:00Z",due:"2026-10-26T18:00:00Z",holidays:[]},
   {name:"foreign tenant calendar identifier",at:"2026-10-26T14:00:00Z",error:"service_calendar_invalid",calendar:"foreign-tenant-calendar-id",holidays:[]},
   {name:"continuous overnight",at:"2026-10-26T23:00:00Z",due:"2026-10-27T03:00:00Z",calendar:"Continuous",holidays:[]},
   {name:"Friday-to-Saturday continuous",at:"2026-10-23T23:00:00Z",due:"2026-10-24T03:00:00Z",calendar:"Continuous",holidays:[]},
@@ -163,7 +163,7 @@ finally {
     failed:evidence.tests.filter((item)=>item.status==="FAIL").length,
     setupError:!!evidence.setupError,cleanupVerified:!!evidence.cleanup?.clean};
   if(evidence.summary.failed||!evidence.summary.cleanupVerified) process.exitCode=1;
-  mkdirSync(resolve(root,"docs/architecture/evidence"),{recursive:true});
+  mkdirSync(resolve(root,".tmp"),{recursive:true});
   writeFileSync(output,JSON.stringify(evidence,null,2)+"\n");
   console.log(JSON.stringify({...evidence.summary,output}));
 }
