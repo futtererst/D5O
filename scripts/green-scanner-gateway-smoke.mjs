@@ -19,4 +19,9 @@ const eicar = await scan(Buffer.from("X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDAR
 assert.deepEqual(eicar, { http: 200, body: { status: "infected" } });
 const denied = await scan(Buffer.from("D5O fictional safe evidence"), "Bearer wrong");
 assert.deepEqual(denied, { http: 401, body: { error: "unauthorized" } });
-console.log("GREEN_SCANNER_SMOKE_PASS clean infected unauthorized");
+const health = await fetch(`${base}/health`, { headers: { authorization: `Bearer ${token}` } });
+assert.equal(health.status, 200);
+assert.deepEqual(await health.json(), { status: "ready" });
+const deniedHealth = await fetch(`${base}/health`);
+assert.equal(deniedHealth.status, 401);
+console.log("GREEN_SCANNER_SMOKE_PASS clean infected unauthorized health");

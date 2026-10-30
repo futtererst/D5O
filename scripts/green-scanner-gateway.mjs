@@ -67,9 +67,35 @@ function scan(bytes) {
   });
 }
 
+function ping() {
+  return new Promise((resolve, reject) => {
+    const socket = connect(clamPort, clamHost);
+    let finished = false;
+    const done = (error) => {
+      if (finished) return;
+      finished = true;
+      socket.destroy();
+      error ? reject(error) : resolve();
+    };
+    socket.setTimeout(2000, () => done(new Error("clamd_timeout")));
+    socket.on("error", done);
+    socket.on("connect", () => socket.write("zPING\0"));
+    socket.on("data", (chunk) => chunk.toString("utf8").startsWith("PONG")
+      ? done() : done(new Error("clamd_unhealthy")));
+  });
+}
+
 createServer(async (request, response) => {
-  if (request.method !== "POST" || request.url !== "/scan") return reply(response, 404, { error: "not_found" });
+  if (request.url !== "/scan" && request.url !== "/health") return reply(response, 404, { error: "not_found" });
   if (!authorized(request.headers.authorization)) return reply(response, 401, { error: "unauthorized" });
+  if (request.method === "GET" && request.url === "/health") {
+    try {
+      await ping();
+      return reply(response, 200, { status: "ready" });
+    }
+    catch { return reply(response, 503, { error: "scanner_unavailable" }); }
+  }
+  if (request.method !== "POST" || request.url !== "/scan") return reply(response, 405, { error: "method_not_allowed" });
   if (request.headers["content-type"] !== "application/octet-stream") return reply(response, 415, { error: "unsupported_media_type" });
   if (Number(request.headers["content-length"] ?? 0) > maxBytes) return reply(response, 413, { error: "too_large" });
   let bytes;
